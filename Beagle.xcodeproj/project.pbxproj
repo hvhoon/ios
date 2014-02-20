@@ -54,6 +54,13 @@
 		18EC233D18B5A6B600316B6E /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC233C18B5A6B600316B6E /* Accounts.framework */; };
 		18EC233F18B5A6BD00316B6E /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC233E18B5A6BD00316B6E /* Social.framework */; };
 		18EC234218B5A72F00316B6E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18EC234118B5A72F00316B6E /* Main.storyboard */; };
+		18FADB8D18B662A000A62287 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FADB8C18B662A000A62287 /* LoginViewController.m */; };
+		18FADB9118B6683000A62287 /* InitialSlidingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FADB9018B6683000A62287 /* InitialSlidingViewController.m */; };
+		18FADB9618B668A500A62287 /* ECSlidingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FADB9218B668A500A62287 /* ECSlidingViewController.m */; };
+		18FADB9718B668A500A62287 /* UIImage+ImageWithUIView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FADB9518B668A500A62287 /* UIImage+ImageWithUIView.m */; };
+		18FADB9B18B669E500A62287 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FADB9A18B669E500A62287 /* HomeViewController.m */; };
+		18FADB9E18B66A4C00A62287 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FADB9D18B66A4C00A62287 /* SettingsViewController.m */; };
+		18FADBA318B66A8D00A62287 /* NotificationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FADBA218B66A8D00A62287 /* NotificationsViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -149,6 +156,20 @@
 		18EC233C18B5A6B600316B6E /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		18EC233E18B5A6BD00316B6E /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		18EC234118B5A72F00316B6E /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		18FADB8B18B662A000A62287 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
+		18FADB8C18B662A000A62287 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		18FADB8F18B6683000A62287 /* InitialSlidingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InitialSlidingViewController.h; sourceTree = "<group>"; };
+		18FADB9018B6683000A62287 /* InitialSlidingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InitialSlidingViewController.m; sourceTree = "<group>"; };
+		18FADB9218B668A500A62287 /* ECSlidingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ECSlidingViewController.m; sourceTree = "<group>"; };
+		18FADB9318B668A500A62287 /* ECSlidingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ECSlidingViewController.h; sourceTree = "<group>"; };
+		18FADB9418B668A500A62287 /* UIImage+ImageWithUIView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageWithUIView.h"; sourceTree = "<group>"; };
+		18FADB9518B668A500A62287 /* UIImage+ImageWithUIView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageWithUIView.m"; sourceTree = "<group>"; };
+		18FADB9918B669E500A62287 /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
+		18FADB9A18B669E500A62287 /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
+		18FADB9C18B66A4C00A62287 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
+		18FADB9D18B66A4C00A62287 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
+		18FADBA118B66A8D00A62287 /* NotificationsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsViewController.h; sourceTree = "<group>"; };
+		18FADBA218B66A8D00A62287 /* NotificationsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -230,6 +251,11 @@
 		18EC22A618B5A0B400316B6E /* Beagle */ = {
 			isa = PBXGroup;
 			children = (
+				18FADBA018B66A6600A62287 /* Notifications Screen */,
+				18FADB9F18B66A5600A62287 /* Settings Screen */,
+				18FADB9818B669C100A62287 /* Home Screen */,
+				18FADB8E18B6680C00A62287 /* Sliding Drawer */,
+				18FADB8A18B6625A00A62287 /* Login Screen */,
 				18EC234018B5A71000316B6E /* Storyboard */,
 				18EC232918B5A43700316B6E /* Web Services */,
 				18EC22AF18B5A0B400316B6E /* AppDelegate.h */,
@@ -378,6 +404,55 @@
 			name = Storyboard;
 			sourceTree = "<group>";
 		};
+		18FADB8A18B6625A00A62287 /* Login Screen */ = {
+			isa = PBXGroup;
+			children = (
+				18FADB8B18B662A000A62287 /* LoginViewController.h */,
+				18FADB8C18B662A000A62287 /* LoginViewController.m */,
+			);
+			name = "Login Screen";
+			sourceTree = "<group>";
+		};
+		18FADB8E18B6680C00A62287 /* Sliding Drawer */ = {
+			isa = PBXGroup;
+			children = (
+				18FADB9318B668A500A62287 /* ECSlidingViewController.h */,
+				18FADB9218B668A500A62287 /* ECSlidingViewController.m */,
+				18FADB9418B668A500A62287 /* UIImage+ImageWithUIView.h */,
+				18FADB9518B668A500A62287 /* UIImage+ImageWithUIView.m */,
+				18FADB8F18B6683000A62287 /* InitialSlidingViewController.h */,
+				18FADB9018B6683000A62287 /* InitialSlidingViewController.m */,
+			);
+			name = "Sliding Drawer";
+			sourceTree = "<group>";
+		};
+		18FADB9818B669C100A62287 /* Home Screen */ = {
+			isa = PBXGroup;
+			children = (
+				18FADB9918B669E500A62287 /* HomeViewController.h */,
+				18FADB9A18B669E500A62287 /* HomeViewController.m */,
+			);
+			name = "Home Screen";
+			sourceTree = "<group>";
+		};
+		18FADB9F18B66A5600A62287 /* Settings Screen */ = {
+			isa = PBXGroup;
+			children = (
+				18FADB9C18B66A4C00A62287 /* SettingsViewController.h */,
+				18FADB9D18B66A4C00A62287 /* SettingsViewController.m */,
+			);
+			name = "Settings Screen";
+			sourceTree = "<group>";
+		};
+		18FADBA018B66A6600A62287 /* Notifications Screen */ = {
+			isa = PBXGroup;
+			children = (
+				18FADBA118B66A8D00A62287 /* NotificationsViewController.h */,
+				18FADBA218B66A8D00A62287 /* NotificationsViewController.m */,
+			);
+			name = "Notifications Screen";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -476,12 +551,14 @@
 			files = (
 				18EC231318B5A42D00316B6E /* ASIDataCompressor.m in Sources */,
 				18EC232818B5A42D00316B6E /* SBJsonWriter.m in Sources */,
+				18FADB8D18B662A000A62287 /* LoginViewController.m in Sources */,
 				18EC232618B5A42D00316B6E /* SBJsonBase.m in Sources */,
 				18EC231B18B5A42D00316B6E /* ASICloudFilesContainer.m in Sources */,
 				18EC232718B5A42D00316B6E /* SBJsonParser.m in Sources */,
 				18EC231118B5A42D00316B6E /* ServerManager.m in Sources */,
 				18EC231718B5A42D00316B6E /* ASIHTTPRequest.m in Sources */,
 				18EC232318B5A42D00316B6E /* NSObject+SBJSON.m in Sources */,
+				18FADB9618B668A500A62287 /* ECSlidingViewController.m in Sources */,
 				18EC232518B5A42D00316B6E /* SBJSON.m in Sources */,
 				18EC231218B5A42D00316B6E /* ASIAuthenticationDialog.m in Sources */,
 				18EC231D18B5A42D00316B6E /* ASICloudFilesContainerXMLParserDelegate.m in Sources */,
@@ -489,15 +566,20 @@
 				18EC231F18B5A42D00316B6E /* ASICloudFilesObjectRequest.m in Sources */,
 				18EC231A18B5A42D00316B6E /* ASICloudFilesCDNRequest.m in Sources */,
 				18EC232418B5A42D00316B6E /* NSString+SBJSON.m in Sources */,
+				18FADBA318B66A8D00A62287 /* NotificationsViewController.m in Sources */,
 				18EC232018B5A42D00316B6E /* ASICloudFilesRequest.m in Sources */,
 				18EC231C18B5A42D00316B6E /* ASICloudFilesContainerRequest.m in Sources */,
 				18EC22B118B5A0B400316B6E /* AppDelegate.m in Sources */,
+				18FADB9118B6683000A62287 /* InitialSlidingViewController.m in Sources */,
 				18EC231818B5A42D00316B6E /* ASIInputStream.m in Sources */,
 				18EC22AD18B5A0B400316B6E /* main.m in Sources */,
+				18FADB9B18B669E500A62287 /* HomeViewController.m in Sources */,
 				18EC232218B5A42D00316B6E /* Reachability.m in Sources */,
+				18FADB9E18B66A4C00A62287 /* SettingsViewController.m in Sources */,
 				18EC231918B5A42D00316B6E /* ASINetworkQueue.m in Sources */,
 				18EC231418B5A42D00316B6E /* ASIDataDecompressor.m in Sources */,
 				18EC231E18B5A42D00316B6E /* ASICloudFilesObject.m in Sources */,
+				18FADB9718B668A500A62287 /* UIImage+ImageWithUIView.m in Sources */,
 				18EC231518B5A42D00316B6E /* ASIDownloadCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -699,6 +781,7 @@
 				18EC22CB18B5A0B400316B6E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		18EC22CC18B5A0B400316B6E /* Build configuration list for PBXNativeTarget "BeagleTests" */ = {
 			isa = XCConfigurationList;
@@ -707,6 +790,7 @@
 				18EC22CE18B5A0B400316B6E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
