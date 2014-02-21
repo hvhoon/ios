@@ -9,11 +9,11 @@
 #import "NotificationsViewController.h"
 
 @interface NotificationsViewController ()
-
+@property (nonatomic, unsafe_unretained) CGFloat peekLeftAmount;
 @end
 
 @implementation NotificationsViewController
-
+@synthesize peekLeftAmount;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -26,6 +26,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.peekLeftAmount = 40.0f;
+    [self.slidingViewController setAnchorLeftPeekAmount:self.peekLeftAmount];
+    self.slidingViewController.underRightWidthLayout = ECVariableRevealWidth;
+
 	// Do any additional setup after loading the view.
 }
 

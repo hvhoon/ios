@@ -31,6 +31,7 @@
 }
 -(void)pushToHomeScreen{
     [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"FacebookLogin"];
+    [[NSUserDefaults standardUserDefaults]synchronize];
     [activityIndicatorView stopAnimating];
     [activityIndicatorView setHidden:YES];
 
@@ -46,6 +47,7 @@
 
 - (void)viewDidLoad
 {
+    [self.navigationController setNavigationBarHidden:YES];
     activityIndicatorView.hidden=YES;
     [super viewDidLoad];
 	// Do any additional setup after loading the view.

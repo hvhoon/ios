@@ -26,6 +26,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [self.slidingViewController setAnchorRightRevealAmount:280.0f];
+     self.slidingViewController.underLeftWidthLayout = ECFullWidth;
+
 	// Do any additional setup after loading the view.
 }
 

@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "ECSlidingViewController.h"
 @interface NotificationsViewController : UIViewController
 
 @end
