@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1806EA4218B9E32B00A47BF1 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1806EA4118B9E32B00A47BF1 /* Crashlytics.framework */; };
 		18EC22A118B5A0B400316B6E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC22A018B5A0B400316B6E /* Foundation.framework */; };
 		18EC22A318B5A0B400316B6E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC22A218B5A0B400316B6E /* CoreGraphics.framework */; };
 		18EC22A518B5A0B400316B6E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC22A418B5A0B400316B6E /* UIKit.framework */; };
@@ -74,6 +75,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1806EA4118B9E32B00A47BF1 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		18EC229D18B5A0B400316B6E /* Beagle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Beagle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		18EC22A018B5A0B400316B6E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		18EC22A218B5A0B400316B6E /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -178,6 +180,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				18EC233F18B5A6BD00316B6E /* Social.framework in Frameworks */,
+				1806EA4218B9E32B00A47BF1 /* Crashlytics.framework in Frameworks */,
 				18EC233D18B5A6B600316B6E /* Accounts.framework in Frameworks */,
 				18EC233B18B5A6AA00316B6E /* MobileCoreServices.framework in Frameworks */,
 				18EC233918B5A6A000316B6E /* CoreLocation.framework in Frameworks */,
@@ -229,6 +232,7 @@
 		18EC229F18B5A0B400316B6E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1806EA4118B9E32B00A47BF1 /* Crashlytics.framework */,
 				18EC233E18B5A6BD00316B6E /* Social.framework */,
 				18EC233C18B5A6B600316B6E /* Accounts.framework */,
 				18EC233A18B5A6AA00316B6E /* MobileCoreServices.framework */,
@@ -463,6 +467,7 @@
 				18EC229918B5A0B400316B6E /* Sources */,
 				18EC229A18B5A0B400316B6E /* Frameworks */,
 				18EC229B18B5A0B400316B6E /* Resources */,
+				1806EA4018B9E2E400A47BF1 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -543,6 +548,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		1806EA4018B9E2E400A47BF1 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Crashlytics.framework/run e8e7ac59367e936ecae821876cc411ec67427e47 08236531678c31ca74e7c85b34c7078a9a24c4405410163bcf0c6351af3086b6";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		18EC229918B5A0B400316B6E /* Sources */ = {
@@ -699,6 +720,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/apple/Beagle,
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Beagle/Beagle-Prefix.pch";
 				INFOPLIST_FILE = "Beagle/Beagle-Info.plist";
@@ -712,6 +737,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/apple/Beagle,
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Beagle/Beagle-Prefix.pch";
 				INFOPLIST_FILE = "Beagle/Beagle-Info.plist";

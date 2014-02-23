@@ -148,7 +148,7 @@
 + (id)postRequestWithContainer:(NSString *)containerName cdnEnabled:(BOOL)cdnEnabled ttl:(NSUInteger)ttl {
 	ASICloudFilesCDNRequest *request = [ASICloudFilesCDNRequest cdnRequestWithMethod:@"POST" containerName:containerName];
 	if (ttl > 0) {
-		[request addRequestHeader:@"X-Ttl" value:[NSString stringWithFormat:@"%i", ttl]];
+		[request addRequestHeader:@"X-Ttl" value:[NSString stringWithFormat:@"%lu", (unsigned long)ttl]];
 	}
 	[request addRequestHeader:@"X-CDN-Enabled" value:cdnEnabled ? @"True" : @"False"];
 	return request;
