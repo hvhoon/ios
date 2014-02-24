@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		1806EA4218B9E32B00A47BF1 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1806EA4118B9E32B00A47BF1 /* Crashlytics.framework */; };
+		18E7AF0918BBAA1700EBBDE2 /* FacebookLoginSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E7AF0818BBAA1700EBBDE2 /* FacebookLoginSession.m */; };
+		18E7AF0D18BBAA6600EBBDE2 /* BeagleUserClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E7AF0C18BBAA6600EBBDE2 /* BeagleUserClass.m */; };
 		18EC22A118B5A0B400316B6E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC22A018B5A0B400316B6E /* Foundation.framework */; };
 		18EC22A318B5A0B400316B6E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC22A218B5A0B400316B6E /* CoreGraphics.framework */; };
 		18EC22A518B5A0B400316B6E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC22A418B5A0B400316B6E /* UIKit.framework */; };
@@ -76,6 +78,10 @@
 
 /* Begin PBXFileReference section */
 		1806EA4118B9E32B00A47BF1 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		18E7AF0718BBAA1700EBBDE2 /* FacebookLoginSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookLoginSession.h; sourceTree = "<group>"; };
+		18E7AF0818BBAA1700EBBDE2 /* FacebookLoginSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookLoginSession.m; sourceTree = "<group>"; };
+		18E7AF0B18BBAA6600EBBDE2 /* BeagleUserClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeagleUserClass.h; sourceTree = "<group>"; };
+		18E7AF0C18BBAA6600EBBDE2 /* BeagleUserClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeagleUserClass.m; sourceTree = "<group>"; };
 		18EC229D18B5A0B400316B6E /* Beagle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Beagle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		18EC22A018B5A0B400316B6E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		18EC22A218B5A0B400316B6E /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -210,6 +216,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		18E7AF0618BBAA0400EBBDE2 /* Facebook */ = {
+			isa = PBXGroup;
+			children = (
+				18E7AF0718BBAA1700EBBDE2 /* FacebookLoginSession.h */,
+				18E7AF0818BBAA1700EBBDE2 /* FacebookLoginSession.m */,
+			);
+			name = Facebook;
+			sourceTree = "<group>";
+		};
+		18E7AF0A18BBAA5000EBBDE2 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				18E7AF0B18BBAA6600EBBDE2 /* BeagleUserClass.h */,
+				18E7AF0C18BBAA6600EBBDE2 /* BeagleUserClass.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
 		18EC229418B5A0B400316B6E = {
 			isa = PBXGroup;
 			children = (
@@ -255,6 +279,8 @@
 		18EC22A618B5A0B400316B6E /* Beagle */ = {
 			isa = PBXGroup;
 			children = (
+				18E7AF0A18BBAA5000EBBDE2 /* Model */,
+				18E7AF0618BBAA0400EBBDE2 /* Facebook */,
 				18FADBA018B66A6600A62287 /* Notifications Screen */,
 				18FADB9F18B66A5600A62287 /* Settings Screen */,
 				18FADB9818B669C100A62287 /* Home Screen */,
@@ -573,6 +599,7 @@
 				18EC231318B5A42D00316B6E /* ASIDataCompressor.m in Sources */,
 				18EC232818B5A42D00316B6E /* SBJsonWriter.m in Sources */,
 				18FADB8D18B662A000A62287 /* LoginViewController.m in Sources */,
+				18E7AF0918BBAA1700EBBDE2 /* FacebookLoginSession.m in Sources */,
 				18EC232618B5A42D00316B6E /* SBJsonBase.m in Sources */,
 				18EC231B18B5A42D00316B6E /* ASICloudFilesContainer.m in Sources */,
 				18EC232718B5A42D00316B6E /* SBJsonParser.m in Sources */,
@@ -600,6 +627,7 @@
 				18EC231918B5A42D00316B6E /* ASINetworkQueue.m in Sources */,
 				18EC231418B5A42D00316B6E /* ASIDataDecompressor.m in Sources */,
 				18EC231E18B5A42D00316B6E /* ASICloudFilesObject.m in Sources */,
+				18E7AF0D18BBAA6600EBBDE2 /* BeagleUserClass.m in Sources */,
 				18FADB9718B668A500A62287 /* UIImage+ImageWithUIView.m in Sources */,
 				18EC231518B5A42D00316B6E /* ASIDownloadCache.m in Sources */,
 			);
@@ -720,6 +748,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Harish Hoon (B99DQ79SBX)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Harish Hoon (B99DQ79SBX)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/apple/Beagle,
@@ -728,6 +758,7 @@
 				GCC_PREFIX_HEADER = "Beagle/Beagle-Prefix.pch";
 				INFOPLIST_FILE = "Beagle/Beagle-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "EBD4615E-34A6-4375-9E37-DC1471F8C2BC";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -737,6 +768,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Harish Hoon (B99DQ79SBX)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Harish Hoon (B99DQ79SBX)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/apple/Beagle,
@@ -745,6 +778,7 @@
 				GCC_PREFIX_HEADER = "Beagle/Beagle-Prefix.pch";
 				INFOPLIST_FILE = "Beagle/Beagle-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "EBD4615E-34A6-4375-9E37-DC1471F8C2BC";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

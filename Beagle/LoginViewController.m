@@ -8,7 +8,10 @@
 
 #import "LoginViewController.h"
 #import "InitialSlidingViewController.h"
-@interface LoginViewController (){
+#import "FacebookLoginSession.h"
+#import "BeagleUserClass.h"
+#import <Social/Social.h>
+@interface LoginViewController ()<FacebookLoginSessionDelegate>{
     IBOutlet UIActivityIndicatorView *activityIndicatorView;
 }
 @end
@@ -26,9 +29,41 @@
 -(IBAction)signInUsingFacebookClicked:(id)sender{
     [activityIndicatorView setHidden:NO];
     [activityIndicatorView startAnimating];
-    [self performSelector:@selector(pushToHomeScreen) withObject:nil afterDelay:3.0];
+    
+    FacebookLoginSession *facebookSession=[[FacebookLoginSession alloc]init];
+    facebookSession.delegate=self;
+    [facebookSession getUserNativeFacebookSession];
+
     
 }
+
+#pragma mark -
+#pragma mark Delegate method From FacebookSession
+
+-(void)successfulFacebookLogin:(BeagleUserClass*)data{
+    [self pushToHomeScreen];
+}
+-(void)facebookAccountNotSetup{
+    
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        SLComposeViewController *controller = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+        controller.view.hidden = YES;
+        [self presentViewController:controller animated:NO completion:^{
+            //[controller.view endEditing:NO];
+            [self dismissViewControllerAnimated:NO completion:nil];
+            [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
+            [[NSUserDefaults standardUserDefaults]synchronize];
+            [activityIndicatorView stopAnimating];
+            [activityIndicatorView setHidden:YES];
+
+        }];
+    });
+    
+    
+}
+
+
 -(void)pushToHomeScreen{
     [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"FacebookLogin"];
     [[NSUserDefaults standardUserDefaults]synchronize];
