@@ -30,7 +30,7 @@
     self.accountStore = [[ACAccountStore alloc]init];
     ACAccountType *FBaccountType= [self.accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
     
-    NSString *key = @"160726900680967";
+    NSString *key = @"215483535268106";
     NSDictionary *dictFB = [NSDictionary dictionaryWithObjectsAndKeys:key,ACFacebookAppIdKey,@[@"email"],ACFacebookPermissionsKey, nil];
     
     
@@ -90,34 +90,65 @@
                 id fullName = [list objectForKey:@"name"];
                 if (fullName != nil && [fullName class] != [NSNull class]) {
                     
-                    userObject.fullName=fullName;
-                }
-                
-                if([userName length]==0){
-                    int r = arc4random() % 9;
-                    int z = arc4random() % 9;
-                    fullName=[fullName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-                    userObject.userName=[NSString stringWithFormat:@"%@_%d%d",fullName,r,z];
-                }
-                
-                
-                id password = [list objectForKey:@"id"];
-                if (password != nil && [password class] != [NSNull class]) {
                     
-                    userObject.password=password;
+                    NSArray *arr = [fullName componentsSeparatedByString:@" "];
+                    
+                    if([arr count]>=2){
+                        userObject.first_name=[arr objectAtIndex:0];
+                        userObject.last_name=[arr objectAtIndex:1];
+                    }
+                    else{
+                        userObject.first_name=fullName;
+                    }
+
                 }
+                 id first_name = [list objectForKey:@"first_name"];
+                if(first_name != nil && [first_name class] != [NSNull class]){
+                    userObject.first_name=first_name;
+                }
+                
+                id last_name = [list objectForKey:@"last_name"];
+                if(last_name != nil && [last_name class] != [NSNull class]){
+                    userObject.last_name    =last_name;
+                }
+                
 
                 
-                NSURL *pictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", [list objectForKey:@"id"]]];
+                id current_location = [list objectForKey:@"current_location"];
+                if(current_location != nil && [current_location class] != [NSNull class]){
+                       id country = [current_location objectForKey:@"country"];
+                    NSString *countryLocation=nil;
+                        if (country != nil) {
+                            NSLog(@"country=%@",country);
+                            countryLocation=country;
+                        } else {
+                            // current_location has no country
+                        }
+                        
+                        id city = [current_location objectForKey:@"city"];
+                        if (city != nil) {
+                            NSLog(@"country=%@",city);
+                            if([countryLocation length]==0){
+                                userObject.location=[NSString stringWithFormat:@"%@",city];
+                            }
+                            else{
+                                userObject.location=[NSString stringWithFormat:@"%@,%@",countryLocation,city];
+                            }
+                        } else {
+                            // current_location has no country
+                        }
+                        
+                        
+                    }
+
                 
-                NSURLRequest *request = [NSURLRequest
-                                         requestWithURL:pictureURL
-                                         cachePolicy:NSURLRequestReloadIgnoringCacheData
-                                         timeoutInterval:5.0];
-                NSError *error=nil;
                 
-                NSURLResponse *response;
-                NSData *facebookData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+                userObject.profileImageUrl= [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", [list objectForKey:@"id"]];
+
+                
+                
+                userObject.access_token = self.facebookAccount.credential.oauthToken;
+                NSLog(@"accessToken=%@", userObject.access_token);
                 
                // userObject.profileImage=[UIImage imageWithData:facebookData];
                 
@@ -156,7 +187,7 @@
     self.accountStore = [[ACAccountStore alloc]init];
     ACAccountType *FBaccountType= [self.accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
     
-    NSString *key = @"160726900680967";
+    NSString *key = @"215483535268106";
     
     NSDictionary *dictFB = [NSDictionary dictionaryWithObjectsAndKeys:key,ACFacebookAppIdKey,@[@"offline_access"],@[@"read_stream"],@[@"email"],@[@"user_subscriptions"],@[@"friends_subscriptions"],@[@"publish_stream"],@[@"xmpp_login"],ACFacebookPermissionsKey, nil];
     

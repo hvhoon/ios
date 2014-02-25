@@ -13,6 +13,7 @@ typedef enum {
 } ServerCallType;
 
 @class ServerManager;
+@class BeagleUserClass;
 @protocol ServerManagerDelegate <NSObject>
 
 @optional
@@ -29,5 +30,5 @@ typedef enum {
 @property (nonatomic,assign) id<ServerManagerDelegate> delegate;
 
 //*************************** API calls ***************************
--(void)registerUserWithPostRequest;
+-(void)registerPlayerOnBeagle:(BeagleUserClass*)data;
 @end

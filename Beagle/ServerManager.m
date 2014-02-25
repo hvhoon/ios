@@ -13,6 +13,7 @@
 #import "SBJSON.h"
 #import "JSON.h"
 #import "AppDelegate.h"
+#import "BeagleUserClass.h"
 @interface ServerManager()
 {
     NSMutableDictionary *_errorCodes;
@@ -36,25 +37,83 @@
         _internetReachability = [Reachability reachabilityForInternetConnection];
 
 
-//        _serverUrl = @"http://74.207.254.228/json.php";
+        _serverUrl = @"http://infinite-spire-6520.herokuapp.com/";
 
         [self populateErrorCodes];
     }
     return self;
 }
 
--(void)registerUserWithPostRequest{
+
+-(void)registerPlayerOnBeagle:(BeagleUserClass*)data{
     _serverCallType=kServerCallUserRegisteration;
-        if([self isInternetAvailable]){
-            
+    if([self isInternetAvailable]){
+        
+        
+/*        [[NSUserDefaults standardUserDefaults] valueForKey:@"device_token"]
+        NSString *registerData=[NSString stringWithFormat:@"{\"first_name\":\"%@\",\"last_name\":\"%@\",\"email\":\"%@\",\"image_url\":\"%@\",\"fbuid\":\"%@\",\"access_token\":\"%@\",\"location\":\"%@\",\"device_token\":\"%@\",\"fb_ticker\":\"%@\"}",data.first_name,data.last_name,data.email,data.profileImageUrl,[NSNumber numberWithInteger:data.fbuid],data.access_token,data.location,@"test",[NSNumber numberWithBool:data.fb_ticker]];*/
+        
+        NSString *registerData=[NSString stringWithFormat:@"{\"first_name\":\"%@\",\"last_name\":\"%@\",\"email\":\"%@\",\"image_url\":\"%@\",\"fbuid\":\"%@\",\"access_token\":\"%@\",\"location\":\"%@\",\"device_token\":\"%@\",\"fb_ticker\":\"%@\"}",@"test1213",@"dqdw",@"yyy.gmail.com",@"ewrw",@"12323",@"wdfwedf",@"wdf",@"test",@"0"];
+        //NSString *sampleData=[NSString stringWithFormat:@"{\"player\":\"%@\"},registerData];
+        
+        //[NSString stringWithFormat:@"{\"player\":%@}",[bodyD JSONRepresentation]];
+        
+        
+        NSMutableDictionary* bodyD =[[NSMutableDictionary alloc] init];
+        [bodyD setObject:@"test" forKey:@"first_name"];
+        [bodyD setObject:@"test1233@gmail.com" forKey:@"email"];
+        [bodyD setObject:@"122323" forKey:@"fbuid"];
+        [bodyD setObject:@"dqdwd" forKey:@"access_token"];
+        
+
+        NSString *sampleData= [NSString stringWithFormat:@"\"player\":%@",registerData];
+        
+        
+        
+        NSString *post =[NSString stringWithFormat:@"{\"player\":%@}",[bodyD JSONRepresentation]];
+        
+        NSData *postData = [post dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
+        
+        NSString *postLength = [NSString stringWithFormat:@"%lu", (unsigned long)[postData length]];
+        
+        NSMutableURLRequest *request =[[NSMutableURLRequest alloc] init];
+        [request setURL:[NSURL URLWithString:@"http://localhost:3000/players.json"]];
+        [request setHTTPMethod:@"POST"];
+        [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
+        //[request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+        
+        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+
+        [request setHTTPBody:postData];
+        
+        
+//        NSData *data = [body dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
+//		[request setHTTPBody:data];
+//		[request setValue:[NSString stringWithFormat:@"%d", [data length]] forHTTPHeaderField:@"Content-Length"];
+
+        
+//        NSError *error;
+//        NSURLResponse *response;
+//        NSData *urlData=[NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+//        NSString *data=[[NSString alloc]initWithData:urlData encoding:NSUTF8StringEncoding];
+        NSLog(@"data=%@",data);
+
+        
+        NSData *myRequestData = [sampleData dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
+        
+        NSString *t=[myRequestData description];
+
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@players.json", _serverUrl]
+                         method:@"POST"
+                         params:nil data:postData];
     }
-        else{
-            [self internetNotAvailable];
-        }
+    else{
+        [self internetNotAvailable];
+    }
+    
+    
     
 }
-
-
 
 -(void)populateErrorCodes
 {
@@ -122,7 +181,7 @@
 
 #pragma mark - Private
 
-- (void)callServerWithUrl:(NSString *)requestUrl method:(NSString *)requestMethod params:(NSDictionary *)params
+- (void)callServerWithUrl:(NSString *)requestUrl method:(NSString *)requestMethod params:(NSDictionary *)params data:(NSData*)data
 {
     ASIFormDataRequest *request = nil;
     if (([requestMethod isEqualToString:@"GET"] || [requestMethod isEqualToString:@"DELETE"]) && params.allKeys.count > 0)
@@ -146,17 +205,36 @@
     else
     {
         request = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:requestUrl]];
-        for (NSString *key in [params allKeys])
-        {
-            NSString *value = [params valueForKey:key];
-            [request setPostValue:value forKey:key];
-        }
+        //[request appendPostData:data];
+
+//        for (NSString *key in [params allKeys])
+//        {
+//            NSString *value = [params valueForKey:key];
+//            
+//            [request setPostValue:value forKey:key];
+//            
+//        }
     }
     
     // set headers valid for all requests
     [request setRequestMethod:requestMethod];
-    
+//    request.allowCompressedResponse = NO;
+//    request.useCookiePersistence = NO;
+//    request.shouldCompressRequestBody = NO;
+
     [request setDelegate:self];
+//    [request startAsynchronous];
+    
+    
+    
+//    [request setRequestMethod:@"POST"];
+//    [request addRequestHeader:@"Accept" value:@"application/json"];
+    [request addRequestHeader:@"content-type" value:@"application/json"];
+    
+    request.allowCompressedResponse = NO;
+    request.useCookiePersistence = NO;
+    request.shouldCompressRequestBody = NO;
+    [request setPostBody:[NSMutableData dataWithData:data]];
     [request startAsynchronous];
 }
 

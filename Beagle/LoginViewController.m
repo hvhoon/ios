@@ -11,13 +11,16 @@
 #import "FacebookLoginSession.h"
 #import "BeagleUserClass.h"
 #import <Social/Social.h>
-@interface LoginViewController ()<FacebookLoginSessionDelegate>{
+#import "ServerManager.h"
+@interface LoginViewController ()<FacebookLoginSessionDelegate,ServerManagerDelegate>{
     IBOutlet UIActivityIndicatorView *activityIndicatorView;
+    ServerManager *loginServerManager;
 }
+@property(nonatomic,strong)ServerManager *loginServerManager;
 @end
 
 @implementation LoginViewController
-
+@synthesize loginServerManager=_loginServerManager;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -30,6 +33,7 @@
     [activityIndicatorView setHidden:NO];
     [activityIndicatorView startAnimating];
     
+
     FacebookLoginSession *facebookSession=[[FacebookLoginSession alloc]init];
     facebookSession.delegate=self;
     [facebookSession getUserNativeFacebookSession];
@@ -41,7 +45,11 @@
 #pragma mark Delegate method From FacebookSession
 
 -(void)successfulFacebookLogin:(BeagleUserClass*)data{
-    [self pushToHomeScreen];
+    
+    _loginServerManager=[[ServerManager alloc]init];
+    _loginServerManager.delegate=self;
+    [_loginServerManager registerPlayerOnBeagle:data];
+     [self pushToHomeScreen];
 }
 -(void)facebookAccountNotSetup{
     
@@ -65,15 +73,16 @@
 
 
 -(void)pushToHomeScreen{
-    [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"FacebookLogin"];
-    [[NSUserDefaults standardUserDefaults]synchronize];
-    [activityIndicatorView stopAnimating];
-    [activityIndicatorView setHidden:YES];
-
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     
-    InitialSlidingViewController *initialViewController = [storyboard instantiateViewControllerWithIdentifier:@"initialBeagle"];
-    [self.navigationController pushViewController:initialViewController animated:YES];
+//    [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"FacebookLogin"];
+//    [[NSUserDefaults standardUserDefaults]synchronize];
+//    [activityIndicatorView stopAnimating];
+//    [activityIndicatorView setHidden:YES];
+//
+//    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+//    
+//    InitialSlidingViewController *initialViewController = [storyboard instantiateViewControllerWithIdentifier:@"initialBeagle"];
+//    [self.navigationController pushViewController:initialViewController animated:YES];
     
     
     
@@ -87,6 +96,51 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
 }
+#pragma mark - server calls
+
+- (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
+    
+    if(serverRequest==kServerCallUserRegisteration){
+        
+        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
+            
+            id status=[response objectForKey:@"status"];
+            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
+            
+            
+            
+            
+            id player=[response objectForKey:@"player"];
+            if (player != nil && [player class] != [NSNull class]) {
+                
+                
+                NSLog(@"player=%@",player);
+                
+            }
+        }
+        }
+    }
+}
+
+- (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
+{
+    
+//    [(AppDelegate*)[[UIApplication sharedApplication] delegate]hideProgressView];
+    
+    NSString *message = NSLocalizedString (@"Unable to initiate request.",
+                                           @"NSURLConnection initialization method failed.");
+    //ScoreAlertWithMessage(message);
+}
+
+- (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
+{
+    
+//    [(AppDelegate*)[[UIApplication sharedApplication] delegate]hideProgressView];
+    
+//    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMsg delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
+//    [alert show];
+}
+
 
 - (void)didReceiveMemoryWarning
 {
