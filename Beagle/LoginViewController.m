@@ -124,7 +124,7 @@
 
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {
-    
+    [self pushToHomeScreen];
 //    [(AppDelegate*)[[UIApplication sharedApplication] delegate]hideProgressView];
     
     NSString *message = NSLocalizedString (@"Unable to initiate request.",

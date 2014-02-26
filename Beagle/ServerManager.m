@@ -37,7 +37,7 @@
         _internetReachability = [Reachability reachabilityForInternetConnection];
 
 
-        _serverUrl = @"http://infinite-spire-6520.herokuapp.com/";
+        _serverUrl = @"http://localhost:3000/";
 
         [self populateErrorCodes];
     }
@@ -50,10 +50,10 @@
     if([self isInternetAvailable]){
         
         
-/*        [[NSUserDefaults standardUserDefaults] valueForKey:@"device_token"]
-        NSString *registerData=[NSString stringWithFormat:@"{\"first_name\":\"%@\",\"last_name\":\"%@\",\"email\":\"%@\",\"image_url\":\"%@\",\"fbuid\":\"%@\",\"access_token\":\"%@\",\"location\":\"%@\",\"device_token\":\"%@\",\"fb_ticker\":\"%@\"}",data.first_name,data.last_name,data.email,data.profileImageUrl,[NSNumber numberWithInteger:data.fbuid],data.access_token,data.location,@"test",[NSNumber numberWithBool:data.fb_ticker]];*/
+//        [[NSUserDefaults standardUserDefaults] valueForKey:@"device_token"]
+        NSString *registerData=[NSString stringWithFormat:@"{\"first_name\":\"%@\",\"last_name\":\"%@\",\"email\":\"%@\",\"image_url\":\"%@\",\"fbuid\":\"%@\",\"access_token\":\"%@\",\"location\":\"%@\",\"device_token\":\"%@\",\"fb_ticker\":\"%@\"}",data.first_name,data.last_name,data.email,data.profileImageUrl,[NSNumber numberWithInteger:data.fbuid],data.access_token,data.location,@"test",[NSNumber numberWithBool:data.fb_ticker]];
         
-        NSString *registerData=[NSString stringWithFormat:@"{\"first_name\":\"%@\",\"last_name\":\"%@\",\"email\":\"%@\",\"image_url\":\"%@\",\"fbuid\":\"%@\",\"access_token\":\"%@\",\"location\":\"%@\",\"device_token\":\"%@\",\"fb_ticker\":\"%@\"}",@"test1213",@"dqdw",@"yyy.gmail.com",@"ewrw",@"12323",@"wdfwedf",@"wdf",@"test",@"0"];
+//        NSString *registerData=[NSString stringWithFormat:@"{\"first_name\":\"%@\",\"last_name\":\"%@\",\"email\":\"%@\",\"image_url\":\"%@\",\"fbuid\":\"%@\",\"access_token\":\"%@\",\"location\":\"%@\",\"device_token\":\"%@\",\"fb_ticker\":\"%@\"}",@"test1213",@"dqdw",@"yyy.gmail.com",@"ewrw",@"12323",@"wdfwedf",@"wdf",@"test",@"0"];
         //NSString *sampleData=[NSString stringWithFormat:@"{\"player\":\"%@\"},registerData];
         
         //[NSString stringWithFormat:@"{\"player\":%@}",[bodyD JSONRepresentation]];
@@ -70,7 +70,7 @@
         
         
         
-        NSString *post =[NSString stringWithFormat:@"{\"player\":%@}",[bodyD JSONRepresentation]];
+        NSString *post =[NSString stringWithFormat:@"{\"player\":%@}",registerData];
         
         NSData *postData = [post dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
         
@@ -218,17 +218,8 @@
     
     // set headers valid for all requests
     [request setRequestMethod:requestMethod];
-//    request.allowCompressedResponse = NO;
-//    request.useCookiePersistence = NO;
-//    request.shouldCompressRequestBody = NO;
 
     [request setDelegate:self];
-//    [request startAsynchronous];
-    
-    
-    
-//    [request setRequestMethod:@"POST"];
-//    [request addRequestHeader:@"Accept" value:@"application/json"];
     [request addRequestHeader:@"content-type" value:@"application/json"];
     
     request.allowCompressedResponse = NO;
