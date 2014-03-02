@@ -14,6 +14,8 @@
 #import "JSON.h"
 #import "AppDelegate.h"
 #import "BeagleUserClass.h"
+#define localHost @"http://localhost:3000/"
+#define herokuHost @"http://infinite-spire-6520.herokuapp.com/"
 @interface ServerManager()
 {
     NSMutableDictionary *_errorCodes;
@@ -37,7 +39,7 @@
         _internetReachability = [Reachability reachabilityForInternetConnection];
 
 
-        _serverUrl = @"http://localhost:3000/";
+        _serverUrl =herokuHost;
 
         [self populateErrorCodes];
     }
@@ -50,58 +52,24 @@
     if([self isInternetAvailable]){
         
         
-//        [[NSUserDefaults standardUserDefaults] valueForKey:@"device_token"]
-        NSString *registerData=[NSString stringWithFormat:@"{\"first_name\":\"%@\",\"last_name\":\"%@\",\"email\":\"%@\",\"image_url\":\"%@\",\"fbuid\":\"%@\",\"access_token\":\"%@\",\"location\":\"%@\",\"device_token\":\"%@\",\"fb_ticker\":\"%@\"}",data.first_name,data.last_name,data.email,data.profileImageUrl,[NSNumber numberWithInteger:data.fbuid],data.access_token,data.location,@"test",[NSNumber numberWithBool:data.fb_ticker]];
-        
-//        NSString *registerData=[NSString stringWithFormat:@"{\"first_name\":\"%@\",\"last_name\":\"%@\",\"email\":\"%@\",\"image_url\":\"%@\",\"fbuid\":\"%@\",\"access_token\":\"%@\",\"location\":\"%@\",\"device_token\":\"%@\",\"fb_ticker\":\"%@\"}",@"test1213",@"dqdw",@"yyy.gmail.com",@"ewrw",@"12323",@"wdfwedf",@"wdf",@"test",@"0"];
-        //NSString *sampleData=[NSString stringWithFormat:@"{\"player\":\"%@\"},registerData];
-        
-        //[NSString stringWithFormat:@"{\"player\":%@}",[bodyD JSONRepresentation]];
-        
-        
-        NSMutableDictionary* bodyD =[[NSMutableDictionary alloc] init];
-        [bodyD setObject:@"test" forKey:@"first_name"];
-        [bodyD setObject:@"test1233@gmail.com" forKey:@"email"];
-        [bodyD setObject:@"122323" forKey:@"fbuid"];
-        [bodyD setObject:@"dqdwd" forKey:@"access_token"];
-        
-
-        NSString *sampleData= [NSString stringWithFormat:@"\"player\":%@",registerData];
+        NSMutableDictionary* playerDescription =[[NSMutableDictionary alloc] init];
+        [playerDescription setObject:data.first_name forKey:@"first_name"];
+        [playerDescription setObject:data.last_name forKey:@"last_name"];
+        [playerDescription setObject:data.email forKey:@"email"];
+        [playerDescription setObject:data.profileImageUrl forKey:@"image_url"];
+        [playerDescription setObject:[NSNumber numberWithInteger:data.fbuid] forKey:@"fbuid"];
+        [playerDescription setObject:data.access_token forKey:@"access_token"];
+        [playerDescription setObject:data.location forKey:@"location"];
+        [playerDescription setObject:@"deviceToken" forKey:@"device_token"];
+        [playerDescription setObject:[NSNumber numberWithBool:data.fb_ticker] forKey:@"fb_ticker"];
         
         
         
-        NSString *post =[NSString stringWithFormat:@"{\"player\":%@}",registerData];
+        
+        NSString *post =[NSString stringWithFormat:@"{\"player\":%@}",[playerDescription JSONRepresentation]];
         
         NSData *postData = [post dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
         
-        NSString *postLength = [NSString stringWithFormat:@"%lu", (unsigned long)[postData length]];
-        
-        NSMutableURLRequest *request =[[NSMutableURLRequest alloc] init];
-        [request setURL:[NSURL URLWithString:@"http://localhost:3000/players.json"]];
-        [request setHTTPMethod:@"POST"];
-        [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
-        //[request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-        
-        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-
-        [request setHTTPBody:postData];
-        
-        
-//        NSData *data = [body dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
-//		[request setHTTPBody:data];
-//		[request setValue:[NSString stringWithFormat:@"%d", [data length]] forHTTPHeaderField:@"Content-Length"];
-
-        
-//        NSError *error;
-//        NSURLResponse *response;
-//        NSData *urlData=[NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-//        NSString *data=[[NSString alloc]initWithData:urlData encoding:NSUTF8StringEncoding];
-        NSLog(@"data=%@",data);
-
-        
-        NSData *myRequestData = [sampleData dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
-        
-        NSString *t=[myRequestData description];
 
         [self callServerWithUrl:[NSString stringWithFormat:@"%@players.json", _serverUrl]
                          method:@"POST"

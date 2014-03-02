@@ -49,7 +49,6 @@
     _loginServerManager=[[ServerManager alloc]init];
     _loginServerManager.delegate=self;
     [_loginServerManager registerPlayerOnBeagle:data];
-     [self pushToHomeScreen];
 }
 -(void)facebookAccountNotSetup{
     
@@ -58,7 +57,6 @@
         SLComposeViewController *controller = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
         controller.view.hidden = YES;
         [self presentViewController:controller animated:NO completion:^{
-            //[controller.view endEditing:NO];
             [self dismissViewControllerAnimated:NO completion:nil];
             [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
             [[NSUserDefaults standardUserDefaults]synchronize];
@@ -74,15 +72,15 @@
 
 -(void)pushToHomeScreen{
     
-//    [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"FacebookLogin"];
-//    [[NSUserDefaults standardUserDefaults]synchronize];
-//    [activityIndicatorView stopAnimating];
-//    [activityIndicatorView setHidden:YES];
-//
-//    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-//    
-//    InitialSlidingViewController *initialViewController = [storyboard instantiateViewControllerWithIdentifier:@"initialBeagle"];
-//    [self.navigationController pushViewController:initialViewController animated:YES];
+    [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"FacebookLogin"];
+    [[NSUserDefaults standardUserDefaults]synchronize];
+    [activityIndicatorView stopAnimating];
+    [activityIndicatorView setHidden:YES];
+
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    
+    InitialSlidingViewController *initialViewController = [storyboard instantiateViewControllerWithIdentifier:@"initialBeagle"];
+    [self.navigationController pushViewController:initialViewController animated:YES];
     
     
     
@@ -119,12 +117,14 @@
             }
         }
         }
+        
+            [self pushToHomeScreen];
     }
 }
 
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {
-    [self pushToHomeScreen];
+
 //    [(AppDelegate*)[[UIApplication sharedApplication] delegate]hideProgressView];
     
     NSString *message = NSLocalizedString (@"Unable to initiate request.",

@@ -102,6 +102,12 @@
                     }
 
                 }
+                
+                id userId = [list objectForKey:@"id"];
+                if(userId != nil && [userId class] != [NSNull class]){
+                    userObject.fbuid=[userId integerValue];
+                }
+
                  id first_name = [list objectForKey:@"first_name"];
                 if(first_name != nil && [first_name class] != [NSNull class]){
                     userObject.first_name=first_name;
@@ -109,38 +115,18 @@
                 
                 id last_name = [list objectForKey:@"last_name"];
                 if(last_name != nil && [last_name class] != [NSNull class]){
-                    userObject.last_name    =last_name;
+                    userObject.last_name =last_name;
                 }
                 
 
                 
-                id current_location = [list objectForKey:@"current_location"];
-                if(current_location != nil && [current_location class] != [NSNull class]){
-                       id country = [current_location objectForKey:@"country"];
-                    NSString *countryLocation=nil;
-                        if (country != nil) {
-                            NSLog(@"country=%@",country);
-                            countryLocation=country;
-                        } else {
-                            // current_location has no country
-                        }
-                        
-                        id city = [current_location objectForKey:@"city"];
-                        if (city != nil) {
-                            NSLog(@"country=%@",city);
-                            if([countryLocation length]==0){
-                                userObject.location=[NSString stringWithFormat:@"%@",city];
-                            }
-                            else{
-                                userObject.location=[NSString stringWithFormat:@"%@,%@",countryLocation,city];
-                            }
-                        } else {
-                            // current_location has no country
-                        }
-                        
-                        
+                id location = [list objectForKey:@"location"];
+                if(location != nil && [location class] != [NSNull class]){
+                    id country = [location objectForKey:@"name"];
+                    if(country != nil && [country class] != [NSNull class]){
+                        userObject.location=country;
                     }
-
+                }
                 
                 
                 userObject.profileImageUrl= [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", [list objectForKey:@"id"]];
