@@ -11,7 +11,6 @@
 #import "FacebookLoginSession.h"
 #import "BeagleUserClass.h"
 #import <Social/Social.h>
-#import "ServerManager.h"
 @interface LoginViewController ()<FacebookLoginSessionDelegate,ServerManagerDelegate>{
     IBOutlet UIActivityIndicatorView *activityIndicatorView;
     ServerManager *loginServerManager;
@@ -89,9 +88,10 @@
 
 - (void)viewDidLoad
 {
+    [super viewDidLoad];
+
     [self.navigationController setNavigationBarHidden:YES];
     activityIndicatorView.hidden=YES;
-    [super viewDidLoad];
 	// Do any additional setup after loading the view.
 }
 #pragma mark - server calls
@@ -125,20 +125,17 @@
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {
 
-//    [(AppDelegate*)[[UIApplication sharedApplication] delegate]hideProgressView];
-    
-    NSString *message = NSLocalizedString (@"Unable to initiate request.",
+      NSString *message = NSLocalizedString (@"Unable to initiate request.",
                                            @"NSURLConnection initialization method failed.");
-    //ScoreAlertWithMessage(message);
+      BeagleAlertWithMessage(message);
 }
 
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
 {
     
-//    [(AppDelegate*)[[UIApplication sharedApplication] delegate]hideProgressView];
     
-//    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMsg delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
-//    [alert show];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
+    [alert show];
 }
 
 

@@ -13,4 +13,10 @@
 #ifdef __OBJC__
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
+    #import "BeagleUtilities.h"
+    #import "BeagleAlert.h"
+    #import "Constants.h"
+    #import "AppDelegate.h"
+    #import "ServerManager.h"
+
 #endif

@@ -7,6 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		18007ED218C64D0300230C23 /* BGLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 18007ED118C64D0300230C23 /* BGLocationManager.m */; };
+		18007ED818C64EDD00230C23 /* BGFlickrManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 18007ED718C64EDD00230C23 /* BGFlickrManager.m */; };
+		18007EDD18C64F6E00230C23 /* BGPhotos.m in Sources */ = {isa = PBXBuildFile; fileRef = 18007EDA18C64F6E00230C23 /* BGPhotos.m */; };
+		18007EDE18C64F6E00230C23 /* BGStockPhotoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 18007EDC18C64F6E00230C23 /* BGStockPhotoManager.m */; };
+		18007EEE18C6508200230C23 /* LFHTTPRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 18007EE218C6508200230C23 /* LFHTTPRequest.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		18007EEF18C6508200230C23 /* LFSiteReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 18007EE418C6508200230C23 /* LFSiteReachability.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		18007EF018C6508200230C23 /* NSData+LFHTTPFormExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 18007EE718C6508200230C23 /* NSData+LFHTTPFormExtensions.m */; };
+		18007EF118C6508200230C23 /* ObjectiveFlickr.m in Sources */ = {isa = PBXBuildFile; fileRef = 18007EE918C6508200230C23 /* ObjectiveFlickr.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		18007EF218C6508200230C23 /* OFUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 18007EEB18C6508200230C23 /* OFUtilities.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		18007EF318C6508200230C23 /* OFXMLMapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 18007EED18C6508200230C23 /* OFXMLMapper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		18007EF718C6511000230C23 /* BeagleUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 18007EF618C6511000230C23 /* BeagleUtilities.m */; };
+		18007EFA18C653C000230C23 /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 18007EF918C653C000230C23 /* UIImage+Resize.m */; };
+		18007F0118C6541200230C23 /* UIImage+Alpha.m in Sources */ = {isa = PBXBuildFile; fileRef = 18007EFC18C6541200230C23 /* UIImage+Alpha.m */; };
+		18007F0218C6541200230C23 /* UIImage+ImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = 18007EFE18C6541200230C23 /* UIImage+ImageEffects.m */; };
+		18007F0318C6541200230C23 /* UIImage+RoundedCorner.m in Sources */ = {isa = PBXBuildFile; fileRef = 18007F0018C6541200230C23 /* UIImage+RoundedCorner.m */; };
+		18007F0818C6551700230C23 /* BeagleAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 18007F0718C6551700230C23 /* BeagleAlert.m */; };
+		18007F0B18C6568000230C23 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 18007F0A18C6567F00230C23 /* MBProgressHUD.m */; };
 		1806EA4218B9E32B00A47BF1 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1806EA4118B9E32B00A47BF1 /* Crashlytics.framework */; };
 		18E7AF0918BBAA1700EBBDE2 /* FacebookLoginSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E7AF0818BBAA1700EBBDE2 /* FacebookLoginSession.m */; };
 		18E7AF0D18BBAA6600EBBDE2 /* BeagleUserClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E7AF0C18BBAA6600EBBDE2 /* BeagleUserClass.m */; };
@@ -77,6 +94,42 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		18007ED018C64D0300230C23 /* BGLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGLocationManager.h; sourceTree = "<group>"; };
+		18007ED118C64D0300230C23 /* BGLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGLocationManager.m; sourceTree = "<group>"; };
+		18007ED418C64D6D00230C23 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		18007ED618C64EDD00230C23 /* BGFlickrManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGFlickrManager.h; sourceTree = "<group>"; };
+		18007ED718C64EDD00230C23 /* BGFlickrManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGFlickrManager.m; sourceTree = "<group>"; };
+		18007ED918C64F6E00230C23 /* BGPhotos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGPhotos.h; sourceTree = "<group>"; };
+		18007EDA18C64F6E00230C23 /* BGPhotos.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGPhotos.m; sourceTree = "<group>"; };
+		18007EDB18C64F6E00230C23 /* BGStockPhotoManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGStockPhotoManager.h; sourceTree = "<group>"; };
+		18007EDC18C64F6E00230C23 /* BGStockPhotoManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGStockPhotoManager.m; sourceTree = "<group>"; };
+		18007EE118C6508200230C23 /* LFHTTPRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LFHTTPRequest.h; sourceTree = "<group>"; };
+		18007EE218C6508200230C23 /* LFHTTPRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LFHTTPRequest.m; sourceTree = "<group>"; };
+		18007EE318C6508200230C23 /* LFSiteReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LFSiteReachability.h; sourceTree = "<group>"; };
+		18007EE418C6508200230C23 /* LFSiteReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LFSiteReachability.m; sourceTree = "<group>"; };
+		18007EE518C6508200230C23 /* LFWebAPIKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LFWebAPIKit.h; sourceTree = "<group>"; };
+		18007EE618C6508200230C23 /* NSData+LFHTTPFormExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+LFHTTPFormExtensions.h"; sourceTree = "<group>"; };
+		18007EE718C6508200230C23 /* NSData+LFHTTPFormExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+LFHTTPFormExtensions.m"; sourceTree = "<group>"; };
+		18007EE818C6508200230C23 /* ObjectiveFlickr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveFlickr.h; sourceTree = "<group>"; };
+		18007EE918C6508200230C23 /* ObjectiveFlickr.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveFlickr.m; sourceTree = "<group>"; };
+		18007EEA18C6508200230C23 /* OFUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OFUtilities.h; sourceTree = "<group>"; };
+		18007EEB18C6508200230C23 /* OFUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OFUtilities.m; sourceTree = "<group>"; };
+		18007EEC18C6508200230C23 /* OFXMLMapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OFXMLMapper.h; sourceTree = "<group>"; };
+		18007EED18C6508200230C23 /* OFXMLMapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OFXMLMapper.m; sourceTree = "<group>"; };
+		18007EF518C6511000230C23 /* BeagleUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeagleUtilities.h; sourceTree = "<group>"; };
+		18007EF618C6511000230C23 /* BeagleUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeagleUtilities.m; sourceTree = "<group>"; };
+		18007EF818C653C000230C23 /* UIImage+Resize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Resize.h"; sourceTree = "<group>"; };
+		18007EF918C653C000230C23 /* UIImage+Resize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Resize.m"; sourceTree = "<group>"; };
+		18007EFB18C6541200230C23 /* UIImage+Alpha.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Alpha.h"; sourceTree = "<group>"; };
+		18007EFC18C6541200230C23 /* UIImage+Alpha.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Alpha.m"; sourceTree = "<group>"; };
+		18007EFD18C6541200230C23 /* UIImage+ImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageEffects.h"; sourceTree = "<group>"; };
+		18007EFE18C6541200230C23 /* UIImage+ImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageEffects.m"; sourceTree = "<group>"; };
+		18007EFF18C6541200230C23 /* UIImage+RoundedCorner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+RoundedCorner.h"; sourceTree = "<group>"; };
+		18007F0018C6541200230C23 /* UIImage+RoundedCorner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+RoundedCorner.m"; sourceTree = "<group>"; };
+		18007F0618C6551700230C23 /* BeagleAlert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeagleAlert.h; sourceTree = "<group>"; };
+		18007F0718C6551700230C23 /* BeagleAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeagleAlert.m; sourceTree = "<group>"; };
+		18007F0918C6567F00230C23 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
+		18007F0A18C6567F00230C23 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		1806EA4118B9E32B00A47BF1 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		18E7AF0718BBAA1700EBBDE2 /* FacebookLoginSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookLoginSession.h; sourceTree = "<group>"; };
 		18E7AF0818BBAA1700EBBDE2 /* FacebookLoginSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookLoginSession.m; sourceTree = "<group>"; };
@@ -216,6 +269,102 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		18007ECF18C64CF000230C23 /* Location Manager */ = {
+			isa = PBXGroup;
+			children = (
+				18007ED018C64D0300230C23 /* BGLocationManager.h */,
+				18007ED118C64D0300230C23 /* BGLocationManager.m */,
+			);
+			name = "Location Manager";
+			sourceTree = "<group>";
+		};
+		18007ED318C64D5900230C23 /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				18007ED418C64D6D00230C23 /* Constants.h */,
+			);
+			name = Constants;
+			sourceTree = "<group>";
+		};
+		18007ED518C64ED100230C23 /* Flickr */ = {
+			isa = PBXGroup;
+			children = (
+				18007EDF18C6508200230C23 /* ObjectiveFlickr */,
+				18007ED918C64F6E00230C23 /* BGPhotos.h */,
+				18007EDA18C64F6E00230C23 /* BGPhotos.m */,
+				18007EDB18C64F6E00230C23 /* BGStockPhotoManager.h */,
+				18007EDC18C64F6E00230C23 /* BGStockPhotoManager.m */,
+				18007ED618C64EDD00230C23 /* BGFlickrManager.h */,
+				18007ED718C64EDD00230C23 /* BGFlickrManager.m */,
+			);
+			name = Flickr;
+			sourceTree = "<group>";
+		};
+		18007EDF18C6508200230C23 /* ObjectiveFlickr */ = {
+			isa = PBXGroup;
+			children = (
+				18007EE018C6508200230C23 /* LFWebAPIKit */,
+				18007EE818C6508200230C23 /* ObjectiveFlickr.h */,
+				18007EE918C6508200230C23 /* ObjectiveFlickr.m */,
+				18007EEA18C6508200230C23 /* OFUtilities.h */,
+				18007EEB18C6508200230C23 /* OFUtilities.m */,
+				18007EEC18C6508200230C23 /* OFXMLMapper.h */,
+				18007EED18C6508200230C23 /* OFXMLMapper.m */,
+			);
+			path = ObjectiveFlickr;
+			sourceTree = "<group>";
+		};
+		18007EE018C6508200230C23 /* LFWebAPIKit */ = {
+			isa = PBXGroup;
+			children = (
+				18007EE118C6508200230C23 /* LFHTTPRequest.h */,
+				18007EE218C6508200230C23 /* LFHTTPRequest.m */,
+				18007EE318C6508200230C23 /* LFSiteReachability.h */,
+				18007EE418C6508200230C23 /* LFSiteReachability.m */,
+				18007EE518C6508200230C23 /* LFWebAPIKit.h */,
+				18007EE618C6508200230C23 /* NSData+LFHTTPFormExtensions.h */,
+				18007EE718C6508200230C23 /* NSData+LFHTTPFormExtensions.m */,
+			);
+			path = LFWebAPIKit;
+			sourceTree = "<group>";
+		};
+		18007EF418C650F600230C23 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				18007F0918C6567F00230C23 /* MBProgressHUD.h */,
+				18007F0A18C6567F00230C23 /* MBProgressHUD.m */,
+				18007EF518C6511000230C23 /* BeagleUtilities.h */,
+				18007EF618C6511000230C23 /* BeagleUtilities.m */,
+			);
+			name = Utilities;
+			sourceTree = "<group>";
+		};
+		18007F0418C6542000230C23 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				18007EFB18C6541200230C23 /* UIImage+Alpha.h */,
+				18007EFC18C6541200230C23 /* UIImage+Alpha.m */,
+				18007EFD18C6541200230C23 /* UIImage+ImageEffects.h */,
+				18007EFE18C6541200230C23 /* UIImage+ImageEffects.m */,
+				18007EFF18C6541200230C23 /* UIImage+RoundedCorner.h */,
+				18007F0018C6541200230C23 /* UIImage+RoundedCorner.m */,
+				18007EF818C653C000230C23 /* UIImage+Resize.h */,
+				18007EF918C653C000230C23 /* UIImage+Resize.m */,
+				18FADB9418B668A500A62287 /* UIImage+ImageWithUIView.h */,
+				18FADB9518B668A500A62287 /* UIImage+ImageWithUIView.m */,
+			);
+			name = Categories;
+			sourceTree = "<group>";
+		};
+		18007F0518C6550800230C23 /* Beagle Alerts */ = {
+			isa = PBXGroup;
+			children = (
+				18007F0618C6551700230C23 /* BeagleAlert.h */,
+				18007F0718C6551700230C23 /* BeagleAlert.m */,
+			);
+			name = "Beagle Alerts";
+			sourceTree = "<group>";
+		};
 		18E7AF0618BBAA0400EBBDE2 /* Facebook */ = {
 			isa = PBXGroup;
 			children = (
@@ -279,12 +428,18 @@
 		18EC22A618B5A0B400316B6E /* Beagle */ = {
 			isa = PBXGroup;
 			children = (
+				18007F0518C6550800230C23 /* Beagle Alerts */,
+				18007EF418C650F600230C23 /* Utilities */,
+				18007ED518C64ED100230C23 /* Flickr */,
+				18007ED318C64D5900230C23 /* Constants */,
+				18007ECF18C64CF000230C23 /* Location Manager */,
 				18E7AF0A18BBAA5000EBBDE2 /* Model */,
 				18E7AF0618BBAA0400EBBDE2 /* Facebook */,
 				18FADBA018B66A6600A62287 /* Notifications Screen */,
 				18FADB9F18B66A5600A62287 /* Settings Screen */,
 				18FADB9818B669C100A62287 /* Home Screen */,
 				18FADB8E18B6680C00A62287 /* Sliding Drawer */,
+				18007F0418C6542000230C23 /* Categories */,
 				18FADB8A18B6625A00A62287 /* Login Screen */,
 				18EC234018B5A71000316B6E /* Storyboard */,
 				18EC232918B5A43700316B6E /* Web Services */,
@@ -448,8 +603,6 @@
 			children = (
 				18FADB9318B668A500A62287 /* ECSlidingViewController.h */,
 				18FADB9218B668A500A62287 /* ECSlidingViewController.m */,
-				18FADB9418B668A500A62287 /* UIImage+ImageWithUIView.h */,
-				18FADB9518B668A500A62287 /* UIImage+ImageWithUIView.m */,
 				18FADB8F18B6683000A62287 /* InitialSlidingViewController.h */,
 				18FADB9018B6683000A62287 /* InitialSlidingViewController.m */,
 			);
@@ -598,19 +751,31 @@
 			files = (
 				18EC231318B5A42D00316B6E /* ASIDataCompressor.m in Sources */,
 				18EC232818B5A42D00316B6E /* SBJsonWriter.m in Sources */,
+				18007EF118C6508200230C23 /* ObjectiveFlickr.m in Sources */,
 				18FADB8D18B662A000A62287 /* LoginViewController.m in Sources */,
 				18E7AF0918BBAA1700EBBDE2 /* FacebookLoginSession.m in Sources */,
 				18EC232618B5A42D00316B6E /* SBJsonBase.m in Sources */,
 				18EC231B18B5A42D00316B6E /* ASICloudFilesContainer.m in Sources */,
+				18007F0B18C6568000230C23 /* MBProgressHUD.m in Sources */,
 				18EC232718B5A42D00316B6E /* SBJsonParser.m in Sources */,
+				18007EEF18C6508200230C23 /* LFSiteReachability.m in Sources */,
+				18007ED218C64D0300230C23 /* BGLocationManager.m in Sources */,
 				18EC231118B5A42D00316B6E /* ServerManager.m in Sources */,
+				18007F0118C6541200230C23 /* UIImage+Alpha.m in Sources */,
 				18EC231718B5A42D00316B6E /* ASIHTTPRequest.m in Sources */,
 				18EC232318B5A42D00316B6E /* NSObject+SBJSON.m in Sources */,
+				18007ED818C64EDD00230C23 /* BGFlickrManager.m in Sources */,
 				18FADB9618B668A500A62287 /* ECSlidingViewController.m in Sources */,
+				18007EF318C6508200230C23 /* OFXMLMapper.m in Sources */,
+				18007F0818C6551700230C23 /* BeagleAlert.m in Sources */,
+				18007EF218C6508200230C23 /* OFUtilities.m in Sources */,
 				18EC232518B5A42D00316B6E /* SBJSON.m in Sources */,
 				18EC231218B5A42D00316B6E /* ASIAuthenticationDialog.m in Sources */,
 				18EC231D18B5A42D00316B6E /* ASICloudFilesContainerXMLParserDelegate.m in Sources */,
+				18007EF018C6508200230C23 /* NSData+LFHTTPFormExtensions.m in Sources */,
 				18EC231618B5A42D00316B6E /* ASIFormDataRequest.m in Sources */,
+				18007EF718C6511000230C23 /* BeagleUtilities.m in Sources */,
+				18007EFA18C653C000230C23 /* UIImage+Resize.m in Sources */,
 				18EC231F18B5A42D00316B6E /* ASICloudFilesObjectRequest.m in Sources */,
 				18EC231A18B5A42D00316B6E /* ASICloudFilesCDNRequest.m in Sources */,
 				18EC232418B5A42D00316B6E /* NSString+SBJSON.m in Sources */,
@@ -618,18 +783,23 @@
 				18EC232018B5A42D00316B6E /* ASICloudFilesRequest.m in Sources */,
 				18EC231C18B5A42D00316B6E /* ASICloudFilesContainerRequest.m in Sources */,
 				18EC22B118B5A0B400316B6E /* AppDelegate.m in Sources */,
+				18007F0218C6541200230C23 /* UIImage+ImageEffects.m in Sources */,
 				18FADB9118B6683000A62287 /* InitialSlidingViewController.m in Sources */,
 				18EC231818B5A42D00316B6E /* ASIInputStream.m in Sources */,
 				18EC22AD18B5A0B400316B6E /* main.m in Sources */,
 				18FADB9B18B669E500A62287 /* HomeViewController.m in Sources */,
+				18007F0318C6541200230C23 /* UIImage+RoundedCorner.m in Sources */,
+				18007EDE18C64F6E00230C23 /* BGStockPhotoManager.m in Sources */,
 				18EC232218B5A42D00316B6E /* Reachability.m in Sources */,
 				18FADB9E18B66A4C00A62287 /* SettingsViewController.m in Sources */,
 				18EC231918B5A42D00316B6E /* ASINetworkQueue.m in Sources */,
 				18EC231418B5A42D00316B6E /* ASIDataDecompressor.m in Sources */,
 				18EC231E18B5A42D00316B6E /* ASICloudFilesObject.m in Sources */,
 				18E7AF0D18BBAA6600EBBDE2 /* BeagleUserClass.m in Sources */,
+				18007EDD18C64F6E00230C23 /* BGPhotos.m in Sources */,
 				18FADB9718B668A500A62287 /* UIImage+ImageWithUIView.m in Sources */,
 				18EC231518B5A42D00316B6E /* ASIDownloadCache.m in Sources */,
+				18007EEE18C6508200230C23 /* LFHTTPRequest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

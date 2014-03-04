@@ -52,21 +52,21 @@
     if([self isInternetAvailable]){
         
         
-        NSMutableDictionary* playerDescription =[[NSMutableDictionary alloc] init];
-        [playerDescription setObject:data.first_name forKey:@"first_name"];
-        [playerDescription setObject:data.last_name forKey:@"last_name"];
-        [playerDescription setObject:data.email forKey:@"email"];
-        [playerDescription setObject:data.profileImageUrl forKey:@"image_url"];
-        [playerDescription setObject:[NSNumber numberWithInteger:data.fbuid] forKey:@"fbuid"];
-        [playerDescription setObject:data.access_token forKey:@"access_token"];
-        [playerDescription setObject:data.location forKey:@"location"];
-        [playerDescription setObject:@"deviceToken" forKey:@"device_token"];
-        [playerDescription setObject:[NSNumber numberWithBool:data.fb_ticker] forKey:@"fb_ticker"];
+        NSMutableDictionary* playerRegisteration =[[NSMutableDictionary alloc] init];
+        [playerRegisteration setObject:data.first_name forKey:@"first_name"];
+        [playerRegisteration setObject:data.last_name forKey:@"last_name"];
+        [playerRegisteration setObject:data.email forKey:@"email"];
+        [playerRegisteration setObject:data.profileImageUrl forKey:@"image_url"];
+        [playerRegisteration setObject:[NSNumber numberWithInteger:data.fbuid] forKey:@"fbuid"];
+        [playerRegisteration setObject:data.access_token forKey:@"access_token"];
+        [playerRegisteration setObject:data.location forKey:@"location"];
+        [playerRegisteration setObject:@"deviceToken" forKey:@"device_token"];
+        [playerRegisteration setObject:[NSNumber numberWithBool:data.fb_ticker] forKey:@"fb_ticker"];
         
         
         
         
-        NSString *post =[NSString stringWithFormat:@"{\"player\":%@}",[playerDescription JSONRepresentation]];
+        NSString *post =[NSString stringWithFormat:@"{\"player\":%@}",[playerRegisteration JSONRepresentation]];
         
         NSData *postData = [post dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
         

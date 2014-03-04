@@ -59,5 +59,35 @@ void uncaughtExceptionHandler(NSException *exception) {
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
+-(void)showProgressIndicator:(NSInteger)type{
+    
+    _progressIndicator = [[MBProgressHUD alloc] initWithView:self.window];
+    [self.window addSubview:_progressIndicator];
+    _progressIndicator.labelFont=[UIFont systemFontOfSize:18.0f];
+    _progressIndicator.yOffset = -60.0;
+    switch (type) {
+        case 1:
+        {
+            _progressIndicator.labelText=@"Registering...";
+        }
+            break;
+            
+            
+        default:
+        {
+            _progressIndicator.labelText =@"Loading...";
+            
+        }
+            
+            break;
+    }
+    [_progressIndicator show:YES];
+    
+}
+
+-(void)hideProgressView{
+    [_progressIndicator hide:YES];
+}
+
 
 @end

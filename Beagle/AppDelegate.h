@@ -7,9 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+#import "MBProgressHUD.h"
+@interface AppDelegate : UIResponder <UIApplicationDelegate,MBProgressHUDDelegate>{
+        MBProgressHUD *progressIndicator;
+}
 
 @property (strong, nonatomic) UIWindow *window;
+@property (nonatomic,strong)MBProgressHUD *progressIndicator;
+-(void)showProgressIndicator:(NSInteger)type;
+-(void)hideProgressView;
 
 @end
