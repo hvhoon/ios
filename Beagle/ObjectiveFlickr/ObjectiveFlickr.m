@@ -475,6 +475,7 @@ typedef unsigned int NSUInteger;
         requestURL = [NSURL URLWithString:URLString];
     }
     
+    NSLog(@"requestUrl=%@",requestURL);
     if (requestURL) {
         [HTTPRequest setContentType:nil];
         return [HTTPRequest performMethod:LFHTTPRequestGETMethod onURL:requestURL withData:nil];        

@@ -8,6 +8,7 @@
 
 #import "InitialSlidingViewController.h"
 
+
 @implementation InitialSlidingViewController
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
@@ -16,8 +17,12 @@
 }
 -(void)viewDidLoad{
     [super viewDidLoad];
+    [self.navigationController setNavigationBarHidden:YES];
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     self.topViewController =[storyboard instantiateViewControllerWithIdentifier:@"homeScreen"];
 
 }
+
+
+
 @end

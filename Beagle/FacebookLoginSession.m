@@ -30,7 +30,7 @@
     self.accountStore = [[ACAccountStore alloc]init];
     ACAccountType *FBaccountType= [self.accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
     
-    NSString *key = @"215483535268106";
+    NSString *key = @"500525846725031";
     NSDictionary *dictFB = [NSDictionary dictionaryWithObjectsAndKeys:key,ACFacebookAppIdKey,@[@"email"],ACFacebookPermissionsKey, nil];
     
     
@@ -173,7 +173,7 @@
     self.accountStore = [[ACAccountStore alloc]init];
     ACAccountType *FBaccountType= [self.accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
     
-    NSString *key = @"215483535268106";
+    NSString *key = @"500525846725031";
     
     NSDictionary *dictFB = [NSDictionary dictionaryWithObjectsAndKeys:key,ACFacebookAppIdKey,@[@"offline_access"],@[@"read_stream"],@[@"email"],@[@"user_subscriptions"],@[@"friends_subscriptions"],@[@"publish_stream"],@[@"xmpp_login"],ACFacebookPermissionsKey, nil];
     

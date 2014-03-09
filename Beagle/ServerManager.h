@@ -29,6 +29,7 @@ typedef enum {
 
 @property (nonatomic,assign) id<ServerManagerDelegate> delegate;
 
+-(void)releaseServerManager;
 //*************************** API calls ***************************
 -(void)registerPlayerOnBeagle:(BeagleUserClass*)data;
 @end

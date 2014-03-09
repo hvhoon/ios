@@ -444,8 +444,15 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 	indicatorF.size.width = MIN(indicatorF.size.width, maxWidth);
 	totalSize.width = MAX(totalSize.width, indicatorF.size.width);
 	totalSize.height += indicatorF.size.height;
+    
+    NSDictionary *stringAttributes = [NSDictionary dictionaryWithObject:label.font forKey: NSFontAttributeName];
+    
+    CGSize maximumLabelSize = CGSizeMake(320,9999);
+    
+    CGSize labelSize = [label.text boundingRectWithSize:maximumLabelSize
+                                                     options:NSStringDrawingTruncatesLastVisibleLine|NSStringDrawingUsesLineFragmentOrigin
+                                                  attributes:stringAttributes context:nil].size;
 	
-	CGSize labelSize = [label.text sizeWithFont:label.font];
 	labelSize.width = MIN(labelSize.width, maxWidth);
 	totalSize.width = MAX(totalSize.width, labelSize.width);
 	totalSize.height += labelSize.height;

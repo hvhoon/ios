@@ -7,11 +7,10 @@
 //
 
 #import "ObjectiveFlickr.h"
-#import "BGPhotos.h"
 
 @interface FlickrRequestInfo : NSObject
 
-@property(nonatomic, strong) BGPhotos *photos;
+@property(nonatomic, strong) UIImage *photo;
 @property(nonatomic, strong) NSString *userId;
 @property(nonatomic, strong) NSString *photoId;
 @property(nonatomic, strong) NSString *userInfo;

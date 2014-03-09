@@ -23,6 +23,7 @@
     Reachability *_internetReachability;
     NSString *_serverUrl;
     NSString *_authkey;
+    ASIFormDataRequest *request;
 }
 @property(nonatomic,retain)Reachability *_internetReachability;
 @end
@@ -44,6 +45,13 @@
         [self populateErrorCodes];
     }
     return self;
+}
+-(void)releaseServerManager
+{
+    [request cancel];
+    request.delegate = nil;
+    request = nil;
+    _serverUrl = nil;
 }
 
 
@@ -151,7 +159,7 @@
 
 - (void)callServerWithUrl:(NSString *)requestUrl method:(NSString *)requestMethod params:(NSDictionary *)params data:(NSData*)data
 {
-    ASIFormDataRequest *request = nil;
+    request = nil;
     if (([requestMethod isEqualToString:@"GET"] || [requestMethod isEqualToString:@"DELETE"]) && params.allKeys.count > 0)
     {
         NSString *getUrl = [NSString stringWithFormat:@"%@?", requestUrl];

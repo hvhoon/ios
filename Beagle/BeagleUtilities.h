@@ -10,4 +10,7 @@
 
 @interface BeagleUtilities : NSObject
 + (int) getRandomIntBetweenLow:(int) low andHigh:(int) high;
++(UIImage*) compressImage:(UIImage *)image size:(CGSize)size;
++(UIImage*) autoCrop:(UIImage*)image;
+
 @end

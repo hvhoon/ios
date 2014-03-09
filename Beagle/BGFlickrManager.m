@@ -17,7 +17,7 @@
 	self = [super init];
 	
     if (self != nil) {
-        self.photos = [[BGPhotos alloc] init];
+        self.photo = [[UIImage alloc] init];
     }
     
     return self;
@@ -103,11 +103,11 @@ static BGFlickrManager *sharedManager = nil;
         
         NSArray *photos = [inResponseDictionary valueForKeyPath:@"photos.photo"];
                 
-        NSInteger numberOfPhotos = [photos count] - 1;
+        int numberOfPhotos = (int)[photos count] - 1;
         
-        if(numberOfPhotos >= 0) {
+        if(numberOfPhotos >=0) {
             
-            NSInteger randomPhotoIndex = [BeagleUtilities getRandomIntBetweenLow:0 andHigh:numberOfPhotos];
+            int randomPhotoIndex = [BeagleUtilities getRandomIntBetweenLow:0 andHigh:numberOfPhotos];
             
             NSDictionary *photoDict = [photos objectAtIndex:randomPhotoIndex];
             NSURL *photoURL = [self.flickrContext photoSourceURLFromDictionary:photoDict size:OFFlickrLargeSize];
@@ -122,7 +122,7 @@ static BGFlickrManager *sharedManager = nil;
             
             dispatch_async(queue, ^{
                 
-                self.flickrRequestInfo.photos.photo = [UIImage imageWithData:[NSData dataWithContentsOfURL:photoURL]];
+                self.flickrRequestInfo.photo = [UIImage imageWithData:[NSData dataWithContentsOfURL:photoURL]];
                 
                 dispatch_async(main, ^{
 
@@ -212,8 +212,8 @@ static BGFlickrManager *sharedManager = nil;
     
     CGSize newSize;
     
-    width = self.flickrRequestInfo.photos.photo.size.width;
-    height = self.flickrRequestInfo.photos.photo.size.height;
+    width = self.flickrRequestInfo.photo.size.width;
+    height = self.flickrRequestInfo.photo.size.height;
     
     ratio = ((float)width / (float)height);
     
@@ -221,13 +221,13 @@ static BGFlickrManager *sharedManager = nil;
     
     newSize = CGSizeMake(newWidth, constHeight);
     
-    UIImage *resizedImage =  [self.flickrRequestInfo.photos.photo resizedImage:newSize interpolationQuality:kCGInterpolationDefault];
+    UIImage *resizedImage =  [self.flickrRequestInfo.photo resizedImage:newSize interpolationQuality:kCGInterpolationDefault];
     
     int cropX = ((newWidth / 2) - (constWidth / 2) * (goldenRatio - 1));
     
     UIImage *croppedImage = [resizedImage croppedImage:CGRectMake(cropX, 0, constWidth, constHeight)];
     
-    self.flickrRequestInfo.photos.photo = croppedImage;
+    self.flickrRequestInfo.photo = croppedImage;
 }
 
 - (void)flickrAPIRequest:(OFFlickrAPIRequest *)inRequest didFailWithError:(NSError *)inError {

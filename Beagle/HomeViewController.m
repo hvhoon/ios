@@ -11,9 +11,8 @@
 #import "Constants.h"
 #import "BGFlickrManager.h"
 #import "BGLocationManager.h"
-#import "BGStockPhotoManager.h"
 #import "ASIHTTPRequest.h"
-#define kTimerIntervalInSeconds 10
+#import "ActivityViewController.h"
 @interface HomeViewController ()
 @property(nonatomic, strong) IBOutlet UIImageView *backgroundPhoto;
 @end
@@ -39,7 +38,11 @@
     [self.slidingViewController anchorTopViewTo:ECLeft];
 }
 
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:YES];
 
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -57,11 +60,63 @@
     }
       [self.view addGestureRecognizer:self.slidingViewController.panGesture];
     
-    [self retrieveLocationAndUpdateBackgroundPhoto];
+    //[self retrieveLocationAndUpdateBackgroundPhoto];
+    
+    
+    UIView *navigationView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 200)];
+    
+    navigationView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"defaultLocation"]];
+    [self.view addSubview:navigationView];
+    
+    CGSize size = CGSizeMake(80,999);
+    
+    /// Make a copy of the default paragraph style
+    NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+    /// Set line break mode
+    paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
+    /// Set text alignment
+    paragraphStyle.alignment = NSTextAlignmentLeft;
+    
+
+    CGRect textRect = [@"New York"
+                       boundingRectWithSize:size
+                       options:NSStringDrawingUsesLineFragmentOrigin
+                       attributes:@{ NSFontAttributeName: [UIFont systemFontOfSize:18.0f],
+                                     NSParagraphStyleAttributeName: paragraphStyle }
+                       context:nil];
+    
+    
+    UILabel *fromLabel = [[UILabel alloc]initWithFrame:CGRectMake(15,30, textRect.size.width, textRect.size.height)];
+    fromLabel.text = @"New York";
+    fromLabel.font = [UIFont systemFontOfSize:18.0f];
+    fromLabel.numberOfLines = 1;
+    fromLabel.baselineAdjustment = UIBaselineAdjustmentAlignBaselines;
+    fromLabel.adjustsFontSizeToFitWidth = YES;
+    fromLabel.adjustsFontSizeToFitWidth = YES;
+    fromLabel.minimumScaleFactor = 10.0f/18.0f;
+    fromLabel.clipsToBounds = YES;
+    fromLabel.backgroundColor = [UIColor clearColor];
+    fromLabel.textColor = [UIColor blackColor];
+    fromLabel.textAlignment = NSTextAlignmentLeft;
+    [navigationView addSubview:fromLabel];
+    
+    UIButton *eventButton = [UIButton buttonWithType:UIButtonTypeContactAdd];
+    [eventButton addTarget:self action:@selector(createANewActivity:)forControlEvents:UIControlEventTouchUpInside];
+    eventButton.frame = CGRectMake(270.0, 25.0, 34.0, 34.0);
+    [navigationView addSubview:eventButton];
+
+    
 
 	// Do any additional setup after loading the view.
 }
 
+-(void)createANewActivity:(id)sender{
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    
+    ActivityViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"activityScreen"];
+    [self.navigationController pushViewController:viewController animated:YES];
+    
+}
 - (void) retrieveLocationAndUpdateBackgroundPhoto {
     
     //Location
@@ -104,14 +159,11 @@
                             if(!error) {
                                 NSLog(@"Url=%@",flickrRequestInfo.userPhotoWebPageURL);
                                 
-                                [self crossDissolvePhotos:flickrRequestInfo.photos withTitle:flickrRequestInfo.userInfo];
+                                [self crossDissolvePhotos:flickrRequestInfo.photo withTitle:flickrRequestInfo.userInfo];
                             } else {
                                 
                                 //Error : Stock photos
-                                [[BGStockPhotoManager sharedManager] randomStockPhoto:^(BGPhotos * photos) {
-                                    [self crossDissolvePhotos:photos withTitle:@""];
-                                }];
-                                
+                                [self crossDissolvePhotos:[UIImage imageNamed:@"defaultLocation"] withTitle:@""];
                                 
                                 NSLog(@"Flickr: %@", error.description);
                             }
@@ -137,9 +189,7 @@
         } else {
             
             //Error : Stock photos
-            [[BGStockPhotoManager sharedManager] randomStockPhoto:^(BGPhotos * photos) {
-                [self crossDissolvePhotos:photos withTitle:@""];
-            }];
+                [self crossDissolvePhotos:[UIImage imageNamed:@"defaultLocation"] withTitle:@""];
             
             
             NSLog(@"Location: %@", error.description);
@@ -147,10 +197,10 @@
     }];
 }
 
-- (void) crossDissolvePhotos:(BGPhotos *) photos withTitle:(NSString *) title {
+- (void) crossDissolvePhotos:(UIImage *) photo withTitle:(NSString *) title {
     [UIView transitionWithView:self.backgroundPhoto duration:1.0f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
         
-        self.backgroundPhoto.image = photos.photo;
+        self.backgroundPhoto.image =photo;
         
     } completion:NULL];
 }

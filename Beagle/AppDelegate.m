@@ -9,7 +9,7 @@
 #import "AppDelegate.h"
 #import <Crashlytics/Crashlytics.h>
 @implementation AppDelegate
-
+@synthesize progressIndicator=_progressIndicator;
 void uncaughtExceptionHandler(NSException *exception) {
     NSLog(@"CRASH: %@", exception);
     NSLog(@"Stack Trace: %@", [exception callStackSymbols]);
