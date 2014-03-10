@@ -71,7 +71,7 @@
     [descriptionTextView addSubview:placeholderLabel];
     
     countTextLabel.text= [[NSString alloc] initWithFormat:@"%lu",(unsigned long)140-[descriptionTextView.text length]];
-    [descriptionTextView becomeFirstResponder];
+   // [descriptionTextView becomeFirstResponder];
 
 
 
@@ -250,7 +250,9 @@
 }
 
 - (IBAction)onBurger{
-    NSArray *filterArray=@[[NSNumber numberWithInt:1],[NSNumber numberWithInt:2]];
+    
+    [descriptionTextView resignFirstResponder];
+    NSArray *filterArray=@[[NSNumber numberWithInt:2]];
     
     //[descriptionTextView resignFirstResponder];
     //    RNFrostedSidebar *callout = [[RNFrostedSidebar alloc] initWithImages:filterArray selectedIndices:self.optionIndices borderColors:colors];

@@ -29,6 +29,12 @@
 		1806EA4218B9E32B00A47BF1 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1806EA4118B9E32B00A47BF1 /* Crashlytics.framework */; };
 		18E7AF0918BBAA1700EBBDE2 /* FacebookLoginSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E7AF0818BBAA1700EBBDE2 /* FacebookLoginSession.m */; };
 		18E7AF0D18BBAA6600EBBDE2 /* BeagleUserClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E7AF0C18BBAA6600EBBDE2 /* BeagleUserClass.m */; };
+		18EBCFDA18CE350600FDC624 /* LocationTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EBCFD318CE350600FDC624 /* LocationTableViewController.m */; };
+		18EBCFDB18CE350600FDC624 /* CustomPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EBCFD518CE350600FDC624 /* CustomPickerView.m */; };
+		18EBCFDC18CE350600FDC624 /* CustomPickerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18EBCFD618CE350600FDC624 /* CustomPickerView.xib */; };
+		18EBCFDD18CE350600FDC624 /* LocationFilterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EBCFD818CE350600FDC624 /* LocationFilterView.m */; };
+		18EBCFDE18CE350600FDC624 /* LocationFilterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18EBCFD918CE350600FDC624 /* LocationFilterView.xib */; };
+		18EBCFE218CE360000FDC624 /* Location.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EBCFE018CE360000FDC624 /* Location.m */; };
 		18EC22A118B5A0B400316B6E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC22A018B5A0B400316B6E /* Foundation.framework */; };
 		18EC22A318B5A0B400316B6E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC22A218B5A0B400316B6E /* CoreGraphics.framework */; };
 		18EC22A518B5A0B400316B6E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC22A418B5A0B400316B6E /* UIKit.framework */; };
@@ -140,6 +146,16 @@
 		18E7AF0818BBAA1700EBBDE2 /* FacebookLoginSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookLoginSession.m; sourceTree = "<group>"; };
 		18E7AF0B18BBAA6600EBBDE2 /* BeagleUserClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeagleUserClass.h; sourceTree = "<group>"; };
 		18E7AF0C18BBAA6600EBBDE2 /* BeagleUserClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeagleUserClass.m; sourceTree = "<group>"; };
+		18EBCFD318CE350600FDC624 /* LocationTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationTableViewController.m; sourceTree = "<group>"; };
+		18EBCFD418CE350600FDC624 /* CustomPickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomPickerView.h; sourceTree = "<group>"; };
+		18EBCFD518CE350600FDC624 /* CustomPickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomPickerView.m; sourceTree = "<group>"; };
+		18EBCFD618CE350600FDC624 /* CustomPickerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomPickerView.xib; sourceTree = "<group>"; };
+		18EBCFD718CE350600FDC624 /* LocationFilterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationFilterView.h; sourceTree = "<group>"; };
+		18EBCFD818CE350600FDC624 /* LocationFilterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationFilterView.m; sourceTree = "<group>"; };
+		18EBCFD918CE350600FDC624 /* LocationFilterView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LocationFilterView.xib; sourceTree = "<group>"; };
+		18EBCFDF18CE360000FDC624 /* Location.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Location.h; sourceTree = "<group>"; };
+		18EBCFE018CE360000FDC624 /* Location.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Location.m; sourceTree = "<group>"; };
+		18EBCFE118CE360000FDC624 /* LocationTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationTableViewController.h; sourceTree = "<group>"; };
 		18EC229D18B5A0B400316B6E /* Beagle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Beagle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		18EC22A018B5A0B400316B6E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		18EC22A218B5A0B400316B6E /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -384,14 +400,24 @@
 			name = "Side Transition";
 			sourceTree = "<group>";
 		};
-		1805CED418C8D24700AC8556 /* Time Filter View */ = {
+		1805CED418C8D24700AC8556 /* Filter Views */ = {
 			isa = PBXGroup;
 			children = (
+				18EBCFDF18CE360000FDC624 /* Location.h */,
+				18EBCFE018CE360000FDC624 /* Location.m */,
+				18EBCFE118CE360000FDC624 /* LocationTableViewController.h */,
+				18EBCFD318CE350600FDC624 /* LocationTableViewController.m */,
+				18EBCFD418CE350600FDC624 /* CustomPickerView.h */,
+				18EBCFD518CE350600FDC624 /* CustomPickerView.m */,
+				18EBCFD618CE350600FDC624 /* CustomPickerView.xib */,
+				18EBCFD718CE350600FDC624 /* LocationFilterView.h */,
+				18EBCFD818CE350600FDC624 /* LocationFilterView.m */,
+				18EBCFD918CE350600FDC624 /* LocationFilterView.xib */,
 				1805CED518C8D25800AC8556 /* TimeFilterView.h */,
 				1805CED618C8D25800AC8556 /* TimeFilterView.m */,
 				1805CED718C8D25800AC8556 /* TimeFilterView.xib */,
 			);
-			name = "Time Filter View";
+			name = "Filter Views";
 			sourceTree = "<group>";
 		};
 		18E7AF0618BBAA0400EBBDE2 /* Facebook */ = {
@@ -457,7 +483,7 @@
 		18EC22A618B5A0B400316B6E /* Beagle */ = {
 			isa = PBXGroup;
 			children = (
-				1805CED418C8D24700AC8556 /* Time Filter View */,
+				1805CED418C8D24700AC8556 /* Filter Views */,
 				1805CED018C8D22600AC8556 /* Side Transition */,
 				1805CECC18C8D20E00AC8556 /* Activity Event */,
 				18007F0518C6550800230C23 /* Beagle Alerts */,
@@ -745,9 +771,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				18EC234218B5A72F00316B6E /* Main.storyboard in Resources */,
+				18EBCFDC18CE350600FDC624 /* CustomPickerView.xib in Resources */,
 				18EC22AB18B5A0B400316B6E /* InfoPlist.strings in Resources */,
 				18EC22B318B5A0B400316B6E /* Images.xcassets in Resources */,
 				1805CED918C8D25800AC8556 /* TimeFilterView.xib in Resources */,
+				18EBCFDE18CE350600FDC624 /* LocationFilterView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -803,9 +831,11 @@
 				18007F0818C6551700230C23 /* BeagleAlert.m in Sources */,
 				18007EF218C6508200230C23 /* OFUtilities.m in Sources */,
 				18EC232518B5A42D00316B6E /* SBJSON.m in Sources */,
+				18EBCFDD18CE350600FDC624 /* LocationFilterView.m in Sources */,
 				18EC231218B5A42D00316B6E /* ASIAuthenticationDialog.m in Sources */,
 				18EC231D18B5A42D00316B6E /* ASICloudFilesContainerXMLParserDelegate.m in Sources */,
 				1805CED318C8D24100AC8556 /* RNFrostedSidebar.m in Sources */,
+				18EBCFE218CE360000FDC624 /* Location.m in Sources */,
 				18007EF018C6508200230C23 /* NSData+LFHTTPFormExtensions.m in Sources */,
 				18EC231618B5A42D00316B6E /* ASIFormDataRequest.m in Sources */,
 				18007EF718C6511000230C23 /* BeagleUtilities.m in Sources */,
@@ -817,6 +847,7 @@
 				18EC232018B5A42D00316B6E /* ASICloudFilesRequest.m in Sources */,
 				18EC231C18B5A42D00316B6E /* ASICloudFilesContainerRequest.m in Sources */,
 				18EC22B118B5A0B400316B6E /* AppDelegate.m in Sources */,
+				18EBCFDA18CE350600FDC624 /* LocationTableViewController.m in Sources */,
 				18007F0218C6541200230C23 /* UIImage+ImageEffects.m in Sources */,
 				1805CECF18C8D22000AC8556 /* ActivityViewController.m in Sources */,
 				1805CED818C8D25800AC8556 /* TimeFilterView.m in Sources */,
@@ -824,6 +855,7 @@
 				18EC231818B5A42D00316B6E /* ASIInputStream.m in Sources */,
 				18EC22AD18B5A0B400316B6E /* main.m in Sources */,
 				18FADB9B18B669E500A62287 /* HomeViewController.m in Sources */,
+				18EBCFDB18CE350600FDC624 /* CustomPickerView.m in Sources */,
 				18007F0318C6541200230C23 /* UIImage+RoundedCorner.m in Sources */,
 				18EC232218B5A42D00316B6E /* Reachability.m in Sources */,
 				18FADB9E18B66A4C00A62287 /* SettingsViewController.m in Sources */,

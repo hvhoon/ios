@@ -4,233 +4,19 @@
 #import "RNFrostedSidebar.h"
 #import <QuartzCore/QuartzCore.h>
 #import "TimeFilterView.h"
+#import "CustomPickerView.h"
+#import "LocationTableViewController.h"
 #pragma mark - Categories
 
-#if 0
-@implementation UIView (rn_Screenshot)
 
-- (UIImage *)rn_screenshot {
-    UIGraphicsBeginImageContext(self.bounds.size);
-    if([self respondsToSelector:@selector(drawViewHierarchyInRect:afterScreenUpdates:)]){
-        [self drawViewHierarchyInRect:self.bounds afterScreenUpdates:NO];
-    }
-    else{
-        [self.layer renderInContext:UIGraphicsGetCurrentContext()];
-    }
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    NSData *imageData = UIImageJPEGRepresentation(image, 0.75);
-    image = [UIImage imageWithData:imageData];
-    return image;
-}
 
-@end
-
-#import <Accelerate/Accelerate.h>
-
-@implementation UIImage (rn_Blur)
-
-- (UIImage *)applyBlurWithRadius:(CGFloat)blurRadius tintColor:(UIColor *)tintColor saturationDeltaFactor:(CGFloat)saturationDeltaFactor maskImage:(UIImage *)maskImage
-{
-    // Check pre-conditions.
-    if (self.size.width < 1 || self.size.height < 1) {
-        NSLog (@"*** error: invalid size: (%.2f x %.2f). Both dimensions must be >= 1: %@", self.size.width, self.size.height, self);
-        return nil;
-    }
-    if (!self.CGImage) {
-        NSLog (@"*** error: image must be backed by a CGImage: %@", self);
-        return nil;
-    }
-    if (maskImage && !maskImage.CGImage) {
-        NSLog (@"*** error: maskImage must be backed by a CGImage: %@", maskImage);
-        return nil;
-    }
-    
-    CGRect imageRect = { CGPointZero, self.size };
-    UIImage *effectImage = self;
-    
-    BOOL hasBlur = blurRadius > __FLT_EPSILON__;
-    BOOL hasSaturationChange = fabs(saturationDeltaFactor - 1.) > __FLT_EPSILON__;
-    if (hasBlur || hasSaturationChange) {
-        UIGraphicsBeginImageContextWithOptions(self.size, NO, [[UIScreen mainScreen] scale]);
-        CGContextRef effectInContext = UIGraphicsGetCurrentContext();
-        CGContextScaleCTM(effectInContext, 1.0, -1.0);
-        CGContextTranslateCTM(effectInContext, 0, -self.size.height);
-        CGContextDrawImage(effectInContext, imageRect, self.CGImage);
-        
-        vImage_Buffer effectInBuffer;
-        effectInBuffer.data     = CGBitmapContextGetData(effectInContext);
-        effectInBuffer.width    = CGBitmapContextGetWidth(effectInContext);
-        effectInBuffer.height   = CGBitmapContextGetHeight(effectInContext);
-        effectInBuffer.rowBytes = CGBitmapContextGetBytesPerRow(effectInContext);
-        
-        UIGraphicsBeginImageContextWithOptions(self.size, NO, [[UIScreen mainScreen] scale]);
-        CGContextRef effectOutContext = UIGraphicsGetCurrentContext();
-        vImage_Buffer effectOutBuffer;
-        effectOutBuffer.data     = CGBitmapContextGetData(effectOutContext);
-        effectOutBuffer.width    = CGBitmapContextGetWidth(effectOutContext);
-        effectOutBuffer.height   = CGBitmapContextGetHeight(effectOutContext);
-        effectOutBuffer.rowBytes = CGBitmapContextGetBytesPerRow(effectOutContext);
-        
-        if (hasBlur) {
-            // A description of how to compute the box kernel width from the Gaussian
-            // radius (aka standard deviation) appears in the SVG spec:
-            // http://www.w3.org/TR/SVG/filters.html#feGaussianBlurElement
-            //
-            // For larger values of 's' (s >= 2.0), an approximation can be used: Three
-            // successive box-blurs build a piece-wise quadratic convolution kernel, which
-            // approximates the Gaussian kernel to within roughly 3%.
-            //
-            // let d = floor(s * 3*sqrt(2*pi)/4 + 0.5)
-            //
-            // ... if d is odd, use three box-blurs of size 'd', centered on the output pixel.
-            //
-            CGFloat inputRadius = blurRadius * [[UIScreen mainScreen] scale];
-            NSUInteger radius = floor(inputRadius * 3. * sqrt(2 * M_PI) / 4 + 0.5);
-            if (radius % 2 != 1) {
-                radius += 1; // force radius to be odd so that the three box-blur methodology works.
-            }
-            vImageBoxConvolve_ARGB8888(&effectInBuffer, &effectOutBuffer, NULL, 0, 0, radius, radius, 0, kvImageEdgeExtend);
-            vImageBoxConvolve_ARGB8888(&effectOutBuffer, &effectInBuffer, NULL, 0, 0, radius, radius, 0, kvImageEdgeExtend);
-            vImageBoxConvolve_ARGB8888(&effectInBuffer, &effectOutBuffer, NULL, 0, 0, radius, radius, 0, kvImageEdgeExtend);
-        }
-        BOOL effectImageBuffersAreSwapped = NO;
-        if (hasSaturationChange) {
-            CGFloat s = saturationDeltaFactor;
-            CGFloat floatingPointSaturationMatrix[] = {
-                0.0722 + 0.9278 * s,  0.0722 - 0.0722 * s,  0.0722 - 0.0722 * s,  0,
-                0.7152 - 0.7152 * s,  0.7152 + 0.2848 * s,  0.7152 - 0.7152 * s,  0,
-                0.2126 - 0.2126 * s,  0.2126 - 0.2126 * s,  0.2126 + 0.7873 * s,  0,
-                0,                    0,                    0,  1,
-            };
-            const int32_t divisor = 256;
-            NSUInteger matrixSize = sizeof(floatingPointSaturationMatrix)/sizeof(floatingPointSaturationMatrix[0]);
-            int16_t saturationMatrix[matrixSize];
-            for (NSUInteger i = 0; i < matrixSize; ++i) {
-                saturationMatrix[i] = (int16_t)roundf(floatingPointSaturationMatrix[i] * divisor);
-            }
-            if (hasBlur) {
-                vImageMatrixMultiply_ARGB8888(&effectOutBuffer, &effectInBuffer, saturationMatrix, divisor, NULL, NULL, kvImageNoFlags);
-                effectImageBuffersAreSwapped = YES;
-            }
-            else {
-                vImageMatrixMultiply_ARGB8888(&effectInBuffer, &effectOutBuffer, saturationMatrix, divisor, NULL, NULL, kvImageNoFlags);
-            }
-        }
-        if (!effectImageBuffersAreSwapped)
-            effectImage = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-        
-        if (effectImageBuffersAreSwapped)
-            effectImage = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-    }
-    
-    // Set up output context.
-    UIGraphicsBeginImageContextWithOptions(self.size, NO, [[UIScreen mainScreen] scale]);
-    CGContextRef outputContext = UIGraphicsGetCurrentContext();
-    CGContextScaleCTM(outputContext, 1.0, -1.0);
-    CGContextTranslateCTM(outputContext, 0, -self.size.height);
-    
-    // Draw base image.
-    CGContextDrawImage(outputContext, imageRect, self.CGImage);
-    
-    // Draw effect image.
-    if (hasBlur) {
-        CGContextSaveGState(outputContext);
-        if (maskImage) {
-            CGContextClipToMask(outputContext, imageRect, maskImage.CGImage);
-        }
-        CGContextDrawImage(outputContext, imageRect, effectImage.CGImage);
-        CGContextRestoreGState(outputContext);
-    }
-    
-    // Add in color tint.
-    if (tintColor) {
-        CGContextSaveGState(outputContext);
-        CGContextSetFillColorWithColor(outputContext, tintColor.CGColor);
-        CGContextFillRect(outputContext, imageRect);
-        CGContextRestoreGState(outputContext);
-    }
-    
-    // Output image is ready.
-    UIImage *outputImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    return outputImage;
-}
-
-@end
-
-#pragma mark - Private Classes
-
-@interface RNCalloutItemView : UIView
-
-@property (nonatomic, strong) UIImageView *imageView;
-@property (nonatomic, assign) NSInteger itemIndex;
-@property (nonatomic, strong) UIColor *originalBackgroundColor;
-
-@end
-
-@implementation RNCalloutItemView
-
-- (instancetype)init {
-    if (self = [super init]) {
-        _imageView = [[UIImageView alloc] init];
-        _imageView.backgroundColor = [UIColor clearColor];
-        _imageView.contentMode = UIViewContentModeScaleAspectFit;
-        [self addSubview:_imageView];
-    }
-    return self;
-}
-
-- (void)layoutSubviews {
-    [super layoutSubviews];
-    
-    CGFloat inset = self.bounds.size.height/2;
-    self.imageView.frame = CGRectMake(0, 0, inset, inset);
-    self.imageView.center = CGPointMake(inset, inset);
-}
-
-- (void)setOriginalBackgroundColor:(UIColor *)originalBackgroundColor {
-    _originalBackgroundColor = originalBackgroundColor;
-    self.backgroundColor = originalBackgroundColor;
-}
-
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    [super touchesBegan:touches withEvent:event];
-    
-    float r, g, b, a;
-    float darkenFactor = 0.3f;
-    UIColor *darkerColor;
-    if ([self.originalBackgroundColor getRed:&r green:&g blue:&b alpha:&a]) {
-        darkerColor = [UIColor colorWithRed:MAX(r - darkenFactor, 0.0) green:MAX(g - darkenFactor, 0.0) blue:MAX(b - darkenFactor, 0.0) alpha:a];
-    }
-    else if ([self.originalBackgroundColor getWhite:&r alpha:&a]) {
-        darkerColor = [UIColor colorWithWhite:MAX(r - darkenFactor, 0.0) alpha:a];
-    }
-    else {
-        @throw @"Item color should be RGBA or White/Alpha in order to darken the button color.";
-    }
-    self.backgroundColor = darkerColor;
-}
-
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    [super touchesEnded:touches withEvent:event];
-    self.backgroundColor = self.originalBackgroundColor;
-}
-
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-    [super touchesCancelled:touches withEvent:event];
-    self.backgroundColor = self.originalBackgroundColor;
-}
-
-@end
-#endif
 #pragma mark - Public Classes
 
-@interface RNFrostedSidebar ()<TimeFilterDelegate>{
+@interface RNFrostedSidebar ()<TimeFilterDelegate,UIScrollViewDelegate,CustomPickerViewDelegate>{
 UIToolbar *_nativeBlurView;
+    BOOL pageControlBeingUsed;
+    int page;
+
 }
 @property (nonatomic, strong) UIScrollView *contentView;
 @property (nonatomic, strong) UIImageView *blurView;
@@ -239,6 +25,7 @@ UIToolbar *_nativeBlurView;
 //@property (nonatomic, strong) NSArray *borderColors;
 @property (nonatomic, strong) NSMutableArray *itemViews;
 @property (nonatomic, strong) NSMutableIndexSet *selectedIndices;
+
 
 @end
 
@@ -253,13 +40,25 @@ static RNFrostedSidebar *rn_frostedMenu;
 - (instancetype)initWithImages:(NSArray *)images selectedIndices:(NSIndexSet *)selectedIndices borderColors:(NSArray *)colors {
     if (self = [super init]) {
         _isSingleSelect = NO;
-        _contentView = [[UIScrollView alloc] init];
+        _contentView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, 320, 568)];
         _contentView.alwaysBounceHorizontal = NO;
         _contentView.alwaysBounceVertical = YES;
-        _contentView.bounces = YES;
         _contentView.clipsToBounds = NO;
         _contentView.showsHorizontalScrollIndicator = NO;
         _contentView.showsVerticalScrollIndicator = NO;
+        
+        
+        _contentView.indicatorStyle=UIScrollViewIndicatorStyleBlack;
+        
+        
+        // Enable or Disable scrolling
+        
+        _contentView.pagingEnabled = YES;
+        _contentView.delegate = self;
+        _contentView.bounces=NO;
+
+        
+        
         self.showFromRight=FALSE;
         _width = 320;
         _animationDuration = 0.3f;
@@ -280,10 +79,61 @@ static RNFrostedSidebar *rn_frostedMenu;
         [_images enumerateObjectsUsingBlock:^(NSNumber *image, NSUInteger idx, BOOL *stop) {
             
             if([image intValue]==1){
-                TimeFilterView *filterView = [[TimeFilterView alloc]initWithFrame:CGRectMake(0, 0, 320, 568)];
-                filterView.delegate=self;
-                [_contentView addSubview:filterView];
+            
+            for (int i = 0; i < 2; i++) {
+//                CGRect frame;
+//                frame.origin.x = 0;
+//                frame.origin.y = _contentView.frame.size.height* i;
+//                frame.size = _contentView.frame.size;
+                
+                switch (i) {
+                    case 0:
+                    {
+                        TimeFilterView *filterView = [[TimeFilterView alloc]initWithFrame:CGRectMake(0, 0, 320, 568)];
+                        filterView.delegate=self;
+                        [_contentView addSubview:filterView];
+                        
+                    }
+                        
+                        
+                    
+                        break;
+                    case 1:
+                    {
+                     
+                        CustomPickerView *customPickerView = [[CustomPickerView alloc]initWithFrame:CGRectMake(0, 568, 320, 568)];
+                        customPickerView.delegate=self;
+                        [_contentView addSubview:customPickerView];
 
+                    }
+                        break;
+                        
+                        
+                    default:
+                        break;
+                }		
+                
+                
+            }
+                
+              _contentView.contentSize = CGSizeMake(320,1136);
+            }
+            else{
+                
+                UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+                
+
+                LocationTableViewController *initialViewController = [storyboard instantiateViewControllerWithIdentifier:@"locationScreen"];
+                [self addChildViewController:initialViewController];
+                
+                initialViewController.view.frame = CGRectMake(0.0f, 0, 320.0f, 368.0f);
+
+                
+                [self.view addSubview:initialViewController.view];
+//                [_contentView addSubview:initialViewController.view];
+
+
+                
             }
 //            RNCalloutItemView *view = [[RNCalloutItemView alloc] init];
 //            view.itemIndex = idx;
@@ -306,6 +156,88 @@ static RNFrostedSidebar *rn_frostedMenu;
     }
     return self;
 }
+
+- (void)scrollViewDidScroll:(UIScrollView *)sender {
+    
+    //NSLog(@"scrollViewDidScroll");
+    
+    return;
+    if (!pageControlBeingUsed) {
+		
+        // Switch the indicator when more than 50% of the previous/next view is visible
+		CGFloat pageWidth = _contentView.frame.size.height;
+        page = floor((_contentView.contentOffset.y - pageWidth / 2) / pageWidth) + 1;
+        //NSLog(@"page=%d",page);
+        
+            switch (page) {
+                case 0:
+                {
+//                    pageControlBeingUsed=TRUE;
+//                    [_contentView scrollRectToVisible:CGRectMake(0, 0, 320, 568) animated:YES];
+                }
+                    break;
+                case 1:
+                {
+                    pageControlBeingUsed=TRUE;
+                    [self timeToScrollDown];
+
+//                     [_contentView scrollRectToVisible:CGRectMake(0, 568, 320, 568) animated:YES];
+                }
+                    break;
+                default:
+                    break;
+            }
+        }
+    
+}
+
+-(void)timeToScrollDown{
+    
+    
+//        CGRect frame;
+//        frame.origin.x = 0;
+//        frame.origin.y = _contentView.frame.size.height;
+//        frame.size = _contentView.frame.size;
+    
+    
+    CGRect frame = _contentView.frame;
+    frame.origin.x = 0;
+    frame.origin.y =  frame.size.height * page;
+    [_contentView scrollRectToVisible:frame animated:YES];
+
+    
+//        switch (page) {
+//            case 0:
+//            {
+//                frame.origin.y = 568;
+//            }
+//                break;
+//                
+//            case 1:
+//            {
+//                frame.origin.y = 0;
+//                
+//            }
+//                break;
+//        }
+//        
+//        [_contentView scrollRectToVisible:frame animated:YES];
+    
+    //pageControlBeingUsed = YES;
+    
+}
+
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+	pageControlBeingUsed = NO;
+   //NSLog(@"scrollViewWillBeginDragging");
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+	pageControlBeingUsed = NO;
+    //NSLog(@"scrollViewDidEndDecelerating");
+}
+
 -(void) filterIndex:(NSInteger) index{
      [self.delegate sidebar:self didTapItemAtIndex:index];
 }
@@ -325,7 +257,7 @@ static RNFrostedSidebar *rn_frostedMenu;
 - (void)loadView {
     [super loadView];
     self.view.backgroundColor = [UIColor clearColor];
-    [self.view addSubview:self.contentView];
+   // [self.view addSubview:self.contentView];
 //    self.tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
 //    [self.view addGestureRecognizer:self.tapGesture];
 }
@@ -352,38 +284,6 @@ static RNFrostedSidebar *rn_frostedMenu;
     }
 }
 
-#pragma mark - Show
-#if 0
-- (void)animateSpringWithView:(RNCalloutItemView *)view idx:(NSUInteger)idx initDelay:(CGFloat)initDelay {
-#if __IPHONE_OS_VERSION_SOFT_MAX_REQUIRED
-    [UIView animateWithDuration:0.5
-                          delay:(initDelay + idx*0.1f)
-         usingSpringWithDamping:10
-          initialSpringVelocity:50
-                        options:UIViewAnimationOptionBeginFromCurrentState
-                     animations:^{
-                         view.layer.transform = CATransform3DIdentity;
-                         view.alpha = 1;
-                     }
-                     completion:nil];
-#endif
-}
-
-- (void)animateFauxBounceWithView:(RNCalloutItemView *)view idx:(NSUInteger)idx initDelay:(CGFloat)initDelay {
-    [UIView animateWithDuration:0.2
-                          delay:(initDelay + idx*0.1f)
-                        options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationCurveEaseInOut
-                     animations:^{
-                         view.layer.transform = CATransform3DMakeScale(1.1, 1.1, 1);
-                         view.alpha = 1;
-                     }
-                     completion:^(BOOL finished) {
-                         [UIView animateWithDuration:0.1 animations:^{
-                             view.layer.transform = CATransform3DIdentity;
-                         }];
-                     }];
-}
-#endif
 - (void)showInViewController:(UIViewController *)controller animated:(BOOL)animated {
     if (rn_frostedMenu != nil) {
         [rn_frostedMenu dismissAnimated:NO completion:nil];
@@ -425,7 +325,7 @@ static RNFrostedSidebar *rn_frostedMenu;
     
     
     
-    [[[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1]addSubview:self.view];
+    //[[[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1]addSubview:self.view];
     
     contentFrame.origin.x = _showFromRight ? parentWidth - _width : 0;
     blurFrame.origin.x = contentFrame.origin.x;
@@ -538,25 +438,6 @@ static RNFrostedSidebar *rn_frostedMenu;
     }
 }
 
-#pragma mark - Gestures
-#if 0
-- (void)handleTap:(UITapGestureRecognizer *)recognizer {
-    CGPoint location = [recognizer locationInView:self.view];
-    if (! CGRectContainsPoint(self.contentView.frame, location)) {
-        [self dismissAnimated:YES completion:nil];
-    }
-   else if (CGRectContainsPoint(self.contentView.frame, location)) {
-        [self dismissAnimated:YES completion:nil];
-    }
-
-    else {
-        NSInteger tapIndex = [self indexOfTap:[recognizer locationInView:self.contentView]];
-        if (tapIndex != NSNotFound) {
-            [self didTapItemAtIndex:tapIndex];
-        }
-    }
-}
-#endif
 #pragma mark - Private
 
 - (void)didTapItemAtIndex:(NSUInteger)index {
@@ -637,33 +518,6 @@ static RNFrostedSidebar *rn_frostedMenu;
     _nativeBlurView.frame=self.contentView.frame;
     //[self layoutItems];
 }
-#if 0
-- (void)layoutItems {
-    CGFloat leftPadding = (self.width - self.itemSize.width)/2;
-    CGFloat topPadding = leftPadding;
-    [self.itemViews enumerateObjectsUsingBlock:^(RNCalloutItemView *view, NSUInteger idx, BOOL *stop) {
-        CGRect frame = CGRectMake(leftPadding, topPadding*idx + self.itemSize.height*idx + topPadding, self.itemSize.width, self.itemSize.height);
-        view.frame = frame;
-        view.layer.cornerRadius = frame.size.width/2.f;
-    }];
-    
-    NSInteger items = [self.itemViews count];
-    self.contentView.contentSize = CGSizeMake(0, items * (self.itemSize.height + leftPadding) + leftPadding);
-}
-
-- (NSInteger)indexOfTap:(CGPoint)location {
-    __block NSUInteger index = NSNotFound;
-    
-    [self.itemViews enumerateObjectsUsingBlock:^(UIView *view, NSUInteger idx, BOOL *stop) {
-        if (CGRectContainsPoint(view.frame, location)) {
-            index = idx;
-            *stop = YES;
-        }
-    }];
-    
-    return index;
-}
-#endif
 - (void)rn_addToParentViewController:(UIViewController *)parentViewController callingAppearanceMethods:(BOOL)callAppearanceMethods {
     if (self.parentViewController != nil) {
         [self rn_removeFromParentViewControllerCallingAppearanceMethods:callAppearanceMethods];
