@@ -6,6 +6,14 @@
 //  Copyright (c) 2014 soclivity. All rights reserved.
 //
 
+// 5cb1600f86fd1f249ca2f1936e5e9e34
+//6523fc3819c667e3
+//kanav's account
+
+
+//36e2980516d0e60864cd29c621a09722
+//d309eb551f93b364
+//harish's account
 #import "BGFlickrManager.h"
 #import "BGLocationManager.h"
 #import "UIImage+ImageEffects.h"
@@ -46,7 +54,7 @@ static BGFlickrManager *sharedManager = nil;
 	self = [super init];
 	
     if (self != nil) {
-        self.flickrContext = [[OFFlickrAPIContext alloc] initWithAPIKey:@"5cb1600f86fd1f249ca2f1936e5e9e34" sharedSecret:@"6523fc3819c667e3"];
+        self.flickrContext = [[OFFlickrAPIContext alloc] initWithAPIKey:@"36e2980516d0e60864cd29c621a09722" sharedSecret:@"d309eb551f93b364"];
         
         FlickrAPIRequestSessionInfo *sessionInfo = [FlickrAPIRequestSessionInfo alloc];
         sessionInfo.flickrAPIRequestType = FlickrAPIRequestPhotoSearch;
@@ -201,7 +209,7 @@ static BGFlickrManager *sharedManager = nil;
     float goldenRatio = 1.6;
     
     int const constWidth = 320;
-    int const constHeight = 568;
+    int const constHeight = 200;
     
     int newWidth;
     

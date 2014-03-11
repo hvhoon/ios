@@ -6,10 +6,12 @@
 //  Copyright (c) 2014 soclivity. All rights reserved.
 //
 
+//36e2980516d0e60864cd29c621a09722
+
 #import "ActivityViewController.h"
 #import "TimeFilterView.h"
-#import "RNFrostedSidebar.h"
-@interface ActivityViewController ()<UITextViewDelegate,RNFrostedSidebarDelegate>{
+#import "SideTransitionController.h"
+@interface ActivityViewController ()<UITextViewDelegate,SideTransitionControllerDelegate>{
     IBOutlet UIImageView *profileImageView;
     IBOutlet UITextView *descriptionTextView;
     UILabel *placeholderLabel;
@@ -71,7 +73,7 @@
     [descriptionTextView addSubview:placeholderLabel];
     
     countTextLabel.text= [[NSString alloc] initWithFormat:@"%lu",(unsigned long)140-[descriptionTextView.text length]];
-   // [descriptionTextView becomeFirstResponder];
+    [descriptionTextView becomeFirstResponder];
 
 
 
@@ -79,8 +81,7 @@
 }
 -(void)cancelButtonClicked:(id)sender{
     
-    [self onBurger];
-//    [self.navigationController popViewControllerAnimated:YES];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 -(void)createButtonClicked:(id)sender{
     [self.navigationController popViewControllerAnimated:YES];
@@ -162,101 +163,32 @@
     
 }
 
--(void)test{
-    CGRect blurFrame = CGRectMake(-320, 0, 320, self.view.bounds.size.height);
+- (IBAction)visibilityFilter:(id)sender{
     
-    UIView *temp=[[UIView alloc]initWithFrame:blurFrame];
-    [temp setBackgroundColor:[UIColor clearColor]];
+    NSArray *filterArray=@[[NSNumber numberWithInt:1]];
     
-    UIToolbar *_nativeBlurView = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, self.view.bounds.size.height)];
-    _nativeBlurView.alpha=0.95f;
-    [temp insertSubview:_nativeBlurView atIndex:0];
-    
-//    CGRect contentFrame = self.view.bounds;
-    
-//    int count = [[[UIApplication sharedApplication]windows]count];
-    [[[[UIApplication sharedApplication] windows] objectAtIndex:0]addSubview:temp];
-
-    
-    [UIView animateWithDuration:0.3 delay:0.0f options:UIViewAnimationOptionCurveEaseInOut  | UIViewAnimationOptionBeginFromCurrentState animations:^{
-        
-        temp.transform = CGAffineTransformMakeTranslation(320.0f, 0.0f);
-        
-    } completion:^(BOOL finished) {
-        
-        
-    }];
-    
-
-    sleep(10);
-    
-    [UIView animateWithDuration:0.3 delay:0.0f options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionBeginFromCurrentState animations:^{
-        
-         temp.transform = CGAffineTransformIdentity;
-        
-    } completion:^(BOOL finished) {
-        
-        
-    }];
-
+    SideTransitionController *callout = [[SideTransitionController alloc] initWithImages:filterArray];
+    callout.delegate = self;
+    //    callout.showFromRight = YES;
+    [callout show];
 }
 
--(void)show{
+- (IBAction)locationFilter:(id)sender{
     
-
-    
-    UIView *temp=[[UIView alloc]init];
-    [temp setBackgroundColor:[UIColor clearColor]];
-    
-    CGRect contentFrame = self.view.bounds;
-    contentFrame.origin.x = 0 ? 320 : -320;
-    contentFrame.size.width = 320;
-    temp.frame = contentFrame;
-
-
-    CGRect blurFrame = CGRectMake(0 ? self.view.bounds.size.width : 0, 0, 0, self.view.bounds.size.height);
-
-    UIToolbar *_nativeBlurView = [[UIToolbar alloc] initWithFrame:contentFrame];
-    _nativeBlurView.alpha=0.95f;
-    [temp insertSubview:_nativeBlurView atIndex:0];
-    
-    
-    int count = [[[UIApplication sharedApplication]windows]count];
-    [[[[UIApplication sharedApplication] windows] objectAtIndex:count-1]addSubview:temp];
-    
-    contentFrame.origin.x = 0 ? 0 : 0;
-    blurFrame.origin.x = contentFrame.origin.x;
-    blurFrame.size.width = 320;
-    
-    void (^animations)() = ^{
-         temp.frame = contentFrame;
-        _nativeBlurView.frame=blurFrame;
-    };
-    void (^completion)(BOOL) = ^(BOOL finished) {
-    };
-    
-    if (1) {
-        [UIView animateWithDuration:0.4f
-                              delay:0
-                            options:kNilOptions
-                         animations:animations
-                         completion:completion];
-    }
-    else{
-        animations();
-        completion(YES);
-    }
-
-}
-
-- (IBAction)onBurger{
-    
-    [descriptionTextView resignFirstResponder];
     NSArray *filterArray=@[[NSNumber numberWithInt:2]];
     
-    //[descriptionTextView resignFirstResponder];
-    //    RNFrostedSidebar *callout = [[RNFrostedSidebar alloc] initWithImages:filterArray selectedIndices:self.optionIndices borderColors:colors];
-    RNFrostedSidebar *callout = [[RNFrostedSidebar alloc] initWithImages:filterArray];
+    SideTransitionController *callout = [[SideTransitionController alloc] initWithImages:filterArray];
+    callout.delegate = self;
+    //    callout.showFromRight = YES;
+    [callout show];
+}
+
+
+- (IBAction)timeFilter:(id)sender{
+    
+    NSArray *filterArray=@[[NSNumber numberWithInt:1]];
+    
+    SideTransitionController *callout = [[SideTransitionController alloc] initWithImages:filterArray];
     callout.delegate = self;
     //    callout.showFromRight = YES;
     [callout show];
@@ -264,12 +196,12 @@
 
 #pragma mark - RNFrostedSidebarDelegate
 
-- (void)sidebar:(RNFrostedSidebar *)sidebar didTapItemAtIndex:(NSUInteger)index {
+- (void)sidebar:(SideTransitionController *)sidebar didTapItemAtIndex:(NSUInteger)index {
     NSLog(@"Tapped item at index %lu",(unsigned long)index);
         [sidebar dismissAnimated:YES completion:nil];
 }
 
-- (void)sidebar:(RNFrostedSidebar *)sidebar didEnable:(BOOL)itemEnabled itemAtIndex:(NSUInteger)index {
+- (void)sidebar:(SideTransitionController *)sidebar didEnable:(BOOL)itemEnabled itemAtIndex:(NSUInteger)index {
     if (itemEnabled) {
         [self.optionIndices addIndex:index];
     }

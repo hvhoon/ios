@@ -10,6 +10,7 @@
 @protocol CustomPickerViewDelegate;
 @interface CustomPickerView : UIView
 @property (nonatomic, assign) id<CustomPickerViewDelegate> delegate;
+-(void)buildTheLogic;
 @end
 @protocol CustomPickerViewDelegate
 @optional

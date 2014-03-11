@@ -60,7 +60,7 @@
     }
       [self.view addGestureRecognizer:self.slidingViewController.panGesture];
     
-    //[self retrieveLocationAndUpdateBackgroundPhoto];
+   // [self retrieveLocationAndUpdateBackgroundPhoto];
     
     
     UIView *navigationView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 200)];
@@ -141,7 +141,9 @@
                     
                     NSString *urlString=[NSString stringWithFormat:@"http://api.wunderground.com/api/5706a66cb7258dd4/conditions/q/%@/%@.json",placemark.administrativeArea,[placemark.addressDictionary objectForKey:@"City"]];
                     
-                    NSURL *url = [NSURL URLWithString:@"http://api.wunderground.com/api/5706a66cb7258dd4/conditions/q/NY/Glens%20Falls.json"];
+                    
+                    urlString = [urlString stringByReplacingOccurrencesOfString:@" " withString:@""];
+                    NSURL *url = [NSURL URLWithString:urlString];
                     __weak ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
                     [request setCompletionBlock:^{
                         // Use when fetching text data
@@ -153,21 +155,41 @@
                             NSLog(@"weather=%@",weather);
                         [BGLocationManager sharedManager].weatherCondition=weather;
                         
-                        //Flickr
-                        [[BGFlickrManager sharedManager] randomPhotoRequest:^(FlickrRequestInfo * flickrRequestInfo, NSError * error) {
+                        
+                        NSURL *url = [NSURL URLWithString:@"http://api.flickr.com/services/rest/?method=flickr.places.find&api_key=28fe98d9cb8a4526027b1629372c8e6b&query=mumbai%2C+india&format=json&nojsoncallback=1"];
+                        __weak ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+                        [request setCompletionBlock:^{
                             
-                            if(!error) {
-                                NSLog(@"Url=%@",flickrRequestInfo.userPhotoWebPageURL);
+                            
+                            NSError* error;
+                            NSString *jsonString = [request responseString];
+                            NSDictionary* placeIdDictionary = [NSJSONSerialization JSONObjectWithData:[jsonString dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:&error];
+
+                            //Flickr
+                            [[BGFlickrManager sharedManager] randomPhotoRequest:^(FlickrRequestInfo * flickrRequestInfo, NSError * error) {
                                 
-                                [self crossDissolvePhotos:flickrRequestInfo.photo withTitle:flickrRequestInfo.userInfo];
-                            } else {
-                                
-                                //Error : Stock photos
-                                [self crossDissolvePhotos:[UIImage imageNamed:@"defaultLocation"] withTitle:@""];
-                                
-                                NSLog(@"Flickr: %@", error.description);
-                            }
+                                if(!error) {
+                                    NSLog(@"Url=%@",flickrRequestInfo.userPhotoWebPageURL);
+                                    
+                                    [self crossDissolvePhotos:flickrRequestInfo.photo withTitle:flickrRequestInfo.userInfo];
+                                } else {
+                                    
+                                    //Error : Stock photos
+                                    [self crossDissolvePhotos:[UIImage imageNamed:@"defaultLocation"] withTitle:@""];
+                                    
+                                    NSLog(@"Flickr: %@", error.description);
+                                }
+                            }];
+
+                            
                         }];
+                        
+                        [request setFailedBlock:^{
+                            NSError *error = [request error];
+                            NSLog(@"error=%@",[error description]);
+                        }];
+                        [request startAsynchronous];
+
 
 
                         

@@ -1,7 +1,7 @@
 
 #define __IPHONE_OS_VERSION_SOFT_MAX_REQUIRED __IPHONE_7_0
 
-#import "RNFrostedSidebar.h"
+#import "SideTransitionController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "TimeFilterView.h"
 #import "CustomPickerView.h"
@@ -12,7 +12,7 @@
 
 #pragma mark - Public Classes
 
-@interface RNFrostedSidebar ()<TimeFilterDelegate,UIScrollViewDelegate,CustomPickerViewDelegate>{
+@interface SideTransitionController ()<TimeFilterDelegate,UIScrollViewDelegate,CustomPickerViewDelegate,LocationFilterDelgate>{
 UIToolbar *_nativeBlurView;
     BOOL pageControlBeingUsed;
     int page;
@@ -29,9 +29,9 @@ UIToolbar *_nativeBlurView;
 
 @end
 
-static RNFrostedSidebar *rn_frostedMenu;
+static SideTransitionController *rn_frostedMenu;
 
-@implementation RNFrostedSidebar
+@implementation SideTransitionController
 
 + (instancetype)visibleSidebar {
     return rn_frostedMenu;
@@ -47,7 +47,7 @@ static RNFrostedSidebar *rn_frostedMenu;
         _contentView.showsHorizontalScrollIndicator = NO;
         _contentView.showsVerticalScrollIndicator = NO;
         
-        
+        _contentView.userInteractionEnabled=YES;
         _contentView.indicatorStyle=UIScrollViewIndicatorStyleBlack;
         
         
@@ -100,10 +100,18 @@ static RNFrostedSidebar *rn_frostedMenu;
                         break;
                     case 1:
                     {
-                     
-                        CustomPickerView *customPickerView = [[CustomPickerView alloc]initWithFrame:CGRectMake(0, 568, 320, 568)];
-                        customPickerView.delegate=self;
+                        
+
+                        UIView *customPickerView = [[UIView alloc]initWithFrame:CGRectMake(0, 568, 320, 568)];
+                        NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"CustomPickerView" owner:self options:nil];
+                        CustomPickerView *view=[nib objectAtIndex:0];
+                        view.frame=CGRectMake(0, 0, 320, 568);
+                        view.userInteractionEnabled=YES;
+
+                        customPickerView.userInteractionEnabled=YES;
                         [_contentView addSubview:customPickerView];
+                        [customPickerView addSubview:view];
+                        [view buildTheLogic];
 
                     }
                         break;
@@ -124,6 +132,7 @@ static RNFrostedSidebar *rn_frostedMenu;
                 
 
                 LocationTableViewController *initialViewController = [storyboard instantiateViewControllerWithIdentifier:@"locationScreen"];
+                initialViewController.delegate=self;
                 [self addChildViewController:initialViewController];
                 
                 initialViewController.view.frame = CGRectMake(0.0f, 0, 320.0f, 368.0f);
@@ -257,7 +266,7 @@ static RNFrostedSidebar *rn_frostedMenu;
 - (void)loadView {
     [super loadView];
     self.view.backgroundColor = [UIColor clearColor];
-   // [self.view addSubview:self.contentView];
+    [self.view addSubview:self.contentView];
 //    self.tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
 //    [self.view addGestureRecognizer:self.tapGesture];
 }
@@ -325,7 +334,7 @@ static RNFrostedSidebar *rn_frostedMenu;
     
     
     
-    //[[[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1]addSubview:self.view];
+    [[[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1]addSubview:self.view];
     
     contentFrame.origin.x = _showFromRight ? parentWidth - _width : 0;
     blurFrame.origin.x = contentFrame.origin.x;

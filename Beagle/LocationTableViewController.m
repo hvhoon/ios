@@ -17,7 +17,7 @@
 @synthesize locationArray;
 @synthesize filteredLocationArray;
 @synthesize locationSearchBar;
-
+@synthesize delegate;
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
@@ -47,8 +47,8 @@
 
     
     locationArray = [NSArray arrayWithObjects:
-                  [Location locationCategory:@"chocolate" name:@"chocolate bar"],
-                  [Location locationCategory:@"chocolate" name:@"chocolate chip"],
+                  [Location locationCategory:@"NY" name:@"New York"],
+                  [Location locationCategory:@"CA" name:@"San Francisco"],
                   [Location locationCategory:@"chocolate" name:@"dark chocolate"],
                   [Location locationCategory:@"hard" name:@"lollipop"],
                   [Location locationCategory:@"hard" name:@"candy cane"],
@@ -63,7 +63,7 @@
     // Reload the table
 //    [[self tableView] reloadData];
 //        [locationSearchBar becomeFirstResponder];
-    [ self performSelector:@selector(test) withObject:nil afterDelay:0.1];
+    [ self performSelector:@selector(test) withObject:nil afterDelay:0.01];
 
    // [self.searchDisplayController setActive:YES animated:YES];
 }
@@ -138,6 +138,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [delegate filterIndex:indexPath.row];
 }
 
 #pragma mark Content Filtering

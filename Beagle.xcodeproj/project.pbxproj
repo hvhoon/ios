@@ -23,7 +23,6 @@
 		18007F0818C6551700230C23 /* BeagleAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 18007F0718C6551700230C23 /* BeagleAlert.m */; };
 		18007F0B18C6568000230C23 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 18007F0A18C6567F00230C23 /* MBProgressHUD.m */; };
 		1805CECF18C8D22000AC8556 /* ActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1805CECE18C8D22000AC8556 /* ActivityViewController.m */; };
-		1805CED318C8D24100AC8556 /* RNFrostedSidebar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1805CED218C8D24100AC8556 /* RNFrostedSidebar.m */; };
 		1805CED818C8D25800AC8556 /* TimeFilterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1805CED618C8D25800AC8556 /* TimeFilterView.m */; };
 		1805CED918C8D25800AC8556 /* TimeFilterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1805CED718C8D25800AC8556 /* TimeFilterView.xib */; };
 		1806EA4218B9E32B00A47BF1 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1806EA4118B9E32B00A47BF1 /* Crashlytics.framework */; };
@@ -89,6 +88,7 @@
 		18FADB9B18B669E500A62287 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FADB9A18B669E500A62287 /* HomeViewController.m */; };
 		18FADB9E18B66A4C00A62287 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FADB9D18B66A4C00A62287 /* SettingsViewController.m */; };
 		18FADBA318B66A8D00A62287 /* NotificationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FADBA218B66A8D00A62287 /* NotificationsViewController.m */; };
+		18FC279D18CF721B00F33576 /* SideTransitionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FC279C18CF721B00F33576 /* SideTransitionController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -136,8 +136,6 @@
 		18007F0A18C6567F00230C23 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		1805CECD18C8D22000AC8556 /* ActivityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityViewController.h; sourceTree = "<group>"; };
 		1805CECE18C8D22000AC8556 /* ActivityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityViewController.m; sourceTree = "<group>"; };
-		1805CED118C8D24100AC8556 /* RNFrostedSidebar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNFrostedSidebar.h; sourceTree = "<group>"; };
-		1805CED218C8D24100AC8556 /* RNFrostedSidebar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNFrostedSidebar.m; sourceTree = "<group>"; };
 		1805CED518C8D25800AC8556 /* TimeFilterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeFilterView.h; sourceTree = "<group>"; };
 		1805CED618C8D25800AC8556 /* TimeFilterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeFilterView.m; sourceTree = "<group>"; };
 		1805CED718C8D25800AC8556 /* TimeFilterView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TimeFilterView.xib; sourceTree = "<group>"; };
@@ -252,6 +250,8 @@
 		18FADB9D18B66A4C00A62287 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		18FADBA118B66A8D00A62287 /* NotificationsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsViewController.h; sourceTree = "<group>"; };
 		18FADBA218B66A8D00A62287 /* NotificationsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsViewController.m; sourceTree = "<group>"; };
+		18FC279B18CF721B00F33576 /* SideTransitionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SideTransitionController.h; sourceTree = "<group>"; };
+		18FC279C18CF721B00F33576 /* SideTransitionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SideTransitionController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -394,8 +394,8 @@
 		1805CED018C8D22600AC8556 /* Side Transition */ = {
 			isa = PBXGroup;
 			children = (
-				1805CED118C8D24100AC8556 /* RNFrostedSidebar.h */,
-				1805CED218C8D24100AC8556 /* RNFrostedSidebar.m */,
+				18FC279B18CF721B00F33576 /* SideTransitionController.h */,
+				18FC279C18CF721B00F33576 /* SideTransitionController.m */,
 			);
 			name = "Side Transition";
 			sourceTree = "<group>";
@@ -818,6 +818,7 @@
 				18EC232618B5A42D00316B6E /* SBJsonBase.m in Sources */,
 				18EC231B18B5A42D00316B6E /* ASICloudFilesContainer.m in Sources */,
 				18007F0B18C6568000230C23 /* MBProgressHUD.m in Sources */,
+				18FC279D18CF721B00F33576 /* SideTransitionController.m in Sources */,
 				18EC232718B5A42D00316B6E /* SBJsonParser.m in Sources */,
 				18007EEF18C6508200230C23 /* LFSiteReachability.m in Sources */,
 				18007ED218C64D0300230C23 /* BGLocationManager.m in Sources */,
@@ -834,7 +835,6 @@
 				18EBCFDD18CE350600FDC624 /* LocationFilterView.m in Sources */,
 				18EC231218B5A42D00316B6E /* ASIAuthenticationDialog.m in Sources */,
 				18EC231D18B5A42D00316B6E /* ASICloudFilesContainerXMLParserDelegate.m in Sources */,
-				1805CED318C8D24100AC8556 /* RNFrostedSidebar.m in Sources */,
 				18EBCFE218CE360000FDC624 /* Location.m in Sources */,
 				18007EF018C6508200230C23 /* NSData+LFHTTPFormExtensions.m in Sources */,
 				18EC231618B5A42D00316B6E /* ASIFormDataRequest.m in Sources */,
