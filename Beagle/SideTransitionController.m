@@ -12,7 +12,7 @@
 
 #pragma mark - Public Classes
 
-@interface SideTransitionController ()<TimeFilterDelegate,UIScrollViewDelegate,CustomPickerViewDelegate,LocationFilterDelgate>{
+@interface SideTransitionController ()<TimeFilterDelegate,UIScrollViewDelegate,CustomPickerViewDelegate,LocationFilterDelgate,UISearchBarDelegate>{
 UIToolbar *_nativeBlurView;
     BOOL pageControlBeingUsed;
     int page;
@@ -126,7 +126,7 @@ static SideTransitionController *rn_frostedMenu;
                 
               _contentView.contentSize = CGSizeMake(320,1136);
             }
-            else{
+            else if([image integerValue]==2){
                 
                 UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
                 
@@ -143,6 +143,17 @@ static SideTransitionController *rn_frostedMenu;
 
 
                 
+            }
+            else{
+                UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(-5.0, 0.0, 320.0, 44.0)];
+                searchBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+                UIView *searchBarView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, 310.0, 44.0)];
+                searchBarView.autoresizingMask = 0;
+                searchBar.delegate = self;
+                [searchBarView addSubview:searchBar];
+                [self.navigationController setNavigationBarHidden:NO];
+                self.navigationItem.titleView = searchBarView;
+                [searchBar becomeFirstResponder];
             }
 //            RNCalloutItemView *view = [[RNCalloutItemView alloc] init];
 //            view.itemIndex = idx;
@@ -334,7 +345,7 @@ static SideTransitionController *rn_frostedMenu;
     
     
     
-    [[[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1]addSubview:self.view];
+   // [[[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1]addSubview:self.view];
     
     contentFrame.origin.x = _showFromRight ? parentWidth - _width : 0;
     blurFrame.origin.x = contentFrame.origin.x;

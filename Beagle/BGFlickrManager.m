@@ -88,6 +88,13 @@ static BGFlickrManager *sharedManager = nil;
         [self.flickrRequest callAPIMethodWithGET:@"flickr.photos.search" arguments:[NSDictionary dictionaryWithObjectsAndKeys:lat, @"lat", lon, @"lon", KFlickrSearchRadiusInMiles, @"radius", @"mi", @"radius_units", [BGLocationManager sharedManager].weatherCondition, @"tags", @"tag_mode", @"any", KFlickrSearchLicense, @"license", @"500", @"per_page",@"1",@"has_geo",@"photos",@"media",@"1",@"accuracy",[BGLocationManager sharedManager].weatherCondition,@"text",nil]];
     }
 }
+- (void) photoIdRequest {
+    if (![self.flickrRequest isRunning]) {
+        ((FlickrAPIRequestSessionInfo *)self.flickrRequest.sessionInfo).flickrAPIRequestType = FlickrAPIRequestPhotoId;
+        
+        [self.flickrRequest callAPIMethodWithGET:@"flickr.photos.find" arguments:[NSDictionary dictionaryWithObjectsAndKeys:@"mumbai%2C+india", @"query",nil]];
+    }
+}
 
 - (void) stopFlickrManager:(id) sender {
     NSError *error = [NSError errorWithDomain:@kAsyncQueueLabel code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"FlickrManager timeout. No photos returned.", NSLocalizedDescriptionKey, nil]];
@@ -200,6 +207,39 @@ static BGFlickrManager *sharedManager = nil;
                 self.completionBlock(self.flickrRequestInfo, nil);
                 
                 [self cleanUpFlickrManager];
+            });
+        });
+    }
+    
+    else if(((FlickrAPIRequestSessionInfo *)inRequest.sessionInfo).flickrAPIRequestType == FlickrAPIRequestPhotoId) {
+        
+        NSDictionary *person = [inResponseDictionary valueForKeyPath:@"person"];
+        NSString *username =  [person valueForKeyPath:@"username._text"];
+        
+        NSString *userInfo = @"";
+        
+        if([username length]) {
+            userInfo = [NSString stringWithFormat:@"© %@", username];
+        }
+        
+        self.flickrRequestInfo.userInfo = userInfo;
+        
+        dispatch_queue_t queue = dispatch_queue_create(kAsyncQueueLabel, NULL);
+        dispatch_queue_t main = dispatch_get_main_queue();
+        
+        dispatch_async(queue, ^{
+            
+            self.flickrRequestInfo.photoId = @"1212";
+            
+            dispatch_async(main, ^{
+                
+                
+                
+                if (![self.flickrRequest isRunning]) {
+                    ((FlickrAPIRequestSessionInfo *)self.flickrRequest.sessionInfo).flickrAPIRequestType = FlickrAPIRequestPhotoSearch;
+                    
+                    [self.flickrRequest callAPIMethodWithGET:@"flickr.photos.search" arguments:[NSDictionary dictionaryWithObjectsAndKeys:@"night", @"tags", @"tag_mode", @"all", @"photos", @"content_type", @"500", @"per_page",@"1463451%40N25",@"group_id",@"1",@"accuracy",@"Y2r_yNpTULN66Mfu",@"place_id",nil]];
+                }
             });
         });
     }

@@ -175,6 +175,7 @@
 
 - (IBAction)locationFilter:(id)sender{
     
+    [descriptionTextView resignFirstResponder];
     NSArray *filterArray=@[[NSNumber numberWithInt:2]];
     
     SideTransitionController *callout = [[SideTransitionController alloc] initWithImages:filterArray];
@@ -198,6 +199,7 @@
 
 - (void)sidebar:(SideTransitionController *)sidebar didTapItemAtIndex:(NSUInteger)index {
     NSLog(@"Tapped item at index %lu",(unsigned long)index);
+    [descriptionTextView becomeFirstResponder];
         [sidebar dismissAnimated:YES completion:nil];
 }
 

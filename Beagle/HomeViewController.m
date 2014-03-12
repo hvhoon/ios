@@ -156,14 +156,6 @@
                         [BGLocationManager sharedManager].weatherCondition=weather;
                         
                         
-                        NSURL *url = [NSURL URLWithString:@"http://api.flickr.com/services/rest/?method=flickr.places.find&api_key=28fe98d9cb8a4526027b1629372c8e6b&query=mumbai%2C+india&format=json&nojsoncallback=1"];
-                        __weak ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
-                        [request setCompletionBlock:^{
-                            
-                            
-                            NSError* error;
-                            NSString *jsonString = [request responseString];
-                            NSDictionary* placeIdDictionary = [NSJSONSerialization JSONObjectWithData:[jsonString dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:&error];
 
                             //Flickr
                             [[BGFlickrManager sharedManager] randomPhotoRequest:^(FlickrRequestInfo * flickrRequestInfo, NSError * error) {
@@ -182,13 +174,7 @@
                             }];
 
                             
-                        }];
                         
-                        [request setFailedBlock:^{
-                            NSError *error = [request error];
-                            NSLog(@"error=%@",[error description]);
-                        }];
-                        [request startAsynchronous];
 
 
 

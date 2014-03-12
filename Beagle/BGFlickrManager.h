@@ -37,9 +37,10 @@
 @end
 
 typedef enum {
-    FlickrAPIRequestPhotoSearch = 1,
-    FlickrAPIRequestPhotoSizes = 2,
-    FlickrAPIRequestPhotoOwner = 3,
+    FlickrAPIRequestPhotoSearch = 2,
+    FlickrAPIRequestPhotoSizes = 3,
+    FlickrAPIRequestPhotoOwner = 4,
+    FlickrAPIRequestPhotoId=1,
 } FlickrAPIRequestType;
 
 @interface FlickrAPIRequestSessionInfo : NSObject

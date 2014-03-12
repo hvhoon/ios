@@ -40,10 +40,10 @@
    // [locationSearchBar sizeToFit];
    // self.searchDisplayController.displaysSearchBarInNavigationBar=YES;
     // Hide the search bar until user scrolls up
-//    CGRect newBounds = [[self tableView] bounds];
+    CGRect newBounds = [[self tableView] bounds];
 //    newBounds.origin.y = newBounds.origin.y + locationSearchBar.bounds.size.height;
-//    newBounds.origin.y=+20.0f;
-//    [[self tableView] setBounds:newBounds];
+    newBounds.origin.y=25.0f;
+    [[self tableView] setBounds:newBounds];
 
     
     locationArray = [NSArray arrayWithObjects:
@@ -63,13 +63,20 @@
     // Reload the table
 //    [[self tableView] reloadData];
 //        [locationSearchBar becomeFirstResponder];
-    [ self performSelector:@selector(test) withObject:nil afterDelay:0.01];
+    [ self performSelector:@selector(test) withObject:nil afterDelay:0.001];
 
    // [self.searchDisplayController setActive:YES animated:YES];
 }
+- (void)searchBarCancelButtonClicked:(UISearchBar *)aSearchBar
+{
+    [locationSearchBar resignFirstResponder];
+    
+    
+    [delegate filterIndex:0];
+    
+}
 -(void)test{
     [locationSearchBar becomeFirstResponder];
-    [self searchDisplayController:self.searchDisplayController shouldReloadTableForSearchString:@""];
 }
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
     // Manually activate search mode
@@ -104,7 +111,7 @@
     }
 	else
 	{
-        return [locationArray count];
+        return [locationArray count]+1;
     }
 }
 
@@ -124,7 +131,8 @@
     }
 	else
 	{
-        location = [locationArray objectAtIndex:[indexPath row]];
+        if(indexPath.row!=0)
+            location = [locationArray objectAtIndex:[indexPath row]-1];
     }
     
     // Configure the cell
@@ -186,7 +194,11 @@
     // Return YES to cause the search result table view to be reloaded.
     return YES;
 }
-
+- (void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller
+{
+    //[locationSearchBar resignFirstResponder];
+    [delegate filterIndex:0];
+}
 #pragma mark - Search Button
 
 - (IBAction)goToSearch:(id)sender
