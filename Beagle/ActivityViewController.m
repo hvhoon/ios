@@ -10,8 +10,9 @@
 
 #import "ActivityViewController.h"
 #import "TimeFilterView.h"
-#import "SideTransitionController.h"
-@interface ActivityViewController ()<UITextViewDelegate,SideTransitionControllerDelegate>{
+#import "LocationTableViewController.h"
+#import "UIViewController+MJPopupViewController.h"
+@interface ActivityViewController ()<UITextViewDelegate,MJSecondPopupDelegate3>{
     IBOutlet UIImageView *profileImageView;
     IBOutlet UITextView *descriptionTextView;
     UILabel *placeholderLabel;
@@ -81,7 +82,7 @@
 }
 -(void)cancelButtonClicked:(id)sender{
     
-    [self.navigationController popViewControllerAnimated:YES];
+    [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
 }
 -(void)createButtonClicked:(id)sender{
     [self.navigationController popViewControllerAnimated:YES];
@@ -165,51 +166,29 @@
 
 - (IBAction)visibilityFilter:(id)sender{
     
-    NSArray *filterArray=@[[NSNumber numberWithInt:1]];
-    
-    SideTransitionController *callout = [[SideTransitionController alloc] initWithImages:filterArray];
-    callout.delegate = self;
-    //    callout.showFromRight = YES;
-    [callout show];
 }
 
 - (IBAction)locationFilter:(id)sender{
     
     [descriptionTextView resignFirstResponder];
-    NSArray *filterArray=@[[NSNumber numberWithInt:2]];
     
-    SideTransitionController *callout = [[SideTransitionController alloc] initWithImages:filterArray];
-    callout.delegate = self;
-    //    callout.showFromRight = YES;
-    [callout show];
+    LocationTableViewController *viewController = [self.storyboard instantiateViewControllerWithIdentifier:@"locationScreen"];
+    viewController.delegate=self;
+    [self presentPopupViewController:viewController animationType:MJPopupViewAnimationSlideLeftLeft];
 }
 
 
 - (IBAction)timeFilter:(id)sender{
     
-    NSArray *filterArray=@[[NSNumber numberWithInt:1]];
+}
+
+
+- (void)cancelButtonClicked3:(LocationTableViewController*)secondDetailViewController
+{
     
-    SideTransitionController *callout = [[SideTransitionController alloc] initWithImages:filterArray];
-    callout.delegate = self;
-    //    callout.showFromRight = YES;
-    [callout show];
-}
-
-#pragma mark - RNFrostedSidebarDelegate
-
-- (void)sidebar:(SideTransitionController *)sidebar didTapItemAtIndex:(NSUInteger)index {
-    NSLog(@"Tapped item at index %lu",(unsigned long)index);
+    [self dismissPopupViewControllerWithanimationType:MJPopupViewAnimationSlideLeftLeft];
     [descriptionTextView becomeFirstResponder];
-        [sidebar dismissAnimated:YES completion:nil];
-}
-
-- (void)sidebar:(SideTransitionController *)sidebar didEnable:(BOOL)itemEnabled itemAtIndex:(NSUInteger)index {
-    if (itemEnabled) {
-        [self.optionIndices addIndex:index];
-    }
-    else {
-        [self.optionIndices removeIndex:index];
-    }
+    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
 }
 
 

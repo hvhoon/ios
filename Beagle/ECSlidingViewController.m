@@ -19,7 +19,7 @@ NSString *const ECSlidingViewTopWillReset            = @"ECSlidingViewTopWillRes
 NSString *const ECSlidingViewTopDidReset             = @"ECSlidingViewTopDidReset";
 
 @interface ECSlidingViewController()
-
+@property (nonatomic, strong) UIView *statusBarContainer;
 @property (nonatomic, strong) UIView *topViewSnapshot;
 @property (nonatomic, assign) CGFloat initialTouchPositionX;
 @property (nonatomic, assign) CGFloat initialHoizontalCenter;
@@ -29,7 +29,9 @@ NSString *const ECSlidingViewTopDidReset             = @"ECSlidingViewTopDidRese
 @property (nonatomic, assign) BOOL underLeftShowing;
 @property (nonatomic, assign) BOOL underRightShowing;
 @property (nonatomic, assign) BOOL topViewIsOffScreen;
-
+@property (nonatomic, assign) BOOL hideStatusBar;
+@property (nonatomic, assign) CGRect initialMainControllerFrame;
+@property (nonatomic, assign, getter = isStatusBarFaked) BOOL statusBarFaked;
 - (NSUInteger)autoResizeToFillScreen;
 - (UIView *)topView;
 - (UIView *)underLeftView;
@@ -83,7 +85,10 @@ NSString *const ECSlidingViewTopDidReset             = @"ECSlidingViewTopDidRese
 @synthesize shouldAllowUserInteractionsWhenAnchored;
 @synthesize shouldAddPanGestureRecognizerToTopViewSnapshot;
 @synthesize resetStrategy = _resetStrategy;
-
+@synthesize openingLeftMovesStatusBar;
+@synthesize statusBarContainer;
+@synthesize hideStatusBar;
+@synthesize initialMainControllerFrame;
 // category properties
 @synthesize topViewSnapshot;
 @synthesize initialTouchPositionX;
@@ -133,6 +138,7 @@ NSString *const ECSlidingViewTopDidReset             = @"ECSlidingViewTopDidRese
     }
 }
 
+
 - (void)setUnderRightViewController:(UIViewController *)theUnderRightViewController
 {
     [_underRightViewController.view removeFromSuperview];
@@ -174,6 +180,7 @@ NSString *const ECSlidingViewTopDidReset             = @"ECSlidingViewTopDidRese
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.openingLeftMovesStatusBar = YES;
     self.shouldAllowPanningPastAnchor = YES;
     self.shouldAllowUserInteractionsWhenAnchored = NO;
     self.shouldAddPanGestureRecognizerToTopViewSnapshot = NO;
@@ -194,6 +201,10 @@ NSString *const ECSlidingViewTopDidReset             = @"ECSlidingViewTopDidRese
     self.topView.layer.shadowOffset = CGSizeZero;
     self.topView.layer.shadowPath = [UIBezierPath bezierPathWithRect:self.view.layer.bounds].CGPath;
     [self adjustLayout];
+    
+    //    [self.view addSubview:[[UIScreen mainScreen] snapshotViewAfterScreenUpdates:NO]];
+    //    [self setNeedsStatusBarAppearanceUpdate];
+    
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
@@ -291,12 +302,21 @@ NSString *const ECSlidingViewTopDidReset             = @"ECSlidingViewTopDidRese
 
 - (void)anchorTopViewTo:(ECSide)side
 {
+    NSLog(@"side");
     [self anchorTopViewTo:side animations:nil onComplete:nil];
 }
 
 - (void)anchorTopViewTo:(ECSide)side animations:(void (^)())animations onComplete:(void (^)())complete
 {
+    
     CGFloat newCenter = self.topView.center.x;
+    
+    //    if ([self underLeftShowing] && self.openingLeftMovesStatusBar && ![UIApplication sharedApplication].statusBarHidden)
+    //    {
+    //        NSLog(@"anchorTopViewTo");
+    //        [self showFakeStatusBar];
+    //    }
+    
     
     if (side == ECLeft) {
         newCenter = self.anchorLeftTopViewCenter;
@@ -329,6 +349,61 @@ NSString *const ECSlidingViewTopDidReset             = @"ECSlidingViewTopDidRese
     }];
 }
 
+- (void)showFakeStatusBar
+{
+    //    CGRect statusBarFrame = [UIApplication sharedApplication].statusBarFrame;
+    //    CGFloat statusBarHeight = CGRectGetHeight(statusBarFrame);
+    //
+    //    CGRect statusBarContainerRect = CGRectZero;
+    //    statusBarContainerRect.origin.y = -statusBarHeight;
+    //    statusBarContainerRect.size = CGSizeMake(CGRectGetWidth(statusBarFrame), statusBarHeight);
+    
+    UIView *screenshot = [[UIScreen mainScreen] snapshotViewAfterScreenUpdates:NO];
+    self.statusBarContainer = [UIView new];
+    self.statusBarContainer.frame = CGRectMake(0, 0, 320, 20);
+    self.statusBarContainer.clipsToBounds = YES;
+    self.statusBarContainer.backgroundColor = [UIColor blackColor];
+    [self.statusBarContainer addSubview:screenshot];
+    [self.topViewController.view addSubview:self.statusBarContainer];
+    
+    [self setStatusBarHidden:YES];
+    
+    //    self.initialMainControllerFrame = self.topViewController.view.frame;
+    
+    //    CGRect rect = self.topViewController.view.frame;
+    //    rect.origin.y += statusBarHeight;
+    //    rect.size.height -= statusBarHeight;
+    //    self.topViewController.view.frame = rect;
+    
+    self.statusBarFaked = YES;
+}
+
+
+- (void)setStatusBarHidden:(BOOL)hidden
+{
+    BOOL UIViewControllerBasedStatusBarAppearance = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"UIViewControllerBasedStatusBarAppearance"] boolValue];
+    if (UIViewControllerBasedStatusBarAppearance)
+    {
+        self.hideStatusBar = hidden;
+        [self setNeedsStatusBarAppearanceUpdate];
+    }
+    else
+    {
+        [UIApplication sharedApplication].statusBarHidden = hidden;
+    }
+}
+
+- (void)hideFakeStatusBar
+{
+    [self.statusBarContainer removeFromSuperview];
+    self.statusBarContainer = nil;
+    
+    //    self.topViewController.view.frame = self.initialMainControllerFrame;
+    
+    [self setStatusBarHidden:NO];
+    
+    self.statusBarFaked = NO;
+}
 - (void)anchorTopViewOffScreenTo:(ECSide)side
 {
     [self anchorTopViewOffScreenTo:side animations:nil onComplete:nil];
@@ -337,6 +412,9 @@ NSString *const ECSlidingViewTopDidReset             = @"ECSlidingViewTopDidRese
 - (void)anchorTopViewOffScreenTo:(ECSide)side animations:(void(^)())animations onComplete:(void(^)())complete
 {
     CGFloat newCenter = self.topView.center.x;
+    
+    
+    
     
     if (side == ECLeft) {
         newCenter = -self.resettedCenter;
@@ -366,6 +444,7 @@ NSString *const ECSlidingViewTopDidReset             = @"ECSlidingViewTopDidRese
 
 - (void)resetTopView
 {
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         [[NSNotificationCenter defaultCenter] postNotificationName:ECSlidingViewTopWillReset object:self userInfo:nil];
     });
@@ -419,6 +498,14 @@ NSString *const ECSlidingViewTopDidReset             = @"ECSlidingViewTopDidRese
     CGPoint center = self.topView.center;
     center.x = newHorizontalCenter;
     self.topView.layer.position = center;
+    
+    if ([self underLeftShowing] && self.openingLeftMovesStatusBar && ![UIApplication sharedApplication].statusBarHidden)
+    {
+        NSLog(@"anchorTopViewTo");
+        [self showFakeStatusBar];
+    }
+    
+    
 }
 
 - (void)topViewHorizontalCenterWillChange:(CGFloat)newHorizontalCenter
@@ -537,6 +624,12 @@ NSString *const ECSlidingViewTopDidReset             = @"ECSlidingViewTopDidRese
     _underLeftShowing   = NO;
     _underRightShowing  = NO;
     _topViewIsOffScreen = NO;
+    
+    if (self.isStatusBarFaked)
+    {
+        [self hideFakeStatusBar];
+    }
+    
 }
 
 - (BOOL)topViewHasFocus

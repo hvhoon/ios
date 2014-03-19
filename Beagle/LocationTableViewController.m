@@ -14,41 +14,50 @@
 @end
 
 @implementation LocationTableViewController
-@synthesize locationArray;
-@synthesize filteredLocationArray;
-@synthesize locationSearchBar;
+@synthesize candyArray;
+@synthesize filteredCandyArray;
+@synthesize candySearchBar;
 @synthesize delegate;
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
+- (UIStatusBarStyle)preferredStatusBarStyle{
+    return UIStatusBarStyleDefault;
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+//    [[UIApplication sharedApplication] setStatusBarHidden:YES];
+}
+
+// Add this method
+- (BOOL)prefersStatusBarHidden {
+    return YES;
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    locationSearchBar.showsCancelButton=YES;
-    locationSearchBar.delegate=self;
+//    [self.navigationController setNavigationBarHidden:NO];
     
-    locationSearchBar.autocorrectionType = UITextAutocorrectionTypeNo;
-    locationSearchBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     // Don't show the scope bar or cancel button until editing begins
-    //[locationSearchBar setShowsScopeBar:NO];
-   // [locationSearchBar sizeToFit];
-   // self.searchDisplayController.displaysSearchBarInNavigationBar=YES;
-    // Hide the search bar until user scrolls up
-    CGRect newBounds = [[self tableView] bounds];
-//    newBounds.origin.y = newBounds.origin.y + locationSearchBar.bounds.size.height;
-    newBounds.origin.y=25.0f;
-    [[self tableView] setBounds:newBounds];
-
+    [candySearchBar setShowsScopeBar:NO];
+    [candySearchBar sizeToFit];
     
-    locationArray = [NSArray arrayWithObjects:
-                  [Location locationCategory:@"NY" name:@"New York"],
-                  [Location locationCategory:@"CA" name:@"San Francisco"],
+//    if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)])
+//    {
+//        [self prefersStatusBarHidden];
+//        [self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
+//    }
+
+     [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    // Hide the search bar until user scrolls up
+//    CGRect newBounds = [[self tableView] bounds];
+//    newBounds.origin.y = newBounds.origin.y + candySearchBar.bounds.size.height;
+//    [[self tableView] setBounds:newBounds];
+
+    /*** Sample Data for candyArray ***/
+    
+    candyArray = [NSArray arrayWithObjects:
+                  [Location locationCategory:@"chocolate" name:@"chocolate bar"],
+                  [Location locationCategory:@"chocolate" name:@"chocolate chip"],
                   [Location locationCategory:@"chocolate" name:@"dark chocolate"],
                   [Location locationCategory:@"hard" name:@"lollipop"],
                   [Location locationCategory:@"hard" name:@"candy cane"],
@@ -58,36 +67,49 @@
                   [Location locationCategory:@"other" name:@"peanut butter cup"],
                   [Location locationCategory:@"other" name:@"gummi bear"], nil];
     
-    filteredLocationArray = [NSMutableArray arrayWithCapacity:[locationArray count]];
+    // Initialize the filteredCandyArray with a capacity equal to the candyArray's capacity
+    filteredCandyArray = [NSMutableArray arrayWithCapacity:[candyArray count]];
     
     // Reload the table
-//    [[self tableView] reloadData];
-//        [locationSearchBar becomeFirstResponder];
-    [ self performSelector:@selector(test) withObject:nil afterDelay:0.001];
+    [[self tableView] reloadData];
+    
+//        UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
+//        // make your gesture recognizer priority
+//        singleTap.numberOfTapsRequired = 1;
+//        [[self tableView ]addGestureRecognizer:singleTap];
 
-   // [self.searchDisplayController setActive:YES animated:YES];
+    //[candySearchBar becomeFirstResponder];
+    
+    [self.searchDisplayController setActive:YES animated:YES];
+    [self.searchDisplayController.searchBar becomeFirstResponder];
+    self.searchDisplayController.searchResultsTableView.backgroundColor=[UIColor lightGrayColor];
+}
+- (void) searchDisplayControllerWillBeginSearch:(UISearchDisplayController *)controller{
+    
+}
+- (void) searchDisplayControllerDidBeginSearch:(UISearchDisplayController *)controller{
+    
+}
+- (void) searchDisplayControllerWillEndSearch:(UISearchDisplayController *)controller{
+    
+}
+- (void) searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller{
+    [candySearchBar resignFirstResponder];
+    [delegate cancelButtonClicked3:self];
+    
+}
+-(void)handleSingleTap:(UITapGestureRecognizer*)sender{
+    
 }
 - (void)searchBarCancelButtonClicked:(UISearchBar *)aSearchBar
 {
-    [locationSearchBar resignFirstResponder];
+    [candySearchBar resignFirstResponder];
+    [delegate cancelButtonClicked3:self];
+
     
-    
-    [delegate filterIndex:0];
     
 }
--(void)test{
-    [locationSearchBar becomeFirstResponder];
-}
-- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
-    // Manually activate search mode
-    // Use animated=NO so we'll be able to immediately un-hide it again
-    [self.searchDisplayController setActive:YES animated:NO];
-    
-    // Hand over control to UISearchDisplayController during the search
-    locationSearchBar.delegate = (id <UISearchBarDelegate>)self.searchDisplayController;
-    
-    return YES;
-}
+
 - (void)viewDidUnload
 {
     [super viewDidUnload];
@@ -107,13 +129,19 @@
     // Check to see whether the normal table or search results table is being displayed and return the count from the appropriate array
     if (tableView == self.searchDisplayController.searchResultsTableView)
 	{
-        return [filteredLocationArray count];
+        return [filteredCandyArray count];
     }
 	else
 	{
-        return [locationArray count]+1;
+        return [candyArray count];
     }
 }
+
+- (void)searchDisplayController:(UISearchDisplayController *)controller didLoadSearchResultsTableView:(UITableView *)tableView
+{
+    //tableView.rowHeight = 64;
+}
+
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -123,20 +151,21 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
-    Location *location = nil;
-    
+    // Create a new Candy Object
+    Location *candy = nil;
+    cell.backgroundColor=[UIColor clearColor];
+    // Check to see whether the normal table or search results table is being displayed and set the Candy object from the appropriate array
     if (tableView == self.searchDisplayController.searchResultsTableView)
 	{
-        location = [filteredLocationArray objectAtIndex:[indexPath row]];
+        candy = [filteredCandyArray objectAtIndex:[indexPath row]];
     }
 	else
 	{
-        if(indexPath.row!=0)
-            location = [locationArray objectAtIndex:[indexPath row]-1];
+        candy = [candyArray objectAtIndex:[indexPath row]];
     }
     
     // Configure the cell
-    [[cell textLabel] setText:[location name]];
+    [[cell textLabel] setText:[candy name]];
     [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
     
     return cell;
@@ -146,8 +175,10 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [delegate filterIndex:indexPath.row];
+    
+    [delegate cancelButtonClicked3:self];
 }
+
 
 #pragma mark Content Filtering
 
@@ -156,11 +187,11 @@
 	// Update the filtered array based on the search text and scope.
 	
     // Remove all objects from the filtered search array
-	[self.filteredLocationArray removeAllObjects];
-    [locationSearchBar setShowsScopeBar:NO];
+	[self.filteredCandyArray removeAllObjects];
+    
 	// Filter the array using NSPredicate
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.name contains[c] %@",searchText];
-    NSArray *tempArray = [locationArray filteredArrayUsingPredicate:predicate];
+    NSArray *tempArray = [candyArray filteredArrayUsingPredicate:predicate];
     
 //    if(![scope isEqualToString:@"All"]) {
 //        // Further filter the array with the scope
@@ -168,7 +199,7 @@
 //        tempArray = [tempArray filteredArrayUsingPredicate:scopePredicate];
 //    }
     
-    filteredLocationArray = [NSMutableArray arrayWithArray:tempArray];
+    filteredCandyArray = [NSMutableArray arrayWithArray:tempArray];
 }
 
 
@@ -178,7 +209,7 @@
 {
     // Tells the table data source to reload when text changes
     [self filterContentForSearchText:searchString scope:
-     nil];
+     [[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:[self.searchDisplayController.searchBar selectedScopeButtonIndex]]];
     
     // Return YES to cause the search result table view to be reloaded.
     return YES;
@@ -189,24 +220,20 @@
 {
     // Tells the table data source to reload when scope bar selection changes
     [self filterContentForSearchText:[self.searchDisplayController.searchBar text] scope:
-     nil];
+     [[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:searchOption]];
     
     // Return YES to cause the search result table view to be reloaded.
     return YES;
 }
-- (void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller
-{
-    //[locationSearchBar resignFirstResponder];
-    [delegate filterIndex:0];
-}
-#pragma mark - Search Button
 
-- (IBAction)goToSearch:(id)sender
-{
-    // If you're worried that your users might not catch on to the fact that a search bar is available if they scroll to reveal it, a search icon will help them
-    // Note that if you didn't hide your search bar, you should probably not include this, as it would be redundant
-    [locationSearchBar becomeFirstResponder];
+- (void)searchDisplayController:(UISearchDisplayController *)controller willHideSearchResultsTableView:(UITableView *)tableView{
+    
 }
+- (void)searchDisplayController:(UISearchDisplayController *)controller didHideSearchResultsTableView:(UITableView *)tableView{
+    
+}
+
+
 
 
 

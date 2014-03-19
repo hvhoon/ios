@@ -536,7 +536,6 @@ static SideTransitionController *rn_frostedMenu;
     self.contentView.frame = CGRectMake(x, 0, _width, self.parentViewController.view.bounds.size.height);
     self.blurView.frame = self.contentView.frame;
     _nativeBlurView.frame=self.contentView.frame;
-    //[self layoutItems];
 }
 - (void)rn_addToParentViewController:(UIViewController *)parentViewController callingAppearanceMethods:(BOOL)callAppearanceMethods {
     if (self.parentViewController != nil) {

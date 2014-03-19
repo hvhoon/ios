@@ -6,20 +6,18 @@
 //  Copyright (c) 2014 soclivity. All rights reserved.
 //
 
-@protocol LocationFilterDelgate;
-@interface LocationTableViewController : UITableViewController <UISearchBarDelegate, UISearchDisplayDelegate>
-
-@property (strong,nonatomic) NSArray *locationArray;
-@property (strong,nonatomic) NSMutableArray *filteredLocationArray;
-@property IBOutlet UISearchBar *locationSearchBar;
-@property (nonatomic, assign) id<LocationFilterDelgate> delegate;
+#import <UIKit/UIKit.h>
+@protocol MJSecondPopupDelegate3;
+@interface LocationTableViewController : UIViewController <UISearchBarDelegate, UISearchDisplayDelegate,UITableViewDataSource,UITableViewDelegate>
+@property (strong,nonatomic)IBOutlet UITableView *tableView;
+@property (assign, nonatomic) id <MJSecondPopupDelegate3>delegate;
+@property (strong,nonatomic) NSArray *candyArray;
+@property (strong,nonatomic) NSMutableArray *filteredCandyArray;
+@property IBOutlet UISearchBar *candySearchBar;
 
 @end
 
-
-@protocol LocationFilterDelgate
+@protocol MJSecondPopupDelegate3<NSObject>
 @optional
--(void) filterIndex:(NSInteger) index;
-
-
+- (void)cancelButtonClicked3:(LocationTableViewController*)secondDetailViewController;
 @end
