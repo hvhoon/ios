@@ -86,6 +86,7 @@ NSString *const ECSlidingViewTopDidReset             = @"ECSlidingViewTopDidRese
 @synthesize shouldAddPanGestureRecognizerToTopViewSnapshot;
 @synthesize resetStrategy = _resetStrategy;
 @synthesize openingLeftMovesStatusBar;
+@synthesize openingRightMovesStatusBar;
 @synthesize statusBarContainer;
 @synthesize hideStatusBar;
 @synthesize initialMainControllerFrame;
@@ -181,6 +182,7 @@ NSString *const ECSlidingViewTopDidReset             = @"ECSlidingViewTopDidRese
 {
     [super viewDidLoad];
     self.openingLeftMovesStatusBar = YES;
+    self.openingRightMovesStatusBar = YES;
     self.shouldAllowPanningPastAnchor = YES;
     self.shouldAllowUserInteractionsWhenAnchored = NO;
     self.shouldAddPanGestureRecognizerToTopViewSnapshot = NO;
@@ -501,9 +503,16 @@ NSString *const ECSlidingViewTopDidReset             = @"ECSlidingViewTopDidRese
     
     if ([self underLeftShowing] && self.openingLeftMovesStatusBar && ![UIApplication sharedApplication].statusBarHidden)
     {
-        NSLog(@"anchorTopViewTo");
+        NSLog(@"anchorTopViewTo Left");
         [self showFakeStatusBar];
     }
+    
+    if ([self underRightShowing] && self.openingRightMovesStatusBar && ![UIApplication sharedApplication].statusBarHidden)
+    {
+        NSLog(@"anchorTopViewTo Right");
+        [self showFakeStatusBar];
+    }
+
     
     
 }
