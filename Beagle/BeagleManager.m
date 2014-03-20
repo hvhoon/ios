@@ -73,7 +73,12 @@
      [array setObject:self.beaglePlayer.last_name forKey:@"last_name"];
     if(self.beaglePlayer.profileImageUrl != nil && [self.beaglePlayer.profileImageUrl class] != [NSNull class])
     [array setObject:self.beaglePlayer.profileImageUrl forKey:@"photo_url"];
+    
+    if(self.beaglePlayer.profileData != nil && [self.beaglePlayer.profileData class] != [NSNull class])
+        [array setObject:self.beaglePlayer.profileData forKey:@"photoData"];
 
+
+    
    [array writeToFile:path atomically:YES];
         
         
@@ -113,5 +118,10 @@
     player.profileImageUrl=[array valueForKey:@"photo_url"];
     self.beaglePlayer=player;
 #endif
+}
+
+- (void)processFacebookProfilePictureData:(NSData *)newProfilePictureData {
+    self.beaglePlayer.profileData=newProfilePictureData;
+    [self userProfileDataUpdate];
 }
 @end

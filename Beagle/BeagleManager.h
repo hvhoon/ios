@@ -16,4 +16,5 @@
 + (id)SharedInstance;
 -(void)userProfileDataUpdate;
 -(void)getUserObjectInAutoSignInMode;
+- (void)processFacebookProfilePictureData:(NSData *)newProfilePictureData;
 @end

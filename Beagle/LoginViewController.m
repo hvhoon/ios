@@ -14,6 +14,7 @@
 @interface LoginViewController ()<FacebookLoginSessionDelegate,ServerManagerDelegate>{
     IBOutlet UIActivityIndicatorView *activityIndicatorView;
     ServerManager *loginServerManager;
+     NSMutableData *_data;
 }
 @property(nonatomic,strong)ServerManager *loginServerManager;
 @end
@@ -123,16 +124,28 @@
             id player=[response objectForKey:@"player"];
             if (player != nil && [player class] != [NSNull class]) {
 
-                id beagleId=[response objectForKey:@"id"];
+                id beagleId=[player objectForKey:@"id"];
                 if (beagleId != nil && [beagleId class] != [NSNull class]) {
                   [[[BeagleManager SharedInstance] beaglePlayer]setBeagleUserId:[beagleId integerValue]];
                     NSLog(@"beagleId=%ld",[beagleId integerValue]);
                     
                 }
 
-                [[BeagleManager SharedInstance] userProfileDataUpdate];
                 
-            }
+                
+                    NSURL *pictureURL = [NSURL URLWithString:[player objectForKey:@"image_url"]];
+                    
+                    NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:pictureURL
+                                                                              cachePolicy:NSURLRequestUseProtocolCachePolicy
+                                                                          timeoutInterval:2.0f];
+                    // Run network request asynchronously
+                    NSURLConnection *urlConnection = [[NSURLConnection alloc] initWithRequest:urlRequest delegate:self];
+                    if (!urlConnection) {
+                        NSLog(@"Failed to download picture");
+                    }
+                }
+                
+            
                 
                 
                 
@@ -143,6 +156,19 @@
     }
 }
 
+#pragma mark - NSURLConnectionDataDelegate
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+    _data = [[NSMutableData alloc] init];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+    [_data appendData:data];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+    [[BeagleManager SharedInstance] processFacebookProfilePictureData:_data];
+}
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {
 
