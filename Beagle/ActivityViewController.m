@@ -33,6 +33,7 @@ enum Weeks {
     IBOutlet UIButton *visibilityFilterButton;
     IBOutlet UIButton *locationFilterButton;
     IBOutlet UIImageView *backgroundView;
+    ServerManager *activityServerManager;
 }
 @property (nonatomic, strong) NSMutableIndexSet *optionIndices;
 @property(nonatomic,strong)BeagleActivityClass *bg_activity;
@@ -40,8 +41,8 @@ enum Weeks {
 @end
 
 @implementation ActivityViewController
-@synthesize bg_activity=_bg_activity;
-@synthesize activityServerManager=_activityServerManager;
+@synthesize bg_activity;
+@synthesize activityServerManager;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -57,7 +58,7 @@ enum Weeks {
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    _bg_activity=[[BeagleActivityClass alloc]init];
+    bg_activity=[[BeagleActivityClass alloc]init];
     self.optionIndices = [NSMutableIndexSet indexSetWithIndex:1];
     
     
@@ -191,10 +192,10 @@ enum Weeks {
         [alert show];
         return;
     }
-    _bg_activity.activityDesc=descriptionTextView.text;
-    _bg_activity.visibiltyFilter=@"Friends only";
-    _bg_activity.city=@"New York";
-    _bg_activity.state=@"NY";
+    bg_activity.activityDesc=descriptionTextView.text;
+    bg_activity.visibiltyFilter=@"Friends only";
+    bg_activity.city=@"New York";
+    bg_activity.state=@"NY";
     
     
     
@@ -255,31 +256,30 @@ enum Weeks {
     NSTimeZone *gmt = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
     [dateFormatter setTimeZone:gmt];
     
-    _bg_activity.startActivityDate=[dateFormatter stringFromDate:newDate1];
-    _bg_activity.endActivityDate=[dateFormatter stringFromDate:newDate2];
-    _bg_activity.visibiltyFilter=@"Friends Only";
-    _bg_activity.city=@"New York";
-    _bg_activity.state=@"NY";
-    _bg_activity.timeFilter=@"Next Weekend";
-    _bg_activity.latitude=40.67;
-    _bg_activity.longitude=73.94;
+    bg_activity.startActivityDate=[dateFormatter stringFromDate:newDate1];
+    bg_activity.endActivityDate=[dateFormatter stringFromDate:newDate2];
+    bg_activity.visibiltyFilter=@"Friends Only";
+    bg_activity.city=@"New York";
+    bg_activity.state=@"NY";
+    bg_activity.timeFilter=@"Next Weekend";
+    bg_activity.latitude=40.67;
+    bg_activity.longitude=73.94;
 
-    _bg_activity.ownerid=[[BeagleManager SharedInstance]beaglePlayer].beagleUserId;
+    bg_activity.ownerid=[[BeagleManager SharedInstance]beaglePlayer].beagleUserId;
     
-    _bg_activity.ownerid=26;
-    if(_activityServerManager!=nil){
-        _activityServerManager.delegate = nil;
-        [_activityServerManager releaseServerManager];
-        _activityServerManager = nil;
+    bg_activity.ownerid=6;
+    if(self.activityServerManager!=nil){
+        self.activityServerManager.delegate = nil;
+        [self.activityServerManager releaseServerManager];
+        self.activityServerManager = nil;
     }
     [(AppDelegate*)[[UIApplication sharedApplication] delegate]showProgressIndicator:2];
 
-    _activityServerManager=[[ServerManager alloc]init];
-    _activityServerManager.delegate=self;
-    [_activityServerManager createActivityOnBeagle:_bg_activity];
+    self.activityServerManager=[[ServerManager alloc]init];
+    self.activityServerManager.delegate=self;
+    [self.activityServerManager createActivityOnBeagle:bg_activity];
 
     
-    [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
 }
 - (void)didReceiveMemoryWarning
 {
@@ -395,15 +395,16 @@ enum Weeks {
     
     if(serverRequest==kServerCallCreateActivity){
         
-        _activityServerManager.delegate = nil;
-        [_activityServerManager releaseServerManager];
-        _activityServerManager = nil;
+        self.activityServerManager.delegate = nil;
+        [self.activityServerManager releaseServerManager];
+        self.activityServerManager = nil;
         
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
             id status=[response objectForKey:@"status"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
-                
+                [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
+
             }
         }
         
@@ -416,9 +417,9 @@ enum Weeks {
 
     if(serverRequest==kServerCallCreateActivity)
     {
-        _activityServerManager.delegate = nil;
-        [_activityServerManager releaseServerManager];
-        _activityServerManager = nil;
+        self.activityServerManager.delegate = nil;
+        [self.activityServerManager releaseServerManager];
+        self.activityServerManager = nil;
     }
     
     NSString *message = NSLocalizedString (@"Unable to initiate request.",
@@ -432,9 +433,9 @@ enum Weeks {
 
     if(serverRequest==kServerCallCreateActivity)
     {
-        _activityServerManager.delegate = nil;
-        [_activityServerManager releaseServerManager];
-        _activityServerManager = nil;
+        self.activityServerManager.delegate = nil;
+        [self.activityServerManager releaseServerManager];
+        self.activityServerManager = nil;
     }
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
