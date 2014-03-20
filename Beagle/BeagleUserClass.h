@@ -20,8 +20,5 @@
 @property(nonatomic,strong)NSString *access_token;
 @property(nonatomic,strong)NSString *location;
 @property(nonatomic,assign)BOOL fb_ticker;
-
-
-
-
+@property(nonatomic,assign)NSInteger beagleUserId;
 @end

@@ -30,14 +30,13 @@
 }
 -(IBAction)signInUsingFacebookClicked:(id)sender{
     
-    [self pushToHomeScreen];
-//    [activityIndicatorView setHidden:NO];
-//    [activityIndicatorView startAnimating];
-//    
-//
-//    FacebookLoginSession *facebookSession=[[FacebookLoginSession alloc]init];
-//    facebookSession.delegate=self;
-//    [facebookSession getUserNativeFacebookSession];
+    [activityIndicatorView setHidden:NO];
+    [activityIndicatorView startAnimating];
+    
+
+    FacebookLoginSession *facebookSession=[[FacebookLoginSession alloc]init];
+    facebookSession.delegate=self;
+    [facebookSession getUserNativeFacebookSession];
 
     
 }
@@ -122,11 +121,20 @@
             
             id player=[response objectForKey:@"player"];
             if (player != nil && [player class] != [NSNull class]) {
-                
-                
-                NSLog(@"player=%@",player);
+
+                id beagleId=[response objectForKey:@"id"];
+                if (beagleId != nil && [beagleId class] != [NSNull class]) {
+                  [[[BeagleManager SharedInstance] beaglePlayer]setBeagleUserId:[beagleId integerValue]];
+                    NSLog(@"beagleId=%ld",[beagleId integerValue]);
+                    
+                }
+
+                [[BeagleManager SharedInstance] userProfileDataUpdate];
                 
             }
+                
+                
+                
         }
         }
         

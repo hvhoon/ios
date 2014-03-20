@@ -9,11 +9,13 @@
 #import <Foundation/Foundation.h>
 
 typedef enum {
-    kServerCallUserRegisteration
+    kServerCallUserRegisteration,
+    kServerCallCreateActivity
 } ServerCallType;
 
 @class ServerManager;
 @class BeagleUserClass;
+@class BeagleActivityClass;
 @protocol ServerManagerDelegate <NSObject>
 
 @optional
@@ -32,4 +34,5 @@ typedef enum {
 -(void)releaseServerManager;
 //*************************** API calls ***************************
 -(void)registerPlayerOnBeagle:(BeagleUserClass*)data;
+-(void)createActivityOnBeagle:(BeagleActivityClass*)data;
 @end

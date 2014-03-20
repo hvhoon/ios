@@ -14,6 +14,7 @@
 #import "JSON.h"
 #import "AppDelegate.h"
 #import "BeagleUserClass.h"
+#import "BeagleActivityClass.h"
 #define localHost @"http://localhost:3000/"
 #define herokuHost @"http://infinite-spire-6520.herokuapp.com/"
 @interface ServerManager()
@@ -40,7 +41,7 @@
         _internetReachability = [Reachability reachabilityForInternetConnection];
 
 
-        _serverUrl =herokuHost;
+        _serverUrl =localHost;
 
         [self populateErrorCodes];
     }
@@ -80,6 +81,41 @@
         
 
         [self callServerWithUrl:[NSString stringWithFormat:@"%@players.json", _serverUrl]
+                         method:@"POST"
+                         params:nil data:postData];
+    }
+    else{
+        [self internetNotAvailable];
+    }
+    
+    
+    
+}
+
+-(void)createActivityOnBeagle:(BeagleActivityClass*)data{
+    _serverCallType=kServerCallCreateActivity;
+    if([self isInternetAvailable]){
+        
+        
+        NSMutableDictionary* activityEvent =[[NSMutableDictionary alloc] init];
+        [activityEvent setObject:[NSNumber numberWithInteger:1] forKey:@"atype"];
+        [activityEvent setObject:data.startActivityDate forKey:@"start_when"];
+        [activityEvent setObject:[NSNumber numberWithFloat:data.latitude] forKey:@"where_lat"];
+        [activityEvent setObject:[NSNumber numberWithFloat:data.longitude] forKey:@"where_lng"];
+        [activityEvent setObject:data.city forKey:@"where_city"];
+        [activityEvent setObject:data.state  forKey:@"where_state"];
+        [activityEvent setObject:data.activityDesc forKey:@"what"];
+        [activityEvent setObject:data.visibiltyFilter forKey:@"access"];
+        [activityEvent setObject:[NSNumber numberWithInteger:data.ownerid] forKey:@"ownnerid"];
+        [activityEvent setObject:data.endActivityDate  forKey:@"stop_when"];
+        
+        
+        
+        
+        NSData *postData = [[activityEvent JSONRepresentation] dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
+        
+        
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activities.json", _serverUrl]
                          method:@"POST"
                          params:nil data:postData];
     }

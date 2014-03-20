@@ -152,7 +152,8 @@
                     userObject.email=email;
                 }
                     
-                    
+                BeagleManager *BGM=[BeagleManager SharedInstance];
+                BGM.beaglePlayer=userObject;
                     
                 [delegate successfulFacebookLogin:userObject];
         

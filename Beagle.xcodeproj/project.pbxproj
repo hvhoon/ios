@@ -83,6 +83,9 @@
 		18F8F4DD18DA07F800B26AC6 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18F8F4DC18DA07F800B26AC6 /* Accelerate.framework */; };
 		18F8F4E218DA088500B26AC6 /* Location.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F8F4DF18DA088500B26AC6 /* Location.m */; };
 		18F8F4E318DA088500B26AC6 /* LocationTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F8F4E118DA088500B26AC6 /* LocationTableViewController.m */; };
+		18F9FE6118DB40E4004BFE4E /* BeagleManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F9FE6018DB40E4004BFE4E /* BeagleManager.m */; };
+		18F9FE6318DB40F3004BFE4E /* User.plist in Resources */ = {isa = PBXBuildFile; fileRef = 18F9FE6218DB40F3004BFE4E /* User.plist */; };
+		18F9FE6618DB410D004BFE4E /* BeagleActivityClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F9FE6518DB410D004BFE4E /* BeagleActivityClass.m */; };
 		18FADB8D18B662A000A62287 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FADB8C18B662A000A62287 /* LoginViewController.m */; };
 		18FADB9118B6683000A62287 /* InitialSlidingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FADB9018B6683000A62287 /* InitialSlidingViewController.m */; };
 		18FADB9618B668A500A62287 /* ECSlidingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FADB9218B668A500A62287 /* ECSlidingViewController.m */; };
@@ -240,6 +243,11 @@
 		18F8F4DF18DA088500B26AC6 /* Location.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Location.m; sourceTree = "<group>"; };
 		18F8F4E018DA088500B26AC6 /* LocationTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationTableViewController.h; sourceTree = "<group>"; };
 		18F8F4E118DA088500B26AC6 /* LocationTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationTableViewController.m; sourceTree = "<group>"; };
+		18F9FE5F18DB40E4004BFE4E /* BeagleManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeagleManager.h; sourceTree = "<group>"; };
+		18F9FE6018DB40E4004BFE4E /* BeagleManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeagleManager.m; sourceTree = "<group>"; };
+		18F9FE6218DB40F3004BFE4E /* User.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = User.plist; sourceTree = "<group>"; };
+		18F9FE6418DB410D004BFE4E /* BeagleActivityClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeagleActivityClass.h; sourceTree = "<group>"; };
+		18F9FE6518DB410D004BFE4E /* BeagleActivityClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeagleActivityClass.m; sourceTree = "<group>"; };
 		18FADB8B18B662A000A62287 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		18FADB8C18B662A000A62287 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		18FADB8F18B6683000A62287 /* InitialSlidingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InitialSlidingViewController.h; sourceTree = "<group>"; };
@@ -439,6 +447,8 @@
 		18E7AF0A18BBAA5000EBBDE2 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				18F9FE6418DB410D004BFE4E /* BeagleActivityClass.h */,
+				18F9FE6518DB410D004BFE4E /* BeagleActivityClass.m */,
 				18E7AF0B18BBAA6600EBBDE2 /* BeagleUserClass.h */,
 				18E7AF0C18BBAA6600EBBDE2 /* BeagleUserClass.m */,
 			);
@@ -491,6 +501,7 @@
 		18EC22A618B5A0B400316B6E /* Beagle */ = {
 			isa = PBXGroup;
 			children = (
+				18F9FE5E18DB40D2004BFE4E /* Beagle Manager */,
 				1805CED418C8D24700AC8556 /* Filter Views */,
 				1805CED018C8D22600AC8556 /* Side Transition */,
 				1805CECC18C8D20E00AC8556 /* Activity Event */,
@@ -540,6 +551,7 @@
 		18EC22C018B5A0B400316B6E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				18F9FE6218DB40F3004BFE4E /* User.plist */,
 				18EC22C118B5A0B400316B6E /* BeagleTests-Info.plist */,
 				18EC22C218B5A0B400316B6E /* InfoPlist.strings */,
 			);
@@ -653,6 +665,15 @@
 				18EC234118B5A72F00316B6E /* Main.storyboard */,
 			);
 			name = Storyboard;
+			sourceTree = "<group>";
+		};
+		18F9FE5E18DB40D2004BFE4E /* Beagle Manager */ = {
+			isa = PBXGroup;
+			children = (
+				18F9FE5F18DB40E4004BFE4E /* BeagleManager.h */,
+				18F9FE6018DB40E4004BFE4E /* BeagleManager.m */,
+			);
+			name = "Beagle Manager";
 			sourceTree = "<group>";
 		};
 		18FADB8A18B6625A00A62287 /* Login Screen */ = {
@@ -792,6 +813,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				18EC22C418B5A0B400316B6E /* InfoPlist.strings in Resources */,
+				18F9FE6318DB40F3004BFE4E /* User.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -835,6 +857,7 @@
 				18EC232318B5A42D00316B6E /* NSObject+SBJSON.m in Sources */,
 				18007ED818C64EDD00230C23 /* BGFlickrManager.m in Sources */,
 				18FADB9618B668A500A62287 /* ECSlidingViewController.m in Sources */,
+				18F9FE6618DB410D004BFE4E /* BeagleActivityClass.m in Sources */,
 				18007EF318C6508200230C23 /* OFXMLMapper.m in Sources */,
 				18007F0818C6551700230C23 /* BeagleAlert.m in Sources */,
 				18007EF218C6508200230C23 /* OFUtilities.m in Sources */,
@@ -849,6 +872,7 @@
 				18007EF718C6511000230C23 /* BeagleUtilities.m in Sources */,
 				18007EFA18C653C000230C23 /* UIImage+Resize.m in Sources */,
 				18EC231F18B5A42D00316B6E /* ASICloudFilesObjectRequest.m in Sources */,
+				18F9FE6118DB40E4004BFE4E /* BeagleManager.m in Sources */,
 				18EC231A18B5A42D00316B6E /* ASICloudFilesCDNRequest.m in Sources */,
 				18EC232418B5A42D00316B6E /* NSString+SBJSON.m in Sources */,
 				18FADBA318B66A8D00A62287 /* NotificationsViewController.m in Sources */,

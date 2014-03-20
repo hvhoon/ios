@@ -12,17 +12,36 @@
 #import "TimeFilterView.h"
 #import "LocationTableViewController.h"
 #import "UIViewController+MJPopupViewController.h"
-@interface ActivityViewController ()<UITextViewDelegate,MJSecondPopupDelegate3>{
+#import "BeagleActivityClass.h"
+#import "BeagleUserClass.h"
+#import "ServerManager.h"
+enum Weeks {
+    SUNDAY = 1,
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+    SATURDAY
+};
+@interface ActivityViewController ()<UITextViewDelegate,MJSecondPopupDelegate3,ServerManagerDelegate>{
     IBOutlet UIImageView *profileImageView;
     IBOutlet UITextView *descriptionTextView;
     UILabel *placeholderLabel;
     IBOutlet UILabel *countTextLabel;
+    IBOutlet UIButton *timeFilterButton;
+    IBOutlet UIButton *visibilityFilterButton;
+    IBOutlet UIButton *locationFilterButton;
+    IBOutlet UIImageView *backgroundView;
 }
 @property (nonatomic, strong) NSMutableIndexSet *optionIndices;
+@property(nonatomic,strong)BeagleActivityClass *bg_activity;
+@property(nonatomic,strong)ServerManager *activityServerManager;
 @end
 
 @implementation ActivityViewController
-
+@synthesize bg_activity=_bg_activity;
+@synthesize activityServerManager=_activityServerManager;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -38,24 +57,78 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    _bg_activity=[[BeagleActivityClass alloc]init];
     self.optionIndices = [NSMutableIndexSet indexSetWithIndex:1];
-    //self.view.backgroundColor=[UIColor redColor];
-    UIBarButtonItem *cancelItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel"  style: UIBarButtonItemStylePlain target:self action:@selector(cancelButtonClicked:)];
     
-    UIBarButtonItem *createItem = [[UIBarButtonItem alloc] initWithTitle:@"Create"  style: UIBarButtonItemStylePlain target:self action:@selector(createButtonClicked:)];
+    
+    
+//    NSArray* fontNames = [UIFont fontNamesForFamilyName:@"Helvetica Neue"];
+//    for( NSString* aFontName in fontNames ) {
+//        NSLog( @"Font name: %@", aFontName );
+//    }
+    [self.navigationController.navigationBar setTintColor:[UIColor colorWithRed:248.0/255.0 green:248.0/255.0 blue:248.0/255.0 alpha:1.0]];
+    UIButton *cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    cancelButton.frame = CGRectMake(0, 0, 30, 30);
+    [cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
+    [cancelButton addTarget:self action:@selector(cancelButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+
+    CGSize constrainedSize = CGSizeMake(320, 9999);
+    
+    NSDictionary *attributesDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+                                          [UIFont fontWithName:@"HelveticaNeue-Light" size:17.0], NSFontAttributeName,[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
+                                          nil];
+    
+    NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:@"Cancel" attributes:attributesDictionary];
+    
+    CGRect requiredHeight = [string boundingRectWithSize:constrainedSize options:NSStringDrawingUsesLineFragmentOrigin context:nil];
+    
+    if (requiredHeight.size.width > 320) {
+        requiredHeight = CGRectMake(0,0, 320, requiredHeight.size.height);
+    }
+    CGRect newFrame = cancelButton.frame;
+    newFrame.size.height = requiredHeight.size.height;
+    newFrame.size.width = requiredHeight.size.width;
+    cancelButton.frame=newFrame;
+    [cancelButton setTitleColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0] forState:UIControlStateNormal];
+    cancelButton.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Light" size:17.0];
+    self.navigationItem.leftBarButtonItem =[[UIBarButtonItem alloc] initWithCustomView:cancelButton];
+    
+    
+    UIButton *createButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    createButton.frame = CGRectMake(0, 0, 30, 30);
+    [createButton setTitle:@"Create" forState:UIControlStateNormal];
+    [createButton addTarget:self action:@selector(createButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+    
+    
+    attributesDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+                                          [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f], NSFontAttributeName,[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
+                                          nil];
+    
+    string = [[NSMutableAttributedString alloc] initWithString:@"Create" attributes:attributesDictionary];
+    
+     requiredHeight = [string boundingRectWithSize:constrainedSize options:NSStringDrawingUsesLineFragmentOrigin context:nil];
+    
+    if (requiredHeight.size.width > 320) {
+        requiredHeight = CGRectMake(0,0, 320, requiredHeight.size.height);
+    }
+    newFrame = createButton.frame;
+    newFrame.size.height = requiredHeight.size.height;
+    newFrame.size.width = requiredHeight.size.width;
+    createButton.frame=newFrame;
+    [createButton setTitleColor:[UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0] forState:UIControlStateNormal];
+    createButton.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f];
+    self.navigationItem.rightBarButtonItem =[[UIBarButtonItem alloc] initWithCustomView:createButton];
 
     
-    self.navigationItem.leftBarButtonItem = cancelItem;
-    self.navigationItem.rightBarButtonItem = createItem;
-    self.navigationItem.rightBarButtonItem.enabled=NO;
+    self.navigationItem.rightBarButtonItem.enabled=YES;
     
     UIImage *picBoxImage=[UIImage imageNamed:@"picbox"];
     if(picBoxImage.size.height != picBoxImage.size.width)
         picBoxImage = [BeagleUtilities autoCrop:picBoxImage];
     
     // If the image needs to be compressed
-    if(picBoxImage.size.height > 50 || picBoxImage.size.width > 50)
-        profileImageView.image = [BeagleUtilities compressImage:picBoxImage size:CGSizeMake(50,50)];
+    if(picBoxImage.size.height > 70 || picBoxImage.size.width > 70)
+        profileImageView.image = [BeagleUtilities compressImage:picBoxImage size:CGSizeMake(70,70)];
     else
         profileImageView.image = picBoxImage;
     
@@ -70,6 +143,8 @@
     placeholderLabel.font = [UIFont systemFontOfSize:14.0f];
     placeholderLabel.textColor=[UIColor lightGrayColor];
     
+    descriptionTextView.returnKeyType=UIReturnKeyDone;
+    [descriptionTextView setFont:[UIFont fontWithName:@"HelveticaNeue" size:17.0f]];
     // textView is UITextView object you want add placeholder text to
     [descriptionTextView addSubview:placeholderLabel];
     
@@ -77,6 +152,29 @@
     [descriptionTextView becomeFirstResponder];
 
 
+    [timeFilterButton setTitle:@"Next Weekend" forState:UIControlStateNormal];
+    [timeFilterButton setTitleColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0] forState:UIControlStateNormal];
+    [timeFilterButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:17.0]];
+    [timeFilterButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
+    
+    [visibilityFilterButton setTitle:@"Friends Only" forState:UIControlStateNormal];
+    [visibilityFilterButton setTitleColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0] forState:UIControlStateNormal];
+    [visibilityFilterButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:17.0]];
+    [visibilityFilterButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
+    
+    
+    [locationFilterButton setTitle:@"New York, NY" forState:UIControlStateNormal];
+    [locationFilterButton setTitleColor:[UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1.0] forState:UIControlStateNormal];
+    [locationFilterButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:17.0]];
+    [locationFilterButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
+   locationFilterButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+    
+    backgroundView.backgroundColor=[UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0];
+    
+    [countTextLabel setTextAlignment:NSTextAlignmentRight];
+    [countTextLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:17.0]];
+    [countTextLabel setTextColor:[UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1.0]];
+    
 
 	// Do any additional setup after loading the view.
 }
@@ -85,7 +183,101 @@
     [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
 }
 -(void)createButtonClicked:(id)sender{
-    [self.navigationController popViewControllerAnimated:YES];
+    
+    if([descriptionTextView.text length]==0){
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Missing Description"
+                                                        message:@"Your activity must have a description."
+                                                       delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
+        [alert show];
+        return;
+    }
+    _bg_activity.activityDesc=descriptionTextView.text;
+    _bg_activity.visibiltyFilter=@"Friends only";
+    _bg_activity.city=@"New York";
+    _bg_activity.state=@"NY";
+    
+    
+    
+    NSDate *today = [NSDate date];
+    NSLog(@"Today date is %@",today);
+    
+    //Week Start Date
+    
+    NSCalendar *gregorian = [[NSCalendar alloc]        initWithCalendarIdentifier:NSGregorianCalendar];
+    
+    NSDateComponents *components = [gregorian components:NSWeekdayCalendarUnit | NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit fromDate:today];
+    
+    NSInteger dayofweek = [[[NSCalendar currentCalendar] components:NSWeekdayCalendarUnit fromDate:today] weekday];// this will give you current day of week
+    
+    [components setDay:([components day] - ((dayofweek) - 2))];// for beginning of the week.
+    
+    NSDate *beginningOfWeek = [gregorian dateFromComponents:components];
+    
+    
+    NSLog(@"%@",beginningOfWeek);
+    
+    
+    //Week End Date
+    
+    NSCalendar *gregorianEnd = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    
+    NSDateComponents *componentsEnd = [gregorianEnd components:NSWeekdayCalendarUnit | NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit fromDate:today];
+    
+    NSInteger Enddayofweek = [[[NSCalendar currentCalendar] components:NSWeekdayCalendarUnit fromDate:today] weekday];// this will give you current day of week
+    
+    [componentsEnd setDay:([componentsEnd day]+(7-Enddayofweek)+1)];// for end day of the week
+    
+    NSDate *EndOfWeek = [gregorianEnd dateFromComponents:componentsEnd];
+    NSLog(@"%@",EndOfWeek);
+    
+    NSCalendar* myCalendar = [NSCalendar currentCalendar];
+    components = [myCalendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit
+                                                 fromDate:EndOfWeek];
+    
+    
+    [components setHour:00];
+    [components setMinute:01];
+    [components setSecond:00];
+    NSLog(@"weekdayComponentsStart=%@",[myCalendar dateFromComponents:components]);
+    NSDate *EndOfWeek2=[myCalendar dateFromComponents:components];
+    
+    [components setHour:23];
+    [components setMinute:59];
+    [components setSecond:00];
+
+    NSDate *EndOfWeek3=[myCalendar dateFromComponents:components];
+    
+    NSDate *newDate1 = [EndOfWeek2 dateByAddingTimeInterval:60*60*24*6];
+    NSDate *newDate2 = [EndOfWeek3 dateByAddingTimeInterval:60*60*24*7];
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
+    NSTimeZone *gmt = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
+    [dateFormatter setTimeZone:gmt];
+    
+    _bg_activity.startActivityDate=[dateFormatter stringFromDate:newDate1];
+    _bg_activity.endActivityDate=[dateFormatter stringFromDate:newDate2];
+    _bg_activity.visibiltyFilter=@"Friends Only";
+    _bg_activity.city=@"New York";
+    _bg_activity.state=@"NY";
+    _bg_activity.timeFilter=@"Next Weekend";
+    _bg_activity.latitude=40.67;
+    _bg_activity.longitude=73.94;
+
+    _bg_activity.ownerid=[[BeagleManager SharedInstance]beaglePlayer].beagleUserId;
+    
+    _bg_activity.ownerid=3;
+    if(_activityServerManager!=nil){
+        _activityServerManager.delegate = nil;
+        [_activityServerManager releaseServerManager];
+        _activityServerManager = nil;
+    }
+    _activityServerManager=[[ServerManager alloc]init];
+    _activityServerManager.delegate=self;
+    [_activityServerManager createActivityOnBeagle:_bg_activity];
+
+    
+    [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
 }
 - (void)didReceiveMemoryWarning
 {
@@ -191,5 +383,54 @@
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
 }
 
+#pragma mark - server calls
+
+- (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
+    
+    if(serverRequest==kServerCallCreateActivity){
+        
+        _activityServerManager.delegate = nil;
+        [_activityServerManager releaseServerManager];
+        _activityServerManager = nil;
+        
+        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
+            
+            id status=[response objectForKey:@"status"];
+            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
+                
+            }
+        }
+        
+    }
+}
+
+- (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
+{
+    
+    if(serverRequest==kServerCallCreateActivity)
+    {
+        _activityServerManager.delegate = nil;
+        [_activityServerManager releaseServerManager];
+        _activityServerManager = nil;
+    }
+    
+    NSString *message = NSLocalizedString (@"Unable to initiate request.",
+                                           @"NSURLConnection initialization method failed.");
+    BeagleAlertWithMessage(message);
+}
+
+- (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
+{
+    
+    if(serverRequest==kServerCallCreateActivity)
+    {
+        _activityServerManager.delegate = nil;
+        [_activityServerManager releaseServerManager];
+        _activityServerManager = nil;
+    }
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
+    [alert show];
+}
 
 @end
