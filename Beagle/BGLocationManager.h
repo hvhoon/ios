@@ -18,6 +18,7 @@
 @property(nonatomic, strong) NSDate *locationInvalidateCacheTimeout;
 @property(nonatomic, strong) NSDate *locationQuitTimeout;
 @property (nonatomic,strong)NSString *weatherCondition;
+@property(nonatomic,strong)CLPlacemark *placemark;
 + (BGLocationManager *) sharedManager;
 - (void) locationRequest: (void (^)(CLLocation *, NSError *)) completion;
 

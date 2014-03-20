@@ -129,19 +129,21 @@
             
             CLGeocoder * geoCoder = [[CLGeocoder alloc] init];
             CLLocation *newLocation=[[CLLocation alloc]initWithLatitude:[[NSNumber numberWithDouble:[BGLocationManager sharedManager].locationBestEffort.coordinate.latitude] doubleValue] longitude:[[NSNumber numberWithDouble:[BGLocationManager sharedManager].locationBestEffort.coordinate.longitude] doubleValue]];
-            [geoCoder reverseGeocodeLocation:newLocation completionHandler:^(NSArray *placemarks, NSError *error) {
+             [geoCoder reverseGeocodeLocation:newLocation completionHandler:^(NSArray *placemarks, NSError *error) {
                 
                 if(!error) {
                 for (CLPlacemark * placemark in placemarks) {
-                    NSLog(@"placemark.city=%@",[placemark.addressDictionary objectForKey:@"City"]);
-                    NSLog(@"placemark.country=%@",placemark.country);
-                    NSLog(@"placemark.locality=%@",placemark.locality);
-                    NSLog(@"placemark.subLocality=%@",placemark.subLocality);
-                    NSLog(@"placemark.administrativeArea=%@",placemark.administrativeArea);
-                    NSLog(@"placemark.subAdministrativeArea=%@",placemark.subAdministrativeArea);
                     
+#if 0
                     NSString *urlString=[NSString stringWithFormat:@"http://api.wunderground.com/api/5706a66cb7258dd4/conditions/q/%@/%@.json",placemark.administrativeArea,[placemark.addressDictionary objectForKey:@"City"]];
                     
+#else
+                    NSString *urlString=[NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f",placemark.location.coordinate.latitude,placemark.location.coordinate.longitude];
+                    
+#endif
+                    
+                    
+                    [BGLocationManager sharedManager].placemark=placemark;
                     
                     urlString = [urlString stringByReplacingOccurrencesOfString:@" " withString:@""];
                     NSURL *url = [NSURL URLWithString:urlString];
@@ -149,10 +151,20 @@
                     [request setCompletionBlock:^{
                         // Use when fetching text data
                         NSError* error;
+                        NSString *weather=nil;
                         NSString *jsonString = [request responseString];
                         NSDictionary* weatherDictionary = [NSJSONSerialization JSONObjectWithData:[jsonString dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:&error];
+#if 0
                         NSDictionary *current_observation=[weatherDictionary objectForKey:@"current_observation"];
                         NSString *weather=[current_observation objectForKey:@"weather"];
+                        
+#else
+                        NSDictionary *current_observation=[weatherDictionary objectForKey:@"weather"];
+                        for(id mainWeather in current_observation){
+                            weather=[mainWeather objectForKey:@"main"];
+                        }
+
+#endif
                             NSLog(@"weather=%@",weather);
                         [BGLocationManager sharedManager].weatherCondition=weather;
                         

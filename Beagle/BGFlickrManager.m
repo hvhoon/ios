@@ -74,7 +74,7 @@ static BGFlickrManager *sharedManager = nil;
         self.completionBlock = completion;
         
         [self performSelector:@selector(stopFlickrManager:) withObject:nil afterDelay:kFlickrSearchQuitTimeoutDurationInSeconds];
-        [self photoRequest];
+        [self photoIdRequest];
     }
 }
 
@@ -85,14 +85,16 @@ static BGFlickrManager *sharedManager = nil;
         NSString *lat = [[NSNumber numberWithDouble:[BGLocationManager sharedManager].locationBestEffort.coordinate.latitude] stringValue];
         NSString *lon = [[NSNumber numberWithDouble:[BGLocationManager sharedManager].locationBestEffort.coordinate.longitude] stringValue];
         
-        [self.flickrRequest callAPIMethodWithGET:@"flickr.photos.search" arguments:[NSDictionary dictionaryWithObjectsAndKeys:lat, @"lat", lon, @"lon", KFlickrSearchRadiusInMiles, @"radius", @"mi", @"radius_units", [BGLocationManager sharedManager].weatherCondition, @"tags", @"tag_mode", @"any", KFlickrSearchLicense, @"license", @"500", @"per_page",@"1",@"has_geo",@"photos",@"media",@"1",@"accuracy",[BGLocationManager sharedManager].weatherCondition,@"text",nil]];
+        [self.flickrRequest callAPIMethodWithGET:@"flickr.photos.search" arguments:[NSDictionary dictionaryWithObjectsAndKeys:lat, @"lat", lon, @"lon", KFlickrSearchRadiusInMiles, @"radius", @"mi", @"radius_units", [BGLocationManager sharedManager].weatherCondition, @"tags", @"all", @"tag_mode", @"500", @"per_page",@"1",@"has_geo",@"photos",@"content_type",@"1463451@N25",@"group.id",self.flickrRequestInfo.photoId,@"place.id",nil]];
     }
 }
 - (void) photoIdRequest {
     if (![self.flickrRequest isRunning]) {
         ((FlickrAPIRequestSessionInfo *)self.flickrRequest.sessionInfo).flickrAPIRequestType = FlickrAPIRequestPhotoId;
         
-        [self.flickrRequest callAPIMethodWithGET:@"flickr.photos.find" arguments:[NSDictionary dictionaryWithObjectsAndKeys:@"mumbai%2C+india", @"query",nil]];
+        NSString *string=[NSString stringWithFormat:@"%@+%2@",[[BGLocationManager sharedManager].placemark.addressDictionary objectForKey:@"City"],[[BGLocationManager sharedManager].placemark administrativeArea]];
+        
+        [self.flickrRequest callAPIMethodWithGET:@"flickr.photos.find" arguments:[NSDictionary dictionaryWithObjectsAndKeys:string, @"query",nil]];
     }
 }
 

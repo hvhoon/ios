@@ -9,7 +9,7 @@
 #import "BGLocationManager.h"
 
 @implementation BGLocationManager
-@synthesize weatherCondition;
+@synthesize weatherCondition,placemark;
 static BGLocationManager *sharedManager = nil;
 
 + (BGLocationManager *) sharedManager {
