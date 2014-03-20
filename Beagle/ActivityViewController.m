@@ -140,8 +140,8 @@ enum Weeks {
     [placeholderLabel setText:@"Tell us more..."];
     // placeholderLabel is instance variable retained by view controller
     [placeholderLabel setBackgroundColor:[UIColor clearColor]];
-    placeholderLabel.font = [UIFont systemFontOfSize:14.0f];
-    placeholderLabel.textColor=[UIColor lightGrayColor];
+    placeholderLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0];
+    placeholderLabel.textColor=[UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0];
     
     descriptionTextView.returnKeyType=UIReturnKeyDone;
     [descriptionTextView setFont:[UIFont fontWithName:@"HelveticaNeue" size:17.0f]];
@@ -266,12 +266,14 @@ enum Weeks {
 
     _bg_activity.ownerid=[[BeagleManager SharedInstance]beaglePlayer].beagleUserId;
     
-    _bg_activity.ownerid=3;
+    _bg_activity.ownerid=26;
     if(_activityServerManager!=nil){
         _activityServerManager.delegate = nil;
         [_activityServerManager releaseServerManager];
         _activityServerManager = nil;
     }
+    [(AppDelegate*)[[UIApplication sharedApplication] delegate]showProgressIndicator:2];
+
     _activityServerManager=[[ServerManager alloc]init];
     _activityServerManager.delegate=self;
     [_activityServerManager createActivityOnBeagle:_bg_activity];
@@ -308,6 +310,7 @@ enum Weeks {
 	
 	
 	if ([text isEqualToString:@"\n"]){
+        [self createButtonClicked:self];
         return NO;
 	}
 	
@@ -356,6 +359,7 @@ enum Weeks {
     
 }
 
+
 - (IBAction)visibilityFilter:(id)sender{
     
 }
@@ -386,6 +390,8 @@ enum Weeks {
 #pragma mark - server calls
 
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
+    [(AppDelegate*)[[UIApplication sharedApplication] delegate]hideProgressView];
+
     
     if(serverRequest==kServerCallCreateActivity){
         
@@ -406,7 +412,8 @@ enum Weeks {
 
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {
-    
+    [(AppDelegate*)[[UIApplication sharedApplication] delegate]hideProgressView];
+
     if(serverRequest==kServerCallCreateActivity)
     {
         _activityServerManager.delegate = nil;
@@ -421,7 +428,8 @@ enum Weeks {
 
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
 {
-    
+    [(AppDelegate*)[[UIApplication sharedApplication] delegate]hideProgressView];
+
     if(serverRequest==kServerCallCreateActivity)
     {
         _activityServerManager.delegate = nil;

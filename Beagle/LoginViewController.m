@@ -30,13 +30,14 @@
 }
 -(IBAction)signInUsingFacebookClicked:(id)sender{
     
-    [activityIndicatorView setHidden:NO];
-    [activityIndicatorView startAnimating];
-    
-
-    FacebookLoginSession *facebookSession=[[FacebookLoginSession alloc]init];
-    facebookSession.delegate=self;
-    [facebookSession getUserNativeFacebookSession];
+    [self pushToHomeScreen];
+//    [activityIndicatorView setHidden:NO];
+//    [activityIndicatorView startAnimating];
+//    
+//
+//    FacebookLoginSession *facebookSession=[[FacebookLoginSession alloc]init];
+//    facebookSession.delegate=self;
+//    [facebookSession getUserNativeFacebookSession];
 
     
 }

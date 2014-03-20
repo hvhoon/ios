@@ -22,8 +22,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     
     [Crashlytics startWithAPIKey:@"e8e7ac59367e936ecae821876cc411ec67427e47"];
-    NSString *storyboardId = [[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"] ? @"initialBeagle" : @"loginNavScreen";
-    
+    NSString *storyboardId = [[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"] ? @"loginNavScreen" : @"loginNavScreen";
     if([storyboardId isEqualToString:@"initialBeagle"]){
         [[BeagleManager SharedInstance]getUserObjectInAutoSignInMode];
     }
@@ -77,9 +76,9 @@ void uncaughtExceptionHandler(NSException *exception) {
             break;
             
             
-        default:
+        case 2:
         {
-            _progressIndicator.labelText =@"Loading...";
+            _progressIndicator.labelText =@"Creating...";
             
         }
             
