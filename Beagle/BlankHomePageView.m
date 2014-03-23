@@ -1,14 +1,14 @@
 //
-//  LocationFilterView.m
+//  BlankHomePageView.m
 //  Beagle
 //
-//  Created by Kanav Gupta on 10/03/14.
+//  Created by Kanav Gupta on 21/03/14.
 //  Copyright (c) 2014 soclivity. All rights reserved.
 //
 
-#import "LocationFilterView.h"
+#import "BlankHomePageView.h"
 
-@implementation LocationFilterView
+@implementation BlankHomePageView
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -17,6 +17,16 @@
         // Initialization code
     }
     return self;
+}
+-(IBAction)postOnInterestClicked:(id)sender{
+    
+}
+
+-(IBAction)inviteYourFriendsClicked:(id)sender{
+    
+}
+-(IBAction)changeYourFilterClicked:(id)sender{
+    
 }
 
 /*

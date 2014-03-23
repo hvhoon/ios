@@ -13,12 +13,25 @@
 #import "BGLocationManager.h"
 #import "ASIHTTPRequest.h"
 #import "ActivityViewController.h"
-@interface HomeViewController ()
-@property(nonatomic, strong) IBOutlet UIImageView *backgroundPhoto;
+#import "UIView+HidingView.h"
+#import "BlankHomePageView.h"
+#import "HomeTableViewCell.h"
+#import "BeagleActivityClass.h"
+#import "ServerManager.h"
+@interface HomeViewController ()<UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,HomeTableViewCellDelegate,ServerManagerDelegate>{
+    UIView*bottomNavigationView;
+    BOOL footerActivated;
+    ServerManager *homeActivityManager;
+}
+@property (nonatomic, strong) NSArray *tableData;
+@property(nonatomic, weak) UIImageView *backgroundPhoto;
+@property(nonatomic, weak) IBOutlet UITableView*tableView;
+@property (strong,nonatomic) NSMutableArray *filteredCandyArray;
+@property(strong,nonatomic)ServerManager *homeActivityManager;
 @end
 
 @implementation HomeViewController
-@synthesize backgroundPhoto;
+@synthesize homeActivityManager=_homeActivityManager;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -28,12 +41,12 @@
     return self;
 }
 
-- (IBAction)revealMenu:(id)sender
+- (void)revealMenu:(id)sender
 {
     [self.slidingViewController anchorTopViewTo:ECRight];
 }
 
-- (IBAction)revealUnderRight:(id)sender
+- (void)revealUnderRight:(id)sender
 {
     [self.slidingViewController anchorTopViewTo:ECLeft];
 }
@@ -41,16 +54,15 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 
 }
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    self.view.layer.shadowOpacity = 0.75f;
-    self.view.layer.shadowRadius = 10.0f;
-    self.view.layer.shadowColor = [UIColor blackColor].CGColor;
-    
+
     if (![self.slidingViewController.underLeftViewController isKindOfClass:[SettingsViewController class]]) {
         self.slidingViewController.underLeftViewController  = [self.storyboard instantiateViewControllerWithIdentifier:@"settingsScreen"];
     }
@@ -62,13 +74,21 @@
     
    // [self retrieveLocationAndUpdateBackgroundPhoto];
     
+     UIImage *stockBottomImage1=[BeagleUtilities imageByCropping:[UIImage imageNamed:@"defaultLocation"] toRect:CGRectMake(0, 0, 320, 64) withOrientation:UIImageOrientationDownMirrored];
+    UIView *topNavigationView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 64)];
     
-    UIView *navigationView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 200)];
+    topNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockBottomImage1];
+    [self.view addSubview:topNavigationView];
     
-    navigationView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"defaultLocation"]];
-    [self.view addSubview:navigationView];
     
-    CGSize size = CGSizeMake(80,999);
+    UIImage *stockBottomImage2=[BeagleUtilities imageByCropping:[UIImage imageNamed:@"defaultLocation"] toRect:CGRectMake(0, 64, 320, 103) withOrientation:UIImageOrientationDownMirrored];
+    bottomNavigationView=[[UIView alloc]initWithFrame:CGRectMake(0, 64, 320, 103)];
+    
+    bottomNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockBottomImage2];
+    [self.view addSubview:bottomNavigationView];
+
+    
+    CGSize size = CGSizeMake(180,999);
     
     /// Make a copy of the default paragraph style
     NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
@@ -81,32 +101,72 @@
     CGRect textRect = [@"New York"
                        boundingRectWithSize:size
                        options:NSStringDrawingUsesLineFragmentOrigin
-                       attributes:@{ NSFontAttributeName: [UIFont systemFontOfSize:18.0f],
-                                     NSParagraphStyleAttributeName: paragraphStyle }
+                       attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Light" size:30.0],NSForegroundColorAttributeName:[UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:0.95],NSParagraphStyleAttributeName: paragraphStyle, }
                        context:nil];
     
     
-    UILabel *fromLabel = [[UILabel alloc]initWithFrame:CGRectMake(15,30, textRect.size.width, textRect.size.height)];
+    UILabel *fromLabel = [[UILabel alloc]initWithFrame:CGRectMake(16,22, textRect.size.width, textRect.size.height)];
     fromLabel.text = @"New York";
-    fromLabel.font = [UIFont systemFontOfSize:18.0f];
+    fromLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:30.0];
     fromLabel.numberOfLines = 1;
     fromLabel.baselineAdjustment = UIBaselineAdjustmentAlignBaselines;
     fromLabel.adjustsFontSizeToFitWidth = YES;
     fromLabel.adjustsFontSizeToFitWidth = YES;
-    fromLabel.minimumScaleFactor = 10.0f/18.0f;
     fromLabel.clipsToBounds = YES;
     fromLabel.backgroundColor = [UIColor clearColor];
-    fromLabel.textColor = [UIColor blackColor];
+    fromLabel.textColor = [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:0.95];
     fromLabel.textAlignment = NSTextAlignmentLeft;
-    [navigationView addSubview:fromLabel];
+    [topNavigationView addSubview:fromLabel];
     
-    UIButton *eventButton = [UIButton buttonWithType:UIButtonTypeContactAdd];
+    UIButton *eventButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [eventButton addTarget:self action:@selector(createANewActivity:)forControlEvents:UIControlEventTouchUpInside];
-    eventButton.frame = CGRectMake(270.0, 25.0, 34.0, 34.0);
-    [navigationView addSubview:eventButton];
+    [eventButton setTitle:@"+" forState:UIControlStateNormal];
+    [eventButton setTitleColor:[UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1.0] forState:UIControlStateNormal];
+    eventButton.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Light" size:60.0f];
+    [eventButton.titleLabel setTextAlignment:NSTextAlignmentRight];
+    eventButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
 
+    eventButton.frame = CGRectMake(244.0, 4.0, 60.0, 60.0);
+    [topNavigationView addSubview:eventButton];
     
+    
+    UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [settingsButton addTarget:self action:@selector(revealMenu:)forControlEvents:UIControlEventTouchUpInside];
+    [settingsButton setBackgroundImage:[UIImage imageNamed:@"Settings"] forState:UIControlStateNormal];
+    settingsButton.frame = CGRectMake(16.0, 78.0, 20.0, 13.0);
+    [bottomNavigationView addSubview:settingsButton];
+    
+    UIButton *notificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [notificationsButton addTarget:self action:@selector(revealUnderRight:)forControlEvents:UIControlEventTouchUpInside];
+    [notificationsButton setBackgroundImage:[UIImage imageNamed:@"Bell-(No-Notications)"] forState:UIControlStateNormal];
+    notificationsButton.frame = CGRectMake(287.0, 72.0, 17.0, 19.0);
+    [bottomNavigationView addSubview:notificationsButton];
 
+
+
+    self.tableView.tableHeaderView=[self renderTableHeaderView];
+    
+    [self.tableView setHidden:YES];
+    footerActivated=YES;
+    
+    NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"BlankHomePageView" owner:self options:nil];
+    BlankHomePageView *blankHomePageView=[nib objectAtIndex:0];
+    blankHomePageView.frame=CGRectMake(0, 167, 320, 401);
+    blankHomePageView.userInteractionEnabled=YES;
+    [self.view addSubview:blankHomePageView];
+
+#if 0
+    if(_homeActivityManager!=nil){
+        _homeActivityManager.delegate = nil;
+        [_homeActivityManager releaseServerManager];
+        _homeActivityManager = nil;
+    }
+    [(AppDelegate*)[[UIApplication sharedApplication] delegate]showProgressIndicator:3];
+    
+    _homeActivityManager=[[ServerManager alloc]init];
+    _homeActivityManager.delegate=self;
+    [_homeActivityManager createActivityOnBeagle:nil];
+#endif
 	// Do any additional setup after loading the view.
 }
 
@@ -226,10 +286,145 @@
     } completion:NULL];
 }
 
+-(UIView*)renderTableHeaderView{
+    UIView *headerView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 44)];
+    headerView.backgroundColor=[UIColor lightGrayColor];
+    
+    CGSize size = CGSizeMake(220,999);
+    
+    /// Make a copy of the default paragraph style
+    NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+    /// Set line break mode
+    paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
+    /// Set text alignment
+    paragraphStyle.alignment = NSTextAlignmentLeft;
+    
+    
+    CGRect textRect = [@"Happening Around You"
+                       boundingRectWithSize:size
+                       options:NSStringDrawingUsesLineFragmentOrigin
+                       attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:1.0],NSParagraphStyleAttributeName: paragraphStyle, }
+                       context:nil];
+
+    UILabel *activityFilterLabel = [[UILabel alloc]initWithFrame:CGRectMake(16,15, textRect.size.width, textRect.size.height)];
+    activityFilterLabel.text = @"Happening Around You";
+    activityFilterLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0];
+    activityFilterLabel.numberOfLines = 1;
+    activityFilterLabel.baselineAdjustment = UIBaselineAdjustmentAlignBaselines;
+    activityFilterLabel.adjustsFontSizeToFitWidth = YES;
+    activityFilterLabel.adjustsFontSizeToFitWidth = YES;
+    activityFilterLabel.clipsToBounds = YES;
+    activityFilterLabel.backgroundColor = [UIColor clearColor];
+    activityFilterLabel.textAlignment = NSTextAlignmentLeft;
+    [headerView addSubview:activityFilterLabel];
+    
+    UIImageView *filterImageView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Filter"]];
+    filterImageView.frame=CGRectMake(16+textRect.size.width+10,20, 15, 8);
+    [headerView addSubview:filterImageView];
+    
+    UIButton *searchButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [searchButton addTarget:self action:@selector(searchIconClicked:)forControlEvents:UIControlEventTouchUpInside];
+    [searchButton setBackgroundImage:[UIImage imageNamed:@"Search"] forState:UIControlStateNormal];
+    searchButton.frame = CGRectMake(285.0, 12.0, 19.0, 19.0);
+    [headerView addSubview:searchButton];
+
+    return headerView;
+}
+
+
+#pragma mark - Table view data source
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    
+    
+        return [self.tableData count];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    static NSString *CellIdentifier = @"MediaTableCell";
+    
+    
+    HomeTableViewCell *cell = (HomeTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) {
+        cell =[[HomeTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        cell.selectionStyle=UITableViewCellSelectionStyleNone;
+    }
+    
+    cell.delegate=self;
+    BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexPath.row];
+    cell.bg_activity = play;
+    [cell setNeedsDisplay];
+    return cell;
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    
+    if(!footerActivated)
+        [bottomNavigationView scrollViewWillBeginDragging:scrollView];
+}
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+        if(!footerActivated)
+    [bottomNavigationView scrollViewDidScroll:scrollView];
+}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+- (void)searchBarCancelButtonClicked:(UISearchBar *)aSearchBar
+{
+    [self hideSearchBarAndAnimateWithListViewInMiddle];
+    self.tableView.tableHeaderView=nil;
+    self.tableView.tableHeaderView=[self renderTableHeaderView];
 
+    
+}
+
+-(void)searchIconClicked:(id)sender{
+    
+    [self showSearchBarAndAnimateWithListViewInMiddle];
+}
+-(void)showSearchBarAndAnimateWithListViewInMiddle{
+    
+    if (!footerActivated) {
+		[UIView beginAnimations:@"expandFooter" context:nil];
+		[UIView setAnimationDelegate:self];
+		[UIView setAnimationDuration:0.3];
+		[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+		
+		[bottomNavigationView setHidden:YES];
+		[self.tableView setFrame:CGRectMake(0, 64, 320, 568-64)];
+        
+        self.tableView.tableHeaderView=nil;
+        
+        UISearchBar *headerView = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+        headerView.hidden = NO;
+        headerView.delegate=self;
+        self.tableView.tableHeaderView = headerView;
+        headerView.showsCancelButton=YES;
+        [headerView becomeFirstResponder];
+        [self.tableView addSubview:headerView];
+
+		[UIView commitAnimations];
+		footerActivated = YES;
+	}
+
+}
+
+-(void)hideSearchBarAndAnimateWithListViewInMiddle{
+    
+    if (footerActivated) {
+		[UIView beginAnimations:@"collapseFooter" context:nil];
+		[UIView setAnimationDelegate:self];
+		[UIView setAnimationDuration:0.3];
+		[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+		[bottomNavigationView setHidden:NO];
+        [self.tableView setFrame:CGRectMake(0, 167, 320, 568-167)];
+		[UIView commitAnimations];
+		footerActivated = NO;
+	}
+}
 @end

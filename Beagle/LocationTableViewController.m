@@ -193,11 +193,6 @@
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.name contains[c] %@",searchText];
     NSArray *tempArray = [candyArray filteredArrayUsingPredicate:predicate];
     
-//    if(![scope isEqualToString:@"All"]) {
-//        // Further filter the array with the scope
-//        NSPredicate *scopePredicate = [NSPredicate predicateWithFormat:@"SELF.category contains[c] %@",scope];
-//        tempArray = [tempArray filteredArrayUsingPredicate:scopePredicate];
-//    }
     
     filteredCandyArray = [NSMutableArray arrayWithArray:tempArray];
 }

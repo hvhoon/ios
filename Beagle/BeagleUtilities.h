@@ -12,5 +12,6 @@
 + (int) getRandomIntBetweenLow:(int) low andHigh:(int) high;
 +(UIImage*) compressImage:(UIImage *)image size:(CGSize)size;
 +(UIImage*) autoCrop:(UIImage*)image;
-
++ (UIImage*) getSubImageFrom: (UIImage*) img rect: (CGRect) rect;
++ (UIImage*)imageByCropping:(UIImage *)imageToCrop toRect:(CGRect)aperture withOrientation:(UIImageOrientation)orientation;
 @end

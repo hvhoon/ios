@@ -83,6 +83,14 @@ void uncaughtExceptionHandler(NSException *exception) {
         }
             
             break;
+            
+        case 3:
+        {
+            _progressIndicator.labelText =@"Loading...";
+            
+        }
+            
+            break;
     }
     [_progressIndicator show:YES];
     

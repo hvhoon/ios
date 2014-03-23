@@ -26,12 +26,16 @@
 		1805CED818C8D25800AC8556 /* TimeFilterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1805CED618C8D25800AC8556 /* TimeFilterView.m */; };
 		1805CED918C8D25800AC8556 /* TimeFilterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1805CED718C8D25800AC8556 /* TimeFilterView.xib */; };
 		1806EA4218B9E32B00A47BF1 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1806EA4118B9E32B00A47BF1 /* Crashlytics.framework */; };
+		180AF0B318DC7FB200EE87D6 /* BlankHomePageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 180AF0B018DC7FB200EE87D6 /* BlankHomePageView.xib */; };
+		180AF0B418DC7FB200EE87D6 /* BlankHomePageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 180AF0B218DC7FB200EE87D6 /* BlankHomePageView.m */; };
+		180AF0B818DC7FE500EE87D6 /* HomeTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 180AF0B718DC7FE500EE87D6 /* HomeTableViewCell.m */; };
+		180AF0BB18DC801500EE87D6 /* ABTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 180AF0BA18DC801500EE87D6 /* ABTableViewCell.m */; };
+		180AF0BE18DC805700EE87D6 /* UIView+HidingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 180AF0BD18DC805700EE87D6 /* UIView+HidingView.m */; };
+		180AF0C018DC809E00EE87D6 /* User.plist in Resources */ = {isa = PBXBuildFile; fileRef = 180AF0BF18DC809E00EE87D6 /* User.plist */; };
 		18E7AF0918BBAA1700EBBDE2 /* FacebookLoginSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E7AF0818BBAA1700EBBDE2 /* FacebookLoginSession.m */; };
 		18E7AF0D18BBAA6600EBBDE2 /* BeagleUserClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E7AF0C18BBAA6600EBBDE2 /* BeagleUserClass.m */; };
 		18EBCFDB18CE350600FDC624 /* CustomPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EBCFD518CE350600FDC624 /* CustomPickerView.m */; };
 		18EBCFDC18CE350600FDC624 /* CustomPickerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18EBCFD618CE350600FDC624 /* CustomPickerView.xib */; };
-		18EBCFDD18CE350600FDC624 /* LocationFilterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EBCFD818CE350600FDC624 /* LocationFilterView.m */; };
-		18EBCFDE18CE350600FDC624 /* LocationFilterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18EBCFD918CE350600FDC624 /* LocationFilterView.xib */; };
 		18EC22A118B5A0B400316B6E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC22A018B5A0B400316B6E /* Foundation.framework */; };
 		18EC22A318B5A0B400316B6E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC22A218B5A0B400316B6E /* CoreGraphics.framework */; };
 		18EC22A518B5A0B400316B6E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC22A418B5A0B400316B6E /* UIKit.framework */; };
@@ -84,7 +88,6 @@
 		18F8F4E218DA088500B26AC6 /* Location.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F8F4DF18DA088500B26AC6 /* Location.m */; };
 		18F8F4E318DA088500B26AC6 /* LocationTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F8F4E118DA088500B26AC6 /* LocationTableViewController.m */; };
 		18F9FE6118DB40E4004BFE4E /* BeagleManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F9FE6018DB40E4004BFE4E /* BeagleManager.m */; };
-		18F9FE6318DB40F3004BFE4E /* User.plist in Resources */ = {isa = PBXBuildFile; fileRef = 18F9FE6218DB40F3004BFE4E /* User.plist */; };
 		18F9FE6618DB410D004BFE4E /* BeagleActivityClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F9FE6518DB410D004BFE4E /* BeagleActivityClass.m */; };
 		18FADB8D18B662A000A62287 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FADB8C18B662A000A62287 /* LoginViewController.m */; };
 		18FADB9118B6683000A62287 /* InitialSlidingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FADB9018B6683000A62287 /* InitialSlidingViewController.m */; };
@@ -144,6 +147,16 @@
 		1805CED618C8D25800AC8556 /* TimeFilterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeFilterView.m; sourceTree = "<group>"; };
 		1805CED718C8D25800AC8556 /* TimeFilterView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TimeFilterView.xib; sourceTree = "<group>"; };
 		1806EA4118B9E32B00A47BF1 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		180AF0B018DC7FB200EE87D6 /* BlankHomePageView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BlankHomePageView.xib; sourceTree = "<group>"; };
+		180AF0B118DC7FB200EE87D6 /* BlankHomePageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlankHomePageView.h; sourceTree = "<group>"; };
+		180AF0B218DC7FB200EE87D6 /* BlankHomePageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlankHomePageView.m; sourceTree = "<group>"; };
+		180AF0B618DC7FE500EE87D6 /* HomeTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeTableViewCell.h; sourceTree = "<group>"; };
+		180AF0B718DC7FE500EE87D6 /* HomeTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeTableViewCell.m; sourceTree = "<group>"; };
+		180AF0B918DC801500EE87D6 /* ABTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ABTableViewCell.h; sourceTree = "<group>"; };
+		180AF0BA18DC801500EE87D6 /* ABTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ABTableViewCell.m; sourceTree = "<group>"; };
+		180AF0BC18DC805700EE87D6 /* UIView+HidingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+HidingView.h"; sourceTree = "<group>"; };
+		180AF0BD18DC805700EE87D6 /* UIView+HidingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+HidingView.m"; sourceTree = "<group>"; };
+		180AF0BF18DC809E00EE87D6 /* User.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = User.plist; sourceTree = "<group>"; };
 		18E7AF0718BBAA1700EBBDE2 /* FacebookLoginSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookLoginSession.h; sourceTree = "<group>"; };
 		18E7AF0818BBAA1700EBBDE2 /* FacebookLoginSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookLoginSession.m; sourceTree = "<group>"; };
 		18E7AF0B18BBAA6600EBBDE2 /* BeagleUserClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeagleUserClass.h; sourceTree = "<group>"; };
@@ -151,9 +164,6 @@
 		18EBCFD418CE350600FDC624 /* CustomPickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomPickerView.h; sourceTree = "<group>"; };
 		18EBCFD518CE350600FDC624 /* CustomPickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomPickerView.m; sourceTree = "<group>"; };
 		18EBCFD618CE350600FDC624 /* CustomPickerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomPickerView.xib; sourceTree = "<group>"; };
-		18EBCFD718CE350600FDC624 /* LocationFilterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationFilterView.h; sourceTree = "<group>"; };
-		18EBCFD818CE350600FDC624 /* LocationFilterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationFilterView.m; sourceTree = "<group>"; };
-		18EBCFD918CE350600FDC624 /* LocationFilterView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LocationFilterView.xib; sourceTree = "<group>"; };
 		18EC229D18B5A0B400316B6E /* Beagle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Beagle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		18EC22A018B5A0B400316B6E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		18EC22A218B5A0B400316B6E /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -245,7 +255,6 @@
 		18F8F4E118DA088500B26AC6 /* LocationTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationTableViewController.m; sourceTree = "<group>"; };
 		18F9FE5F18DB40E4004BFE4E /* BeagleManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeagleManager.h; sourceTree = "<group>"; };
 		18F9FE6018DB40E4004BFE4E /* BeagleManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeagleManager.m; sourceTree = "<group>"; };
-		18F9FE6218DB40F3004BFE4E /* User.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = User.plist; sourceTree = "<group>"; };
 		18F9FE6418DB410D004BFE4E /* BeagleActivityClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeagleActivityClass.h; sourceTree = "<group>"; };
 		18F9FE6518DB410D004BFE4E /* BeagleActivityClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeagleActivityClass.m; sourceTree = "<group>"; };
 		18FADB8B18B662A000A62287 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
@@ -372,6 +381,8 @@
 		18007F0418C6542000230C23 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				180AF0BC18DC805700EE87D6 /* UIView+HidingView.h */,
+				180AF0BD18DC805700EE87D6 /* UIView+HidingView.m */,
 				18F8F4D818DA07C700B26AC6 /* UIViewController+MJPopupViewController.h */,
 				18F8F4D918DA07C700B26AC6 /* UIViewController+MJPopupViewController.m */,
 				18007EFB18C6541200230C23 /* UIImage+Alpha.h */,
@@ -418,6 +429,9 @@
 		1805CED418C8D24700AC8556 /* Filter Views */ = {
 			isa = PBXGroup;
 			children = (
+				180AF0B118DC7FB200EE87D6 /* BlankHomePageView.h */,
+				180AF0B218DC7FB200EE87D6 /* BlankHomePageView.m */,
+				180AF0B018DC7FB200EE87D6 /* BlankHomePageView.xib */,
 				18F8F4DE18DA088500B26AC6 /* Location.h */,
 				18F8F4DF18DA088500B26AC6 /* Location.m */,
 				18F8F4E018DA088500B26AC6 /* LocationTableViewController.h */,
@@ -425,14 +439,22 @@
 				18EBCFD418CE350600FDC624 /* CustomPickerView.h */,
 				18EBCFD518CE350600FDC624 /* CustomPickerView.m */,
 				18EBCFD618CE350600FDC624 /* CustomPickerView.xib */,
-				18EBCFD718CE350600FDC624 /* LocationFilterView.h */,
-				18EBCFD818CE350600FDC624 /* LocationFilterView.m */,
-				18EBCFD918CE350600FDC624 /* LocationFilterView.xib */,
 				1805CED518C8D25800AC8556 /* TimeFilterView.h */,
 				1805CED618C8D25800AC8556 /* TimeFilterView.m */,
 				1805CED718C8D25800AC8556 /* TimeFilterView.xib */,
 			);
 			name = "Filter Views";
+			sourceTree = "<group>";
+		};
+		180AF0B518DC7FC200EE87D6 /* Home Table View Cell */ = {
+			isa = PBXGroup;
+			children = (
+				180AF0B918DC801500EE87D6 /* ABTableViewCell.h */,
+				180AF0BA18DC801500EE87D6 /* ABTableViewCell.m */,
+				180AF0B618DC7FE500EE87D6 /* HomeTableViewCell.h */,
+				180AF0B718DC7FE500EE87D6 /* HomeTableViewCell.m */,
+			);
+			name = "Home Table View Cell";
 			sourceTree = "<group>";
 		};
 		18E7AF0618BBAA0400EBBDE2 /* Facebook */ = {
@@ -501,6 +523,7 @@
 		18EC22A618B5A0B400316B6E /* Beagle */ = {
 			isa = PBXGroup;
 			children = (
+				180AF0B518DC7FC200EE87D6 /* Home Table View Cell */,
 				18F9FE5E18DB40D2004BFE4E /* Beagle Manager */,
 				1805CED418C8D24700AC8556 /* Filter Views */,
 				1805CED018C8D22600AC8556 /* Side Transition */,
@@ -531,6 +554,7 @@
 		18EC22A718B5A0B400316B6E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				180AF0BF18DC809E00EE87D6 /* User.plist */,
 				18EC22A818B5A0B400316B6E /* Beagle-Info.plist */,
 				18EC22A918B5A0B400316B6E /* InfoPlist.strings */,
 				18EC22AC18B5A0B400316B6E /* main.m */,
@@ -551,7 +575,6 @@
 		18EC22C018B5A0B400316B6E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				18F9FE6218DB40F3004BFE4E /* User.plist */,
 				18EC22C118B5A0B400316B6E /* BeagleTests-Info.plist */,
 				18EC22C218B5A0B400316B6E /* InfoPlist.strings */,
 			);
@@ -804,7 +827,8 @@
 				18EC22AB18B5A0B400316B6E /* InfoPlist.strings in Resources */,
 				18EC22B318B5A0B400316B6E /* Images.xcassets in Resources */,
 				1805CED918C8D25800AC8556 /* TimeFilterView.xib in Resources */,
-				18EBCFDE18CE350600FDC624 /* LocationFilterView.xib in Resources */,
+				180AF0B318DC7FB200EE87D6 /* BlankHomePageView.xib in Resources */,
+				180AF0C018DC809E00EE87D6 /* User.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -813,7 +837,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				18EC22C418B5A0B400316B6E /* InfoPlist.strings in Resources */,
-				18F9FE6318DB40F3004BFE4E /* User.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -847,6 +870,7 @@
 				18E7AF0918BBAA1700EBBDE2 /* FacebookLoginSession.m in Sources */,
 				18EC232618B5A42D00316B6E /* SBJsonBase.m in Sources */,
 				18EC231B18B5A42D00316B6E /* ASICloudFilesContainer.m in Sources */,
+				180AF0B818DC7FE500EE87D6 /* HomeTableViewCell.m in Sources */,
 				18007F0B18C6568000230C23 /* MBProgressHUD.m in Sources */,
 				18EC232718B5A42D00316B6E /* SBJsonParser.m in Sources */,
 				18007EEF18C6508200230C23 /* LFSiteReachability.m in Sources */,
@@ -862,7 +886,6 @@
 				18007F0818C6551700230C23 /* BeagleAlert.m in Sources */,
 				18007EF218C6508200230C23 /* OFUtilities.m in Sources */,
 				18EC232518B5A42D00316B6E /* SBJSON.m in Sources */,
-				18EBCFDD18CE350600FDC624 /* LocationFilterView.m in Sources */,
 				18EC231218B5A42D00316B6E /* ASIAuthenticationDialog.m in Sources */,
 				18F8F4E218DA088500B26AC6 /* Location.m in Sources */,
 				18EC231D18B5A42D00316B6E /* ASICloudFilesContainerXMLParserDelegate.m in Sources */,
@@ -883,11 +906,14 @@
 				1805CECF18C8D22000AC8556 /* ActivityViewController.m in Sources */,
 				1805CED818C8D25800AC8556 /* TimeFilterView.m in Sources */,
 				18FADB9118B6683000A62287 /* InitialSlidingViewController.m in Sources */,
+				180AF0BE18DC805700EE87D6 /* UIView+HidingView.m in Sources */,
 				18F8F4DB18DA07C700B26AC6 /* UIViewController+MJPopupViewController.m in Sources */,
 				18EC231818B5A42D00316B6E /* ASIInputStream.m in Sources */,
 				18EC22AD18B5A0B400316B6E /* main.m in Sources */,
+				180AF0BB18DC801500EE87D6 /* ABTableViewCell.m in Sources */,
 				18FADB9B18B669E500A62287 /* HomeViewController.m in Sources */,
 				18EBCFDB18CE350600FDC624 /* CustomPickerView.m in Sources */,
+				180AF0B418DC7FB200EE87D6 /* BlankHomePageView.m in Sources */,
 				18007F0318C6541200230C23 /* UIImage+RoundedCorner.m in Sources */,
 				18EC232218B5A42D00316B6E /* Reachability.m in Sources */,
 				18FADB9E18B66A4C00A62287 /* SettingsViewController.m in Sources */,

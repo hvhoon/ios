@@ -52,6 +52,8 @@ enum Weeks {
     return self;
 }
 -(void)viewWillAppear:(BOOL)animated{
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+
     [self.navigationController setNavigationBarHidden:NO];
     
 }

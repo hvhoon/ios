@@ -1,0 +1,95 @@
+//
+//  HomeTableViewCell.h
+//  Beagle
+//
+//  Created by Kanav Gupta on 21/03/14.
+//  Copyright (c) 2014 soclivity. All rights reserved.
+//
+
+
+#import "HomeTableViewCell.h"
+#import "BeagleActivityClass.h"
+@implementation HomeTableViewCell
+@synthesize delegate;
+@synthesize bg_activity;
+static UIFont *firstTextFont = nil;
+static UIFont *secondTextFont = nil;
+static UIFont *boldText = nil;
++ (void)initialize
+{
+	if(self == [HomeTableViewCell class]){
+        firstTextFont=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14];
+        secondTextFont=[UIFont fontWithName:@"HelveticaNeue-Light" size:11];
+        boldText=[UIFont fontWithName:@"Helvetica-Condensed-Bold" size:15];
+        
+    }
+}
+
+
+
+- (void)drawContentView:(CGRect)r
+{
+	CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    UIColor *background;
+    UIColor *backgroundColor;
+    background = [UIColor blackColor];
+    backgroundColor = background;
+    
+    
+    UIColor *textColor =[UIColor blackColor];
+    if(self.selected)
+    {
+        backgroundColor = background;
+        textColor = [UIColor blackColor];
+    }
+    
+    [backgroundColor set];
+    
+    
+    textColor=[UIColor blackColor];
+    CGContextFillRect(context, r);
+    [textColor set];
+    
+    // Graphics in the details table cell
+#if 0
+    // Time info.
+    [[UIImage imageNamed:@"S04_smallClock.png"] drawInRect:CGRectMake(50,15,12,12)];
+    [playActivity.dateAndTime drawInRect:CGRectMake(50+25, 12, 200, 15) withFont:firstTextFont];
+    
+    // First divider
+    [[UIImage imageNamed:@"S04_detailDivider.png"] drawInRect:CGRectMake(22,38,283,1)];
+    
+    // Distance info.
+    [[UIImage imageNamed:@"S04_smallLocation.png"] drawInRect:CGRectMake(50,51,12,12)];
+    NSString* distanceInfo = [NSString stringWithFormat:@"%@ miles away", playActivity.distance];
+    [distanceInfo drawInRect:CGRectMake(50+25,48,200,15) withFont:firstTextFont];
+    
+    // Second divider
+    [[UIImage imageNamed:@"S04_detailDivider.png"] drawInRect:CGRectMake(22,75,283,1)];
+    
+    for(DetailInfoActivityClass *detailPlay in [playActivity quotations]){
+     
+        [[UIImage imageNamed:@"S04_smallDOS1.png"] drawInRect:CGRectMake(50-3,88,19,11)];
+        
+        NSString *firstLabel=[NSString stringWithFormat:@"%d Friends",detailPlay.DOS_1];
+        [firstLabel drawInRect:CGRectMake(50+25,85,60,15) withFont:firstTextFont];
+        
+        [[UIImage imageNamed:@"S04_smallDOS2.png"] drawInRect:CGRectMake(50+95,88,19,11)];
+        NSString *secondLabel=[NSString stringWithFormat:@"%d Friends of friends",detailPlay.DOS_2];
+        [secondLabel drawInRect:CGRectMake(50+95+25+3,85,280,25) withFont:firstTextFont];
+        
+    }
+    [[UIImage imageNamed:@"S04_sectionDivider.png"] drawInRect:CGRectMake(0,113,320,1)];
+#endif
+}
+
+-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
+    UITouch *touch =[touches anyObject]; 
+    CGPoint startPoint =[touch locationInView:self.contentView];
+    NSLog(@"startpointX=%f",startPoint.x);
+	NSLog(@"Tap Detected");
+
+    [super touchesBegan:touches withEvent:event];
+}
+@end
