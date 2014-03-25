@@ -98,7 +98,7 @@
     [components day]; //gives you day
      year =[components year]; // gives you year
     
-    NSLog(@"month=%li,year=%li",month,year);
+    NSLog(@"month=%li,year=%li",(long)month,(long)year);
 
     monthNow=month;
     yearNow=year;
@@ -181,7 +181,7 @@
     monthNow =[components month]; //gives you month
     yearNow =[components year]; // gives you year
     
-    monthYearLabel.text=[NSString stringWithFormat:@"%@ %li",[monthArray objectAtIndex:monthNow-1],yearNow];
+    monthYearLabel.text=[NSString stringWithFormat:@"%@ %li",[monthArray objectAtIndex:monthNow-1],(long)yearNow];
     
 
 

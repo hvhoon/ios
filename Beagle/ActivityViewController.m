@@ -220,6 +220,8 @@ enum Weeks {
     NSLog(@"%@",beginningOfWeek);
     
     
+    
+    
     //Week End Date
     
     NSCalendar *gregorianEnd = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
@@ -269,7 +271,7 @@ enum Weeks {
 
     bg_activity.ownerid=[[BeagleManager SharedInstance]beaglePlayer].beagleUserId;
     
-    bg_activity.ownerid=6;
+    bg_activity.ownerid=26;
     if(self.activityServerManager!=nil){
         self.activityServerManager.delegate = nil;
         [self.activityServerManager releaseServerManager];

@@ -22,4 +22,15 @@
 @property(nonatomic,strong)NSString *timeFilter;
 @property(nonatomic,strong)NSString *visibiltyFilter;
 @property(nonatomic,assign)NSInteger ownerid;
+@property(nonatomic,assign)NSInteger activityType;
+@property(nonatomic,strong)NSString*organizerName;
+@property(nonatomic,strong)NSString*photoUrl;
+@property(nonatomic,assign)NSInteger dosRelation;
+@property(nonatomic,assign)NSInteger participantsCount;
+@property(nonatomic,strong)UIImage*profilePhotoImage;
+@property(nonatomic,assign)NSInteger dos2Count;
+@property(nonatomic,assign) BOOL isParticipant;
+@property(nonatomic,assign)NSInteger postCount;
+
+-(id) initWithDictionary:(NSDictionary *)dictionary;
 @end

@@ -18,11 +18,14 @@
 #import "HomeTableViewCell.h"
 #import "BeagleActivityClass.h"
 #import "ServerManager.h"
-@interface HomeViewController ()<UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,HomeTableViewCellDelegate,ServerManagerDelegate>{
+#import "IconDownloader.h"
+@interface HomeViewController ()<UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,HomeTableViewCellDelegate,ServerManagerDelegate,IconDownloaderDelegate>{
     UIView*bottomNavigationView;
     BOOL footerActivated;
     ServerManager *homeActivityManager;
+    NSMutableDictionary *imageDownloadsInProgress;
 }
+@property(nonatomic,strong)  NSMutableDictionary *imageDownloadsInProgress;
 @property (nonatomic, strong) NSArray *tableData;
 @property(nonatomic, weak) UIImageView *backgroundPhoto;
 @property(nonatomic, weak) IBOutlet UITableView*tableView;
@@ -32,6 +35,7 @@
 
 @implementation HomeViewController
 @synthesize homeActivityManager=_homeActivityManager;
+@synthesize imageDownloadsInProgress;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -61,7 +65,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    self.imageDownloadsInProgress = [NSMutableDictionary dictionary];
 
     if (![self.slidingViewController.underLeftViewController isKindOfClass:[SettingsViewController class]]) {
         self.slidingViewController.underLeftViewController  = [self.storyboard instantiateViewControllerWithIdentifier:@"settingsScreen"];
@@ -143,19 +147,11 @@
     [bottomNavigationView addSubview:notificationsButton];
 
 
-
     self.tableView.tableHeaderView=[self renderTableHeaderView];
-    
-    [self.tableView setHidden:YES];
     footerActivated=YES;
     
-    NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"BlankHomePageView" owner:self options:nil];
-    BlankHomePageView *blankHomePageView=[nib objectAtIndex:0];
-    blankHomePageView.frame=CGRectMake(0, 167, 320, 401);
-    blankHomePageView.userInteractionEnabled=YES;
-    [self.view addSubview:blankHomePageView];
 
-#if 0
+#if 1
     if(_homeActivityManager!=nil){
         _homeActivityManager.delegate = nil;
         [_homeActivityManager releaseServerManager];
@@ -165,11 +161,29 @@
     
     _homeActivityManager=[[ServerManager alloc]init];
     _homeActivityManager.delegate=self;
-    [_homeActivityManager createActivityOnBeagle:nil];
+    [_homeActivityManager getActivities];
 #endif
 	// Do any additional setup after loading the view.
+    
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+    [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+    [self.tableView addSubview:refreshControl];
 }
+- (void)refresh:(UIRefreshControl *)refreshControl {
+    
+    if(_homeActivityManager!=nil){
+        _homeActivityManager.delegate = nil;
+        [_homeActivityManager releaseServerManager];
+        _homeActivityManager = nil;
+    }
+    [(AppDelegate*)[[UIApplication sharedApplication] delegate]showProgressIndicator:3];
+    
+    _homeActivityManager=[[ServerManager alloc]init];
+    _homeActivityManager.delegate=self;
+    [_homeActivityManager getActivities];
+    [refreshControl endRefreshing];
 
+}
 -(void)createANewActivity:(id)sender{
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     ActivityViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"activityScreen"];
@@ -343,6 +357,26 @@
         return [self.tableData count];
 }
 
+-(CGFloat)tableView:(UITableView*)tableView heightForRowAtIndexPath:(NSIndexPath*)indexPath {
+    NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+    [style setAlignment:NSTextAlignmentLeft];
+
+    NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+                           [UIFont fontWithName:@"HelveticaNeue" size:17.0f], NSFontAttributeName,
+                           [UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
+                           style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
+    
+    BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexPath.row];
+    
+    CGSize maximumLabelSize = CGSizeMake(288,999);
+    
+    CGRect textRect = [play.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
+                                                     attributes:attrs
+                                                        context:nil];
+    NSLog(@"height=%f",textRect.size.height);
+
+    return 170.0f+textRect.size.height;
+}
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *CellIdentifier = @"MediaTableCell";
     
@@ -356,10 +390,88 @@
     cell.delegate=self;
     BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexPath.row];
     cell.bg_activity = play;
+    
+    if (!play.profilePhotoImage)
+    {
+        if (tableView.dragging == NO && tableView.decelerating == NO)
+        {
+            [self startIconDownload:play forIndexPath:indexPath];
+        }
+        // if a download is deferred or in progress, return a placeholder image
+        cell.photoImage = [UIImage imageNamed:@"picbox.png"];
+        
+    }
+    else
+    {
+        cell.photoImage = play.profilePhotoImage;
+    }
+
     [cell setNeedsDisplay];
     return cell;
 }
+- (void)startIconDownload:(BeagleActivityClass*)appRecord forIndexPath:(NSIndexPath *)indexPath{
+    IconDownloader *iconDownloader = [imageDownloadsInProgress objectForKey:indexPath];
+    if (iconDownloader == nil)
+    {
+        iconDownloader = [[IconDownloader alloc] init];
+        iconDownloader.appRecord = appRecord;
+        iconDownloader.indexPathInTableView = indexPath;
+        iconDownloader.delegate = self;
+        [imageDownloadsInProgress setObject:iconDownloader forKey:indexPath];
+        [iconDownloader startDownload:kParticipantInActivity];
+    }
+}
 
+// this method is used in case the user scrolled into a set of cells that don't have their app icons yet
+- (void)loadImagesForOnscreenRows{
+    if ([self.tableData count] > 0)
+    {
+        NSArray *visiblePaths = [self.tableView indexPathsForVisibleRows];
+        for (NSIndexPath *indexPath in visiblePaths)
+        {
+            BeagleActivityClass *appRecord = (BeagleActivityClass *)[self.tableData objectAtIndex:indexPath.row];
+            
+            
+            if (!appRecord.profilePhotoImage) // avoid the app icon download if the app already has an icon
+            {
+                [self startIconDownload:appRecord forIndexPath:indexPath];
+            }
+        }
+    }
+    
+    
+}
+
+- (void)appImageDidLoad:(NSIndexPath *)indexPath
+{
+    IconDownloader *iconDownloader = [imageDownloadsInProgress objectForKey:indexPath];
+    if (iconDownloader != nil)
+    {
+        HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:iconDownloader.indexPathInTableView];
+        // Display the newly loaded image
+        cell.photoImage = iconDownloader.appRecord.profilePhotoImage ;
+    }
+    
+    [self.tableView reloadData];
+}
+
+
+#pragma mark -
+#pragma mark Deferred image loading (UIScrollViewDelegate)
+
+// Load images for all onscreen rows when scrolling is finished
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
+    
+    if (!decelerate)
+    {
+        [self loadImagesForOnscreenRows];
+    }
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
+    
+    [self loadImagesForOnscreenRows];
+}
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     
     if(!footerActivated)
@@ -394,9 +506,15 @@
 		[UIView setAnimationDelegate:self];
 		[UIView setAnimationDuration:0.3];
 		[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-		
+        
+        CGRect tableViewFrame = self.tableView.frame;
+        tableViewFrame.origin.y = 64;
+        tableViewFrame.size.height-=64;
+        
+        
 		[bottomNavigationView setHidden:YES];
-		[self.tableView setFrame:CGRectMake(0, 64, 320, 568-64)];
+        [self.tableView setFrame:tableViewFrame];
+		//[self.tableView setFrame:CGRectMake(0, 64, 320, 568-64)];
         
         self.tableView.tableHeaderView=nil;
         
@@ -422,9 +540,119 @@
 		[UIView setAnimationDuration:0.3];
 		[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
 		[bottomNavigationView setHidden:NO];
-        [self.tableView setFrame:CGRectMake(0, 167, 320, 568-167)];
+        CGRect tableViewFrame = self.tableView.frame;
+        tableViewFrame.origin.y = 167;
+        tableViewFrame.size.height-=167;
+        
+        [self.tableView setFrame:tableViewFrame];
+
+//        [self.tableView setFrame:CGRectMake(0, 167, 320, 568-167)];
+        [self.tableView setFrame:tableViewFrame];
 		[UIView commitAnimations];
 		footerActivated = NO;
 	}
 }
+
+#pragma mark - server calls
+
+- (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
+        [(AppDelegate*)[[UIApplication sharedApplication] delegate]hideProgressView];
+    if(serverRequest==kServerCallGetActivities){
+        
+        _homeActivityManager.delegate = nil;
+        [_homeActivityManager releaseServerManager];
+        _homeActivityManager = nil;
+        
+        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
+            
+            id status=[response objectForKey:@"status"];
+            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
+                
+                
+                
+                
+                id activities=[response objectForKey:@"activities"];
+                if (activities != nil && [activities class] != [NSNull class]) {
+                    
+                    
+                    id my_activities=[activities objectForKey:@"my_activities"];
+                    if (my_activities != nil && [my_activities class] != [NSNull class]) {
+                        NSMutableArray *activitiesArray=[[NSMutableArray alloc]init];
+                        for(id el in my_activities){
+                            BeagleActivityClass *actclass=[[BeagleActivityClass alloc]initWithDictionary:el];
+                             [activitiesArray addObject:actclass];
+                        }
+                        self.tableData=[NSArray arrayWithArray:activitiesArray];
+
+                    }
+                    
+                    
+                    
+                }
+                
+                
+                
+
+                
+            }
+        }
+        
+        if([self.tableData count]!=0){
+            if([self.tableData count]>3){
+                footerActivated=false;
+            }
+            //[self tableViewHeight];
+            [self.tableView reloadData];
+        }
+        else{
+            [self.tableView setHidden:YES];
+
+            NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"BlankHomePageView" owner:self options:nil];
+            BlankHomePageView *blankHomePageView=[nib objectAtIndex:0];
+            blankHomePageView.frame=CGRectMake(0, 167, 320, 401);
+            blankHomePageView.userInteractionEnabled=YES;
+            [self.view addSubview:blankHomePageView];
+
+        }
+    }
+}
+
+- (NSInteger)tableViewHeight
+{
+	[self.tableView layoutIfNeeded];
+	NSInteger tableheight;
+	tableheight=[self.tableView contentSize].height;
+    [[NSUserDefaults standardUserDefaults]setObject:[NSNumber numberWithInteger:tableheight] forKey:@"height"];
+	return tableheight;
+}
+- (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
+{
+        [(AppDelegate*)[[UIApplication sharedApplication] delegate]hideProgressView];
+    
+    if(serverRequest==kServerCallGetActivities)
+    {
+        _homeActivityManager.delegate = nil;
+        [_homeActivityManager releaseServerManager];
+        _homeActivityManager = nil;
+    }
+    
+    NSString *message = NSLocalizedString (@"Unable to initiate request.",
+                                           @"NSURLConnection initialization method failed.");
+    BeagleAlertWithMessage(message);
+}
+
+- (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
+{
+        [(AppDelegate*)[[UIApplication sharedApplication] delegate]hideProgressView];
+    if(serverRequest==kServerCallGetActivities)
+    {
+        _homeActivityManager.delegate = nil;
+        [_homeActivityManager releaseServerManager];
+        _homeActivityManager = nil;
+    }
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
+    [alert show];
+}
+
 @end

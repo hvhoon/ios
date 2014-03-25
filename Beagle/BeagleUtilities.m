@@ -170,6 +170,97 @@
     return cropped;
 }
 
++ (UIImage*)circularScaleNCrop:(UIImage*)image rect:(CGRect) rect{
+    // This function returns a newImage, based on image, that has been:
+    // - scaled to fit in (CGRect) rect
+    // - and cropped within a circle of radius: rectWidth/2
+    
+    //Create the bitmap graphics context
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(rect.size.width, rect.size.height), NO, 0.0);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    //Get the width and heights
+    CGFloat imageWidth = image.size.width;
+    CGFloat imageHeight = image.size.height;
+    CGFloat rectWidth = rect.size.width;
+    CGFloat rectHeight = rect.size.height;
+    
+    //Calculate the scale factor
+    CGFloat scaleFactorX = rectWidth/imageWidth;
+    CGFloat scaleFactorY = rectHeight/imageHeight;
+    
+    //Calculate the centre of the circle
+    CGFloat imageCentreX = rectWidth/2;
+    CGFloat imageCentreY = rectHeight/2;
+    
+    // Create and CLIP to a CIRCULAR Path
+    // (This could be replaced with any closed path if you want a different shaped clip)
+    CGFloat radius = rectWidth/2;
+    CGContextBeginPath (context);
+    CGContextAddArc (context, imageCentreX, imageCentreY, radius, 0, 2*M_PI, 0);
+    CGContextClosePath (context);
+    CGContextClip (context);
+    
+    //Set the SCALE factor for the graphics context
+    //All future draw calls will be scaled by this factor
+    CGContextScaleCTM (context, scaleFactorX, scaleFactorY);
+    
+    // Draw the IMAGE
+    CGRect myRect = CGRectMake(0, 0, imageWidth, imageHeight);
+    [image drawInRect:myRect];
+    
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return newImage;
+}
++(NSString*)activityTime:(NSString*)startDate endate:(NSString*)endDate{
+    
+    NSCalendar *gregorian = [[NSCalendar alloc]        initWithCalendarIdentifier:NSGregorianCalendar];
+
+    NSDateComponents *components = [gregorian components:NSWeekdayCalendarUnit | NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit fromDate:[NSDate date]];
+
+    
+    
+    [components setHour:00];
+    [components setMinute:00];
+    [components setSecond:01];
+    NSDate *startOfDay=[gregorian dateFromComponents:components];
+    NSLog(@"startOfDay=%@",startOfDay);
+    
+    [components setHour:23];
+    [components setMinute:59];
+    [components setSecond:59];
+    
+    NSDate *endOfDay=[gregorian dateFromComponents:components];
+    NSLog(@"endOfDay=%@",endOfDay);
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
+    NSTimeZone *gmt = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
+    [dateFormatter setTimeZone:gmt];
+    NSDate *startActivityDate = [dateFormatter dateFromString:startDate];
+    NSDate *endActivityDate = [dateFormatter dateFromString:endDate];
+    NSArray *array = [NSArray arrayWithObjects:startActivityDate,[NSDate date],endActivityDate, nil];
+    
+    array = [array sortedArrayUsingComparator: ^(NSDate *s1, NSDate *s2){
+        
+        return [s1 compare:s2];
+    }];
+    
+    NSUInteger indexOfDay1 = [array indexOfObject:startActivityDate];
+    NSUInteger indexOfDay2 = [array indexOfObject:[NSDate date]];
+    NSUInteger indexOfDay3 = [array indexOfObject:endActivityDate];
+    
+    if (((indexOfDay1 <= indexOfDay2 ) && (indexOfDay2 < indexOfDay3)) ||
+        ((indexOfDay1 >= indexOfDay2 ) && (indexOfDay2 > indexOfDay3))) {
+        NSLog(@"YES");
+        return @"Later Today";
+    } else {
+        NSLog(@"NO");
+    }
 
 
+    return nil;
+}
 @end

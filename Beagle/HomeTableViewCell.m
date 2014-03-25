@@ -11,16 +11,16 @@
 #import "BeagleActivityClass.h"
 @implementation HomeTableViewCell
 @synthesize delegate;
-@synthesize bg_activity;
+@synthesize bg_activity,photoImage;
 static UIFont *firstTextFont = nil;
 static UIFont *secondTextFont = nil;
-static UIFont *boldText = nil;
+static UIFont *thirdTextFont = nil;
 + (void)initialize
 {
 	if(self == [HomeTableViewCell class]){
-        firstTextFont=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14];
-        secondTextFont=[UIFont fontWithName:@"HelveticaNeue-Light" size:11];
-        boldText=[UIFont fontWithName:@"Helvetica-Condensed-Bold" size:15];
+        firstTextFont=[UIFont fontWithName:@"HelveticaNeue" size:17.0f];
+        secondTextFont=[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
+        thirdTextFont=[UIFont fontWithName:@"Helvetica-Condensed-Medium" size:15.0f];
         
     }
 }
@@ -33,62 +33,183 @@ static UIFont *boldText = nil;
     
     UIColor *background;
     UIColor *backgroundColor;
-    background = [UIColor blackColor];
+    background = [UIColor whiteColor];
     backgroundColor = background;
     
     
-    UIColor *textColor =[UIColor blackColor];
     if(self.selected)
     {
         backgroundColor = background;
-        textColor = [UIColor blackColor];
     }
     
     [backgroundColor set];
     
     
-    textColor=[UIColor blackColor];
     CGContextFillRect(context, r);
-    [textColor set];
     
-    // Graphics in the details table cell
-#if 0
-    // Time info.
-    [[UIImage imageNamed:@"S04_smallClock.png"] drawInRect:CGRectMake(50,15,12,12)];
-    [playActivity.dateAndTime drawInRect:CGRectMake(50+25, 12, 200, 15) withFont:firstTextFont];
+    UIImage * originalImage =self.photoImage;
+    CGFloat oImageWidth = originalImage.size.width;
+    CGFloat oImageHeight = originalImage.size.height;
+    // Draw the original image at the origin
+    CGRect newRect = CGRectMake(0, 0, oImageWidth, oImageHeight);
+    UIImage *newImage = [BeagleUtilities circularScaleNCrop:originalImage rect:newRect];
     
-    // First divider
-    [[UIImage imageNamed:@"S04_detailDivider.png"] drawInRect:CGRectMake(22,38,283,1)];
     
-    // Distance info.
-    [[UIImage imageNamed:@"S04_smallLocation.png"] drawInRect:CGRectMake(50,51,12,12)];
-    NSString* distanceInfo = [NSString stringWithFormat:@"%@ miles away", playActivity.distance];
-    [distanceInfo drawInRect:CGRectMake(50+25,48,200,15) withFont:firstTextFont];
+    //Draw the scaled and cropped image
+    CGRect thisRect = CGRectMake(16, 8, 52.5, 52.5);
+    [newImage drawInRect:thisRect];
+    NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+    [style setAlignment:NSTextAlignmentRight];
+    UIColor *color=[UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0];
+    NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+                            secondTextFont, NSFontAttributeName,
+                            color,NSForegroundColorAttributeName,
+                            style, NSParagraphStyleAttributeName, nil];
     
-    // Second divider
-    [[UIImage imageNamed:@"S04_detailDivider.png"] drawInRect:CGRectMake(22,75,283,1)];
+    CGSize dateTextSize = [@"Later Today" boundingRectWithSize:CGSizeMake(300, r.size.height)
+                                                   options:NSStringDrawingUsesLineFragmentOrigin
+                                                attributes:attrs
+                                                   context:nil].size;
     
-    for(DetailInfoActivityClass *detailPlay in [playActivity quotations]){
-     
-        [[UIImage imageNamed:@"S04_smallDOS1.png"] drawInRect:CGRectMake(50-3,88,19,11)];
+    
+    [@"Later Today" drawInRect:CGRectMake(304-dateTextSize.width,
+                                          8,
+                                          dateTextSize.width, dateTextSize.height) withAttributes:attrs];
+
+    
+    [style setAlignment:NSTextAlignmentLeft];
+     attrs=[NSDictionary dictionaryWithObjectsAndKeys:
+     secondTextFont, NSFontAttributeName,
+     [UIColor blackColor],NSForegroundColorAttributeName,
+     style, NSParagraphStyleAttributeName, nil];
+
+    CGSize organizerNameSize=[bg_activity.organizerName boundingRectWithSize:CGSizeMake(300, r.size.height)
+                                 options:NSStringDrawingUsesLineFragmentOrigin
+                              attributes:attrs
+                                 context:nil].size;
+    
+    [bg_activity.organizerName drawInRect:CGRectMake(76,
+                                          52.5-organizerNameSize.height,
+                                          organizerNameSize.width, organizerNameSize.height) withAttributes:attrs];
+    
+    if(bg_activity.dosRelation==0){
+        [[UIImage imageNamed:@"DOS2"] drawInRect:CGRectMake(76+10+organizerNameSize.width, 52.5-15, 27, 15)];
+    }
+    
+    attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+                             firstTextFont, NSFontAttributeName,
+                             [UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
+                             style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
+    
+    CGSize maximumLabelSize = CGSizeMake(288,999);
+    
+    CGRect commentTextRect = [self.bg_activity.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
+                                                               attributes:attrs
+                                                                  context:nil];
+    
+    if([self.bg_activity.activityDesc length]!=0){
+        [self.bg_activity.activityDesc drawInRect:CGRectMake(16,69,commentTextRect.size.width,commentTextRect.size.height) withAttributes:attrs];
+    }
+    
+    [style setAlignment:NSTextAlignmentLeft];
+    attrs =[NSDictionary dictionaryWithObjectsAndKeys:
+    secondTextFont, NSFontAttributeName,
+    color,NSForegroundColorAttributeName,
+    style, NSParagraphStyleAttributeName, nil];
+    
+     CGSize locationTextSize = [self.bg_activity.locationName boundingRectWithSize:CGSizeMake(288, r.size.height)
+                                                   options:NSStringDrawingUsesLineFragmentOrigin
+                                                attributes:attrs
+                                                   context:nil].size;
+    
+    
+    [self.bg_activity.locationName drawInRect:CGRectMake(16,69+8+commentTextRect.size.height,
+                                          locationTextSize.width, locationTextSize.height) withAttributes:attrs];
+
+    
+    
+    [style setAlignment:NSTextAlignmentLeft];
+    attrs=[NSDictionary dictionaryWithObjectsAndKeys:
+           secondTextFont, NSFontAttributeName,
+           [UIColor blackColor],NSForegroundColorAttributeName,
+           style, NSParagraphStyleAttributeName, nil];
+
+    CGSize participantsCountTextSize;
+    if(self.bg_activity.participantsCount>0 && self.bg_activity.dos2Count>0){
+       
+
+        participantsCountTextSize = [[NSString stringWithFormat:@"%ld Interested -  %ld Friends",self.bg_activity.participantsCount,self.bg_activity.dos2Count]  boundingRectWithSize:CGSizeMake(288, r.size.height)
+                                                               options:NSStringDrawingUsesLineFragmentOrigin
+                                                            attributes:attrs
+                                                               context:nil].size;
         
-        NSString *firstLabel=[NSString stringWithFormat:@"%d Friends",detailPlay.DOS_1];
-        [firstLabel drawInRect:CGRectMake(50+25,85,60,15) withFont:firstTextFont];
+        [[NSString stringWithFormat:@"%ld Interested -  %ld Friends",self.bg_activity.participantsCount,self.bg_activity.dos2Count] drawInRect:CGRectMake(16,69+8+commentTextRect.size.height+16+locationTextSize.height,
+                                                             participantsCountTextSize.width, participantsCountTextSize.height) withAttributes:attrs];
         
-        [[UIImage imageNamed:@"S04_smallDOS2.png"] drawInRect:CGRectMake(50+95,88,19,11)];
-        NSString *secondLabel=[NSString stringWithFormat:@"%d Friends of friends",detailPlay.DOS_2];
-        [secondLabel drawInRect:CGRectMake(50+95+25+3,85,280,25) withFont:firstTextFont];
+        
+    }else{
+        
+        participantsCountTextSize = [[NSString stringWithFormat:@"%ld Interested",self.bg_activity.participantsCount]  boundingRectWithSize:CGSizeMake(288, r.size.height)
+                                                                                                                                                                                     options:NSStringDrawingUsesLineFragmentOrigin
+                                                                                                                                                                                  attributes:attrs
+                                                                                                                                                                                     context:nil].size;
+        
+        [[NSString stringWithFormat:@"%ld Interested",self.bg_activity.participantsCount] drawInRect:CGRectMake(16,69+8+commentTextRect.size.height+16+locationTextSize.height,
+                                                                                                                                                          participantsCountTextSize.width, participantsCountTextSize.height) withAttributes:attrs];
+        
+        
+
+    }
+    
+    if(self.bg_activity.isParticipant)
+        [[UIImage imageNamed:@"Star"] drawInRect:CGRectMake(16, 69+8+commentTextRect.size.height+16+locationTextSize.height+participantsCountTextSize.height+16, 16, 15)];
+    else{
+        [[UIImage imageNamed:@"Star"] drawInRect:CGRectMake(16, 69+8+commentTextRect.size.height+16+locationTextSize.height+participantsCountTextSize.height+16, 16, 15)];
         
     }
-    [[UIImage imageNamed:@"S04_sectionDivider.png"] drawInRect:CGRectMake(0,113,320,1)];
-#endif
+    
+    attrs=[NSDictionary dictionaryWithObjectsAndKeys:
+           thirdTextFont, NSFontAttributeName,
+           [UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
+           style, NSParagraphStyleAttributeName, nil];
+
+    CGSize interestedSize = [@"I'm Interested"  boundingRectWithSize:CGSizeMake(288, r.size.height)
+                                                                                                                                                                                 options:NSStringDrawingUsesLineFragmentOrigin
+                                                                                                                                                                              attributes:attrs
+                                                                                                                                                                                 context:nil].size;
+    
+    [@"I'm Interested" drawInRect:CGRectMake(42,1+69+8+commentTextRect.size.height+16+locationTextSize.height+participantsCountTextSize.height+16,
+                                                                                                                                                      interestedSize.width, interestedSize.height) withAttributes:attrs];
+    
+    
+    if(self.bg_activity.postCount>0)
+    [[UIImage imageNamed:@"Comment"] drawInRect:CGRectMake(306-21, 69+8+commentTextRect.size.height+16+locationTextSize.height+participantsCountTextSize.height+16, 21, 18)];
+    else{
+        [[UIImage imageNamed:@"Comment"] drawInRect:CGRectMake(306-21, 69+8+commentTextRect.size.height+16+locationTextSize.height+participantsCountTextSize.height+16, 21, 18)];
+    }
+    
+    [style setAlignment:NSTextAlignmentLeft];
+     attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+                           secondTextFont, NSFontAttributeName,
+                           [UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
+                           style, NSParagraphStyleAttributeName, nil];
+    
+    CGSize postCountTextSize = [[NSString stringWithFormat:@"%ld",self.bg_activity.postCount]  boundingRectWithSize:CGSizeMake(288, r.size.height)
+                                                                        options:NSStringDrawingUsesLineFragmentOrigin
+                                                                     attributes:attrs
+                                                                        context:nil].size;
+    
+    [[NSString stringWithFormat:@"%ld",self.bg_activity.postCount] drawInRect:CGRectMake(300-21- postCountTextSize.width,69+8+commentTextRect.size.height+16+locationTextSize.height+participantsCountTextSize.height+16,
+                                             postCountTextSize.width, postCountTextSize.height) withAttributes:attrs];
+    
+    
+ [[UIImage imageNamed:@"S04_sectionDivider.png"] drawInRect:CGRectMake(0,69+8+commentTextRect.size.height+16+locationTextSize.height+participantsCountTextSize.height+16+postCountTextSize.height,320,8)];
+
 }
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
-    UITouch *touch =[touches anyObject]; 
-    CGPoint startPoint =[touch locationInView:self.contentView];
-    NSLog(@"startpointX=%f",startPoint.x);
-	NSLog(@"Tap Detected");
+//    UITouch *touch =[touches anyObject];
+//    CGPoint startPoint =[touch locationInView:self.contentView];
 
     [super touchesBegan:touches withEvent:event];
 }

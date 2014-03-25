@@ -10,7 +10,8 @@
 
 typedef enum {
     kServerCallUserRegisteration,
-    kServerCallCreateActivity
+    kServerCallCreateActivity,
+    kServerCallGetActivities
 } ServerCallType;
 
 @class ServerManager;
@@ -35,4 +36,5 @@ typedef enum {
 //*************************** API calls ***************************
 -(void)registerPlayerOnBeagle:(BeagleUserClass*)data;
 -(void)createActivityOnBeagle:(BeagleActivityClass*)data;
+-(void)getActivities;
 @end

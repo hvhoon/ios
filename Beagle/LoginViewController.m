@@ -127,7 +127,7 @@
                 id beagleId=[player objectForKey:@"id"];
                 if (beagleId != nil && [beagleId class] != [NSNull class]) {
                   [[[BeagleManager SharedInstance] beaglePlayer]setBeagleUserId:[beagleId integerValue]];
-                    NSLog(@"beagleId=%ld",[beagleId integerValue]);
+                    NSLog(@"beagleId=%ld",(long)[beagleId integerValue]);
                     
                 }
 

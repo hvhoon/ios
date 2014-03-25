@@ -41,7 +41,7 @@
         _internetReachability = [Reachability reachabilityForInternetConnection];
 
 
-        _serverUrl =herokuHost;
+        _serverUrl =localHost;
 
         [self populateErrorCodes];
     }
@@ -125,6 +125,25 @@
     
     
     
+}
+
+
+-(void)getActivities{
+    _serverCallType = kServerCallGetActivities;
+    if([self isInternetAvailable])
+    {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@getactivities.json", _serverUrl]
+                         method:@"GET"
+                         params:[NSDictionary dictionaryWithObjectsAndKeys:
+                                 @"26",@"pid",
+                                 @"40.167",@"lat",
+                                 @"73.94",@"lng",
+                                 nil] data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
 }
 
 -(void)populateErrorCodes
@@ -217,7 +236,9 @@
     else
     {
         request = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:requestUrl]];
-        //[request appendPostData:data];
+        [request setPostBody:[NSMutableData dataWithData:data]];
+
+//        [request appendPostData:data];
 
 //        for (NSString *key in [params allKeys])
 //        {
@@ -228,6 +249,8 @@
 //        }
     }
     
+    
+
     // set headers valid for all requests
     [request setRequestMethod:requestMethod];
 
@@ -237,7 +260,6 @@
     request.allowCompressedResponse = NO;
     request.useCookiePersistence = NO;
     request.shouldCompressRequestBody = NO;
-    [request setPostBody:[NSMutableData dataWithData:data]];
     [request startAsynchronous];
 }
 
