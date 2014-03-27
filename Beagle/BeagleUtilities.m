@@ -255,11 +255,42 @@
     if (((indexOfDay1 <= indexOfDay2 ) && (indexOfDay2 < indexOfDay3)) ||
         ((indexOfDay1 >= indexOfDay2 ) && (indexOfDay2 > indexOfDay3))) {
         NSLog(@"YES");
-        return @"Later Today";
-    } else {
+        NSDateComponents *nowComponents = [gregorian components:NSYearCalendarUnit | NSWeekCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit fromDate:[NSDate date]];
+        
+        [nowComponents setWeekday:7];
+        
+        [nowComponents setHour:0];
+        [nowComponents setMinute:0];
+        [nowComponents setSecond:01];
+        
+        NSDate *satMorning=[gregorian dateFromComponents:nowComponents];
+        
+        [nowComponents setWeekday:0];
+        
+        [nowComponents setHour:23];
+        [nowComponents setMinute:59];
+        [nowComponents setSecond:59];
+        
+        NSDate *sundayEvening=[gregorian dateFromComponents:nowComponents];
+
+        if([[NSDate date] timeIntervalSinceDate:startActivityDate]<0 && (0<[endActivityDate timeIntervalSinceDate:[NSDate date]]<24))
+                 return @"Later Today";
+        else if([[NSDate date] timeIntervalSinceDate:startActivityDate]>0 && (0<[endActivityDate timeIntervalSinceDate:[NSDate date]]<48))
+            return @"Tomorrow";
+        else if(48<[endActivityDate timeIntervalSinceDate:[NSDate date]]<120)
+            return @"This week";
+            
+        else if(0<=[startActivityDate timeIntervalSinceDate:satMorning]<1 && 0<=[endActivityDate timeIntervalSinceDate:sundayEvening]<1){
+                return @"This weekend";
+            }
+
+        }
+     else {
         NSLog(@"NO");
     }
-
+    
+    
+    
 
     return nil;
 }

@@ -41,7 +41,7 @@
         _internetReachability = [Reachability reachabilityForInternetConnection];
 
 
-        _serverUrl =localHost;
+        _serverUrl =herokuHost;
 
         [self populateErrorCodes];
     }
@@ -135,7 +135,7 @@
         [self callServerWithUrl:[NSString stringWithFormat:@"%@getactivities.json", _serverUrl]
                          method:@"GET"
                          params:[NSDictionary dictionaryWithObjectsAndKeys:
-                                 @"26",@"pid",
+                                 [NSNumber numberWithInteger:[[BeagleManager SharedInstance] beaglePlayer].beagleUserId],@"pid",
                                  @"40.167",@"lat",
                                  @"73.94",@"lng",
                                  nil] data:nil];

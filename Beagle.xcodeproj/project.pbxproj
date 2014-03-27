@@ -32,6 +32,7 @@
 		180AF0BB18DC801500EE87D6 /* ABTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 180AF0BA18DC801500EE87D6 /* ABTableViewCell.m */; };
 		180AF0BE18DC805700EE87D6 /* UIView+HidingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 180AF0BD18DC805700EE87D6 /* UIView+HidingView.m */; };
 		180AF0C018DC809E00EE87D6 /* User.plist in Resources */ = {isa = PBXBuildFile; fileRef = 180AF0BF18DC809E00EE87D6 /* User.plist */; };
+		18216B1D18E350A800D9721F /* IconDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 18216B1C18E350A800D9721F /* IconDownloader.m */; };
 		18E7AF0918BBAA1700EBBDE2 /* FacebookLoginSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E7AF0818BBAA1700EBBDE2 /* FacebookLoginSession.m */; };
 		18E7AF0D18BBAA6600EBBDE2 /* BeagleUserClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E7AF0C18BBAA6600EBBDE2 /* BeagleUserClass.m */; };
 		18EBCFDB18CE350600FDC624 /* CustomPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EBCFD518CE350600FDC624 /* CustomPickerView.m */; };
@@ -157,6 +158,8 @@
 		180AF0BC18DC805700EE87D6 /* UIView+HidingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+HidingView.h"; sourceTree = "<group>"; };
 		180AF0BD18DC805700EE87D6 /* UIView+HidingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+HidingView.m"; sourceTree = "<group>"; };
 		180AF0BF18DC809E00EE87D6 /* User.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = User.plist; sourceTree = "<group>"; };
+		18216B1B18E350A800D9721F /* IconDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IconDownloader.h; sourceTree = "<group>"; };
+		18216B1C18E350A800D9721F /* IconDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IconDownloader.m; sourceTree = "<group>"; };
 		18E7AF0718BBAA1700EBBDE2 /* FacebookLoginSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookLoginSession.h; sourceTree = "<group>"; };
 		18E7AF0818BBAA1700EBBDE2 /* FacebookLoginSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookLoginSession.m; sourceTree = "<group>"; };
 		18E7AF0B18BBAA6600EBBDE2 /* BeagleUserClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeagleUserClass.h; sourceTree = "<group>"; };
@@ -370,6 +373,8 @@
 		18007EF418C650F600230C23 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				18216B1B18E350A800D9721F /* IconDownloader.h */,
+				18216B1C18E350A800D9721F /* IconDownloader.m */,
 				18007F0918C6567F00230C23 /* MBProgressHUD.h */,
 				18007F0A18C6567F00230C23 /* MBProgressHUD.m */,
 				18007EF518C6511000230C23 /* BeagleUtilities.h */,
@@ -906,6 +911,7 @@
 				1805CECF18C8D22000AC8556 /* ActivityViewController.m in Sources */,
 				1805CED818C8D25800AC8556 /* TimeFilterView.m in Sources */,
 				18FADB9118B6683000A62287 /* InitialSlidingViewController.m in Sources */,
+				18216B1D18E350A800D9721F /* IconDownloader.m in Sources */,
 				180AF0BE18DC805700EE87D6 /* UIView+HidingView.m in Sources */,
 				18F8F4DB18DA07C700B26AC6 /* UIViewController+MJPopupViewController.m in Sources */,
 				18EC231818B5A42D00316B6E /* ASIInputStream.m in Sources */,
