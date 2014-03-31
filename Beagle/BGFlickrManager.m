@@ -85,7 +85,7 @@ static BGFlickrManager *sharedManager = nil;
         NSString *lat = [[NSNumber numberWithDouble:[BGLocationManager sharedManager].locationBestEffort.coordinate.latitude] stringValue];
         NSString *lon = [[NSNumber numberWithDouble:[BGLocationManager sharedManager].locationBestEffort.coordinate.longitude] stringValue];
         
-        [self.flickrRequest callAPIMethodWithGET:@"flickr.photos.search" arguments:[NSDictionary dictionaryWithObjectsAndKeys:lat, @"lat", lon, @"lon", KFlickrSearchRadiusInMiles, @"radius", @"mi", @"radius_units", [BGLocationManager sharedManager].weatherCondition, @"tags", @"all", @"tag_mode", @"500", @"per_page",@"1",@"has_geo",@"photos",@"content_type",@"1463451@N25",@"group.id",self.flickrRequestInfo.photoId,@"place.id",nil]];
+        [self.flickrRequest callAPIMethodWithGET:@"flickr.photos.search" arguments:[NSDictionary dictionaryWithObjectsAndKeys:lat, @"lat", lon, @"lon", KFlickrSearchRadiusInMiles, @"radius", @"mi", @"radius_units", [BGLocationManager sharedManager].weatherCondition, @"tags", @"all", @"tag_mode", @"500", @"per_page",@"1",@"has_geo",@"photos",@"content_type",@"1463451@N25",@"group.id",self.flickrRequestInfo.photoId,@"place.id",nil] tag:1];
     }
 }
 - (void) photoIdRequest {
@@ -94,7 +94,7 @@ static BGFlickrManager *sharedManager = nil;
         
         NSString *string=[NSString stringWithFormat:@"%@+%2@",[[BGLocationManager sharedManager].placemark.addressDictionary objectForKey:@"City"],[[BGLocationManager sharedManager].placemark administrativeArea]];
         
-        [self.flickrRequest callAPIMethodWithGET:@"flickr.photos.find" arguments:[NSDictionary dictionaryWithObjectsAndKeys:string, @"query",nil]];
+        [self.flickrRequest callAPIMethodWithGET:@"flickr.places.find" arguments:[NSDictionary dictionaryWithObjectsAndKeys:string, @"query",nil] tag:0];
     }
 }
 
@@ -149,7 +149,7 @@ static BGFlickrManager *sharedManager = nil;
                     if (![self.flickrRequest isRunning]) {
                         ((FlickrAPIRequestSessionInfo *)self.flickrRequest.sessionInfo).flickrAPIRequestType = FlickrAPIRequestPhotoSizes;
                         
-                        [self.flickrRequest callAPIMethodWithGET:@"flickr.photos.getSizes" arguments:[NSDictionary dictionaryWithObjectsAndKeys:photoId, @"photo_id", nil]];
+                        [self.flickrRequest callAPIMethodWithGET:@"flickr.photos.getSizes" arguments:[NSDictionary dictionaryWithObjectsAndKeys:photoId, @"photo_id", nil] tag:1];
                     }
                 });
             });
@@ -174,7 +174,7 @@ static BGFlickrManager *sharedManager = nil;
                 if (![self.flickrRequest isRunning]) {
                     ((FlickrAPIRequestSessionInfo *)self.flickrRequest.sessionInfo).flickrAPIRequestType = FlickrAPIRequestPhotoOwner;
                     
-                    [self.flickrRequest callAPIMethodWithGET:@"flickr.people.getInfo" arguments:[NSDictionary dictionaryWithObjectsAndKeys:self.flickrRequestInfo.userId, @"user_id", nil]];
+                    [self.flickrRequest callAPIMethodWithGET:@"flickr.people.getInfo" arguments:[NSDictionary dictionaryWithObjectsAndKeys:self.flickrRequestInfo.userId, @"user_id", nil] tag:1];
                 }
                 
                 break;
@@ -215,23 +215,16 @@ static BGFlickrManager *sharedManager = nil;
     
     else if(((FlickrAPIRequestSessionInfo *)inRequest.sessionInfo).flickrAPIRequestType == FlickrAPIRequestPhotoId) {
         
-        NSDictionary *person = [inResponseDictionary valueForKeyPath:@"person"];
-        NSString *username =  [person valueForKeyPath:@"username._text"];
-        
-        NSString *userInfo = @"";
-        
-        if([username length]) {
-            userInfo = [NSString stringWithFormat:@"© %@", username];
-        }
-        
-        self.flickrRequestInfo.userInfo = userInfo;
-        
+        NSDictionary *places = [inResponseDictionary valueForKeyPath:@"places"];
+        NSArray *place =  [places valueForKeyPath:@"place"];
+        NSDictionary *item=[place objectAtIndex:0];
+        self.flickrRequestInfo.photoId =[item valueForKeyPath:@"place_id"];
+        NSLog(@"test=%@",self.flickrRequestInfo.photoId);
         dispatch_queue_t queue = dispatch_queue_create(kAsyncQueueLabel, NULL);
         dispatch_queue_t main = dispatch_get_main_queue();
         
         dispatch_async(queue, ^{
             
-            self.flickrRequestInfo.photoId = @"1212";
             
             dispatch_async(main, ^{
                 
@@ -240,7 +233,7 @@ static BGFlickrManager *sharedManager = nil;
                 if (![self.flickrRequest isRunning]) {
                     ((FlickrAPIRequestSessionInfo *)self.flickrRequest.sessionInfo).flickrAPIRequestType = FlickrAPIRequestPhotoSearch;
                     
-                    [self.flickrRequest callAPIMethodWithGET:@"flickr.photos.search" arguments:[NSDictionary dictionaryWithObjectsAndKeys:@"night", @"tags", @"tag_mode", @"all", @"photos", @"content_type", @"500", @"per_page",@"1463451%40N25",@"group_id",@"1",@"accuracy",@"Y2r_yNpTULN66Mfu",@"place_id",nil]];
+                    [self.flickrRequest callAPIMethodWithGET:@"flickr.photos.search" arguments:[NSDictionary dictionaryWithObjectsAndKeys:[BGLocationManager sharedManager].weatherCondition, @"tags", @"all",@"tag_mode", @"photos", @"content_type", self.flickrRequestInfo.photoId, @"place_id",@"1463451%40N25",@"group_id",nil] tag:0];
                 }
             });
         });
@@ -250,8 +243,8 @@ static BGFlickrManager *sharedManager = nil;
 - (void) resizeCropPhoto {
     float goldenRatio = 1.6;
     
-    int const constWidth = 320;
-    int const constHeight = 200;
+    int const constWidth = 640;
+    int const constHeight = 334;
     
     int newWidth;
     

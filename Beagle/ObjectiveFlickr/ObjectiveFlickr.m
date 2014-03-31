@@ -38,7 +38,7 @@ typedef unsigned int NSUInteger;
 
 @interface OFFlickrAPIContext (PrivateMethods)
 - (NSArray *)signedArgumentComponentsFromArguments:(NSDictionary *)inArguments useURIEscape:(BOOL)inUseEscape;
-- (NSString *)signedQueryFromArguments:(NSDictionary *)inArguments;
+- (NSString *)signedQueryFromArguments:(NSDictionary *)inArguments tagType:(NSInteger)tagType;
 @end
 
 #define kDefaultFlickrRESTAPIEndpoint		@"http://api.flickr.com/services/rest/"
@@ -146,7 +146,7 @@ typedef unsigned int NSUInteger;
 {
 	NSString *frob = [[inFrob objectForKey:@"frob"] objectForKey:OFXMLTextContentKey];
     NSDictionary *argDict = [frob length] ? [NSDictionary dictionaryWithObjectsAndKeys:frob, @"frob", inPermission, @"perms", nil] : [NSDictionary dictionaryWithObjectsAndKeys:inPermission, @"perms", nil];
-	NSString *URLString = [NSString stringWithFormat:@"%@?%@", authEndpoint, [self signedQueryFromArguments:argDict]];
+	NSString *URLString = [NSString stringWithFormat:@"%@?%@", authEndpoint, [self signedQueryFromArguments:argDict tagType:1]];
 	return [NSURL URLWithString:URLString];
 }
 
@@ -278,9 +278,14 @@ typedef unsigned int NSUInteger;
 }
 
 
-- (NSString *)signedQueryFromArguments:(NSDictionary *)inArguments
+- (NSString *)signedQueryFromArguments:(NSDictionary *)inArguments tagType:(NSInteger)tagType
 {
     NSArray *argComponents = [self signedArgumentComponentsFromArguments:inArguments useURIEscape:YES];
+    if(tagType==0){
+    NSMutableArray *testArray=[NSMutableArray arrayWithArray:argComponents];
+    [testArray removeLastObject];
+    argComponents=[NSArray arrayWithArray:testArray];
+    }
     NSMutableArray *args = [NSMutableArray array];
     NSEnumerator *componentEnumerator = [argComponents objectEnumerator];
     NSArray *nextArg;
@@ -454,8 +459,14 @@ typedef unsigned int NSUInteger;
     [HTTPRequest setContentType:nil];
     return [HTTPRequest performMethod:LFHTTPRequestGETMethod onURL:requestURL withData:nil];
 }
+/*
+http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=36e2980516d0e60864cd29c621a09722&tags=night&tag_mode=all&content_type=photos&group_id=1463451%40N25&place_id=7.MJR8tTVrIO1EgB&format=json&nojsoncallback=1
+ 
+ http://api.flickr.com/services/rest/?accuracy=1&api_key=36e2980516d0e60864cd29c621a09722&content_type=photos&group_id=1463451%2540N25&method=flickr.photos.search&place_id=7.MJR8tTVrIO1EgB&tag_mode=all&tags=Haze
 
-- (BOOL)callAPIMethodWithGET:(NSString *)inMethodName arguments:(NSDictionary *)inArguments
+
+*/
+- (BOOL)callAPIMethodWithGET:(NSString *)inMethodName arguments:(NSDictionary *)inArguments tag:(NSInteger)tag
 {
     if ([HTTPRequest isRunning]) {
         return NO;
@@ -470,7 +481,7 @@ typedef unsigned int NSUInteger;
         requestURL = [context oauthURLFromBaseURL:[NSURL URLWithString:[context RESTAPIEndpoint]] method:LFHTTPRequestGETMethod arguments:newArgs];
     }
     else {
-        NSString *query = [context signedQueryFromArguments:newArgs];
+        NSString *query = [context signedQueryFromArguments:newArgs tagType:tag];
         NSString *URLString = [NSString stringWithFormat:@"%@?%@", [context RESTAPIEndpoint], query];
         requestURL = [NSURL URLWithString:URLString];
     }
@@ -523,7 +534,7 @@ static NSData *NSDataFromOAuthPreferredWebForm(NSDictionary *formDictionary)
         postData = NSDataFromOAuthPreferredWebForm(signedArgs);
     }
     else {    
-        NSString *arguments = [context signedQueryFromArguments:newArgs];
+        NSString *arguments = [context signedQueryFromArguments:newArgs tagType:1];
         postData = [arguments dataUsingEncoding:NSUTF8StringEncoding];
     }
     

@@ -20,14 +20,15 @@
 #import "ServerManager.h"
 #import "IconDownloader.h"
 @interface HomeViewController ()<UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,HomeTableViewCellDelegate,ServerManagerDelegate,IconDownloaderDelegate>{
+    UIView *topNavigationView;
     UIView*bottomNavigationView;
     BOOL footerActivated;
     ServerManager *homeActivityManager;
     NSMutableDictionary *imageDownloadsInProgress;
 }
+@property(nonatomic, weak) NSTimer *timer;
 @property(nonatomic,strong)  NSMutableDictionary *imageDownloadsInProgress;
 @property (nonatomic, strong) NSArray *tableData;
-@property(nonatomic, weak) UIImageView *backgroundPhoto;
 @property(nonatomic, weak) IBOutlet UITableView*tableView;
 @property (strong,nonatomic) NSMutableArray *filteredCandyArray;
 @property(strong,nonatomic)ServerManager *homeActivityManager;
@@ -61,7 +62,7 @@
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 
 }
-
+#define kTimerIntervalInSeconds 10
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -76,10 +77,13 @@
     }
       [self.view addGestureRecognizer:self.slidingViewController.panGesture];
     
-   // [self retrieveLocationAndUpdateBackgroundPhoto];
+        [self retrieveLocationAndUpdateBackgroundPhoto];
     
-     UIImage *stockBottomImage1=[BeagleUtilities imageByCropping:[UIImage imageNamed:@"defaultLocation"] toRect:CGRectMake(0, 0, 320, 64) withOrientation:UIImageOrientationDownMirrored];
-    UIView *topNavigationView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 64)];
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:kTimerIntervalInSeconds target:self selector:@selector(retrieveLocationAndUpdateBackgroundPhoto)userInfo:nil repeats:YES];
+
+    
+    UIImage *stockBottomImage1=[BeagleUtilities imageByCropping:[UIImage imageNamed:@"defaultLocation"] toRect:CGRectMake(0, 0, 320, 64) withOrientation:UIImageOrientationDownMirrored];
+    topNavigationView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 64)];
     
     topNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockBottomImage1];
     [self.view addSubview:topNavigationView];
@@ -249,6 +253,7 @@
                                 
                                 if(!error) {
                                     NSLog(@"Url=%@",flickrRequestInfo.userPhotoWebPageURL);
+                                    [self.timer invalidate];
                                     
                                     [self crossDissolvePhotos:flickrRequestInfo.photo withTitle:flickrRequestInfo.userInfo];
                                 } else {
@@ -293,9 +298,16 @@
 }
 
 - (void) crossDissolvePhotos:(UIImage *) photo withTitle:(NSString *) title {
-    [UIView transitionWithView:self.backgroundPhoto duration:1.0f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+    [UIView transitionWithView:self.view duration:1.0f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
         
-        self.backgroundPhoto.image =photo;
+        
+        UIImage *stockBottomImage1=[BeagleUtilities imageByCropping:photo toRect:CGRectMake(0, 0, 320, 64) withOrientation:UIImageOrientationDownMirrored];
+        
+        topNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockBottomImage1];
+        
+        
+        UIImage *stockBottomImage2=[BeagleUtilities imageByCropping:photo toRect:CGRectMake(0, 64, 320, 103) withOrientation:UIImageOrientationDownMirrored];
+        bottomNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockBottomImage2];
         
     } completion:NULL];
 }
