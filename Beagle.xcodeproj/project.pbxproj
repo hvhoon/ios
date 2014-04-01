@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		18007ED218C64D0300230C23 /* BGLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 18007ED118C64D0300230C23 /* BGLocationManager.m */; };
 		18007ED818C64EDD00230C23 /* BGFlickrManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 18007ED718C64EDD00230C23 /* BGFlickrManager.m */; };
 		18007EEE18C6508200230C23 /* LFHTTPRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 18007EE218C6508200230C23 /* LFHTTPRequest.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		18007EEF18C6508200230C23 /* LFSiteReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 18007EE418C6508200230C23 /* LFSiteReachability.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -110,8 +109,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		18007ED018C64D0300230C23 /* BGLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGLocationManager.h; sourceTree = "<group>"; };
-		18007ED118C64D0300230C23 /* BGLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGLocationManager.m; sourceTree = "<group>"; };
 		18007ED418C64D6D00230C23 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		18007ED618C64EDD00230C23 /* BGFlickrManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGFlickrManager.h; sourceTree = "<group>"; };
 		18007ED718C64EDD00230C23 /* BGFlickrManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGFlickrManager.m; sourceTree = "<group>"; };
@@ -315,15 +312,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		18007ECF18C64CF000230C23 /* Location Manager */ = {
-			isa = PBXGroup;
-			children = (
-				18007ED018C64D0300230C23 /* BGLocationManager.h */,
-				18007ED118C64D0300230C23 /* BGLocationManager.m */,
-			);
-			name = "Location Manager";
-			sourceTree = "<group>";
-		};
 		18007ED318C64D5900230C23 /* Constants */ = {
 			isa = PBXGroup;
 			children = (
@@ -537,7 +525,6 @@
 				18007EF418C650F600230C23 /* Utilities */,
 				18007ED518C64ED100230C23 /* Flickr */,
 				18007ED318C64D5900230C23 /* Constants */,
-				18007ECF18C64CF000230C23 /* Location Manager */,
 				18E7AF0A18BBAA5000EBBDE2 /* Model */,
 				18E7AF0618BBAA0400EBBDE2 /* Facebook */,
 				18FADBA018B66A6600A62287 /* Notifications Screen */,
@@ -879,7 +866,6 @@
 				18007F0B18C6568000230C23 /* MBProgressHUD.m in Sources */,
 				18EC232718B5A42D00316B6E /* SBJsonParser.m in Sources */,
 				18007EEF18C6508200230C23 /* LFSiteReachability.m in Sources */,
-				18007ED218C64D0300230C23 /* BGLocationManager.m in Sources */,
 				18EC231118B5A42D00316B6E /* ServerManager.m in Sources */,
 				18007F0118C6541200230C23 /* UIImage+Alpha.m in Sources */,
 				18EC231718B5A42D00316B6E /* ASIHTTPRequest.m in Sources */,

@@ -7,12 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreLocation/CoreLocation.h>
 @class BeagleUserClass;
 @interface BeagleManager : NSObject{
    
     BeagleUserClass *beaglePlayer;
 }
+@property (nonatomic,strong)CLLocation *currentLocation;
 @property(nonatomic,strong)BeagleUserClass*beaglePlayer;
+@property(nonatomic,strong)CLPlacemark *placemark;
+@property(nonatomic,strong)NSString *weatherCondition;
 + (id)SharedInstance;
 -(void)userProfileDataUpdate;
 -(void)getUserObjectInAutoSignInMode;

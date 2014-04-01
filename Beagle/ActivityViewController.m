@@ -266,12 +266,11 @@ enum Weeks {
     bg_activity.city=@"New York";
     bg_activity.state=@"NY";
     bg_activity.timeFilter=@"Next Weekend";
-    bg_activity.latitude=40.67;
-    bg_activity.longitude=73.94;
+    bg_activity.latitude=[[BeagleManager SharedInstance]currentLocation].coordinate.latitude;
+    bg_activity.longitude=[[BeagleManager SharedInstance]currentLocation].coordinate.longitude;
 
     bg_activity.ownerid=[[BeagleManager SharedInstance]beaglePlayer].beagleUserId;
     
-    bg_activity.ownerid=26;
     if(self.activityServerManager!=nil){
         self.activityServerManager.delegate = nil;
         [self.activityServerManager releaseServerManager];
@@ -328,7 +327,7 @@ enum Weeks {
             NSLog(@"j=%d",j);
             
 			j = j-1 ;
-			countTextLabel.text= [[NSString alloc] initWithFormat:@"%lu",141-[textView.text length]];
+			countTextLabel.text= [[NSString alloc] initWithFormat:@"%u",141-[textView.text length]];
             
 			return YES;
 		}
@@ -344,7 +343,7 @@ enum Weeks {
 	}
 	if(flag == NO)
 	{
-		countTextLabel.text= [[NSString alloc] initWithFormat:@"%lu",140-[descriptionTextView.text length]-1];
+		countTextLabel.text= [[NSString alloc] initWithFormat:@"%u",140-[descriptionTextView.text length]-1];
 		
 		
 	}

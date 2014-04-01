@@ -11,6 +11,15 @@
 #import "ECSlidingViewController.h"
 #import "SettingsViewController.h"
 #import "NotificationsViewController.h"
-@interface HomeViewController : UIViewController
+#import <CoreLocation/CoreLocation.h>
+@interface HomeViewController : UIViewController<CLLocationManagerDelegate>
+@property (nonatomic, strong) CLLocation *currentLocation;
+@property (nonatomic, strong) CLLocationManager *_locationManager;
+- (void)locationManager:(CLLocationManager *)manager
+    didUpdateToLocation:(CLLocation *)newLocation
+           fromLocation:(CLLocation *)oldLocation;
 
+- (void)locationManager:(CLLocationManager *)manager
+       didFailWithError:(NSError *)error;
+- (void)startStandardUpdates;
 @end

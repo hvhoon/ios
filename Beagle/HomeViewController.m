@@ -10,7 +10,6 @@
 #import <Crashlytics/Crashlytics.h>
 #import "Constants.h"
 #import "BGFlickrManager.h"
-#import "BGLocationManager.h"
 #import "ASIHTTPRequest.h"
 #import "ActivityViewController.h"
 #import "UIView+HidingView.h"
@@ -37,6 +36,9 @@
 @implementation HomeViewController
 @synthesize homeActivityManager=_homeActivityManager;
 @synthesize imageDownloadsInProgress;
+@synthesize currentLocation;
+@synthesize _locationManager = locationManager;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -55,13 +57,120 @@
 {
     [self.slidingViewController anchorTopViewTo:ECLeft];
 }
+- (void)startStandardUpdates {
+    
+	if (nil == locationManager) {
+		locationManager = [[CLLocationManager alloc] init];
+	}
+    
+	locationManager.delegate = self;
+	locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+    
+	// Set a movement threshold for new events.
+	locationManager.distanceFilter = kCLLocationAccuracyNearestTenMeters;
+    
+	[locationManager startUpdatingLocation];
+    
+	CLLocation *currentLoc = locationManager.location;
+	if (currentLoc) {
+		self.currentLocation = currentLoc;
+	}
+}
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+	NSLog(@"%s", __PRETTY_FUNCTION__);
+	switch (status) {
+		case kCLAuthorizationStatusAuthorized:
+			NSLog(@"kCLAuthorizationStatusAuthorized");
+			[locationManager startUpdatingLocation];
+			break;
+		case kCLAuthorizationStatusDenied:
+			NSLog(@"kCLAuthorizationStatusDenied");
+        {{
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Mobbin can’t access your current location.\n\nTo view nearby checkins at your current location, turn on access for Mobbin to your location in the Settings app under Location Services." message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+            [alertView show];
+            // Disable the post button.
+        }}
+			break;
+		case kCLAuthorizationStatusNotDetermined:
+			NSLog(@"kCLAuthorizationStatusNotDetermined");
+			break;
+		case kCLAuthorizationStatusRestricted:
+			NSLog(@"kCLAuthorizationStatusRestricted");
+			break;
+	}
+}
+
+- (void)locationManager:(CLLocationManager *)manager
+    didUpdateToLocation:(CLLocation *)newLocation
+           fromLocation:(CLLocation *)oldLocation {
+	NSLog(@"%s", __PRETTY_FUNCTION__);
+    
+    self.currentLocation=newLocation;
+}
+- (void)locationManager:(CLLocationManager *)manager
+       didFailWithError:(NSError *)error {
+	NSLog(@"%s", __PRETTY_FUNCTION__);
+	NSLog(@"Error: %@", [error description]);
+    
+	if (error.code == kCLErrorDenied) {
+		[locationManager stopUpdatingLocation];
+	} else if (error.code == kCLErrorLocationUnknown) {
+		// todo: retry?
+		// set a timer for five seconds to cycle location, and if it fails again, bail and tell the user.
+	} else {
+		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error retrieving location"
+		                                                message:[error description]
+		                                               delegate:nil
+		                                      cancelButtonTitle:nil
+		                                      otherButtonTitles:@"Ok", nil];
+		[alert show];
+	}
+}
+- (void)setCurrentLocation:(CLLocation *)aCurrentLocation {
+	currentLocation = aCurrentLocation;
+    BeagleManager *BG=[BeagleManager SharedInstance];
+    BG.currentLocation=currentLocation;
+    [locationManager stopUpdatingLocation];
+    locationManager.delegate=nil;
+    
+	dispatch_async(dispatch_get_main_queue(), ^{
+        
+        
+        [self LocationAcquired];
+	});
+}
+
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    
+    if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
+        
+#if 1
+        if(_homeActivityManager!=nil){
+            _homeActivityManager.delegate = nil;
+            [_homeActivityManager releaseServerManager];
+            _homeActivityManager = nil;
+        }
+        [(AppDelegate*)[[UIApplication sharedApplication] delegate]showProgressIndicator:3];
+        
+        _homeActivityManager=[[ServerManager alloc]init];
+        _homeActivityManager.delegate=self;
+        [_homeActivityManager getActivities];
+#endif
+        
+        
+    }
+    else{
+        [self startStandardUpdates];
+    }
+
 
 }
+
+
 #define kTimerIntervalInSeconds 10
 - (void)viewDidLoad
 {
@@ -77,9 +186,6 @@
     }
       [self.view addGestureRecognizer:self.slidingViewController.panGesture];
     
-        [self retrieveLocationAndUpdateBackgroundPhoto];
-    
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:kTimerIntervalInSeconds target:self selector:@selector(retrieveLocationAndUpdateBackgroundPhoto)userInfo:nil repeats:YES];
 
     
     UIImage *stockBottomImage1=[BeagleUtilities imageByCropping:[UIImage imageNamed:@"defaultLocation"] toRect:CGRectMake(0, 0, 320, 64) withOrientation:UIImageOrientationDownMirrored];
@@ -96,36 +202,7 @@
     [self.view addSubview:bottomNavigationView];
 
     
-    CGSize size = CGSizeMake(180,999);
-    
-    /// Make a copy of the default paragraph style
-    NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-    /// Set line break mode
-    paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
-    /// Set text alignment
-    paragraphStyle.alignment = NSTextAlignmentLeft;
-    
-
-    CGRect textRect = [@"New York"
-                       boundingRectWithSize:size
-                       options:NSStringDrawingUsesLineFragmentOrigin
-                       attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Light" size:30.0],NSForegroundColorAttributeName:[UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:0.95],NSParagraphStyleAttributeName: paragraphStyle, }
-                       context:nil];
-    
-    
-    UILabel *fromLabel = [[UILabel alloc]initWithFrame:CGRectMake(16,22, textRect.size.width, textRect.size.height)];
-    fromLabel.text = @"New York";
-    fromLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:30.0];
-    fromLabel.numberOfLines = 1;
-    fromLabel.baselineAdjustment = UIBaselineAdjustmentAlignBaselines;
-    fromLabel.adjustsFontSizeToFitWidth = YES;
-    fromLabel.adjustsFontSizeToFitWidth = YES;
-    fromLabel.clipsToBounds = YES;
-    fromLabel.backgroundColor = [UIColor clearColor];
-    fromLabel.textColor = [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:0.95];
-    fromLabel.textAlignment = NSTextAlignmentLeft;
-    [topNavigationView addSubview:fromLabel];
-    
+    [self addCityName:@"New York"];
     UIButton *eventButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [eventButton addTarget:self action:@selector(createANewActivity:)forControlEvents:UIControlEventTouchUpInside];
     [eventButton setTitle:@"+" forState:UIControlStateNormal];
@@ -154,24 +231,53 @@
     self.tableView.tableHeaderView=[self renderTableHeaderView];
     footerActivated=YES;
     
-
-#if 1
-    if(_homeActivityManager!=nil){
-        _homeActivityManager.delegate = nil;
-        [_homeActivityManager releaseServerManager];
-        _homeActivityManager = nil;
-    }
-    [(AppDelegate*)[[UIApplication sharedApplication] delegate]showProgressIndicator:3];
     
-    _homeActivityManager=[[ServerManager alloc]init];
-    _homeActivityManager.delegate=self;
-    [_homeActivityManager getActivities];
-#endif
+
+
 	// Do any additional setup after loading the view.
     
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
     [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     [self.tableView addSubview:refreshControl];
+}
+
+-(void)addCityName:(NSString*)name{
+    
+    UILabel *textLabel=(UILabel*)[self.view viewWithTag:1234];
+    if(textLabel!=nil){
+        [textLabel removeFromSuperview];
+    }
+    CGSize size = CGSizeMake(180,999);
+    
+    /// Make a copy of the default paragraph style
+    NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+    /// Set line break mode
+    paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
+    /// Set text alignment
+    paragraphStyle.alignment = NSTextAlignmentLeft;
+    
+    
+    CGRect textRect = [name
+                       boundingRectWithSize:size
+                       options:NSStringDrawingUsesLineFragmentOrigin
+                       attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Light" size:30.0],NSForegroundColorAttributeName:[UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:0.95],NSParagraphStyleAttributeName: paragraphStyle, }
+                       context:nil];
+    
+    
+    UILabel *fromLabel = [[UILabel alloc]initWithFrame:CGRectMake(16,22, textRect.size.width, textRect.size.height)];
+    fromLabel.text = name;
+    fromLabel.tag=1234;
+    fromLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:30.0];
+    fromLabel.numberOfLines = 1;
+    fromLabel.baselineAdjustment = UIBaselineAdjustmentAlignBaselines;
+    fromLabel.adjustsFontSizeToFitWidth = YES;
+    fromLabel.adjustsFontSizeToFitWidth = YES;
+    fromLabel.clipsToBounds = YES;
+    fromLabel.backgroundColor = [UIColor clearColor];
+    fromLabel.textColor = [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:0.95];
+    fromLabel.textAlignment = NSTextAlignmentLeft;
+    [topNavigationView addSubview:fromLabel];
+
 }
 - (void)refresh:(UIRefreshControl *)refreshControl {
     
@@ -188,6 +294,25 @@
     [refreshControl endRefreshing];
 
 }
+-(void)LocationAcquired{
+    
+    [self retrieveLocationAndUpdateBackgroundPhoto];
+    
+//    self.timer = [NSTimer scheduledTimerWithTimeInterval:kTimerIntervalInSeconds target:self selector:@selector(retrieveLocationAndUpdateBackgroundPhoto)userInfo:nil repeats:YES];
+    
+    if(_homeActivityManager!=nil){
+        _homeActivityManager.delegate = nil;
+        [_homeActivityManager releaseServerManager];
+        _homeActivityManager = nil;
+    }
+    [(AppDelegate*)[[UIApplication sharedApplication] delegate]showProgressIndicator:3];
+    
+    _homeActivityManager=[[ServerManager alloc]init];
+    _homeActivityManager.delegate=self;
+    [_homeActivityManager getActivities];
+
+
+}
 -(void)createANewActivity:(id)sender{
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     ActivityViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"activityScreen"];
@@ -198,15 +323,11 @@
 }
 - (void) retrieveLocationAndUpdateBackgroundPhoto {
     
-    //Location
-    [[BGLocationManager sharedManager] locationRequest:^(CLLocation * location, NSError * error) {
-        
-        
-        if(!error) {
-            
+    
             
             CLGeocoder * geoCoder = [[CLGeocoder alloc] init];
-            CLLocation *newLocation=[[CLLocation alloc]initWithLatitude:[[NSNumber numberWithDouble:[BGLocationManager sharedManager].locationBestEffort.coordinate.latitude] doubleValue] longitude:[[NSNumber numberWithDouble:[BGLocationManager sharedManager].locationBestEffort.coordinate.longitude] doubleValue]];
+            CLLocation *newLocation=[[CLLocation alloc]initWithLatitude:[[BeagleManager SharedInstance]currentLocation].coordinate.latitude longitude:[[BeagleManager SharedInstance]currentLocation].coordinate.longitude];
+    
              [geoCoder reverseGeocodeLocation:newLocation completionHandler:^(NSArray *placemarks, NSError *error) {
                 
                 if(!error) {
@@ -220,8 +341,10 @@
                     
 #endif
                     
+                    BeagleManager *BG=[BeagleManager SharedInstance];
+                    BG.placemark=placemark;
                     
-                    [BGLocationManager sharedManager].placemark=placemark;
+                    [self addCityName:[BG.placemark.addressDictionary objectForKey:@"City"]];
                     
                     urlString = [urlString stringByReplacingOccurrencesOfString:@" " withString:@""];
                     NSURL *url = [NSURL URLWithString:urlString];
@@ -244,7 +367,7 @@
 
 #endif
                             NSLog(@"weather=%@",weather);
-                        [BGLocationManager sharedManager].weatherCondition=weather;
+                        BG.weatherCondition=weather;
                         
                         
 
@@ -262,6 +385,7 @@
                                     [self crossDissolvePhotos:[UIImage imageNamed:@"defaultLocation"] withTitle:@""];
                                     
                                     NSLog(@"Flickr: %@", error.description);
+                                    [self retrieveLocationAndUpdateBackgroundPhoto];
                                 }
                             }];
 
@@ -284,18 +408,11 @@
                 }
                 else{
                      NSLog(@"reverseGeocodeLocation: %@", error.description);
+                    [self retrieveLocationAndUpdateBackgroundPhoto];
                 }
             }];
-        } else {
-            
-            //Error : Stock photos
-                [self crossDissolvePhotos:[UIImage imageNamed:@"defaultLocation"] withTitle:@""];
-            
-            
-            NSLog(@"Location: %@", error.description);
-        }
-    }];
 }
+
 
 - (void) crossDissolvePhotos:(UIImage *) photo withTitle:(NSString *) title {
     [UIView transitionWithView:self.view duration:1.0f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
@@ -587,10 +704,10 @@
                 if (activities != nil && [activities class] != [NSNull class]) {
                     
                     
-                    id my_activities=[activities objectForKey:@"my_activities"];
-                    if (my_activities != nil && [my_activities class] != [NSNull class]) {
+                    id crtbyu=[activities objectForKey:@"beagle_crtbyu"];
+                    if (crtbyu != nil && [crtbyu class] != [NSNull class]) {
                         NSMutableArray *activitiesArray=[[NSMutableArray alloc]init];
-                        for(id el in my_activities){
+                        for(id el in crtbyu){
                             BeagleActivityClass *actclass=[[BeagleActivityClass alloc]initWithDictionary:el];
                              [activitiesArray addObject:actclass];
                         }
@@ -610,6 +727,11 @@
         }
         
         if([self.tableData count]!=0){
+            
+            [self.tableView setHidden:NO];
+            
+            BlankHomePageView *blankHomePageView=(BlankHomePageView*)[self.view  viewWithTag:1245];
+            [blankHomePageView setHidden:YES];
             if([self.tableData count]>3){
                 footerActivated=false;
             }
@@ -623,6 +745,7 @@
             BlankHomePageView *blankHomePageView=[nib objectAtIndex:0];
             blankHomePageView.frame=CGRectMake(0, 167, 320, 401);
             blankHomePageView.userInteractionEnabled=YES;
+            blankHomePageView.tag=1245;
             [self.view addSubview:blankHomePageView];
 
         }

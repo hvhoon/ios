@@ -31,7 +31,6 @@
 }
 -(IBAction)signInUsingFacebookClicked:(id)sender{
     
-//    [self pushToHomeScreen];
     [activityIndicatorView setHidden:NO];
     [activityIndicatorView startAnimating];
     

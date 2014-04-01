@@ -10,7 +10,7 @@
 #import "BeagleManager.h"
 #import "BeagleUserClass.h"
 @implementation BeagleManager
-@synthesize beaglePlayer;
+@synthesize beaglePlayer,currentLocation,placemark,weatherCondition;
 + (id) SharedInstance {
 	static id sharedManager = nil;
 	
