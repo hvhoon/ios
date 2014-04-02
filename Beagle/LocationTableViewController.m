@@ -14,8 +14,8 @@
 @end
 
 @implementation LocationTableViewController
-@synthesize candyArray;
-@synthesize filteredCandyArray;
+@synthesize locationArray;
+@synthesize filteredLocationArray;
 @synthesize candySearchBar;
 @synthesize delegate;
 - (UIStatusBarStyle)preferredStatusBarStyle{
@@ -53,22 +53,24 @@
 //    newBounds.origin.y = newBounds.origin.y + candySearchBar.bounds.size.height;
 //    [[self tableView] setBounds:newBounds];
 
-    /*** Sample Data for candyArray ***/
+
     
-    candyArray = [NSArray arrayWithObjects:
-                  [Location locationCategory:@"chocolate" name:@"chocolate bar"],
-                  [Location locationCategory:@"chocolate" name:@"chocolate chip"],
-                  [Location locationCategory:@"chocolate" name:@"dark chocolate"],
-                  [Location locationCategory:@"hard" name:@"lollipop"],
-                  [Location locationCategory:@"hard" name:@"candy cane"],
-                  [Location locationCategory:@"hard" name:@"jaw breaker"],
-                  [Location locationCategory:@"other" name:@"caramel"],
-                  [Location locationCategory:@"other" name:@"sour chew"],
-                  [Location locationCategory:@"other" name:@"peanut butter cup"],
-                  [Location locationCategory:@"other" name:@"gummi bear"], nil];
+    self.locationArray = [NSArray arrayWithObjects:
+                  [Location locationCategory:@"location" name:@"Alabama,AL"],
+                  [Location locationCategory:@"location" name:@"Alaska,AK"],
+                  [Location locationCategory:@"location" name:@"Arkansas,AR"],
+                  [Location locationCategory:@"location" name:@"Washington,WA"],
+                  [Location locationCategory:@"location" name:@"Texas,TX"],
+                  [Location locationCategory:@"location" name:@"Virginia,VA"],
+                  [Location locationCategory:@"location" name:@"Pennsylvania,PA"],
+                  [Location locationCategory:@"location" name:@"Tennessee,TN"],
+                  [Location locationCategory:@"location" name:@"Vermont,VT"],
+                  [Location locationCategory:@"location" name:@"Wyoming,WY"],
+
+                  [Location locationCategory:@"other" name:@"Arizona,AZ"], nil];
     
     // Initialize the filteredCandyArray with a capacity equal to the candyArray's capacity
-    filteredCandyArray = [NSMutableArray arrayWithCapacity:[candyArray count]];
+    self.filteredLocationArray = [NSMutableArray arrayWithCapacity:[self.locationArray count]];
     
     // Reload the table
     [[self tableView] reloadData];
@@ -95,7 +97,7 @@
 }
 - (void) searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller{
     [candySearchBar resignFirstResponder];
-    [delegate cancelButtonClicked3:self];
+    [delegate dismissLocationTable:self];
     
 }
 -(void)handleSingleTap:(UITapGestureRecognizer*)sender{
@@ -104,7 +106,7 @@
 - (void)searchBarCancelButtonClicked:(UISearchBar *)aSearchBar
 {
     [candySearchBar resignFirstResponder];
-    [delegate cancelButtonClicked3:self];
+    [delegate dismissLocationTable:self];
 
     
     
@@ -129,11 +131,11 @@
     // Check to see whether the normal table or search results table is being displayed and return the count from the appropriate array
     if (tableView == self.searchDisplayController.searchResultsTableView)
 	{
-        return [filteredCandyArray count];
+        return [self.filteredLocationArray count];
     }
 	else
 	{
-        return [candyArray count];
+        return [self.locationArray count];
     }
 }
 
@@ -157,11 +159,11 @@
     // Check to see whether the normal table or search results table is being displayed and set the Candy object from the appropriate array
     if (tableView == self.searchDisplayController.searchResultsTableView)
 	{
-        candy = [filteredCandyArray objectAtIndex:[indexPath row]];
+        candy = [self.filteredLocationArray objectAtIndex:[indexPath row]];
     }
 	else
 	{
-        candy = [candyArray objectAtIndex:[indexPath row]];
+        candy = [self.locationArray objectAtIndex:[indexPath row]];
     }
     
     // Configure the cell
@@ -176,7 +178,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    [delegate cancelButtonClicked3:self];
+    [delegate dismissLocationTable:self];
 }
 
 
@@ -187,14 +189,14 @@
 	// Update the filtered array based on the search text and scope.
 	
     // Remove all objects from the filtered search array
-	[self.filteredCandyArray removeAllObjects];
+	[self.filteredLocationArray removeAllObjects];
     
 	// Filter the array using NSPredicate
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.name contains[c] %@",searchText];
-    NSArray *tempArray = [candyArray filteredArrayUsingPredicate:predicate];
+    NSArray *tempArray = [self.locationArray filteredArrayUsingPredicate:predicate];
     
     
-    filteredCandyArray = [NSMutableArray arrayWithArray:tempArray];
+    self.filteredLocationArray = [NSMutableArray arrayWithArray:tempArray];
 }
 
 
@@ -227,25 +229,4 @@
 - (void)searchDisplayController:(UISearchDisplayController *)controller didHideSearchResultsTableView:(UITableView *)tableView{
     
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @end

@@ -218,7 +218,6 @@
                                 <rect key="frame" x="41" y="280" width="111" height="17"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="17" id="9eR-e5-73u"/>
                                     <constraint firstAttribute="height" constant="17" id="eMJ-Sh-V4k"/>
                                 </constraints>
                                 <state key="normal" title="Next Weekend">
@@ -274,6 +273,7 @@
                             <constraint firstItem="8k2-Wd-CIH" firstAttribute="top" secondItem="FOF-FV-DTm" secondAttribute="top" id="Fip-Xe-9Wc"/>
                             <constraint firstItem="3MQ-a9-lKU" firstAttribute="leading" secondItem="DL6-bG-I82" secondAttribute="trailing" constant="3" id="ObL-ZO-r87"/>
                             <constraint firstItem="1A7-qG-45x" firstAttribute="top" secondItem="HMZ-Fh-jty" secondAttribute="bottom" constant="21" id="WNB-JB-99a"/>
+                            <constraint firstItem="3MQ-a9-lKU" firstAttribute="top" secondItem="8k2-Wd-CIH" secondAttribute="bottom" constant="14" id="ZCz-Cr-MMI"/>
                             <constraint firstItem="FOF-FV-DTm" firstAttribute="top" secondItem="9iY-EO-BXw" secondAttribute="bottom" constant="16" id="aN9-ih-Yvh"/>
                             <constraint firstItem="Bme-OF-b41" firstAttribute="top" secondItem="8k2-Wd-CIH" secondAttribute="bottom" constant="14" id="aS0-Ck-OJC"/>
                             <constraint firstAttribute="trailing" secondItem="3MQ-a9-lKU" secondAttribute="trailing" constant="16" id="bBy-nN-F63"/>

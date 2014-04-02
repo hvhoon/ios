@@ -175,7 +175,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.imageDownloadsInProgress = [NSMutableDictionary dictionary];
 
     if (![self.slidingViewController.underLeftViewController isKindOfClass:[SettingsViewController class]]) {
         self.slidingViewController.underLeftViewController  = [self.storyboard instantiateViewControllerWithIdentifier:@"settingsScreen"];
@@ -296,9 +295,26 @@
 }
 -(void)LocationAcquired{
     
-    [self retrieveLocationAndUpdateBackgroundPhoto];
     
-//    self.timer = [NSTimer scheduledTimerWithTimeInterval:kTimerIntervalInSeconds target:self selector:@selector(retrieveLocationAndUpdateBackgroundPhoto)userInfo:nil repeats:YES];
+    
+    CLGeocoder * geoCoder = [[CLGeocoder alloc] init];
+    CLLocation *newLocation=[[CLLocation alloc]initWithLatitude:[[BeagleManager SharedInstance]currentLocation].coordinate.latitude longitude:[[BeagleManager SharedInstance]currentLocation].coordinate.longitude];
+    
+    [geoCoder reverseGeocodeLocation:newLocation completionHandler:^(NSArray *placemarks, NSError *error) {
+        
+        if(!error) {
+            BeagleManager *BG=[BeagleManager SharedInstance];
+                BG.placemark=[placemarks objectAtIndex:0];
+                [self addCityName:[BG.placemark.addressDictionary objectForKey:@"City"]];
+
+                [self retrieveLocationAndUpdateBackgroundPhoto];
+            }
+                else{
+                    NSLog(@"reverseGeocodeLocation: %@", error.description);
+                }
+            }];
+
+    
     
     if(_homeActivityManager!=nil){
         _homeActivityManager.delegate = nil;
@@ -324,28 +340,19 @@
 - (void) retrieveLocationAndUpdateBackgroundPhoto {
     
     
-            
-            CLGeocoder * geoCoder = [[CLGeocoder alloc] init];
-            CLLocation *newLocation=[[CLLocation alloc]initWithLatitude:[[BeagleManager SharedInstance]currentLocation].coordinate.latitude longitude:[[BeagleManager SharedInstance]currentLocation].coordinate.longitude];
+                   BeagleManager *BG=[BeagleManager SharedInstance];
+
     
-             [geoCoder reverseGeocodeLocation:newLocation completionHandler:^(NSArray *placemarks, NSError *error) {
-                
-                if(!error) {
-                for (CLPlacemark * placemark in placemarks) {
-                    
 #if 0
-                    NSString *urlString=[NSString stringWithFormat:@"http://api.wunderground.com/api/5706a66cb7258dd4/conditions/q/%@/%@.json",placemark.administrativeArea,[placemark.addressDictionary objectForKey:@"City"]];
+                    NSString *urlString=[NSString stringWithFormat:@"http://api.wunderground.com/api/5706a66cb7258dd4/conditions/q/%@/%@.json",BG.placemark.administrativeArea,[BG.placemark.addressDictionary objectForKey:@"City"]];
                     
 #else
-                    NSString *urlString=[NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f",placemark.location.coordinate.latitude,placemark.location.coordinate.longitude];
+                    NSString *urlString=[NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f",BG.placemark.location.coordinate.latitude,BG.placemark.location.coordinate.longitude];
                     
 #endif
                     
-                    BeagleManager *BG=[BeagleManager SharedInstance];
-                    BG.placemark=placemark;
                     
-                    [self addCityName:[BG.placemark.addressDictionary objectForKey:@"City"]];
-                    
+    
                     urlString = [urlString stringByReplacingOccurrencesOfString:@" " withString:@""];
                     NSURL *url = [NSURL URLWithString:urlString];
                     __weak ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
@@ -389,28 +396,13 @@
                                 }
                             }];
 
-                            
-                        
-
-
-
-                        
-                    }];
+                }];
                     [request setFailedBlock:^{
                         NSError *error = [request error];
                         NSLog(@"error=%@",[error description]);
                     }];
                     [request startAsynchronous];
 
-                        
-                    }
-                
-                }
-                else{
-                     NSLog(@"reverseGeocodeLocation: %@", error.description);
-                    [self retrieveLocationAndUpdateBackgroundPhoto];
-                }
-            }];
 }
 
 
@@ -502,7 +494,6 @@
     CGRect textRect = [play.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
                                                      attributes:attrs
                                                         context:nil];
-    NSLog(@"height=%f",textRect.size.height);
 
     return 170.0f+textRect.size.height;
 }
@@ -727,7 +718,8 @@
         }
         
         if([self.tableData count]!=0){
-            
+            self.imageDownloadsInProgress = [NSMutableDictionary dictionary];
+
             [self.tableView setHidden:NO];
             
             BlankHomePageView *blankHomePageView=(BlankHomePageView*)[self.view  viewWithTag:1245];
@@ -735,7 +727,6 @@
             if([self.tableData count]>3){
                 footerActivated=false;
             }
-            //[self tableViewHeight];
             [self.tableView reloadData];
         }
         else{

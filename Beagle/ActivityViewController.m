@@ -24,7 +24,7 @@ enum Weeks {
     FRIDAY,
     SATURDAY
 };
-@interface ActivityViewController ()<UITextViewDelegate,MJSecondPopupDelegate3,ServerManagerDelegate>{
+@interface ActivityViewController ()<UITextViewDelegate,LocationTableViewDelegate,ServerManagerDelegate>{
     IBOutlet UIImageView *profileImageView;
     IBOutlet UITextView *descriptionTextView;
     UILabel *placeholderLabel;
@@ -104,7 +104,7 @@ enum Weeks {
     
     
     attributesDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-                                          [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f], NSFontAttributeName,[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
+                                          [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f], NSFontAttributeName,[UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
                                           nil];
     
     string = [[NSMutableAttributedString alloc] initWithString:@"Create" attributes:attributesDictionary];
@@ -121,9 +121,8 @@ enum Weeks {
     [createButton setTitleColor:[UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0] forState:UIControlStateNormal];
     createButton.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f];
     self.navigationItem.rightBarButtonItem =[[UIBarButtonItem alloc] initWithCustomView:createButton];
-
     
-    self.navigationItem.rightBarButtonItem.enabled=YES;
+    self.navigationItem.rightBarButtonItem.enabled=NO;
     
     UIImage *picBoxImage=[UIImage imageNamed:@"picbox"];
     if(picBoxImage.size.height != picBoxImage.size.width)
@@ -164,9 +163,9 @@ enum Weeks {
     [visibilityFilterButton setTitleColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0] forState:UIControlStateNormal];
     [visibilityFilterButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:17.0]];
     [visibilityFilterButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
-    
-    
-    [locationFilterButton setTitle:@"New York, NY" forState:UIControlStateNormal];
+
+    NSString *locationFilter=[NSString stringWithFormat:@"%@, %@",[[[BeagleManager SharedInstance]placemark].addressDictionary objectForKey:@"City"],[[BeagleManager SharedInstance]placemark].administrativeArea];
+    [locationFilterButton setTitle:locationFilter forState:UIControlStateNormal];
     [locationFilterButton setTitleColor:[UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1.0] forState:UIControlStateNormal];
     [locationFilterButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:17.0]];
     [locationFilterButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
@@ -196,8 +195,6 @@ enum Weeks {
     }
     bg_activity.activityDesc=descriptionTextView.text;
     bg_activity.visibiltyFilter=@"Friends only";
-    bg_activity.city=@"New York";
-    bg_activity.state=@"NY";
     
     
     
@@ -263,8 +260,8 @@ enum Weeks {
     bg_activity.startActivityDate=[dateFormatter stringFromDate:newDate1];
     bg_activity.endActivityDate=[dateFormatter stringFromDate:newDate2];
     bg_activity.visibiltyFilter=@"Friends Only";
-    bg_activity.city=@"New York";
-    bg_activity.state=@"NY";
+    bg_activity.state=[[BeagleManager SharedInstance]placemark].administrativeArea;
+    bg_activity.city=[[[BeagleManager SharedInstance]placemark].addressDictionary objectForKey:@"City"];
     bg_activity.timeFilter=@"Next Weekend";
     bg_activity.latitude=[[BeagleManager SharedInstance]currentLocation].coordinate.latitude;
     bg_activity.longitude=[[BeagleManager SharedInstance]currentLocation].coordinate.longitude;
@@ -302,7 +299,61 @@ enum Weeks {
     else{
         placeholderLabel.hidden = YES;
     }
+    CGSize constrainedSize = CGSizeMake(320, 9999);
+    UIButton *createButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    createButton.frame = CGRectMake(0, 0, 30, 30);
+    [createButton setTitle:@"Create" forState:UIControlStateNormal];
+    [createButton addTarget:self action:@selector(createButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     
+    if([[textView text]length]!=0){
+        
+        
+        NSDictionary *attributesDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+                                              [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f], NSFontAttributeName,[UIColor colorWithRed:0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
+                                              nil];
+        
+        NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:@"Create" attributes:attributesDictionary];
+        
+        CGRect requiredHeight = [string boundingRectWithSize:constrainedSize options:NSStringDrawingUsesLineFragmentOrigin context:nil];
+        
+        if (requiredHeight.size.width > 320) {
+            requiredHeight = CGRectMake(0,0, 320, requiredHeight.size.height);
+        }
+        CGRect newFrame = createButton.frame;
+        newFrame.size.height = requiredHeight.size.height;
+        newFrame.size.width = requiredHeight.size.width;
+        createButton.frame=newFrame;
+        [createButton setTitleColor:[UIColor colorWithRed:0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0] forState:UIControlStateNormal];
+        createButton.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f];
+        self.navigationItem.rightBarButtonItem =[[UIBarButtonItem alloc] initWithCustomView:createButton];
+        self.navigationItem.rightBarButtonItem.enabled=YES;
+        
+        
+    }
+    else{
+        NSDictionary *attributesDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+                                              [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f], NSFontAttributeName,[UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
+                                              nil];
+        
+        NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:@"Create" attributes:attributesDictionary];
+        
+        CGRect requiredHeight = [string boundingRectWithSize:constrainedSize options:NSStringDrawingUsesLineFragmentOrigin context:nil];
+        
+        if (requiredHeight.size.width > 320) {
+            requiredHeight = CGRectMake(0,0, 320, requiredHeight.size.height);
+        }
+        CGRect  newFrame = createButton.frame;
+        newFrame.size.height = requiredHeight.size.height;
+        newFrame.size.width = requiredHeight.size.width;
+        createButton.frame=newFrame;
+        [createButton setTitleColor:[UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0] forState:UIControlStateNormal];
+        createButton.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f];
+        self.navigationItem.rightBarButtonItem =[[UIBarButtonItem alloc] initWithCustomView:createButton];
+        self.navigationItem.rightBarButtonItem.enabled=NO;
+        
+        
+    }
+
 }
 
 -(void)textViewDidBeginEditing:(UITextView *)textView{
@@ -324,7 +375,6 @@ enum Weeks {
 			flag = YES;
 			NSString *Temp = countTextLabel.text;
 			int j = [Temp intValue];
-            NSLog(@"j=%d",j);
             
 			j = j-1 ;
 			countTextLabel.text= [[NSString alloc] initWithFormat:@"%u",141-[textView.text length]];
@@ -381,9 +431,7 @@ enum Weeks {
     
 }
 
-
-- (void)cancelButtonClicked3:(LocationTableViewController*)secondDetailViewController
-{
+- (void)dismissLocationTable:(LocationTableViewController*)viewController{
     
     [self dismissPopupViewControllerWithanimationType:MJPopupViewAnimationSlideLeftLeft];
     [descriptionTextView becomeFirstResponder];
