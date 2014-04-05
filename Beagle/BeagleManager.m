@@ -9,8 +9,18 @@
 
 #import "BeagleManager.h"
 #import "BeagleUserClass.h"
+#import "ServerManager.h"
+#import "FacebookLoginSession.h"
+@interface BeagleManager ()<ServerManagerDelegate,FacebookLoginSessionDelegate>{
+    ServerManager *signInServerManager;
+    NSMutableData *_data;
+}
+@property(nonatomic,strong)ServerManager *signInServerManager;
+@end
+
 @implementation BeagleManager
 @synthesize beaglePlayer,currentLocation,placemark,weatherCondition;
+@synthesize signInServerManager=_signInServerManager;
 + (id) SharedInstance {
 	static id sharedManager = nil;
 	
@@ -26,6 +36,33 @@
         
     }
     return self;
+}
+-(void)autoSign{
+    
+    FacebookLoginSession *facebookSession=[[FacebookLoginSession alloc]init];
+    facebookSession.delegate=self;
+    [facebookSession getUserNativeFacebookSession];
+
+
+}
+
+#pragma mark -
+#pragma mark Delegate method From FacebookSession
+
+-(void)successfulFacebookLogin:(BeagleUserClass*)data{
+    
+    if(_signInServerManager!=nil){
+        _signInServerManager.delegate = nil;
+        [_signInServerManager releaseServerManager];
+        _signInServerManager = nil;
+    }
+    _signInServerManager=[[ServerManager alloc]init];
+    _signInServerManager.delegate=self;
+    [_signInServerManager registerPlayerOnBeagle:data];
+    
+}
+-(void)facebookAccountNotSetup{
+    
 }
 
 -(void)userProfileDataUpdate{
@@ -79,7 +116,7 @@
 
 
     
-   [array writeToFile:path atomically:YES];
+       [array writeToFile:path atomically:YES];
         
         
         
@@ -116,12 +153,107 @@
     player.last_name=[array valueForKey:@"last_name"];
     player.beagleUserId=[[array valueForKey:@"id"]integerValue];
     player.profileImageUrl=[array valueForKey:@"photo_url"];
+    player.profileData=[array valueForKey:@"photoData"];
     self.beaglePlayer=player;
+    
+    [self autoSign];
 #endif
 }
 
 - (void)processFacebookProfilePictureData:(NSData *)newProfilePictureData {
     self.beaglePlayer.profileData=newProfilePictureData;
     [self userProfileDataUpdate];
+}
+
+#pragma mark - server calls
+
+- (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
+    
+    if(serverRequest==kServerCallUserRegisteration){
+        
+        _signInServerManager.delegate = nil;
+        [_signInServerManager releaseServerManager];
+        _signInServerManager = nil;
+        
+        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
+            
+            id status=[response objectForKey:@"status"];
+            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
+                
+                
+                
+                
+                id player=[response objectForKey:@"player"];
+                if (player != nil && [player class] != [NSNull class]) {
+                    
+                    id beagleId=[player objectForKey:@"id"];
+                    if (beagleId != nil && [beagleId class] != [NSNull class]) {
+                        [[self beaglePlayer]setBeagleUserId:[beagleId integerValue]];
+                        NSLog(@"beagleId=%ld",(long)[beagleId integerValue]);
+                        
+                    }
+                    
+                    
+                    
+                    NSURL *pictureURL = [NSURL URLWithString:[player objectForKey:@"image_url"]];
+                    
+                    NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:pictureURL
+                                                                              cachePolicy:NSURLRequestUseProtocolCachePolicy
+                                                                          timeoutInterval:2.0f];
+                    // Run network request asynchronously
+                    NSURLConnection *urlConnection = [[NSURLConnection alloc] initWithRequest:urlRequest delegate:self];
+                    if (!urlConnection) {
+                        NSLog(@"Failed to download picture");
+                    }
+                }
+                
+                
+                
+                
+                
+            }
+        }
+        
+    }
+}
+
+#pragma mark - NSURLConnectionDataDelegate
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+    _data = [[NSMutableData alloc] init];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+    [_data appendData:data];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+    [self processFacebookProfilePictureData:_data];
+}
+- (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
+{
+    
+    if(serverRequest==kServerCallUserRegisteration)
+    {
+        _signInServerManager.delegate = nil;
+        [_signInServerManager releaseServerManager];
+        _signInServerManager = nil;
+    }
+    
+    NSString *message = NSLocalizedString (@"Unable to initiate request.",
+                                           @"NSURLConnection initialization method failed.");
+    BeagleAlertWithMessage(message);
+}
+
+- (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
+{
+    
+    if(serverRequest==kServerCallUserRegisteration)
+    {
+        _signInServerManager.delegate = nil;
+        [_signInServerManager releaseServerManager];
+        _signInServerManager = nil;
+    }
+    
 }
 @end

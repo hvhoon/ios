@@ -22,7 +22,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     
     [Crashlytics startWithAPIKey:@"e8e7ac59367e936ecae821876cc411ec67427e47"];
-    NSString *storyboardId = [[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"] ? @"loginNavScreen" : @"loginNavScreen";
+    NSString *storyboardId = [[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"] ? @"initialBeagle" : @"loginNavScreen";
     if([storyboardId isEqualToString:@"initialBeagle"]){
         [[BeagleManager SharedInstance]getUserObjectInAutoSignInMode];
     }
@@ -32,8 +32,46 @@ void uncaughtExceptionHandler(NSException *exception) {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = initViewController;
     [self.window makeKeyAndVisible];
+    [self registerForNotifications];
     
     return YES;
+}
+
+-(void)registerForNotifications {
+	UIRemoteNotificationType type = UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound;
+	[[UIApplication sharedApplication] registerForRemoteNotificationTypes:type];
+}
+
+
+//Device Token failed
+- (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error{
+	NSLog(@"Failed to get token, error: %@", error);
+    [[NSUserDefaults standardUserDefaults] setValue:nil forKey:@"device_token"];
+}
+
+
+//Device Token
+- (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken
+{
+    NSString *token = [[NSString stringWithFormat:@"%@",deviceToken] stringByReplacingOccurrencesOfString:@" " withString:@""];
+    token = [token stringByReplacingOccurrencesOfString:@"<" withString:@""];
+    token = [token stringByReplacingOccurrencesOfString:@">" withString:@""];
+    
+    NSLog(@"token: %@", token);
+    
+    [[NSUserDefaults standardUserDefaults] setValue:token forKey:@"device_token"];
+}
+
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo{
+    
+    
+    if (application.applicationIconBadgeNumber != 0) {
+        
+        application.applicationIconBadgeNumber = 0;
+    }
+    
+    
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
