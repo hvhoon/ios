@@ -13,11 +13,12 @@
                         <viewControllerLayoutGuide type="bottom" id="hJb-4N-26L"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="tVO-BY-84A">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
+                    <navigationItem key="navigationItem" id="oq5-gJ-s4b"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KPf-fX-njk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -355,6 +356,20 @@
                         <outlet property="searchResultsDelegate" destination="uCp-Ni-6dO" id="NOV-4E-W0z"/>
                     </connections>
                 </searchDisplayController>
+            </objects>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="PvE-ee-1se">
+            <objects>
+                <navigationController storyboardIdentifier="initialNavBeagle" definesPresentationContext="YES" id="LQI-Ks-Z64" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="gZd-MJ-XOi">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="7u8-lT-ifg" kind="relationship" relationship="rootViewController" id="sRf-1S-txD"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Hq1-6f-coP" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
         </scene>
     </scenes>
