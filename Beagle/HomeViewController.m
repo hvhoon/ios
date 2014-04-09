@@ -737,7 +737,7 @@
             BlankHomePageView *blankHomePageView=(BlankHomePageView*)[self.view  viewWithTag:1245];
             [blankHomePageView setHidden:YES];
             if([self.tableData count]>3){
-                footerActivated=false;
+                footerActivated=NO;
             }
             [self.tableView reloadData];
         }

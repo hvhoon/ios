@@ -287,10 +287,10 @@ static BGFlickrManager *sharedManager = nil;
                         
                     });
 #endif
-                    [self.flickrRequest callAPIMethodWithGET2:[NSURL URLWithString:testString]];
+                    //[self.flickrRequest callAPIMethodWithGET2:[NSURL URLWithString:testString]];
 
                     
-                    //[self.flickrRequest callAPIMethodWithGET:@"flickr.photos.search" arguments:[NSDictionary dictionaryWithObjectsAndKeys:@"1463451%40N25",@"group_id",BG.weatherCondition, @"tags", @"all",@"tag_mode", @"photos", @"content_type",[[BeagleManager SharedInstance]photoId], @"place_id",nil] tag:1];
+                    [self.flickrRequest callAPIMethodWithGET:@"flickr.photos.search" arguments:[NSDictionary dictionaryWithObjectsAndKeys:@"1463451%40N25",@"group_id",BG.weatherCondition, @"tags", @"all",@"tag_mode", @"photos", @"content_type",[[BeagleManager SharedInstance]photoId], @"place_id",nil] tag:1];
                 }
             });
         });
@@ -308,9 +308,9 @@ static BGFlickrManager *sharedManager = nil;
         self.flickrRequestInfo = [[FlickrRequestInfo alloc] init];
         
         
-        NSArray *photos=[[inResponseDictionary objectForKey:@"photos"]objectForKey:@"photo"];
+        //NSArray *photos=[[inResponseDictionary objectForKey:@"photos"]objectForKey:@"photo"];
         
-        //NSArray *photos = [inResponseDictionary valueForKeyPath:@"photos.photo"];
+        NSArray *photos = [inResponseDictionary valueForKeyPath:@"photos.photo"];
         
         int numberOfPhotos = (int)[photos count] - 1;
         
