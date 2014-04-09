@@ -24,6 +24,7 @@
     BOOL footerActivated;
     ServerManager *homeActivityManager;
     NSMutableDictionary *imageDownloadsInProgress;
+    NSInteger count;
 }
 @property(nonatomic, weak) NSTimer *timer;
 @property(nonatomic,strong)  NSMutableDictionary *imageDownloadsInProgress;
@@ -195,7 +196,7 @@
     
     
     UIImage *stockBottomImage2=[BeagleUtilities imageByCropping:[UIImage imageNamed:@"defaultLocation"] toRect:CGRectMake(0, 64, 320, 103) withOrientation:UIImageOrientationDownMirrored];
-    bottomNavigationView=[[UIView alloc]initWithFrame:CGRectMake(0, 64, 320, 103)];
+    bottomNavigationView=[[UIView alloc]initWithFrame:CGRectMake(0, 64, 320, 147)];
     
     bottomNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockBottomImage2];
     [self.view addSubview:bottomNavigationView];
@@ -227,7 +228,25 @@
     [bottomNavigationView addSubview:notificationsButton];
 
 
-    self.tableView.tableHeaderView=[self renderTableHeaderView];
+    
+    self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1.0];
+    
+    [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+    
+    UIView *filterView=[[UIView alloc]initWithFrame:CGRectMake(0, 103, 320, 44)];
+    [filterView addSubview:[self renderFilterHeaderView]];
+    [bottomNavigationView addSubview:filterView];
+    
+    [self.tableView setHidden:YES];
+    
+    NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"BlankHomePageView" owner:self options:nil];
+    BlankHomePageView *blankHomePageView=[nib objectAtIndex:0];
+    blankHomePageView.frame=CGRectMake(0, 167, 320, 401);
+    blankHomePageView.userInteractionEnabled=YES;
+    blankHomePageView.tag=1245;
+    [self.view addSubview:blankHomePageView];
+
+    
     footerActivated=YES;
     
     
@@ -390,9 +409,10 @@
                                     
                                     //Error : Stock photos
                                     [self crossDissolvePhotos:[UIImage imageNamed:@"defaultLocation"] withTitle:@""];
-                                    
+                                    count++;
                                     NSLog(@"Flickr: %@", error.description);
-                                    [self retrieveLocationAndUpdateBackgroundPhoto];
+                                    if(count!=3)
+                                        [self retrieveLocationAndUpdateBackgroundPhoto];
                                 }
                             }];
 
@@ -421,9 +441,9 @@
     } completion:NULL];
 }
 
--(UIView*)renderTableHeaderView{
+-(UIView*)renderFilterHeaderView{
     UIView *headerView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 44)];
-    headerView.backgroundColor=[UIColor lightGrayColor];
+    headerView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1.0];
     
     CGSize size = CGSizeMake(220,999);
     
@@ -495,7 +515,7 @@
                                                      attributes:attrs
                                                         context:nil];
 
-    return 170.0f+textRect.size.height;
+    return 174.0f+textRect.size.height;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *CellIdentifier = @"MediaTableCell";
@@ -610,7 +630,6 @@
 {
     [self hideSearchBarAndAnimateWithListViewInMiddle];
     self.tableView.tableHeaderView=nil;
-    self.tableView.tableHeaderView=[self renderTableHeaderView];
 
     
 }
@@ -629,12 +648,10 @@
         
         CGRect tableViewFrame = self.tableView.frame;
         tableViewFrame.origin.y = 64;
-        tableViewFrame.size.height-=64;
         
         
 		[bottomNavigationView setHidden:YES];
         [self.tableView setFrame:tableViewFrame];
-		//[self.tableView setFrame:CGRectMake(0, 64, 320, 568-64)];
         
         self.tableView.tableHeaderView=nil;
         
@@ -644,7 +661,6 @@
         self.tableView.tableHeaderView = headerView;
         headerView.showsCancelButton=YES;
         [headerView becomeFirstResponder];
-        [self.tableView addSubview:headerView];
 
 		[UIView commitAnimations];
 		footerActivated = YES;
@@ -661,12 +677,8 @@
 		[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
 		[bottomNavigationView setHidden:NO];
         CGRect tableViewFrame = self.tableView.frame;
-        tableViewFrame.origin.y = 167;
-        tableViewFrame.size.height-=167;
+        tableViewFrame.origin.y = 211;
         
-        [self.tableView setFrame:tableViewFrame];
-
-//        [self.tableView setFrame:CGRectMake(0, 167, 320, 568-167)];
         [self.tableView setFrame:tableViewFrame];
 		[UIView commitAnimations];
 		footerActivated = NO;

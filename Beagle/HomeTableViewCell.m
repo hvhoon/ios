@@ -203,7 +203,11 @@ static UIFont *thirdTextFont = nil;
                                              postCountTextSize.width, postCountTextSize.height) withAttributes:attrs];
     
     
- [[UIImage imageNamed:@"S04_sectionDivider.png"] drawInRect:CGRectMake(0,69+8+commentTextRect.size.height+16+locationTextSize.height+participantsCountTextSize.height+16+postCountTextSize.height,320,8)];
+    CGRect myRect = {0, 69+8+commentTextRect.size.height+16+locationTextSize.height+participantsCountTextSize.height+16+postCountTextSize.height+8, 320, 8};
+    
+    CGContextSetRGBFillColor(context, 230.0/255.0, 230.0/255.0, 230.0/255.0, 1.0);
+    CGContextFillRect(context, myRect);
+    
 
 }
 

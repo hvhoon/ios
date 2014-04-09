@@ -459,13 +459,20 @@ typedef unsigned int NSUInteger;
     [HTTPRequest setContentType:nil];
     return [HTTPRequest performMethod:LFHTTPRequestGETMethod onURL:requestURL withData:nil];
 }
-/*
-http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=36e2980516d0e60864cd29c621a09722&tags=night&tag_mode=all&content_type=photos&group_id=1463451%40N25&place_id=7.MJR8tTVrIO1EgB&format=json&nojsoncallback=1
- 
- http://api.flickr.com/services/rest/?accuracy=1&api_key=36e2980516d0e60864cd29c621a09722&content_type=photos&group_id=1463451%2540N25&method=flickr.photos.search&place_id=7.MJR8tTVrIO1EgB&tag_mode=all&tags=Haze
 
-
-*/
+- (BOOL)callAPIMethodWithGET2:(NSURL*)requestURL{
+    
+    if ([HTTPRequest isRunning]) {
+        return NO;
+    }
+    
+    NSLog(@"requestUrl=%@",requestURL);
+    if (requestURL) {
+        [HTTPRequest setContentType:nil];
+        return [HTTPRequest performMethod:LFHTTPRequestGETMethod onURL:requestURL withData:nil];
+    }
+    return NO;
+}
 - (BOOL)callAPIMethodWithGET:(NSString *)inMethodName arguments:(NSDictionary *)inArguments tag:(NSInteger)tag
 {
     if ([HTTPRequest isRunning]) {

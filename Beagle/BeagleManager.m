@@ -19,7 +19,7 @@
 @end
 
 @implementation BeagleManager
-@synthesize beaglePlayer,currentLocation,placemark,weatherCondition;
+@synthesize beaglePlayer,currentLocation,placemark,weatherCondition,photoId;
 @synthesize signInServerManager=_signInServerManager;
 + (id) SharedInstance {
 	static id sharedManager = nil;

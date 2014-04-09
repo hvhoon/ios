@@ -12,7 +12,6 @@
 
 @property(nonatomic, strong) UIImage *photo;
 @property(nonatomic, strong) NSString *userId;
-@property(nonatomic, strong) NSString *photoId;
 @property(nonatomic, strong) NSString *userInfo;
 @property(nonatomic, strong) NSURL *userPhotoWebPageURL;
 

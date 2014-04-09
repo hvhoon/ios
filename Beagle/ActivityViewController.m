@@ -15,6 +15,8 @@
 #import "BeagleActivityClass.h"
 #import "BeagleUserClass.h"
 #import "ServerManager.h"
+#import "BeagleUserClass.h"
+
 enum Weeks {
     SUNDAY = 1,
     MONDAY,
@@ -64,6 +66,21 @@ enum Weeks {
     self.optionIndices = [NSMutableIndexSet indexSetWithIndex:1];
     
     
+    if([[[BeagleManager SharedInstance]beaglePlayer]profileData]==nil){
+        
+        [self imageCircular:[UIImage imageNamed:@"picbox"]];
+
+        NSOperationQueue *queue = [NSOperationQueue new];
+        NSInvocationOperation *operation = [[NSInvocationOperation alloc]
+                                            initWithTarget:self
+                                            selector:@selector(loadProfileImage:)
+                                            object:[[[BeagleManager SharedInstance]beaglePlayer]profileImageUrl]];
+        [queue addOperation:operation];
+
+    }
+    else{
+        [self imageCircular:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
+    }
     
 //    NSArray* fontNames = [UIFont fontNamesForFamilyName:@"Helvetica Neue"];
 //    for( NSString* aFontName in fontNames ) {
@@ -124,19 +141,6 @@ enum Weeks {
     
     self.navigationItem.rightBarButtonItem.enabled=NO;
     
-    UIImage *picBoxImage=[UIImage imageNamed:@"picbox"];
-    if(picBoxImage.size.height != picBoxImage.size.width)
-        picBoxImage = [BeagleUtilities autoCrop:picBoxImage];
-    
-    // If the image needs to be compressed
-    if(picBoxImage.size.height > 70 || picBoxImage.size.width > 70)
-        profileImageView.image = [BeagleUtilities compressImage:picBoxImage size:CGSizeMake(70,70)];
-    else
-        profileImageView.image = picBoxImage;
-    
-    // Turning it into a round image
-    profileImageView.layer.cornerRadius = picBoxImage.size.width/2;
-    profileImageView.layer.masksToBounds=YES;
     
     placeholderLabel = [[UILabel alloc] initWithFrame:CGRectMake(3, 0, descriptionTextView.frame.size.width - 20.0, 34.0)];
     [placeholderLabel setText:@"Tell us more..."];
@@ -180,6 +184,40 @@ enum Weeks {
 
 	// Do any additional setup after loading the view.
 }
+
+
+- (void)loadProfileImage:(NSString*)url {
+    NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:url]];
+    UIImage* image =[[UIImage alloc] initWithData:imageData];
+    [self performSelectorOnMainThread:@selector(imageCircular:) withObject:image waitUntilDone:NO];
+}
+
+-(void)imageCircular:(UIImage*)image{
+    if(image.size.height != image.size.width)
+        image = [BeagleUtilities autoCrop:image];
+//
+    // If the image needs to be compressed
+    if(image.size.height > 35 || image.size.width > 35)
+        image = [BeagleUtilities compressImage:image size:CGSizeMake(35,35)];
+    
+    UIGraphicsBeginImageContext(image.size);
+    {
+        CGContextRef ctx = UIGraphicsGetCurrentContext();
+        CGAffineTransform trnsfrm = CGAffineTransformConcat(CGAffineTransformIdentity, CGAffineTransformMakeScale(1.0, -1.0));
+        trnsfrm = CGAffineTransformConcat(trnsfrm, CGAffineTransformMakeTranslation(0.0, image.size.height));
+        CGContextConcatCTM(ctx, trnsfrm);
+        CGContextBeginPath(ctx);
+        CGContextAddEllipseInRect(ctx, CGRectMake(0.0, 0.0, image.size.width, image.size.height));
+        CGContextClip(ctx);
+        CGContextDrawImage(ctx, CGRectMake(0.0, 0.0, image.size.width, image.size.height), image.CGImage);
+        image = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+    }
+    
+    profileImageView.image=image;
+
+}
+
 -(void)cancelButtonClicked:(id)sender{
     
     [self.navigationController dismissViewControllerAnimated:YES completion:Nil];

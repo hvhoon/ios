@@ -82,8 +82,13 @@ static BGFlickrManager *sharedManager = nil;
         ((FlickrAPIRequestSessionInfo *)self.flickrRequest.sessionInfo).flickrAPIRequestType = FlickrAPIRequestPhotoSearch;
         
         BeagleManager *BG=[BeagleManager SharedInstance];
+        
+        NSString *testString=[NSString stringWithFormat:@"http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=36e2980516d0e60864cd29c621a09722&tags=%@&tag_mode=all&content_type=photos&group_id=1463451@N25&place_id=%@&format=json&nojsoncallback=1",BG.weatherCondition,[[BeagleManager SharedInstance]photoId]];
+        
+         [self.flickrRequest callAPIMethodWithGET2:[NSURL URLWithString:testString]];
 
-        [self.flickrRequest callAPIMethodWithGET:@"flickr.photos.search" arguments:[NSDictionary dictionaryWithObjectsAndKeys:BG.weatherCondition, @"tags", @"all",@"tag_mode", @"photos", @"content_type", self.flickrRequestInfo.photoId, @"place_id",@"1463451%40N25",@"group_id",nil] tag:0];
+
+//        [self.flickrRequest callAPIMethodWithGET:@"flickr.photos.search" arguments:[NSDictionary dictionaryWithObjectsAndKeys:@"1463451%40N25",@"group_id",BG.weatherCondition, @"tags", @"all",@"tag_mode", @"photos", @"content_type", [[BeagleManager SharedInstance]photoId], @"place_id",nil] tag:1];
 
         
     }
@@ -119,7 +124,10 @@ static BGFlickrManager *sharedManager = nil;
     
         self.flickrRequestInfo = [[FlickrRequestInfo alloc] init];
         
-        NSArray *photos = [inResponseDictionary valueForKeyPath:@"photos.photo"];
+        
+        NSArray *photos=[[inResponseDictionary objectForKey:@"photos"]objectForKey:@"photo"];
+        
+        //NSArray *photos = [inResponseDictionary valueForKeyPath:@"photos.photo"];
                 
         int numberOfPhotos = (int)[photos count] - 1;
         
@@ -145,7 +153,6 @@ static BGFlickrManager *sharedManager = nil;
                 dispatch_async(main, ^{
 
                     self.flickrRequestInfo.userId = owner;
-                    self.flickrRequestInfo.photoId = photoId;
                     
                     if (![self.flickrRequest isRunning]) {
                         ((FlickrAPIRequestSessionInfo *)self.flickrRequest.sessionInfo).flickrAPIRequestType = FlickrAPIRequestPhotoSizes;
@@ -169,7 +176,7 @@ static BGFlickrManager *sharedManager = nil;
         bool found = false;
         
         for (NSDictionary *size in photoSizes) {
-            if([[NSString stringWithString:(NSString *)[size objectForKey:@"label"]] isEqualToString:@"Large"]) {
+            if([[NSString stringWithString:(NSString *)[size objectForKey:@"label"]] isEqualToString:@"Medium 640"]) {
                 found = true;
                 
                 dispatch_queue_t queue = dispatch_queue_create(kAsyncQueueLabel, NULL);
@@ -225,8 +232,8 @@ static BGFlickrManager *sharedManager = nil;
         NSDictionary *places = [inResponseDictionary valueForKeyPath:@"places"];
         NSArray *place =  [places valueForKeyPath:@"place"];
         NSDictionary *item=[place objectAtIndex:0];
-        self.flickrRequestInfo.photoId =[item valueForKeyPath:@"place_id"];
-        NSLog(@"test=%@",self.flickrRequestInfo.photoId);
+        BeagleManager *BG=[BeagleManager SharedInstance];
+        BG.photoId =[item valueForKeyPath:@"place_id"];
         dispatch_queue_t queue = dispatch_queue_create(kAsyncQueueLabel, NULL);
         dispatch_queue_t main = dispatch_get_main_queue();
         
@@ -241,10 +248,110 @@ static BGFlickrManager *sharedManager = nil;
                     ((FlickrAPIRequestSessionInfo *)self.flickrRequest.sessionInfo).flickrAPIRequestType = FlickrAPIRequestPhotoSearch;
                     BeagleManager *BG=[BeagleManager SharedInstance];
                     
-                    [self.flickrRequest callAPIMethodWithGET:@"flickr.photos.search" arguments:[NSDictionary dictionaryWithObjectsAndKeys:BG.weatherCondition, @"tags", @"all",@"tag_mode", @"photos", @"content_type", self.flickrRequestInfo.photoId, @"place_id",@"1463451%40N25",@"group_id",nil] tag:0];
+                    NSString *testString=[NSString stringWithFormat:@"http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=36e2980516d0e60864cd29c621a09722&tags=%@&tag_mode=all&content_type=photos&group_id=1463451%40N25&place_id=%@&format=json&nojsoncallback=1",BG.weatherCondition,[[BeagleManager SharedInstance]photoId]];
+ #if 0
+                    NSURLRequest *req = [NSURLRequest requestWithURL:[NSURL URLWithString:testString]];
+                    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+                    [NSURLConnection sendAsynchronousRequest:req queue:queue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error)
+                     {
+                         if ([data length] > 0 && error == nil){
+                             
+                             [self performSelectorOnMainThread:@selector(receivedData:) withObject:data waitUntilDone:NO];
+                         }else if ([data length] == 0 && error == nil){
+                         }else if (error != nil && error.code == NSURLErrorTimedOut){          }else if (error != nil){
+                             NSLog(@"Error=%@",[error description]);
+                         }
+                     }];
+                    
+
+
+                    dispatch_queue_t myQueue = dispatch_queue_create("myQueue", NULL);
+                    
+                    // execute a task on that queue asynchronously
+                    dispatch_async(myQueue, ^{
+                        NSURLRequest *req = [NSURLRequest requestWithURL:[NSURL URLWithString:testString]];
+                        
+                        NSURLResponse *res = nil;
+                        NSError *err = nil;
+                        
+                        NSLog(@"About to send req %@",req.URL);
+                        
+                        NSData *data = [NSURLConnection sendSynchronousRequest:req returningResponse:&res error:&err];
+                         NSString *stringResponse= [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                        NSError *error=nil;
+                         NSDictionary* inResponseDictionary = [NSJSONSerialization JSONObjectWithData:[stringResponse dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:&error];
+                        
+                        
+                        
+                        
+                        
+                    });
+#endif
+                    [self.flickrRequest callAPIMethodWithGET2:[NSURL URLWithString:testString]];
+
+                    
+                    //[self.flickrRequest callAPIMethodWithGET:@"flickr.photos.search" arguments:[NSDictionary dictionaryWithObjectsAndKeys:@"1463451%40N25",@"group_id",BG.weatherCondition, @"tags", @"all",@"tag_mode", @"photos", @"content_type",[[BeagleManager SharedInstance]photoId], @"place_id",nil] tag:1];
                 }
             });
         });
+    }
+}
+
+-(void)receivedData:(NSData*)data{
+    
+    NSString *stringResponse= [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSError *error=nil;
+    NSDictionary* inResponseDictionary = [NSJSONSerialization JSONObjectWithData:[stringResponse dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:&error];
+
+    {
+        
+        self.flickrRequestInfo = [[FlickrRequestInfo alloc] init];
+        
+        
+        NSArray *photos=[[inResponseDictionary objectForKey:@"photos"]objectForKey:@"photo"];
+        
+        //NSArray *photos = [inResponseDictionary valueForKeyPath:@"photos.photo"];
+        
+        int numberOfPhotos = (int)[photos count] - 1;
+        
+        if(numberOfPhotos >=0) {
+            
+            int randomPhotoIndex = [BeagleUtilities getRandomIntBetweenLow:0 andHigh:numberOfPhotos];
+            
+            NSDictionary *photoDict = [photos objectAtIndex:randomPhotoIndex];
+            NSURL *photoURL = [self.flickrContext photoSourceURLFromDictionary:photoDict size:OFFlickrLargeSize];
+            
+            NSString *photoId = (NSString *)[photoDict objectForKey:@"id"];
+            NSString *owner = (NSString *)[photoDict objectForKey:@"owner"];
+            
+            self.flickrRequestInfo.userPhotoWebPageURL = [self.flickrContext photoWebPageURLFromDictionary:photoDict];
+            
+            dispatch_queue_t queue = dispatch_queue_create(kAsyncQueueLabel, NULL);
+            dispatch_queue_t main = dispatch_get_main_queue();
+            
+            dispatch_async(queue, ^{
+                
+                self.flickrRequestInfo.photo = [UIImage imageWithData:[NSData dataWithContentsOfURL:photoURL]];
+                
+                dispatch_async(main, ^{
+                    
+                    self.flickrRequestInfo.userId = owner;
+                    
+                    if (![self.flickrRequest isRunning]) {
+                        ((FlickrAPIRequestSessionInfo *)self.flickrRequest.sessionInfo).flickrAPIRequestType = FlickrAPIRequestPhotoSizes;
+                        
+                        [self.flickrRequest callAPIMethodWithGET:@"flickr.photos.getSizes" arguments:[NSDictionary dictionaryWithObjectsAndKeys:photoId, @"photo_id", nil] tag:1];
+                    }
+                });
+            });
+        } else {
+            NSError *error = [NSError errorWithDomain:@kAsyncQueueLabel code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"FlickrManager did not return any photos.", NSLocalizedDescriptionKey, nil]];
+            
+            self.completionBlock(nil, error);
+            
+            [self cleanUpFlickrManager];
+        }
+        
     }
 }
 

@@ -9,7 +9,7 @@
 #import "UIView+HidingView.h"
 #import <objc/runtime.h>
 
-#define ANIMATION_HIDE_BUTTONS_TIME 0.2
+#define ANIMATION_HIDE_BUTTONS_TIME 0.1
 
 static char const * const ObjectTagKeyLastContentOffset = "lastContentOffset";
 static char const * const ObjectTagKeyStartContentOffset = "startContentOffset";
@@ -49,33 +49,33 @@ typedef enum ScrollDirection {
                              scrollView.frame = CGRectMake(scrollView.bounds.origin.x,
                                                            self.frame.size.height+64,
                                                            scrollView.bounds.size.width,
-                                                           461
+                                                           417
                                                            );
         
-        NSLog(@" less y=%f and h=%f",self.frame.size.height+64,scrollView.bounds.size.height);
+        //NSLog(@" less y=%f and h=%f",self.frame.size.height+64,scrollView.bounds.size.height);
         
-        
-                             self.frame = CGRectMake(self.bounds.origin.x,
-                                                                         64,
-                                                                         self.bounds.size.width,
-                                                                         self.bounds.size.height);
-                             wasAnimated = YES;
+        self.frame = CGRectMake(self.bounds.origin.x,64,self.bounds.size.width,self.bounds.size.height);
+        NSLog(@"testA");
+    wasAnimated = YES;
         
     } else if(scrollView.contentOffset.y > 0 && scrollView.frame.origin.y != 0){
 
+        
+        NSLog(@"testD");
                              scrollView.frame = CGRectMake(scrollView.bounds.origin.x,
                                                       0,
                                                       scrollView.bounds.size.width,
-                                                      scrollView.bounds.size.height+103
+                                                      scrollView.bounds.size.height+147
                                                            ); //minus because self.currentTableHideY is negative
 
-        NSLog(@" greater y=%f and h=%f",0.0,scrollView.bounds.size.height+103);
+        //NSLog(@" greater y=%f and h=%f",0.0,scrollView.bounds.size.height+147);
     }
     
     if((abs(differenceFromLast)>1) && scrollView.isTracking && !wasAnimated ) {
         if(scrollDirection == ScrollDirectionDown) {
             [UIView animateWithDuration:ANIMATION_HIDE_BUTTONS_TIME
                              animations:^{
+                                         NSLog(@"testB");
                                  self.frame = CGRectMake(self.frame.origin.x,
                                                                              - self.bounds.size.height,
                                                                              self.bounds.size.width,
@@ -84,6 +84,7 @@ typedef enum ScrollDirection {
         } else {
             [UIView animateWithDuration:ANIMATION_HIDE_BUTTONS_TIME
                              animations:^{
+                                         NSLog(@"testC");
                                  self.frame = CGRectMake(self.bounds.origin.x,
                                                                              64,
                                                                              self.bounds.size.width,
