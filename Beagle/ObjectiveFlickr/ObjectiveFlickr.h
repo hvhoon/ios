@@ -159,7 +159,6 @@ typedef id OFFlickrAPIRequestDelegateType;
 // oauth methods
 - (BOOL)fetchOAuthRequestTokenWithCallbackURL:(NSURL *)inCallbackURL;
 - (BOOL)fetchOAuthAccessTokenWithRequestToken:(NSString *)inRequestToken verifier:(NSString *)inVerifier;
-- (BOOL)callAPIMethodWithGET2:(NSURL*)requestURL;
 
 // elementary methods
 - (BOOL)callAPIMethodWithGET:(NSString *)inMethodName arguments:(NSDictionary *)inArguments tag:(NSInteger)tag;

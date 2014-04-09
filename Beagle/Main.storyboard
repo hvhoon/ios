@@ -98,8 +98,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="Snj-m7-OFJ">
-                                <rect key="frame" x="0.0" y="211" width="320" height="417"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="Snj-m7-OFJ">
+                                <rect key="frame" x="0.0" y="211" width="320" height="357"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
@@ -109,6 +109,12 @@
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Snj-m7-OFJ" firstAttribute="top" secondItem="o2n-ZS-ftu" secondAttribute="top" constant="211" id="3Bb-HB-pin"/>
+                            <constraint firstItem="Snj-m7-OFJ" firstAttribute="leading" secondItem="o2n-ZS-ftu" secondAttribute="leading" id="MHr-DI-mhT"/>
+                            <constraint firstAttribute="trailing" secondItem="Snj-m7-OFJ" secondAttribute="trailing" id="eEr-98-IDh"/>
+                            <constraint firstAttribute="bottom" secondItem="Snj-m7-OFJ" secondAttribute="bottom" id="wHB-MK-Bd6"/>
+                        </constraints>
                     </view>
                     <connections>
                         <outlet property="tableView" destination="Snj-m7-OFJ" id="nez-NY-Tcg"/>

@@ -155,7 +155,6 @@
             [_homeActivityManager releaseServerManager];
             _homeActivityManager = nil;
         }
-        [(AppDelegate*)[[UIApplication sharedApplication] delegate]showProgressIndicator:3];
         
         _homeActivityManager=[[ServerManager alloc]init];
         _homeActivityManager.delegate=self;
@@ -304,7 +303,6 @@
         [_homeActivityManager releaseServerManager];
         _homeActivityManager = nil;
     }
-    [(AppDelegate*)[[UIApplication sharedApplication] delegate]showProgressIndicator:3];
     
     _homeActivityManager=[[ServerManager alloc]init];
     _homeActivityManager.delegate=self;
@@ -340,7 +338,6 @@
         [_homeActivityManager releaseServerManager];
         _homeActivityManager = nil;
     }
-    [(AppDelegate*)[[UIApplication sharedApplication] delegate]showProgressIndicator:3];
     
     _homeActivityManager=[[ServerManager alloc]init];
     _homeActivityManager.delegate=self;
@@ -401,7 +398,6 @@
                             [[BGFlickrManager sharedManager] randomPhotoRequest:^(FlickrRequestInfo * flickrRequestInfo, NSError * error) {
                                 
                                 if(!error) {
-                                    NSLog(@"Url=%@",flickrRequestInfo.userPhotoWebPageURL);
                                     [self.timer invalidate];
                                     
                                     [self crossDissolvePhotos:flickrRequestInfo.photo withTitle:flickrRequestInfo.userInfo];
@@ -688,7 +684,6 @@
 #pragma mark - server calls
 
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
-        [(AppDelegate*)[[UIApplication sharedApplication] delegate]hideProgressView];
     if(serverRequest==kServerCallGetActivities){
         
         _homeActivityManager.delegate = nil;
@@ -765,7 +760,6 @@
 }
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {
-        [(AppDelegate*)[[UIApplication sharedApplication] delegate]hideProgressView];
     
     if(serverRequest==kServerCallGetActivities)
     {
@@ -781,7 +775,6 @@
 
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
 {
-        [(AppDelegate*)[[UIApplication sharedApplication] delegate]hideProgressView];
     if(serverRequest==kServerCallGetActivities)
     {
         _homeActivityManager.delegate = nil;

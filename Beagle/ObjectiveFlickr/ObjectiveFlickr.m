@@ -460,19 +460,6 @@ typedef unsigned int NSUInteger;
     return [HTTPRequest performMethod:LFHTTPRequestGETMethod onURL:requestURL withData:nil];
 }
 
-- (BOOL)callAPIMethodWithGET2:(NSURL*)requestURL{
-    
-    if ([HTTPRequest isRunning]) {
-        return NO;
-    }
-    
-    NSLog(@"requestUrl=%@",requestURL);
-    if (requestURL) {
-        [HTTPRequest setContentType:nil];
-        return [HTTPRequest performMethod:LFHTTPRequestGETMethod onURL:requestURL withData:nil];
-    }
-    return NO;
-}
 - (BOOL)callAPIMethodWithGET:(NSString *)inMethodName arguments:(NSDictionary *)inArguments tag:(NSInteger)tag
 {
     if ([HTTPRequest isRunning]) {

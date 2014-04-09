@@ -311,7 +311,6 @@ enum Weeks {
         [self.activityServerManager releaseServerManager];
         self.activityServerManager = nil;
     }
-    [(AppDelegate*)[[UIApplication sharedApplication] delegate]showProgressIndicator:2];
 
     self.activityServerManager=[[ServerManager alloc]init];
     self.activityServerManager.delegate=self;
@@ -479,7 +478,6 @@ enum Weeks {
 #pragma mark - server calls
 
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
-    [(AppDelegate*)[[UIApplication sharedApplication] delegate]hideProgressView];
 
     
     if(serverRequest==kServerCallCreateActivity){
@@ -502,7 +500,6 @@ enum Weeks {
 
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {
-    [(AppDelegate*)[[UIApplication sharedApplication] delegate]hideProgressView];
 
     if(serverRequest==kServerCallCreateActivity)
     {
@@ -518,7 +515,6 @@ enum Weeks {
 
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
 {
-    [(AppDelegate*)[[UIApplication sharedApplication] delegate]hideProgressView];
 
     if(serverRequest==kServerCallCreateActivity)
     {
