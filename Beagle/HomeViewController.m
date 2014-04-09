@@ -614,12 +614,12 @@
 }
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     
-    if(!footerActivated)
-        [bottomNavigationView scrollViewWillBeginDragging:scrollView];
+//    if(!footerActivated)
+//        [bottomNavigationView scrollViewWillBeginDragging:scrollView];
 }
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-        if(!footerActivated)
-    [bottomNavigationView scrollViewDidScroll:scrollView];
+//        if(!footerActivated)
+//    [bottomNavigationView scrollViewDidScroll:scrollView];
 }
 - (void)didReceiveMemoryWarning
 {
@@ -636,7 +636,7 @@
 
 -(void)searchIconClicked:(id)sender{
     
-    [self showSearchBarAndAnimateWithListViewInMiddle];
+    //[self showSearchBarAndAnimateWithListViewInMiddle];
 }
 -(void)showSearchBarAndAnimateWithListViewInMiddle{
     
