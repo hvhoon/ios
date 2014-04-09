@@ -248,7 +248,7 @@ static BGFlickrManager *sharedManager = nil;
                     ((FlickrAPIRequestSessionInfo *)self.flickrRequest.sessionInfo).flickrAPIRequestType = FlickrAPIRequestPhotoSearch;
                     BeagleManager *BG=[BeagleManager SharedInstance];
                     
-                    NSString *testString=[NSString stringWithFormat:@"http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=36e2980516d0e60864cd29c621a09722&tags=%@&tag_mode=all&content_type=photos&group_id=1463451%40N25&place_id=%@&format=json&nojsoncallback=1",BG.weatherCondition,[[BeagleManager SharedInstance]photoId]];
+                    NSString *testString=[NSString stringWithFormat:@"http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=36e2980516d0e60864cd29c621a09722&tags=%@&tag_mode=all&content_type=photos&group_id=1463451@N25&place_id=%@&format=json&nojsoncallback=1",BG.weatherCondition,[[BeagleManager SharedInstance]photoId]];
  #if 0
                     NSURLRequest *req = [NSURLRequest requestWithURL:[NSURL URLWithString:testString]];
                     NSOperationQueue *queue = [[NSOperationQueue alloc] init];
@@ -290,7 +290,7 @@ static BGFlickrManager *sharedManager = nil;
                     //[self.flickrRequest callAPIMethodWithGET2:[NSURL URLWithString:testString]];
 
                     
-                    [self.flickrRequest callAPIMethodWithGET:@"flickr.photos.search" arguments:[NSDictionary dictionaryWithObjectsAndKeys:@"1463451%40N25",@"group_id",BG.weatherCondition, @"tags", @"all",@"tag_mode", @"photos", @"content_type",[[BeagleManager SharedInstance]photoId], @"place_id",nil] tag:1];
+                    [self.flickrRequest callAPIMethodWithGET:@"flickr.photos.search" arguments:[NSDictionary dictionaryWithObjectsAndKeys:@"1463451@N25",@"group_id",BG.weatherCondition, @"tags", @"all",@"tag_mode", @"photos", @"content_type",[[BeagleManager SharedInstance]photoId], @"place_id",nil] tag:0];
                 }
             });
         });
