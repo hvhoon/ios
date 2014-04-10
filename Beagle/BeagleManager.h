@@ -18,6 +18,8 @@
 @property(nonatomic,strong)CLPlacemark *placemark;
 @property(nonatomic,strong)NSString *weatherCondition;
 @property(nonatomic,strong)NSString*photoId;
+@property(nonatomic,assign)BOOL activtyCreated;
+
 + (id)SharedInstance;
 -(void)userProfileDataUpdate;
 -(void)getUserObjectInAutoSignInMode;

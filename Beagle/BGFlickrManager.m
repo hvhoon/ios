@@ -154,6 +154,16 @@ static BGFlickrManager *sharedManager = nil;
                 
 
 //                self.flickrRequestInfo.photo=stockBottomImage2;
+                
+                CGSize newSize = CGSizeMake(640,334);
+                UIGraphicsBeginImageContext(newSize);
+                float ratio = 334.0f/self.flickrRequestInfo.photo.size.height;
+                [self.flickrRequestInfo.photo drawInRect:CGRectMake(0, 0, 640, ratio * self.flickrRequestInfo.photo.size.height)];
+                UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+                NSLog(@"New Image Size : (%f, %f)", newImage.size.width, newImage.size.height);
+                UIGraphicsEndImageContext();
+                
+                self.flickrRequestInfo.photo=newImage;
                 [self resizeCropPhoto];
                 
                 dispatch_async(main, ^{

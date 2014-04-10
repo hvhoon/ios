@@ -74,7 +74,7 @@ static UIFont *thirdTextFont = nil;
     
     [@"Later Today" drawInRect:CGRectMake(304-dateTextSize.width,
                                           8,
-                                          dateTextSize.width, dateTextSize.height) withAttributes:attrs];
+                                          dateTextSize.width, 14.0f) withAttributes:attrs];
 
     
     [style setAlignment:NSTextAlignmentLeft];
@@ -89,8 +89,8 @@ static UIFont *thirdTextFont = nil;
                                  context:nil].size;
     
     [bg_activity.organizerName drawInRect:CGRectMake(76,
-                                          52.5-organizerNameSize.height,
-                                          organizerNameSize.width, organizerNameSize.height) withAttributes:attrs];
+                                          52.5-14.0f,
+                                          organizerNameSize.width, 14.0f) withAttributes:attrs];
     
     if(bg_activity.dosRelation==0){
         [[UIImage imageNamed:@"DOS2"] drawInRect:CGRectMake(76+10+organizerNameSize.width, 52.5-15, 27, 15)];
@@ -124,7 +124,7 @@ static UIFont *thirdTextFont = nil;
     
     
     [self.bg_activity.locationName drawInRect:CGRectMake(16,69+8+commentTextRect.size.height,
-                                          locationTextSize.width, locationTextSize.height) withAttributes:attrs];
+                                          locationTextSize.width, 14.0f) withAttributes:attrs];
 
     
     
@@ -143,8 +143,8 @@ static UIFont *thirdTextFont = nil;
                                                             attributes:attrs
                                                                context:nil].size;
         
-        [[NSString stringWithFormat:@"%ld Interested -  %ld Friends",self.bg_activity.participantsCount,self.bg_activity.dos2Count] drawInRect:CGRectMake(16,69+8+commentTextRect.size.height+16+locationTextSize.height,
-                                                             participantsCountTextSize.width, participantsCountTextSize.height) withAttributes:attrs];
+        [[NSString stringWithFormat:@"%ld Interested -  %ld Friends",self.bg_activity.participantsCount,self.bg_activity.dos2Count] drawInRect:CGRectMake(16,69+8+commentTextRect.size.height+16+14.0f,
+                                                             participantsCountTextSize.width, 14.0f) withAttributes:attrs];
         
         
     }else{
@@ -154,17 +154,17 @@ static UIFont *thirdTextFont = nil;
                                                                                                                                                                                   attributes:attrs
                                                                                                                                                                                      context:nil].size;
         
-        [[NSString stringWithFormat:@"%ld Interested",self.bg_activity.participantsCount] drawInRect:CGRectMake(16,69+8+commentTextRect.size.height+16+locationTextSize.height,
-                                                                                                                                                          participantsCountTextSize.width, participantsCountTextSize.height) withAttributes:attrs];
+        [[NSString stringWithFormat:@"%ld Interested",self.bg_activity.participantsCount] drawInRect:CGRectMake(16,69+8+commentTextRect.size.height+16+14,
+                                                                                                                                                          participantsCountTextSize.width, 14.0f) withAttributes:attrs];
         
         
 
     }
     
     if(self.bg_activity.isParticipant)
-        [[UIImage imageNamed:@"Star"] drawInRect:CGRectMake(16, 69+8+commentTextRect.size.height+16+locationTextSize.height+participantsCountTextSize.height+16, 16, 15)];
+        [[UIImage imageNamed:@"Star"] drawInRect:CGRectMake(16, 69+8+commentTextRect.size.height+16+28+16, 16, 15)];
     else{
-        [[UIImage imageNamed:@"Star"] drawInRect:CGRectMake(16, 69+8+commentTextRect.size.height+16+locationTextSize.height+participantsCountTextSize.height+16, 16, 15)];
+        [[UIImage imageNamed:@"Star"] drawInRect:CGRectMake(16, 69+8+commentTextRect.size.height+16+28+16, 16, 15)];
         
     }
     
@@ -178,14 +178,14 @@ static UIFont *thirdTextFont = nil;
                                                                                                                                                                               attributes:attrs
                                                                                                                                                                                  context:nil].size;
     
-    [@"I'm Interested" drawInRect:CGRectMake(42,1+69+8+commentTextRect.size.height+16+locationTextSize.height+participantsCountTextSize.height+16,
-                                                                                                                                                      interestedSize.width, interestedSize.height) withAttributes:attrs];
+    [@"I'm Interested" drawInRect:CGRectMake(42,1+69+8+commentTextRect.size.height+16+28+16,
+                                                                                                                                                      interestedSize.width, 15.0f) withAttributes:attrs];
     
     
     if(self.bg_activity.postCount>0)
-    [[UIImage imageNamed:@"Comment"] drawInRect:CGRectMake(306-21, 69+8+commentTextRect.size.height+16+locationTextSize.height+participantsCountTextSize.height+16, 21, 18)];
+    [[UIImage imageNamed:@"Comment"] drawInRect:CGRectMake(306-21, 69+8+commentTextRect.size.height+16+28+16, 21, 18)];
     else{
-        [[UIImage imageNamed:@"Comment"] drawInRect:CGRectMake(306-21, 69+8+commentTextRect.size.height+16+locationTextSize.height+participantsCountTextSize.height+16, 21, 18)];
+        [[UIImage imageNamed:@"Comment"] drawInRect:CGRectMake(306-21, 69+8+commentTextRect.size.height+16+28+16, 21, 18)];
     }
     
     [style setAlignment:NSTextAlignmentLeft];
@@ -199,11 +199,11 @@ static UIFont *thirdTextFont = nil;
                                                                      attributes:attrs
                                                                         context:nil].size;
     
-    [[NSString stringWithFormat:@"%ld",self.bg_activity.postCount] drawInRect:CGRectMake(300-21- postCountTextSize.width,69+8+commentTextRect.size.height+16+locationTextSize.height+participantsCountTextSize.height+16,
-                                             postCountTextSize.width, postCountTextSize.height) withAttributes:attrs];
+    [[NSString stringWithFormat:@"%ld",self.bg_activity.postCount] drawInRect:CGRectMake(300-21- postCountTextSize.width,69+8+commentTextRect.size.height+16+28+16,
+                                             postCountTextSize.width, 14) withAttributes:attrs];
     
     
-    CGRect myRect = {0, 69+8+commentTextRect.size.height+16+locationTextSize.height+participantsCountTextSize.height+16+postCountTextSize.height+8, 320, 8};
+    CGRect myRect = {0, 69+8+commentTextRect.size.height+16+28+16+14+8, 320, 8};
     
     CGContextSetRGBFillColor(context, 230.0/255.0, 230.0/255.0, 230.0/255.0, 1.0);
     CGContextFillRect(context, myRect);

@@ -25,12 +25,15 @@
     ServerManager *homeActivityManager;
     NSMutableDictionary *imageDownloadsInProgress;
     NSInteger count;
+    UIRefreshControl *refreshControl;
+    BOOL isPushAuto;
 }
 @property(nonatomic, weak) NSTimer *timer;
 @property(nonatomic,strong)  NSMutableDictionary *imageDownloadsInProgress;
 @property (nonatomic, strong) NSArray *tableData;
 @property(nonatomic, weak) IBOutlet UITableView*tableView;
 @property (strong,nonatomic) NSMutableArray *filteredCandyArray;
+@property (strong,nonatomic) UIRefreshControl *refreshControl;
 @property(strong,nonatomic)ServerManager *homeActivityManager;
 @end
 
@@ -39,6 +42,7 @@
 @synthesize imageDownloadsInProgress;
 @synthesize currentLocation;
 @synthesize _locationManager = locationManager;
+@synthesize refreshControl;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -140,34 +144,26 @@
         [self LocationAcquired];
 	});
 }
-
+#define REFRESH_HEADER_HEIGHT 50.0f
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-    
+     BeagleManager *BG=[BeagleManager SharedInstance];
+    if(BG.activtyCreated){
+        isPushAuto=TRUE;
+        BG.activtyCreated=FALSE;
     if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
-        
-#if 1
-        if(_homeActivityManager!=nil){
-            _homeActivityManager.delegate = nil;
-            [_homeActivityManager releaseServerManager];
-            _homeActivityManager = nil;
-        }
-        
-        _homeActivityManager=[[ServerManager alloc]init];
-        _homeActivityManager.delegate=self;
-        [_homeActivityManager getActivities];
-#endif
-        
+       
+        [self refresh:self.refreshControl];
         
     }
     else{
         [self startStandardUpdates];
     }
 
-
+    }
 }
 
 
@@ -175,6 +171,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+
 
     if (![self.slidingViewController.underLeftViewController isKindOfClass:[SettingsViewController class]]) {
         self.slidingViewController.underLeftViewController  = [self.storyboard instantiateViewControllerWithIdentifier:@"settingsScreen"];
@@ -236,27 +234,34 @@
     [filterView addSubview:[self renderFilterHeaderView]];
     [bottomNavigationView addSubview:filterView];
     
-    [self.tableView setHidden:YES];
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+    [self.tableView addSubview:self.refreshControl];
     
-    NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"BlankHomePageView" owner:self options:nil];
-    BlankHomePageView *blankHomePageView=[nib objectAtIndex:0];
-    blankHomePageView.frame=CGRectMake(0, 167, 320, 401);
-    blankHomePageView.userInteractionEnabled=YES;
-    blankHomePageView.tag=1245;
-    [self.view addSubview:blankHomePageView];
+    
+    if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
+        
+        [self.refreshControl beginRefreshing];
+        
+        
+    }
+    else{
+        [self startStandardUpdates];
+    }
+    isPushAuto=TRUE;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (updateActivityEvents) name:@"AutoRefreshEvents" object:nil];
 
-    
-    footerActivated=YES;
-    
-    
-
-
-	// Do any additional setup after loading the view.
-    
-    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
-    [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
-    [self.tableView addSubview:refreshControl];
+   
 }
+-(void)updateActivityEvents{
+    isPushAuto=TRUE;
+    [self refresh:self.refreshControl];
+}
+
+-(void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"AutoRefreshEvents" object:nil];
+}
+
 
 -(void)addCityName:(NSString*)name{
     
@@ -297,7 +302,11 @@
 
 }
 - (void)refresh:(UIRefreshControl *)refreshControl {
+    [self.refreshControl beginRefreshing];
     
+    if(isPushAuto)
+       [self.tableView setContentOffset:CGPointMake(0, -REFRESH_HEADER_HEIGHT) animated:YES];
+    //self.tableView.contentInset = UIEdgeInsetsMake(REFRESH_HEADER_HEIGHT, 0, 0, 0);
     if(_homeActivityManager!=nil){
         _homeActivityManager.delegate = nil;
         [_homeActivityManager releaseServerManager];
@@ -307,12 +316,13 @@
     _homeActivityManager=[[ServerManager alloc]init];
     _homeActivityManager.delegate=self;
     [_homeActivityManager getActivities];
-    [refreshControl endRefreshing];
+
+    
 
 }
+
 -(void)LocationAcquired{
-    
-    
+    [self refresh:self.refreshControl];
     
     CLGeocoder * geoCoder = [[CLGeocoder alloc] init];
     CLLocation *newLocation=[[CLLocation alloc]initWithLatitude:[[BeagleManager SharedInstance]currentLocation].coordinate.latitude longitude:[[BeagleManager SharedInstance]currentLocation].coordinate.longitude];
@@ -333,17 +343,7 @@
 
     
     
-    if(_homeActivityManager!=nil){
-        _homeActivityManager.delegate = nil;
-        [_homeActivityManager releaseServerManager];
-        _homeActivityManager = nil;
-    }
     
-    _homeActivityManager=[[ServerManager alloc]init];
-    _homeActivityManager.delegate=self;
-    [_homeActivityManager getActivities];
-
-
 }
 -(void)createANewActivity:(id)sender{
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -686,6 +686,7 @@
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
     if(serverRequest==kServerCallGetActivities){
         
+        
         _homeActivityManager.delegate = nil;
         [_homeActivityManager releaseServerManager];
         _homeActivityManager = nil;
@@ -723,6 +724,11 @@
                 
             }
         }
+        if(isPushAuto){
+            isPushAuto=FALSE;
+        }
+        [self.refreshControl endRefreshing];
+        //self.tableView.contentInset = UIEdgeInsetsZero;
         
         if([self.tableData count]!=0){
             self.imageDownloadsInProgress = [NSMutableDictionary dictionary];
@@ -747,6 +753,8 @@
             [self.view addSubview:blankHomePageView];
 
         }
+        
+        
     }
 }
 
@@ -760,7 +768,10 @@
 }
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {
-    
+    if(isPushAuto){
+        isPushAuto=FALSE;
+    }
+    [self.refreshControl endRefreshing];
     if(serverRequest==kServerCallGetActivities)
     {
         _homeActivityManager.delegate = nil;
@@ -775,6 +786,10 @@
 
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
 {
+    if(isPushAuto){
+        isPushAuto=FALSE;
+    }
+    [self.refreshControl endRefreshing];
     if(serverRequest==kServerCallGetActivities)
     {
         _homeActivityManager.delegate = nil;

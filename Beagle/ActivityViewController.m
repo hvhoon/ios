@@ -146,7 +146,7 @@ enum Weeks {
     [placeholderLabel setText:@"Tell us more..."];
     // placeholderLabel is instance variable retained by view controller
     [placeholderLabel setBackgroundColor:[UIColor clearColor]];
-    placeholderLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0];
+    placeholderLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
     placeholderLabel.textColor=[UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0];
     
     descriptionTextView.returnKeyType=UIReturnKeyDone;
@@ -414,7 +414,7 @@ enum Weeks {
 			int j = [Temp intValue];
             
 			j = j-1 ;
-			countTextLabel.text= [[NSString alloc] initWithFormat:@"%u",141-[textView.text length]];
+			countTextLabel.text= [[NSString alloc] initWithFormat:@"%lu",141-[textView.text length]];
             
 			return YES;
 		}
@@ -430,7 +430,7 @@ enum Weeks {
 	}
 	if(flag == NO)
 	{
-		countTextLabel.text= [[NSString alloc] initWithFormat:@"%u",140-[descriptionTextView.text length]-1];
+		countTextLabel.text= [[NSString alloc] initWithFormat:@"%lu",140-[descriptionTextView.text length]-1];
 		
 		
 	}
@@ -490,6 +490,8 @@ enum Weeks {
             
             id status=[response objectForKey:@"status"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
+                BeagleManager *BG=[BeagleManager SharedInstance];
+                BG.activtyCreated=TRUE;
                 [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
 
             }
