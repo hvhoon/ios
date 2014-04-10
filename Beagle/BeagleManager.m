@@ -156,7 +156,7 @@
     player.profileData=[array valueForKey:@"photoData"];
     self.beaglePlayer=player;
     
-    [self autoSign];
+    //[self autoSign];
 #endif
 }
 

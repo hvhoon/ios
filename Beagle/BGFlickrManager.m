@@ -151,6 +151,8 @@ static BGFlickrManager *sharedManager = nil;
                 
                 UIImage *stockBottomImage1=[BeagleUtilities imageByCropping:self.flickrRequestInfo.photo toRect:CGRectMake(0, height/2, 640, 334) withOrientation:UIImageOrientationDownMirrored];
                     self.flickrRequestInfo.photo=stockBottomImage1;
+                    
+                    self.flickrRequestInfo.photo = [BeagleUtilities compressImage:self.flickrRequestInfo.photo size:CGSizeMake(320,167)];
                 }else{
                     [self resizeCropPhoto];
                 }
@@ -286,8 +288,8 @@ static BGFlickrManager *sharedManager = nil;
 - (void) resizeCropPhoto {
     float goldenRatio = 1.6;
     
-    int const constWidth = 640;
-    int const constHeight = 334;
+    int const constWidth = 320;
+    int const constHeight = 167;
     
     int newWidth;
     
