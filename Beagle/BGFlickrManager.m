@@ -149,8 +149,10 @@ static BGFlickrManager *sharedManager = nil;
                 float height=self.flickrRequestInfo.photo.size.height-334.0;
                 if(height>0){
                 
-                UIImage *stockBottomImage1=[BeagleUtilities imageByCropping:self.flickrRequestInfo.photo toRect:CGRectMake(0, height, 640, 334) withOrientation:UIImageOrientationDownMirrored];
+                UIImage *stockBottomImage1=[BeagleUtilities imageByCropping:self.flickrRequestInfo.photo toRect:CGRectMake(0, height/2, 640, 334) withOrientation:UIImageOrientationDownMirrored];
                     self.flickrRequestInfo.photo=stockBottomImage1;
+                }else{
+                    [self resizeCropPhoto];
                 }
 //
 //                
