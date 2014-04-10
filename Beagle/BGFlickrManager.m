@@ -146,8 +146,13 @@ static BGFlickrManager *sharedManager = nil;
                 
                 self.flickrRequestInfo.photo = [UIImage imageWithData:[NSData dataWithContentsOfURL:photoURL]];
                 
-//                UIImage *stockBottomImage1=[BeagleUtilities imageByCropping:self.flickrRequestInfo.photo toRect:CGRectMake(0, 0, 640, (self.flickrRequestInfo.photo.size.height-334)/2) withOrientation:UIImageOrientationDownMirrored];
-//                
+                float height=self.flickrRequestInfo.photo.size.height-334.0;
+                if(height>0){
+                
+                UIImage *stockBottomImage1=[BeagleUtilities imageByCropping:self.flickrRequestInfo.photo toRect:CGRectMake(0, height, 640, 334) withOrientation:UIImageOrientationDownMirrored];
+                    self.flickrRequestInfo.photo=stockBottomImage1;
+                }
+//
 //                
 //                UIImage *stockBottomImage2=[BeagleUtilities imageByCropping:stockBottomImage1 toRect:CGRectMake(0, 334, 640, (self.flickrRequestInfo.photo.size.height-334)/2) withOrientation:UIImageOrientationDownMirrored];
 
@@ -155,16 +160,16 @@ static BGFlickrManager *sharedManager = nil;
 
 //                self.flickrRequestInfo.photo=stockBottomImage2;
                 
-                CGSize newSize = CGSizeMake(640,334);
-                UIGraphicsBeginImageContext(newSize);
-                float ratio = 334.0f/self.flickrRequestInfo.photo.size.height;
-                [self.flickrRequestInfo.photo drawInRect:CGRectMake(0, 0, 640, ratio * self.flickrRequestInfo.photo.size.height)];
-                UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
-                NSLog(@"New Image Size : (%f, %f)", newImage.size.width, newImage.size.height);
-                UIGraphicsEndImageContext();
+//                CGSize newSize = CGSizeMake(640,334);
+//                UIGraphicsBeginImageContext(newSize);
+//                float ratio = 334.0f/self.flickrRequestInfo.photo.size.height;
+//                [self.flickrRequestInfo.photo drawInRect:CGRectMake(0, 0, 640, ratio * self.flickrRequestInfo.photo.size.height)];
+//                UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+//                NSLog(@"New Image Size : (%f, %f)", newImage.size.width, newImage.size.height);
+//                UIGraphicsEndImageContext();
                 
-                self.flickrRequestInfo.photo=newImage;
-                [self resizeCropPhoto];
+//                self.flickrRequestInfo.photo=newImage;
+//                [self resizeCropPhoto];
                 
                 dispatch_async(main, ^{
                     
