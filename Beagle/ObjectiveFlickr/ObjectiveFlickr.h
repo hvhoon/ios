@@ -12,7 +12,7 @@ extern NSString *const OFFlickrMediumSize;			// (no size modifier) - 500 on long
 
 extern NSString *const OFFlickrMedium640Size;		// "z" - 640
 extern NSString *const OFFlickrMedium800Size;		// "c" - 800
-
+extern NSString *const OFFlickrSmall320Size;			// "n" - 320 on longest side
 extern NSString *const OFFlickrLargeSize;			// "b" - 1024 on longest side
 
 extern NSString *const OFFlickrReadPermission;

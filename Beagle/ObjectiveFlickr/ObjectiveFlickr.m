@@ -10,7 +10,7 @@ NSString *const OFFlickrSmallSquareSize = @"s";
 NSString *const OFFlickrThumbnailSize = @"t";
 NSString *const OFFlickrSmallSize = @"m";
 NSString *const OFFlickrMediumSize = nil;
-
+NSString *const OFFlickrSmall320Size = @"n";
 NSString *const OFFlickrMedium640Size = @"z";
 NSString *const OFFlickrMedium800Size = @"c";
 
