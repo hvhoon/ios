@@ -400,7 +400,7 @@
                                 if(!error) {
                                     [self.timer invalidate];
                                     
-                                    [self crossDissolvePhotos:flickrRequestInfo.photo withTitle:flickrRequestInfo.userInfo];
+                                    [self crossDissolvePhotos2:flickrRequestInfo.photo withTitle:flickrRequestInfo.userInfo];
                                 } else {
                                     
                                     //Error : Stock photos
@@ -421,7 +421,9 @@
 
 }
 
-
+- (void) crossDissolvePhotos2:(UIImage *) photo withTitle:(NSString *) title{
+    
+}
 - (void) crossDissolvePhotos:(UIImage *) photo withTitle:(NSString *) title {
     [UIView transitionWithView:self.view duration:1.0f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
         

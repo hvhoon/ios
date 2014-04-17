@@ -79,6 +79,8 @@
             }
             dispatch_async(dispatch_get_main_queue(),^{
                 NSLog(@"name=%@",[list objectForKey:@"name"]);
+                BeagleManager *BGM=[BeagleManager SharedInstance];
+
                 
                 BeagleUserClass *userObject=[[BeagleUserClass alloc]init];
                 
@@ -152,7 +154,6 @@
                     userObject.email=email;
                 }
                     
-                BeagleManager *BGM=[BeagleManager SharedInstance];
                 BGM.beaglePlayer=userObject;
                     
                 [delegate successfulFacebookLogin:userObject];

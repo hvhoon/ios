@@ -167,6 +167,7 @@
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     [[BeagleManager SharedInstance] processFacebookProfilePictureData:_data];
+    [[BeagleManager SharedInstance] userProfileDataUpdate];
 }
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {

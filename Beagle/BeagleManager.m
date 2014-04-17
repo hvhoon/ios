@@ -162,7 +162,7 @@
 
 - (void)processFacebookProfilePictureData:(NSData *)newProfilePictureData {
     self.beaglePlayer.profileData=newProfilePictureData;
-    [self userProfileDataUpdate];
+//    [self userProfileDataUpdate];
 }
 
 #pragma mark - server calls
@@ -188,8 +188,8 @@
                     
                     id beagleId=[player objectForKey:@"id"];
                     if (beagleId != nil && [beagleId class] != [NSNull class]) {
-                        [[self beaglePlayer]setBeagleUserId:[beagleId integerValue]];
-                        NSLog(@"beagleId=%ld",(long)[beagleId integerValue]);
+//                        [[self beaglePlayer]setBeagleUserId:[beagleId integerValue]];
+//                        NSLog(@"beagleId=%ld",(long)[beagleId integerValue]);
                         
                     }
                     
@@ -240,9 +240,6 @@
         _signInServerManager = nil;
     }
     
-    NSString *message = NSLocalizedString (@"Unable to initiate request.",
-                                           @"NSURLConnection initialization method failed.");
-    BeagleAlertWithMessage(message);
 }
 
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
