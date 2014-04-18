@@ -19,6 +19,7 @@
 #import "IconDownloader.h"
 #define REFRESH_HEADER_HEIGHT 50.0f
 #define stockCroppingCheck 0
+#define kTimerIntervalInSeconds 10
 
 @interface HomeViewController ()<UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,HomeTableViewCellDelegate,ServerManagerDelegate,IconDownloaderDelegate,BlankHomePageViewDelegate>{
     UIView *topNavigationView;
@@ -88,7 +89,6 @@
 }
 
 
-#define kTimerIntervalInSeconds 10
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -394,6 +394,7 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
 #else
         UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
         stockImageView.image=photo;
+        [stockImageView setContentMode:UIViewContentModeScaleAspectFit];
 
 #endif
         
@@ -474,7 +475,10 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
                                                      attributes:attrs
                                                         context:nil];
 
-    return 166.0f+textRect.size.height;
+    if(indexPath.row==[self.tableData count]-1){
+        return 174.0f+textRect.size.height;
+    }
+    return 182.0f+textRect.size.height;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *CellIdentifier = @"MediaTableCell";

@@ -8,12 +8,12 @@
 
 #import "SettingsViewController.h"
 
-@interface SettingsViewController ()<UITableViewDataSource,UITableViewDelegate>
-@property(nonatomic,strong)IBOutlet UITableView*settingsTableView;
+@interface SettingsViewController ()
+@property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
+@property (weak, nonatomic) IBOutlet UILabel *profileNameLabel;
 @end
 
 @implementation SettingsViewController
-@synthesize settingsTableView=_settingsTableView;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -29,80 +29,35 @@
     
     [self.slidingViewController setAnchorRightRevealAmount:270.0f];
      self.slidingViewController.underLeftWidthLayout = ECFullWidth;
+    
+    if([[[BeagleManager SharedInstance]beaglePlayer]profileData]==nil){
+        
+        [self imageCircular:[UIImage imageNamed:@"picbox"]];
+        
+        
+        NSOperationQueue *queue = [NSOperationQueue new];
+        NSInvocationOperation *operation = [[NSInvocationOperation alloc]
+                                            initWithTarget:self
+                                            selector:@selector(loadProfileImage:)
+                                            object:[[[BeagleManager SharedInstance]beaglePlayer]profileImageUrl]];
+        [queue addOperation:operation];
+        
+    }
+    else{
+        _profileImageView.image=[BeagleUtilities imageCircularBySize:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]] sqr:52.0];
+    }
+    
+    if([[[[BeagleManager SharedInstance]beaglePlayer]last_name]length]!=0)
+        _profileNameLabel.text =[NSString stringWithFormat:@"%@ %@",[[[BeagleManager SharedInstance]beaglePlayer]first_name],[[[BeagleManager SharedInstance]beaglePlayer]last_name]];
+    else{
+        _profileNameLabel.text =[[[BeagleManager SharedInstance]beaglePlayer]first_name];
+    }
+    
 
 	// Do any additional setup after loading the view.
 }
-#pragma mark - Table view data source
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
-}
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    
-    
-    return 7;
-}
 
--(CGFloat)tableView:(UITableView*)tableView heightForRowAtIndexPath:(NSIndexPath*)indexPath {
-    
-    switch (indexPath.row) {
-        case 0:
-        {
-            return 60.5f;
-        }
-            break;
-            
-        default:
-            
-          break;
-    }
-    return 44.0f;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    static NSString *CellIdentifier = @"MediaTableCell";
-    
-    
-    UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell =[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-        cell.selectionStyle=UITableViewCellSelectionStyleNone;
-    }
-    
-    switch (indexPath.row) {
-        case 0:
-        {
-            
-            UIImageView *profileImageView=[[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 52.5, 52.5)];
-            profileImageView.tag=2345;
-            [cell.contentView addSubview:profileImageView];
-            
-            if([[[BeagleManager SharedInstance]beaglePlayer]profileData]==nil){
-                
-                [self imageCircular:[UIImage imageNamed:@"picbox"]];
-                
-                
-                NSOperationQueue *queue = [NSOperationQueue new];
-                NSInvocationOperation *operation = [[NSInvocationOperation alloc]
-                                                    initWithTarget:self
-                                                    selector:@selector(loadProfileImage:)
-                                                    object:[[[BeagleManager SharedInstance]beaglePlayer]profileImageUrl]];
-                [queue addOperation:operation];
-                
-            }
-            else{
-                [self imageCircular:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
-            }
-            
-        }
-            break;
-            
-        default:
-            break;
-    }
-    [cell setNeedsDisplay];
-    return cell;
-}
 
 - (void)loadProfileImage:(NSString*)url {
     BeagleManager *BG=[BeagleManager SharedInstance];
@@ -112,10 +67,7 @@
     [self performSelectorOnMainThread:@selector(imageCircular:) withObject:image waitUntilDone:NO];
 }
 -(void)imageCircular:(UIImage*)image{
-    UITableViewCell *cell = (UITableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-
-    UIImageView *profileImageView=(UIImageView*)[cell viewWithTag:2345];
-    profileImageView.image=[BeagleUtilities imageCircularBySize:image sqr:52.5f];
+    _profileImageView.image=[BeagleUtilities imageCircularBySize:image sqr:52.0f];
 }
 
 - (void)didReceiveMemoryWarning

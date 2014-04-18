@@ -130,7 +130,7 @@ static BGFlickrManager *sharedManager = nil;
             int randomPhotoIndex = [BeagleUtilities getRandomIntBetweenLow:0 andHigh:numberOfPhotos];
             
             NSDictionary *photoDict = [photos objectAtIndex:randomPhotoIndex];
-            NSURL *photoURL = [self.flickrContext photoSourceURLFromDictionary:photoDict size:OFFlickrSmall320Size];
+            NSURL *photoURL = [self.flickrContext photoSourceURLFromDictionary:photoDict size:OFFlickrMedium640Size];
             NSLog(@"photoUrl=%@",photoURL);
                         
 //            NSString *photoId = (NSString *)[photoDict objectForKey:@"id"];
@@ -146,7 +146,7 @@ static BGFlickrManager *sharedManager = nil;
                 
                 self.flickrRequestInfo.photo = [UIImage imageWithData:[NSData dataWithContentsOfURL:photoURL]];
                 
-                float height=self.flickrRequestInfo.photo.size.height-167.0;
+                float height=self.flickrRequestInfo.photo.size.height-334.0;
                 if(height>0){
                 
                 UIImage *stockBottomImage1=[BeagleUtilities imageByCropping:self.flickrRequestInfo.photo toRect:CGRectMake(0, height/2, 320, 167) withOrientation:UIImageOrientationDownMirrored];
@@ -270,8 +270,8 @@ static BGFlickrManager *sharedManager = nil;
 - (void) resizeCropPhoto {
     float goldenRatio = 1.6;
     
-    int const constWidth = 320;
-    int const constHeight = 167;
+    int const constWidth = 640;
+    int const constHeight = 334;
     
     int newWidth;
     

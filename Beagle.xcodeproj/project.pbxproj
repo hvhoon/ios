@@ -529,7 +529,6 @@
 				18E7AF0618BBAA0400EBBDE2 /* Facebook */,
 				18FADBA018B66A6600A62287 /* Notifications Screen */,
 				18FADB9F18B66A5600A62287 /* Settings Screen */,
-				18FADB9818B669C100A62287 /* Home Screen */,
 				18FADB8E18B6680C00A62287 /* Sliding Drawer */,
 				18007F0418C6542000230C23 /* Categories */,
 				18FADB8A18B6625A00A62287 /* Login Screen */,
@@ -707,6 +706,7 @@
 				18FADB9218B668A500A62287 /* ECSlidingViewController.m */,
 				18FADB8F18B6683000A62287 /* InitialSlidingViewController.h */,
 				18FADB9018B6683000A62287 /* InitialSlidingViewController.m */,
+				18FADB9818B669C100A62287 /* Home Screen */,
 			);
 			name = "Sliding Drawer";
 			sourceTree = "<group>";

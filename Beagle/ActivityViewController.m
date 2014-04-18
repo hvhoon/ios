@@ -160,7 +160,7 @@ enum Weeks {
     [timeFilterButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:17.0]];
     [timeFilterButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
     
-    [visibilityFilterButton setTitle:@"Public" forState:UIControlStateNormal];
+    [visibilityFilterButton setTitle:@"Friends Only" forState:UIControlStateNormal];
     [visibilityFilterButton setTitleColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0] forState:UIControlStateNormal];
     [visibilityFilterButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:17.0]];
     [visibilityFilterButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
@@ -392,7 +392,7 @@ enum Weeks {
 			int j = [Temp intValue];
             
 			j = j-1 ;
-			countTextLabel.text= [[NSString alloc] initWithFormat:@"%lu",141-[textView.text length]];
+			countTextLabel.text= [[NSString alloc] initWithFormat:@"%u",141-[textView.text length]];
             
 			return YES;
 		}
@@ -408,7 +408,7 @@ enum Weeks {
 	}
 	if(flag == NO)
 	{
-		countTextLabel.text= [[NSString alloc] initWithFormat:@"%lu",140-[descriptionTextView.text length]-1];
+		countTextLabel.text= [[NSString alloc] initWithFormat:@"%u",140-[descriptionTextView.text length]-1];
 		
 		
 	}
