@@ -9,7 +9,6 @@
 #import "LoginViewController.h"
 #import "InitialSlidingViewController.h"
 #import "FacebookLoginSession.h"
-#import "BeagleUserClass.h"
 #import <Social/Social.h>
 @interface LoginViewController ()<FacebookLoginSessionDelegate,ServerManagerDelegate>{
     IBOutlet UIActivityIndicatorView *activityIndicatorView;

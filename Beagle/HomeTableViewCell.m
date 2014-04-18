@@ -138,40 +138,47 @@ static UIFont *thirdTextFont = nil;
     if(self.bg_activity.participantsCount>0 && self.bg_activity.dos2Count>0){
        
 
-        participantsCountTextSize = [[NSString stringWithFormat:@"%ld Interested -  %ld Friends",self.bg_activity.participantsCount,self.bg_activity.dos2Count]  boundingRectWithSize:CGSizeMake(288, r.size.height)
+        participantsCountTextSize = [[NSString stringWithFormat:@"%ld Interested -  %ld Friends",(long)self.bg_activity.participantsCount,(long)self.bg_activity.dos2Count]  boundingRectWithSize:CGSizeMake(288, r.size.height)
                                                                options:NSStringDrawingUsesLineFragmentOrigin
                                                             attributes:attrs
                                                                context:nil].size;
         
-        [[NSString stringWithFormat:@"%ld Interested -  %ld Friends",self.bg_activity.participantsCount,self.bg_activity.dos2Count] drawInRect:CGRectMake(16,69+8+commentTextRect.size.height+16+14.0f,
+        [[NSString stringWithFormat:@"%ld Interested -  %ld Friends",(long)self.bg_activity.participantsCount,(long)self.bg_activity.dos2Count] drawInRect:CGRectMake(16,69+8+commentTextRect.size.height+16+14.0f,
                                                              participantsCountTextSize.width, 14.0f) withAttributes:attrs];
         
         
     }else{
         
-        participantsCountTextSize = [[NSString stringWithFormat:@"%ld Interested",self.bg_activity.participantsCount]  boundingRectWithSize:CGSizeMake(288, r.size.height)
+        participantsCountTextSize = [[NSString stringWithFormat:@"%ld Interested",(long)self.bg_activity.participantsCount]  boundingRectWithSize:CGSizeMake(288, r.size.height)
                                                                                                                                                                                      options:NSStringDrawingUsesLineFragmentOrigin
                                                                                                                                                                                   attributes:attrs
                                                                                                                                                                                      context:nil].size;
         
-        [[NSString stringWithFormat:@"%ld Interested",self.bg_activity.participantsCount] drawInRect:CGRectMake(16,69+8+commentTextRect.size.height+16+14,
+        [[NSString stringWithFormat:@"%ld Interested",(long)self.bg_activity.participantsCount] drawInRect:CGRectMake(16,69+8+commentTextRect.size.height+16+14,
                                                                                                                                                           participantsCountTextSize.width, 14.0f) withAttributes:attrs];
         
         
 
     }
     
-    if(self.bg_activity.isParticipant)
+    if(self.bg_activity.isParticipant){
         [[UIImage imageNamed:@"Star"] drawInRect:CGRectMake(16, 69+8+commentTextRect.size.height+16+28+16, 16, 15)];
+    attrs=[NSDictionary dictionaryWithObjectsAndKeys:
+           thirdTextFont, NSFontAttributeName,
+           [UIColor blueColor],NSForegroundColorAttributeName,
+           style, NSParagraphStyleAttributeName, nil];
+    }
+
     else{
-        [[UIImage imageNamed:@"Star"] drawInRect:CGRectMake(16, 69+8+commentTextRect.size.height+16+28+16, 16, 15)];
+        attrs=[NSDictionary dictionaryWithObjectsAndKeys:
+               thirdTextFont, NSFontAttributeName,
+               [UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
+               style, NSParagraphStyleAttributeName, nil];
+
+        [[UIImage imageNamed:@"Star-Unfilled"] drawInRect:CGRectMake(16, 69+8+commentTextRect.size.height+16+28+16, 16, 15)];
         
     }
     
-    attrs=[NSDictionary dictionaryWithObjectsAndKeys:
-           thirdTextFont, NSFontAttributeName,
-           [UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
-           style, NSParagraphStyleAttributeName, nil];
 
     CGSize interestedSize = [@"I'm Interested"  boundingRectWithSize:CGSizeMake(288, r.size.height)
                                                                                                                                                                                  options:NSStringDrawingUsesLineFragmentOrigin
@@ -185,7 +192,7 @@ static UIFont *thirdTextFont = nil;
     if(self.bg_activity.postCount>0)
     [[UIImage imageNamed:@"Comment"] drawInRect:CGRectMake(306-21, 69+8+commentTextRect.size.height+16+28+16, 21, 18)];
     else{
-        [[UIImage imageNamed:@"Comment"] drawInRect:CGRectMake(306-21, 69+8+commentTextRect.size.height+16+28+16, 21, 18)];
+        [[UIImage imageNamed:@"Add-Comment"] drawInRect:CGRectMake(306-21, 69+8+commentTextRect.size.height+16+28+16, 21, 18)];
     }
     
     [style setAlignment:NSTextAlignmentLeft];
@@ -194,19 +201,19 @@ static UIFont *thirdTextFont = nil;
                            [UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
                            style, NSParagraphStyleAttributeName, nil];
     
-    CGSize postCountTextSize = [[NSString stringWithFormat:@"%ld",self.bg_activity.postCount]  boundingRectWithSize:CGSizeMake(288, r.size.height)
+    CGSize postCountTextSize = [[NSString stringWithFormat:@"%ld",(long)self.bg_activity.postCount]  boundingRectWithSize:CGSizeMake(288, r.size.height)
                                                                         options:NSStringDrawingUsesLineFragmentOrigin
                                                                      attributes:attrs
                                                                         context:nil].size;
     
-    [[NSString stringWithFormat:@"%ld",self.bg_activity.postCount] drawInRect:CGRectMake(300-21- postCountTextSize.width,69+8+commentTextRect.size.height+16+28+16,
+    [[NSString stringWithFormat:@"%ld",(long)self.bg_activity.postCount] drawInRect:CGRectMake(300-21- postCountTextSize.width,69+8+commentTextRect.size.height+16+28+16-2,
                                              postCountTextSize.width, 14) withAttributes:attrs];
     
     
-    CGRect myRect = {0, 69+8+commentTextRect.size.height+16+28+16+14+8, 320, 8};
+    CGRect stripRect = {0, 69+8+commentTextRect.size.height+16+28+16+14+8, 320, 8};
     
     CGContextSetRGBFillColor(context, 230.0/255.0, 230.0/255.0, 230.0/255.0, 1.0);
-    CGContextFillRect(context, myRect);
+    CGContextFillRect(context, stripRect);
     
 
 }

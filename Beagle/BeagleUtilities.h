@@ -16,4 +16,5 @@
 + (UIImage*)imageByCropping:(UIImage *)imageToCrop toRect:(CGRect)aperture withOrientation:(UIImageOrientation)orientation;
 + (UIImage*)circularScaleNCrop:(UIImage*)image rect:(CGRect) rect;
 +(NSString*)activityTime:(NSString*)startDate endate:(NSString*)endDate;
++(UIImage*)imageCircularBySize:(UIImage*)image sqr:(CGFloat)sqr;
 @end

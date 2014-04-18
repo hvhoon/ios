@@ -8,8 +8,6 @@
 
 
 #import "BeagleManager.h"
-#import "BeagleUserClass.h"
-#import "ServerManager.h"
 #import "FacebookLoginSession.h"
 @interface BeagleManager ()<ServerManagerDelegate,FacebookLoginSessionDelegate>{
     ServerManager *signInServerManager;

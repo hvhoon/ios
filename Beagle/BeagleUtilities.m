@@ -294,4 +294,30 @@
 
     return nil;
 }
+
++(UIImage*)imageCircularBySize:(UIImage*)image sqr:(CGFloat)sqr{
+    
+    if(image.size.height != image.size.width)
+        image = [BeagleUtilities autoCrop:image];
+    
+    
+    if(image.size.height > sqr || image.size.width > sqr)
+        image = [BeagleUtilities compressImage:image size:CGSizeMake(sqr,sqr)];
+    
+    UIGraphicsBeginImageContext(image.size);
+    {
+        CGContextRef ctx = UIGraphicsGetCurrentContext();
+        CGAffineTransform trnsfrm = CGAffineTransformConcat(CGAffineTransformIdentity, CGAffineTransformMakeScale(1.0, -1.0));
+        trnsfrm = CGAffineTransformConcat(trnsfrm, CGAffineTransformMakeTranslation(0.0, image.size.height));
+        CGContextConcatCTM(ctx, trnsfrm);
+        CGContextBeginPath(ctx);
+        CGContextAddEllipseInRect(ctx, CGRectMake(0.0, 0.0, image.size.width, image.size.height));
+        CGContextClip(ctx);
+        CGContextDrawImage(ctx, CGRectMake(0.0, 0.0, image.size.width, image.size.height), image.CGImage);
+        image = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+    }
+    return image;
+
+}
 @end

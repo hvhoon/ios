@@ -13,9 +13,6 @@
 #import "LocationTableViewController.h"
 #import "UIViewController+MJPopupViewController.h"
 #import "BeagleActivityClass.h"
-#import "BeagleUserClass.h"
-#import "ServerManager.h"
-#import "BeagleUserClass.h"
 
 enum Weeks {
     SUNDAY = 1,
@@ -163,7 +160,7 @@ enum Weeks {
     [timeFilterButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:17.0]];
     [timeFilterButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
     
-    [visibilityFilterButton setTitle:@"Friends Only" forState:UIControlStateNormal];
+    [visibilityFilterButton setTitle:@"Public" forState:UIControlStateNormal];
     [visibilityFilterButton setTitleColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0] forState:UIControlStateNormal];
     [visibilityFilterButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:17.0]];
     [visibilityFilterButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
@@ -187,35 +184,16 @@ enum Weeks {
 
 
 - (void)loadProfileImage:(NSString*)url {
+    BeagleManager *BG=[BeagleManager SharedInstance];
     NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:url]];
+    BG.beaglePlayer.profileData=imageData;
     UIImage* image =[[UIImage alloc] initWithData:imageData];
     [self performSelectorOnMainThread:@selector(imageCircular:) withObject:image waitUntilDone:NO];
 }
 
 -(void)imageCircular:(UIImage*)image{
-    if(image.size.height != image.size.width)
-        image = [BeagleUtilities autoCrop:image];
-//
-    // If the image needs to be compressed
-    if(image.size.height > 35 || image.size.width > 35)
-        image = [BeagleUtilities compressImage:image size:CGSizeMake(35,35)];
     
-    UIGraphicsBeginImageContext(image.size);
-    {
-        CGContextRef ctx = UIGraphicsGetCurrentContext();
-        CGAffineTransform trnsfrm = CGAffineTransformConcat(CGAffineTransformIdentity, CGAffineTransformMakeScale(1.0, -1.0));
-        trnsfrm = CGAffineTransformConcat(trnsfrm, CGAffineTransformMakeTranslation(0.0, image.size.height));
-        CGContextConcatCTM(ctx, trnsfrm);
-        CGContextBeginPath(ctx);
-        CGContextAddEllipseInRect(ctx, CGRectMake(0.0, 0.0, image.size.width, image.size.height));
-        CGContextClip(ctx);
-        CGContextDrawImage(ctx, CGRectMake(0.0, 0.0, image.size.width, image.size.height), image.CGImage);
-        image = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-    }
-    
-    profileImageView.image=image;
-
+    profileImageView.image=[BeagleUtilities imageCircularBySize:image sqr:35.0f];
 }
 
 -(void)cancelButtonClicked:(id)sender{
@@ -297,7 +275,7 @@ enum Weeks {
     
     bg_activity.startActivityDate=[dateFormatter stringFromDate:newDate1];
     bg_activity.endActivityDate=[dateFormatter stringFromDate:newDate2];
-    bg_activity.visibiltyFilter=@"Friends Only";
+    bg_activity.visibiltyFilter=@"Public";
     bg_activity.state=[[BeagleManager SharedInstance]placemark].administrativeArea;
     bg_activity.city=[[[BeagleManager SharedInstance]placemark].addressDictionary objectForKey:@"City"];
     bg_activity.timeFilter=@"Next Weekend";

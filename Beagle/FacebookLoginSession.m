@@ -10,7 +10,6 @@
 #import <Social/Social.h>
 #import <Accounts/ACAccountType.h>
 #import <Accounts/ACAccountCredential.h>
-#import "BeagleUserClass.h"
 @implementation FacebookLoginSession
 @synthesize accountStore;
 @synthesize facebookAccount;

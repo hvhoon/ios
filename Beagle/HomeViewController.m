@@ -16,9 +16,11 @@
 #import "BlankHomePageView.h"
 #import "HomeTableViewCell.h"
 #import "BeagleActivityClass.h"
-#import "ServerManager.h"
 #import "IconDownloader.h"
-@interface HomeViewController ()<UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,HomeTableViewCellDelegate,ServerManagerDelegate,IconDownloaderDelegate>{
+#define REFRESH_HEADER_HEIGHT 50.0f
+#define stockCroppingCheck 0
+
+@interface HomeViewController ()<UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,HomeTableViewCellDelegate,ServerManagerDelegate,IconDownloaderDelegate,BlankHomePageViewDelegate>{
     UIView *topNavigationView;
     UIView*bottomNavigationView;
     BOOL footerActivated;
@@ -52,7 +54,9 @@
     }
     return self;
 }
-
+- (void)updateViewConstraints {
+    [super updateViewConstraints];
+}
 - (void)revealMenu:(id)sender
 {
     [self.slidingViewController anchorTopViewTo:ECRight];
@@ -62,89 +66,6 @@
 {
     [self.slidingViewController anchorTopViewTo:ECLeft];
 }
-- (void)startStandardUpdates {
-    
-	if (nil == locationManager) {
-		locationManager = [[CLLocationManager alloc] init];
-	}
-    
-	locationManager.delegate = self;
-	locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-    
-	// Set a movement threshold for new events.
-	locationManager.distanceFilter = kCLLocationAccuracyNearestTenMeters;
-    
-	[locationManager startUpdatingLocation];
-    
-	CLLocation *currentLoc = locationManager.location;
-	if (currentLoc) {
-		self.currentLocation = currentLoc;
-	}
-}
-- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
-	NSLog(@"%s", __PRETTY_FUNCTION__);
-	switch (status) {
-		case kCLAuthorizationStatusAuthorized:
-			NSLog(@"kCLAuthorizationStatusAuthorized");
-			[locationManager startUpdatingLocation];
-			break;
-		case kCLAuthorizationStatusDenied:
-			NSLog(@"kCLAuthorizationStatusDenied");
-        {{
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Mobbin can’t access your current location.\n\nTo view nearby checkins at your current location, turn on access for Mobbin to your location in the Settings app under Location Services." message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-            [alertView show];
-            // Disable the post button.
-        }}
-			break;
-		case kCLAuthorizationStatusNotDetermined:
-			NSLog(@"kCLAuthorizationStatusNotDetermined");
-			break;
-		case kCLAuthorizationStatusRestricted:
-			NSLog(@"kCLAuthorizationStatusRestricted");
-			break;
-	}
-}
-
-- (void)locationManager:(CLLocationManager *)manager
-    didUpdateToLocation:(CLLocation *)newLocation
-           fromLocation:(CLLocation *)oldLocation {
-	NSLog(@"%s", __PRETTY_FUNCTION__);
-    
-    self.currentLocation=newLocation;
-}
-- (void)locationManager:(CLLocationManager *)manager
-       didFailWithError:(NSError *)error {
-	NSLog(@"%s", __PRETTY_FUNCTION__);
-	NSLog(@"Error: %@", [error description]);
-    
-	if (error.code == kCLErrorDenied) {
-		[locationManager stopUpdatingLocation];
-	} else if (error.code == kCLErrorLocationUnknown) {
-		// todo: retry?
-		// set a timer for five seconds to cycle location, and if it fails again, bail and tell the user.
-	} else {
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error retrieving location"
-		                                                message:[error description]
-		                                               delegate:nil
-		                                      cancelButtonTitle:nil
-		                                      otherButtonTitles:@"Ok", nil];
-		[alert show];
-	}
-}
-- (void)setCurrentLocation:(CLLocation *)aCurrentLocation {
-	currentLocation = aCurrentLocation;
-    BeagleManager *BG=[BeagleManager SharedInstance];
-    BG.currentLocation=currentLocation;
-    [locationManager stopUpdatingLocation];
-    locationManager.delegate=nil;
-    
-	dispatch_async(dispatch_get_main_queue(), ^{
-        
-        
-        [self LocationAcquired];
-	});
-}
-#define REFRESH_HEADER_HEIGHT 50.0f
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
@@ -183,7 +104,7 @@
     }
       [self.view addGestureRecognizer:self.slidingViewController.panGesture];
     
-
+#if stockCroppingCheck
     
     UIImage *stockBottomImage1=[BeagleUtilities imageByCropping:[UIImage imageNamed:@"defaultLocation"] toRect:CGRectMake(0, 0, 320, 64) withOrientation:UIImageOrientationDownMirrored];
     topNavigationView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 64)];
@@ -198,7 +119,14 @@
     bottomNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockBottomImage2];
     [self.view addSubview:bottomNavigationView];
 
+#else
     
+    UIImageView *stockImageView= [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 320, 167)];
+    stockImageView.image=[UIImage imageNamed:@"defaultLocation"];
+    stockImageView.tag=3456;
+    [self.view addSubview:stockImageView];
+#endif
+
     [self addCityName:@"New York"];
     UIButton *eventButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [eventButton addTarget:self action:@selector(createANewActivity:)forControlEvents:UIControlEventTouchUpInside];
@@ -209,31 +137,57 @@
     eventButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
 
     eventButton.frame = CGRectMake(244.0, 4.0, 60.0, 60.0);
+    
+#if stockCroppingCheck
     [topNavigationView addSubview:eventButton];
+#else
+    [self.view addSubview:eventButton];
+#endif
+
     
     
     UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [settingsButton addTarget:self action:@selector(revealMenu:)forControlEvents:UIControlEventTouchUpInside];
     [settingsButton setBackgroundImage:[UIImage imageNamed:@"Settings"] forState:UIControlStateNormal];
+
+    
+#if stockCroppingCheck
     settingsButton.frame = CGRectMake(16.0, 78.0, 20.0, 13.0);
-    [bottomNavigationView addSubview:settingsButton];
+    [bottomNavigationView addSubview:eventButton];
+#else
+    settingsButton.frame = CGRectMake(16.0, 142.0, 20.0, 13.0);
+    [self.view addSubview:settingsButton];
+#endif
+
     
     UIButton *notificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [notificationsButton addTarget:self action:@selector(revealUnderRight:)forControlEvents:UIControlEventTouchUpInside];
     [notificationsButton setBackgroundImage:[UIImage imageNamed:@"Bell-(No-Notications)"] forState:UIControlStateNormal];
+
+    
+#if stockCroppingCheck
     notificationsButton.frame = CGRectMake(287.0, 72.0, 17.0, 19.0);
     [bottomNavigationView addSubview:notificationsButton];
-
-
+#else
+    notificationsButton.frame = CGRectMake(287.0, 136.0, 17.0, 19.0);
+    [self.view addSubview:notificationsButton];
+#endif
     
-    self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1.0];
     
-    [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-    
+#if stockCroppingCheck
     UIView *filterView=[[UIView alloc]initWithFrame:CGRectMake(0, 103, 320, 44)];
     [filterView addSubview:[self renderFilterHeaderView]];
     [bottomNavigationView addSubview:filterView];
+#else
+    UIView *filterView=[[UIView alloc]initWithFrame:CGRectMake(0, 167, 320, 44)];
+    [filterView addSubview:[self renderFilterHeaderView]];
+    [self.view addSubview:filterView];
+#endif
+
+self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1.0];
     
+    [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     [self.tableView addSubview:self.refreshControl];
@@ -298,7 +252,11 @@
     fromLabel.backgroundColor = [UIColor clearColor];
     fromLabel.textColor = [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:0.95];
     fromLabel.textAlignment = NSTextAlignmentLeft;
+#if stockCroppingCheck
     [topNavigationView addSubview:fromLabel];
+#else
+    [self.view addSubview:fromLabel];
+#endif
 
 }
 - (void)refresh:(UIRefreshControl *)refreshControl {
@@ -400,7 +358,7 @@
                                 if(!error) {
                                     [self.timer invalidate];
                                     
-                                    [self crossDissolvePhotos2:flickrRequestInfo.photo withTitle:flickrRequestInfo.userInfo];
+                                    [self crossDissolvePhotos:flickrRequestInfo.photo withTitle:flickrRequestInfo.userInfo];
                                 } else {
                                     
                                     //Error : Stock photos
@@ -421,12 +379,10 @@
 
 }
 
-- (void) crossDissolvePhotos2:(UIImage *) photo withTitle:(NSString *) title{
-    
-}
 - (void) crossDissolvePhotos:(UIImage *) photo withTitle:(NSString *) title {
     [UIView transitionWithView:self.view duration:1.0f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
         
+#if stockCroppingCheck
         
         UIImage *stockBottomImage1=[BeagleUtilities imageByCropping:photo toRect:CGRectMake(0, 0, 320, 64) withOrientation:UIImageOrientationDownMirrored];
         
@@ -435,6 +391,11 @@
         
         UIImage *stockBottomImage2=[BeagleUtilities imageByCropping:photo toRect:CGRectMake(0, 64, 320, 103) withOrientation:UIImageOrientationDownMirrored];
         bottomNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockBottomImage2];
+#else
+        UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
+        stockImageView.image=photo;
+
+#endif
         
     } completion:NULL];
 }
@@ -513,7 +474,7 @@
                                                      attributes:attrs
                                                         context:nil];
 
-    return 174.0f+textRect.size.height;
+    return 166.0f+textRect.size.height;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *CellIdentifier = @"MediaTableCell";
@@ -612,12 +573,18 @@
 }
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     
-//    if(!footerActivated)
-//        [bottomNavigationView scrollViewWillBeginDragging:scrollView];
+#if stockCroppingCheck
+    if(!footerActivated)
+        [bottomNavigationView scrollViewWillBeginDragging:scrollView];
+#endif
 }
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-//        if(!footerActivated)
-//    [bottomNavigationView scrollViewDidScroll:scrollView];
+    
+#if stockCroppingCheck
+    if(!footerActivated)
+[bottomNavigationView scrollViewDidScroll:scrollView];
+    
+#endif
 }
 - (void)didReceiveMemoryWarning
 {
@@ -627,7 +594,6 @@
 - (void)searchBarCancelButtonClicked:(UISearchBar *)aSearchBar
 {
     [self hideSearchBarAndAnimateWithListViewInMiddle];
-    self.tableView.tableHeaderView=nil;
 
     
 }
@@ -705,10 +671,10 @@
                 if (activities != nil && [activities class] != [NSNull class]) {
                     
                     
-                    id crtbyu=[activities objectForKey:@"beagle_crtbyu"];
-                    if (crtbyu != nil && [crtbyu class] != [NSNull class]) {
+                    id happenarndu=[activities objectForKey:@"beagle_happenarndu"];
+                    if (happenarndu != nil && [happenarndu class] != [NSNull class]) {
                         NSMutableArray *activitiesArray=[[NSMutableArray alloc]init];
-                        for(id el in crtbyu){
+                        for(id el in happenarndu){
                             BeagleActivityClass *actclass=[[BeagleActivityClass alloc]initWithDictionary:el];
                              [activitiesArray addObject:actclass];
                         }
@@ -750,6 +716,8 @@
             NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"BlankHomePageView" owner:self options:nil];
             BlankHomePageView *blankHomePageView=[nib objectAtIndex:0];
             blankHomePageView.frame=CGRectMake(0, 167, 320, 401);
+            blankHomePageView.delegate=self;
+            [blankHomePageView updateViewConstraints];
             blankHomePageView.userInteractionEnabled=YES;
             blankHomePageView.tag=1245;
             [self.view addSubview:blankHomePageView];
@@ -801,6 +769,121 @@
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
     [alert show];
+}
+#pragma mark - filter  option calls
+-(void)filterOptionClicked:(NSInteger)index{
+    switch (index) {
+        case 0:
+        {
+            
+        }
+            break;
+            
+        case 1:
+        {
+            
+        }
+            break;
+
+            
+        case 2:
+        {
+            
+        }
+            break;
+
+            
+        case 3:
+        {
+            [self createANewActivity:self];
+        }
+            break;
+
+            
+    }
+}
+
+- (void)startStandardUpdates {
+    
+	if (nil == locationManager) {
+		locationManager = [[CLLocationManager alloc] init];
+	}
+    
+	locationManager.delegate = self;
+	locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+    
+	// Set a movement threshold for new events.
+	locationManager.distanceFilter = kCLLocationAccuracyNearestTenMeters;
+    
+	[locationManager startUpdatingLocation];
+    
+	CLLocation *currentLoc = locationManager.location;
+	if (currentLoc) {
+		self.currentLocation = currentLoc;
+	}
+}
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+	NSLog(@"%s", __PRETTY_FUNCTION__);
+	switch (status) {
+		case kCLAuthorizationStatusAuthorized:
+			NSLog(@"kCLAuthorizationStatusAuthorized");
+			[locationManager startUpdatingLocation];
+			break;
+		case kCLAuthorizationStatusDenied:
+			NSLog(@"kCLAuthorizationStatusDenied");
+        {{
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Mobbin can’t access your current location.\n\nTo view nearby checkins at your current location, turn on access for Mobbin to your location in the Settings app under Location Services." message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+            [alertView show];
+            // Disable the post button.
+        }}
+			break;
+		case kCLAuthorizationStatusNotDetermined:
+			NSLog(@"kCLAuthorizationStatusNotDetermined");
+			break;
+		case kCLAuthorizationStatusRestricted:
+			NSLog(@"kCLAuthorizationStatusRestricted");
+			break;
+	}
+}
+
+- (void)locationManager:(CLLocationManager *)manager
+    didUpdateToLocation:(CLLocation *)newLocation
+           fromLocation:(CLLocation *)oldLocation {
+	NSLog(@"%s", __PRETTY_FUNCTION__);
+    
+    self.currentLocation=newLocation;
+}
+- (void)locationManager:(CLLocationManager *)manager
+       didFailWithError:(NSError *)error {
+	NSLog(@"%s", __PRETTY_FUNCTION__);
+	NSLog(@"Error: %@", [error description]);
+    
+	if (error.code == kCLErrorDenied) {
+		[locationManager stopUpdatingLocation];
+	} else if (error.code == kCLErrorLocationUnknown) {
+		// todo: retry?
+		// set a timer for five seconds to cycle location, and if it fails again, bail and tell the user.
+	} else {
+		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error retrieving location"
+		                                                message:[error description]
+		                                               delegate:nil
+		                                      cancelButtonTitle:nil
+		                                      otherButtonTitles:@"Ok", nil];
+		[alert show];
+	}
+}
+- (void)setCurrentLocation:(CLLocation *)aCurrentLocation {
+	currentLocation = aCurrentLocation;
+    BeagleManager *BG=[BeagleManager SharedInstance];
+    BG.currentLocation=currentLocation;
+    [locationManager stopUpdatingLocation];
+    locationManager.delegate=nil;
+    
+	dispatch_async(dispatch_get_main_queue(), ^{
+        
+        
+        [self LocationAcquired];
+	});
 }
 
 @end

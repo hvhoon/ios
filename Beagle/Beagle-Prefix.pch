@@ -19,5 +19,6 @@
     #import "AppDelegate.h"
     #import "ServerManager.h"
     #import "BeagleManager.h"
+    #import "BeagleUserClass.h"
 
 #endif

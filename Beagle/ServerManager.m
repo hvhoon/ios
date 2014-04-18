@@ -12,8 +12,6 @@
 #import "ASIFormDataRequest.h"
 #import "SBJSON.h"
 #import "JSON.h"
-#import "AppDelegate.h"
-#import "BeagleUserClass.h"
 #import "BeagleActivityClass.h"
 #define localHost @"http://localhost:3000/"
 #define herokuHost @"http://infinite-spire-6520.herokuapp.com/"
@@ -41,7 +39,7 @@
         _internetReachability = [Reachability reachabilityForInternetConnection];
 
 
-        _serverUrl =herokuHost;
+        _serverUrl =localHost;
 
         [self populateErrorCodes];
     }

@@ -7,7 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+@protocol BlankHomePageViewDelegate <NSObject>
+
+@optional
+-(void)filterOptionClicked:(NSInteger)index;
+@end
 
 @interface BlankHomePageView : UIView
-
+@property(nonatomic,strong)id<BlankHomePageViewDelegate>delegate;
+- (void)updateViewConstraints;
 @end

@@ -10,22 +10,15 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="401"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Nothing ?" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qwF-Q1-nwS">
-                    <rect key="frame" x="124" y="30" width="72" height="21"/>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Nothing ? Try again" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qwF-Q1-nwS">
+                    <rect key="frame" x="126" y="50" width="142" height="21"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="17"/>
                     <color key="textColor" red="0.5568627451" green="0.5568627451" blue="0.5568627451" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Don't worry,just make it happen!" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bhe-6Q-KYz">
-                    <rect key="frame" x="40" y="55" width="240" height="21"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="17"/>
-                    <color key="textColor" red="0.5568627451" green="0.5568627451" blue="0.5568627451" alpha="1" colorSpace="calibratedRGB"/>
-                    <nil key="highlightedColor"/>
-                </label>
-                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jId-vI-ctu">
-                    <rect key="frame" x="48" y="95" width="62" height="62"/>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jId-vI-ctu">
+                    <rect key="frame" x="48" y="110" width="62" height="62"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <state key="normal" backgroundImage="Change-your-filters">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -34,15 +27,25 @@
                         <action selector="changeYourFilterClicked:" destination="7w6-D3-PcJ" eventType="touchUpInside" id="pEa-RI-FQG"/>
                     </connections>
                 </button>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Change your filter" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uzV-sp-zQe">
-                    <rect key="frame" x="125" y="115" width="140" height="21"/>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Nvr-3b-UoR">
+                    <rect key="frame" x="48" y="32" width="62" height="62"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <state key="normal" backgroundImage="Refresh-Icon">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="NothingTryAgainClicked:" destination="7w6-D3-PcJ" eventType="touchUpInside" id="wMw-Ri-3Qd"/>
+                    </connections>
+                </button>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Change your filter" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uzV-sp-zQe">
+                    <rect key="frame" x="126" y="129" width="140" height="22"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="18"/>
                     <color key="textColor" red="0.55686274509803924" green="0.55686274509803924" blue="0.55686274509803924" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OoF-ek-A5i">
-                    <rect key="frame" x="48" y="173" width="62" height="62"/>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OoF-ek-A5i">
+                    <rect key="frame" x="48" y="188" width="62" height="62"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <state key="normal" backgroundImage="Invite-your-friends">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -51,25 +54,25 @@
                         <action selector="inviteYourFriendsClicked:" destination="7w6-D3-PcJ" eventType="touchUpInside" id="Xla-6S-o1Z"/>
                     </connections>
                 </button>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Invite your friends" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5xG-IV-dzP">
-                    <rect key="frame" x="125" y="194" width="145" height="21"/>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Invite your friends" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5xG-IV-dzP">
+                    <rect key="frame" x="126" y="209" width="136" height="22"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="18"/>
                     <color key="textColor" red="0.5568627451" green="0.5568627451" blue="0.5568627451" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1IT-k4-dRh">
-                    <rect key="frame" x="48" y="251" width="62" height="62"/>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1IT-k4-dRh">
+                    <rect key="frame" x="48" y="266" width="62" height="62"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <state key="normal" backgroundImage="Post-an-Interest">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
-                        <action selector="postOnInterestClicked:" destination="7w6-D3-PcJ" eventType="touchUpInside" id="LkG-5J-g3i"/>
+                        <action selector="createAInterestClicked:" destination="7w6-D3-PcJ" eventType="touchUpInside" id="qyE-kx-HWe"/>
                     </connections>
                 </button>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Create Activity" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yHq-Hl-B46">
-                    <rect key="frame" x="125" y="271" width="140" height="21"/>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Create Activity" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yHq-Hl-B46">
+                    <rect key="frame" x="126" y="289" width="140" height="22"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="18"/>
                     <color key="textColor" red="0.5568627451" green="0.5568627451" blue="0.5568627451" alpha="1" colorSpace="calibratedRGB"/>
@@ -77,12 +80,46 @@
                 </label>
             </subviews>
             <color key="backgroundColor" red="0.90196078431372551" green="0.90196078431372551" blue="0.90196078431372551" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="5xG-IV-dzP" secondAttribute="trailing" constant="58" id="141-7I-5aq"/>
+                <constraint firstItem="qwF-Q1-nwS" firstAttribute="top" secondItem="7w6-D3-PcJ" secondAttribute="top" constant="50" id="2yC-jH-WKa"/>
+                <constraint firstItem="qwF-Q1-nwS" firstAttribute="leading" secondItem="Nvr-3b-UoR" secondAttribute="trailing" constant="16" id="6dF-9f-Xld"/>
+                <constraint firstItem="uzV-sp-zQe" firstAttribute="leading" secondItem="jId-vI-ctu" secondAttribute="trailing" constant="16" id="7Aj-ZT-K0q"/>
+                <constraint firstItem="yHq-Hl-B46" firstAttribute="top" secondItem="5xG-IV-dzP" secondAttribute="bottom" constant="58" id="7kn-gI-Xpn"/>
+                <constraint firstItem="1IT-k4-dRh" firstAttribute="top" secondItem="OoF-ek-A5i" secondAttribute="bottom" constant="16" id="9JM-Jq-Ioh"/>
+                <constraint firstAttribute="trailing" secondItem="yHq-Hl-B46" secondAttribute="trailing" constant="54" id="HDa-cb-X0t"/>
+                <constraint firstItem="Nvr-3b-UoR" firstAttribute="leading" secondItem="7w6-D3-PcJ" secondAttribute="leading" constant="48" id="Jby-Bd-kDk"/>
+                <constraint firstItem="yHq-Hl-B46" firstAttribute="leading" secondItem="1IT-k4-dRh" secondAttribute="trailing" constant="16" id="NsX-JB-8aJ"/>
+                <constraint firstItem="jId-vI-ctu" firstAttribute="top" secondItem="Nvr-3b-UoR" secondAttribute="bottom" constant="16" id="TvO-Ud-XII"/>
+                <constraint firstItem="jId-vI-ctu" firstAttribute="trailing" secondItem="Nvr-3b-UoR" secondAttribute="trailing" id="YV9-bA-GTu"/>
+                <constraint firstAttribute="trailing" secondItem="uzV-sp-zQe" secondAttribute="trailing" constant="54" id="Znk-M6-gVO"/>
+                <constraint firstItem="5xG-IV-dzP" firstAttribute="leading" secondItem="OoF-ek-A5i" secondAttribute="trailing" constant="16" id="Zpq-I4-82r"/>
+                <constraint firstItem="jId-vI-ctu" firstAttribute="trailing" secondItem="1IT-k4-dRh" secondAttribute="trailing" id="b1k-EV-pM1"/>
+                <constraint firstItem="1IT-k4-dRh" firstAttribute="leading" secondItem="7w6-D3-PcJ" secondAttribute="leading" constant="48" id="bnQ-63-U74"/>
+                <constraint firstAttribute="trailing" secondItem="qwF-Q1-nwS" secondAttribute="trailing" constant="52" id="joe-wu-zBE"/>
+                <constraint firstItem="OoF-ek-A5i" firstAttribute="leading" secondItem="7w6-D3-PcJ" secondAttribute="leading" constant="48" id="mUr-uE-fu8"/>
+                <constraint firstItem="uzV-sp-zQe" firstAttribute="top" secondItem="qwF-Q1-nwS" secondAttribute="bottom" constant="58" id="oXP-OB-EsC"/>
+                <constraint firstItem="5xG-IV-dzP" firstAttribute="top" secondItem="uzV-sp-zQe" secondAttribute="bottom" constant="58" id="qox-a1-riz"/>
+                <constraint firstItem="Nvr-3b-UoR" firstAttribute="top" secondItem="7w6-D3-PcJ" secondAttribute="top" constant="32" id="xeQ-98-3oC"/>
+                <constraint firstItem="OoF-ek-A5i" firstAttribute="top" secondItem="jId-vI-ctu" secondAttribute="bottom" constant="16" id="ybJ-X9-Sv5"/>
+            </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="gapBetween_1_2_FilterBtns" destination="TvO-Ud-XII" id="QNh-6i-Udt"/>
+                <outlet property="gapBetween_2_3_FilterBtns" destination="ybJ-X9-Sv5" id="KW0-E2-eMf"/>
+                <outlet property="gapBetween_3_4_FilterBtns" destination="9JM-Jq-Ioh" id="x26-x6-g3N"/>
+                <outlet property="verticalSpaceForLabel_1_2" destination="oXP-OB-EsC" id="BVH-T6-awe"/>
+                <outlet property="verticalSpaceForLabel_2_3" destination="qox-a1-riz" id="Qry-Cm-Yhf"/>
+                <outlet property="verticalSpacing" destination="xeQ-98-3oC" id="NUm-8C-ido"/>
+                <outlet property="verticalSpacingForLabel" destination="2yC-jH-WKa" id="JmB-4W-CTI"/>
+                <outlet property="verticalSpacingForLabel_3_4" destination="7kn-gI-Xpn" id="JCj-zo-4L8"/>
+            </connections>
         </view>
     </objects>
     <resources>
         <image name="Change-your-filters" width="62" height="62"/>
         <image name="Invite-your-friends" width="62" height="62"/>
         <image name="Post-an-Interest" width="62" height="62"/>
+        <image name="Refresh-Icon" width="62" height="62"/>
     </resources>
 </document>
