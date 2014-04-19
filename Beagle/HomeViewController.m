@@ -183,14 +183,14 @@
     }
       [self.view addGestureRecognizer:self.slidingViewController.panGesture];
     
-
-    
     UIImage *stockBottomImage1=[BeagleUtilities imageByCropping:[UIImage imageNamed:@"defaultLocation"] toRect:CGRectMake(0, 0, 320, 64) withOrientation:UIImageOrientationDownMirrored];
     topNavigationView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 64)];
-    
     topNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockBottomImage1];
     [self.view addSubview:topNavigationView];
     
+    // Adding a gradient to the top navigation bar so that the image is more visible
+    UIImageView *topGradient=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"gradient"]];
+    [topNavigationView addSubview:topGradient];
     
     UIImage *stockBottomImage2=[BeagleUtilities imageByCropping:[UIImage imageNamed:@"defaultLocation"] toRect:CGRectMake(0, 64, 320, 103) withOrientation:UIImageOrientationDownMirrored];
     bottomNavigationView=[[UIView alloc]initWithFrame:CGRectMake(0, 64, 320, 147)];
