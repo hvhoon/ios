@@ -17,6 +17,7 @@
 #import "HomeTableViewCell.h"
 #import "BeagleActivityClass.h"
 #import "IconDownloader.h"
+#import "DetailInterestViewController.h"
 #define REFRESH_HEADER_HEIGHT 50.0f
 #define stockCroppingCheck 0
 #define kTimerIntervalInSeconds 10
@@ -491,6 +492,7 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
     }
     
     cell.delegate=self;
+    cell.cellIndex=indexPath.row;
     BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexPath.row];
     cell.bg_activity = play;
     
@@ -652,7 +654,14 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
 		footerActivated = NO;
 	}
 }
-
+- (NSInteger)tableViewHeight
+{
+	[self.tableView layoutIfNeeded];
+	NSInteger tableheight;
+	tableheight=[self.tableView contentSize].height;
+    [[NSUserDefaults standardUserDefaults]setObject:[NSNumber numberWithInteger:tableheight] forKey:@"height"];
+	return tableheight;
+}
 #pragma mark - server calls
 
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
@@ -732,14 +741,7 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
     }
 }
 
-- (NSInteger)tableViewHeight
-{
-	[self.tableView layoutIfNeeded];
-	NSInteger tableheight;
-	tableheight=[self.tableView contentSize].height;
-    [[NSUserDefaults standardUserDefaults]setObject:[NSNumber numberWithInteger:tableheight] forKey:@"height"];
-	return tableheight;
-}
+
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {
     if(isPushAuto){
@@ -889,5 +891,18 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
         [self LocationAcquired];
 	});
 }
+#pragma mark - detail Interest Selected 
 
+-(void)detailedInterestScreenRedirect:(NSInteger)index{
+    BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:index];
+
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
+    viewController.interestServerManager=[[ServerManager alloc]init];
+    viewController.interestServerManager.delegate=viewController;
+    [viewController.interestServerManager getDetailedInterest:play.activityId];
+    viewController.interestActivity=play;
+    [self.navigationController pushViewController:viewController animated:YES];
+
+}
 @end

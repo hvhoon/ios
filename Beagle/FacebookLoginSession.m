@@ -79,9 +79,13 @@
             dispatch_async(dispatch_get_main_queue(),^{
                 NSLog(@"name=%@",[list objectForKey:@"name"]);
                 BeagleManager *BGM=[BeagleManager SharedInstance];
-
+                BeagleUserClass *userObject=nil;
+                if([[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"]){
+                    userObject= BGM.beaglePlayer;
+                }else{
+                    userObject=[[BeagleUserClass alloc]init];
+                }
                 
-                BeagleUserClass *userObject=[[BeagleUserClass alloc]init];
                 
                 id userName = [list objectForKey:@"username"];
                 if (userName != nil && [userName class] != [NSNull class]) {

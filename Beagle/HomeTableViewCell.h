@@ -11,7 +11,7 @@
 @protocol HomeTableViewCellDelegate <NSObject>
 
 @optional
--(void)DisclosureArrowClicked;
+-(void)detailedInterestScreenRedirect:(NSInteger)index;
 @end
 
 @interface HomeTableViewCell : ABTableViewCell{
@@ -21,4 +21,5 @@
 @property(nonatomic,strong)UIImage*photoImage;
 @property (nonatomic,weak)id <HomeTableViewCellDelegate> delegate;
 @property (nonatomic, strong) BeagleActivityClass *bg_activity;
+@property(nonatomic,assign)NSInteger cellIndex;
 @end

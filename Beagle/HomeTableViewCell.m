@@ -10,7 +10,7 @@
 #import "HomeTableViewCell.h"
 #import "BeagleActivityClass.h"
 @implementation HomeTableViewCell
-@synthesize delegate;
+@synthesize delegate,cellIndex;
 @synthesize bg_activity,photoImage;
 static UIFont *firstTextFont = nil;
 static UIFont *secondTextFont = nil;
@@ -218,6 +218,7 @@ static UIFont *thirdTextFont = nil;
 //    UITouch *touch =[touches anyObject];
 //    CGPoint startPoint =[touch locationInView:self.contentView];
 
+    [self.delegate detailedInterestScreenRedirect:cellIndex];
     [super touchesBegan:touches withEvent:event];
 }
 @end

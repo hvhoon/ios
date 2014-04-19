@@ -39,7 +39,7 @@
         _internetReachability = [Reachability reachabilityForInternetConnection];
 
 
-        _serverUrl =herokuHost;
+        _serverUrl =localHost;
 
         [self populateErrorCodes];
     }
@@ -144,7 +144,24 @@
         [self internetNotAvailable];
     }
 }
-
+-(void)getDetailedInterest:(NSInteger)activityId{
+    _serverCallType = kServercallGetDetailedInterest;
+    if([self isInternetAvailable])
+    {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@getactivity.json", _serverUrl]
+                         method:@"GET"
+                         params:[NSDictionary dictionaryWithObjectsAndKeys:
+                                 [NSNumber numberWithInteger:[[BeagleManager SharedInstance] beaglePlayer].beagleUserId],@"pid",
+                                 [NSNumber numberWithInteger:activityId],@"id",
+                                 [NSNumber numberWithFloat:[[BeagleManager SharedInstance]currentLocation].coordinate.latitude],@"lat",
+                                 [NSNumber numberWithFloat:[[BeagleManager SharedInstance]currentLocation].coordinate.longitude],@"lng",
+                                 nil] data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+}
 -(void)populateErrorCodes
 {
     _errorCodes = [[NSMutableDictionary alloc]init];

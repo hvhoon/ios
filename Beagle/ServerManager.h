@@ -11,7 +11,8 @@
 typedef enum {
     kServerCallUserRegisteration,
     kServerCallCreateActivity,
-    kServerCallGetActivities
+    kServerCallGetActivities,
+    kServercallGetDetailedInterest
 } ServerCallType;
 
 @class ServerManager;
@@ -37,4 +38,5 @@ typedef enum {
 -(void)registerPlayerOnBeagle:(BeagleUserClass*)data;
 -(void)createActivityOnBeagle:(BeagleActivityClass*)data;
 -(void)getActivities;
+-(void)getDetailedInterest:(NSInteger)activityId;
 @end
