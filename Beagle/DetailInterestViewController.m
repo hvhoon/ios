@@ -179,7 +179,6 @@
     participantsCountTextLabel.textColor = [UIColor blackColor];
     participantsCountTextLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
     participantsCountTextLabel.textAlignment = NSTextAlignmentLeft;
-    [_backgroundView addSubview:participantsCountTextLabel];
     
     if(self.interestActivity.participantsCount>0 && self.interestActivity.dos2Count>0){
         
@@ -206,6 +205,7 @@
                                                     participantsCountTextSize.width, participantsCountTextSize.height);
         participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested",(long)self.interestActivity.participantsCount];
     }
+    [_backgroundView addSubview:participantsCountTextLabel];
 
     [style setAlignment:NSTextAlignmentLeft];
     attrs = [NSDictionary dictionaryWithObjectsAndKeys:

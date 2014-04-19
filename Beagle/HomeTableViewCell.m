@@ -213,12 +213,11 @@ static UIFont *thirdTextFont = nil;
     
 
 }
-
--(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
 //    UITouch *touch =[touches anyObject];
 //    CGPoint startPoint =[touch locationInView:self.contentView];
 
     [self.delegate detailedInterestScreenRedirect:cellIndex];
-    [super touchesBegan:touches withEvent:event];
+    [super touchesEnded:touches withEvent:event];
 }
 @end
