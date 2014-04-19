@@ -93,7 +93,8 @@
         [array setObject:self.beaglePlayer.access_token forKey:@"access_token"];
     
     
-    
+    [array setObject:[NSNumber numberWithInteger:self.beaglePlayer.beagleUserId] forKey:@"id"];
+
 
         [array setObject:[NSNumber numberWithBool:self.beaglePlayer.fb_ticker] forKey:@"facebook_ticker"];
     if(self.beaglePlayer.email != nil && [self.beaglePlayer.email class] != [NSNull class])
@@ -103,7 +104,6 @@
     if(self.beaglePlayer.first_name != nil && [self.beaglePlayer.first_name class] != [NSNull class])
         [array setObject:self.beaglePlayer.first_name forKey:@"first_name"];
     
-[array setObject:[NSNumber numberWithInteger:self.beaglePlayer.beagleUserId] forKey:@"id"];
     if(self.beaglePlayer.last_name != nil && [self.beaglePlayer.last_name class] != [NSNull class])
      [array setObject:self.beaglePlayer.last_name forKey:@"last_name"];
     if(self.beaglePlayer.profileImageUrl != nil && [self.beaglePlayer.profileImageUrl class] != [NSNull class])
@@ -154,7 +154,7 @@
     player.profileData=[array valueForKey:@"photoData"];
     self.beaglePlayer=player;
     
-    //[self autoSign];
+    [self autoSign];
 #endif
 }
 

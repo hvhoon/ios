@@ -8,14 +8,19 @@
 
 #import "DetailInterestViewController.h"
 #import "BeagleActivityClass.h"
-@interface DetailInterestViewController ()
+#import "BeaglePlayerScrollMenu.h"
+#import "PlayerProfileItem.h"
+@interface DetailInterestViewController ()<BeaglePlayerScrollMenuDelegate>
 
-@property (weak, nonatomic) IBOutlet UIView *backgroundView;
-@property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
+@property (strong, nonatomic) UIView *backgroundView;
+@property (strong, nonatomic) UIImageView *profileImageView;
+@property (strong,nonatomic)BeaglePlayerScrollMenu *scrollMenu;
 @end
 
 @implementation DetailInterestViewController
-@synthesize interestActivity,interestServerManager=_interestServerManager;
+@synthesize interestActivity,interestServerManager=_interestServerManager,backgroundView=_backgroundView;
+@synthesize scrollMenu=_scrollMenu;
+@synthesize profileImageView=_profileImageView;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -67,6 +72,11 @@
     titleLabel.textAlignment = NSTextAlignmentCenter;
     self.navigationItem.titleView = titleLabel;
     
+    _backgroundView=[[UIView alloc]initWithFrame:CGRectMake(0, 72, 320, 400)];
+    _backgroundView.backgroundColor=[UIColor whiteColor];
+    
+    _profileImageView=[[UIImageView alloc]initWithFrame:CGRectMake(16, 8, 52, 52)];
+    [_backgroundView addSubview:_profileImageView];
     if(interestActivity.profilePhotoImage==nil){
         
         [self imageCircular:[UIImage imageNamed:@"picbox"]];
@@ -145,11 +155,11 @@
     
     
         
-        UILabel *activityDescLabel = [[UILabel alloc] initWithFrame:CGRectMake(16,69,commentTextRect.size.width,commentTextRect.size.height)];
+        UILabel *activityDescLabel = [[UILabel alloc] initWithFrame:CGRectMake(16,72,commentTextRect.size.width,commentTextRect.size.height)];
         activityDescLabel.numberOfLines=0;
         activityDescLabel.lineBreakMode=NSLineBreakByWordWrapping;
         activityDescLabel.backgroundColor = [UIColor clearColor];
-        activityDescLabel.text = interestActivity.organizerName;
+        activityDescLabel.text = interestActivity.activityDesc;
         activityDescLabel.textColor = [UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0];
         activityDescLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:17.0f];
         activityDescLabel.textAlignment = NSTextAlignmentLeft;
@@ -162,7 +172,7 @@
            style, NSParagraphStyleAttributeName, nil];
     
     CGSize participantsCountTextSize;
-    UILabel *participantsCountTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(16,69+8+commentTextRect.size.height+16+locationTextSize.height,
+    UILabel *participantsCountTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(16,72+commentTextRect.size.height+16,
                                                                                     participantsCountTextSize.width, participantsCountTextSize.height)];
     
     participantsCountTextLabel.backgroundColor = [UIColor clearColor];
@@ -178,7 +188,7 @@
                                                                                                                                                                                                  attributes:attrs
                                                                                                                                                                                                     context:nil].size;
 
-        participantsCountTextLabel.frame=CGRectMake(16,69+8+commentTextRect.size.height+16+locationTextSize.height,
+        participantsCountTextLabel.frame=CGRectMake(16,72+commentTextRect.size.height+16,
                                           participantsCountTextSize.width, participantsCountTextSize.height);
         participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested -  %ld Friends",(long)self.interestActivity.participantsCount,(long)self.interestActivity.dos2Count];
 
@@ -192,14 +202,177 @@
                                                                                                                                           options:NSStringDrawingUsesLineFragmentOrigin
                                                                                                                                        attributes:attrs
                                                                                                                                           context:nil].size;
-        participantsCountTextLabel.frame=CGRectMake(16,69+8+commentTextRect.size.height+16+locationTextSize.height,
+        participantsCountTextLabel.frame=CGRectMake(16,72+commentTextRect.size.height+16,
                                                     participantsCountTextSize.width, participantsCountTextSize.height);
         participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested",(long)self.interestActivity.participantsCount];
     }
 
+    [style setAlignment:NSTextAlignmentLeft];
+    attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+             [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f], NSFontAttributeName,
+             [UIColor blackColor],NSForegroundColorAttributeName,
+             style, NSParagraphStyleAttributeName, nil];
+    
+    CGFloat variance=0.0f;
+
+    if(self.interestActivity.ownerid==[[[BeagleManager SharedInstance]beaglePlayer]beagleUserId]){
+        //owner
+        if(self.interestActivity.participantsCount>=1){
+            _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, 72+commentTextRect.size.height+16+participantsCountTextSize.height+16, 268, 55)];
+            [_backgroundView addSubview:_scrollMenu];
+            variance=72+commentTextRect.size.height+16+participantsCountTextSize.height+16+55;
+        }
+        else{
+            
+            
+            CGSize noParticipantsTextSize = [@"No participants" boundingRectWithSize:CGSizeMake(300, 999)
+                                                                                  options:NSStringDrawingUsesLineFragmentOrigin
+                                                                               attributes:attrs
+                                                                                  context:nil].size;
+            
+            UILabel *noParticipantsLabel = [[UILabel alloc] initWithFrame:CGRectMake(16,72+commentTextRect.size.height+16+participantsCountTextSize.height+16, noParticipantsTextSize.width, noParticipantsTextSize.height)];
+            
+            noParticipantsLabel.backgroundColor = [UIColor clearColor];
+            noParticipantsLabel.text = @"No participants";
+            noParticipantsLabel.textColor = [UIColor blackColor];
+            noParticipantsLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
+            noParticipantsLabel.textAlignment = NSTextAlignmentLeft;
+            [_backgroundView addSubview:noParticipantsLabel];
+            
+            variance=72+commentTextRect.size.height+16+participantsCountTextSize.height+16+noParticipantsTextSize.height;
 
 
+        }
+    }
+    else if(self.interestActivity.isParticipant){
+        //not a owner but a participant
+         if(self.interestActivity.participantsCount>1){
+             _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, 72+commentTextRect.size.height+16+participantsCountTextSize.height+16, 268, 55)];
+             [_backgroundView addSubview:_scrollMenu];
+             variance=72+commentTextRect.size.height+16+participantsCountTextSize.height+16+55;
 
+
+         }
+         else{
+             CGSize noParticipantsTextSize = [@"Be the first one to express interest!" boundingRectWithSize:CGSizeMake(300, 999)
+                                                                              options:NSStringDrawingUsesLineFragmentOrigin
+                                                                           attributes:attrs
+                                                                              context:nil].size;
+             
+             UILabel *noParticipantsLabel = [[UILabel alloc] initWithFrame:CGRectMake(16,72+commentTextRect.size.height+16+participantsCountTextSize.height+16, noParticipantsTextSize.width, noParticipantsTextSize.height)];
+             
+             noParticipantsLabel.backgroundColor = [UIColor clearColor];
+             noParticipantsLabel.text = @"Be the first one to express interest!";
+             noParticipantsLabel.textColor = [UIColor blackColor];
+             noParticipantsLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
+             noParticipantsLabel.textAlignment = NSTextAlignmentLeft;
+             [_backgroundView addSubview:noParticipantsLabel];
+             variance=72+commentTextRect.size.height+16+participantsCountTextSize.height+16+noParticipantsTextSize.height;
+
+
+         }
+    }
+    else{
+        //neither owner nor  participant
+        if(self.interestActivity.participantsCount>1){
+            variance=72+commentTextRect.size.height+16+participantsCountTextSize.height+16+55;
+
+            _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, 72+commentTextRect.size.height+16+participantsCountTextSize.height+16, 268, 55)];
+            [_backgroundView addSubview:_scrollMenu];
+            
+        }
+        else{
+            CGSize noParticipantsTextSize = [@"Be the first one to express interest!" boundingRectWithSize:CGSizeMake(300, 999)
+                                                                                                   options:NSStringDrawingUsesLineFragmentOrigin
+                                                                                                attributes:attrs
+                                                                                                   context:nil].size;
+            
+            UILabel *noParticipantsLabel = [[UILabel alloc] initWithFrame:CGRectMake(16,72+commentTextRect.size.height+16+participantsCountTextSize.height+16, noParticipantsTextSize.width, noParticipantsTextSize.height)];
+            
+            noParticipantsLabel.backgroundColor = [UIColor clearColor];
+            noParticipantsLabel.text = @"Be the first one to express interest!";
+            noParticipantsLabel.textColor = [UIColor blackColor];
+            noParticipantsLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
+            noParticipantsLabel.textAlignment = NSTextAlignmentLeft;
+            [_backgroundView addSubview:noParticipantsLabel];
+            variance=72+commentTextRect.size.height+16+participantsCountTextSize.height+16+noParticipantsTextSize.height;
+
+            
+        }
+
+    }
+    UIImageView *starImageView = [[UIImageView alloc] initWithFrame:CGRectMake(16, variance+16, 16, 15)];
+    [_backgroundView addSubview:starImageView];
+
+    if(self.interestActivity.isParticipant){
+        
+    starImageView.image=[UIImage imageNamed:@"Star"];
+
+    }
+    
+    else{
+        
+        starImageView.image=[UIImage imageNamed:@"Star-Unfilled"];
+        
+    }
+    
+    attrs=[NSDictionary dictionaryWithObjectsAndKeys:
+           [UIFont fontWithName:@"HelveticaNeue-Medium" size:15.0f], NSFontAttributeName,
+           [UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
+           style, NSParagraphStyleAttributeName, nil];
+    
+    
+
+    
+    CGSize interestedSize = [@"I'm Interested"  boundingRectWithSize:CGSizeMake(288, 999)
+                                                             options:NSStringDrawingUsesLineFragmentOrigin
+                                                          attributes:attrs
+                                                             context:nil].size;
+    
+    UILabel *interestedLabel = [[UILabel alloc] initWithFrame:CGRectMake(42,variance+16, interestedSize.width, interestedSize.height)];
+
+    interestedLabel.backgroundColor = [UIColor clearColor];
+    interestedLabel.text = @"I'm Interested";
+    interestedLabel.textColor = [UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0];
+    interestedLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15.0f];
+    interestedLabel.textAlignment = NSTextAlignmentLeft;
+    [_backgroundView addSubview:interestedLabel];
+
+    
+    
+    UIImageView *commentImageView = [[UIImageView alloc] initWithFrame:CGRectMake(306-21, variance+16, 21, 18)];
+    [_backgroundView addSubview:commentImageView];
+
+    if(self.interestActivity.postCount>0)
+        commentImageView.image=[UIImage imageNamed:@"Comment"];
+    else{
+        commentImageView.image=[UIImage imageNamed:@"Add-Comment"];
+    }
+    
+    [style setAlignment:NSTextAlignmentLeft];
+    
+    attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+             [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f], NSFontAttributeName,
+             [UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
+             style, NSParagraphStyleAttributeName, nil];
+    
+    CGSize postCountTextSize = [[NSString stringWithFormat:@"%ld",(long)self.interestActivity.postCount]  boundingRectWithSize:CGSizeMake(288, 999)
+                                                                                                                  options:NSStringDrawingUsesLineFragmentOrigin
+                                                                                                               attributes:attrs
+                                                                                                                  context:nil].size;
+    
+    UILabel *postCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(300-21- postCountTextSize.width,variance+16-2, postCountTextSize.width, postCountTextSize.height)];
+    
+    postCountLabel.backgroundColor = [UIColor clearColor];
+    postCountLabel.text = [NSString stringWithFormat:@"%ld",(long)self.interestActivity.postCount];
+    postCountLabel.textColor = [UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0];
+    postCountLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
+    postCountLabel.textAlignment = NSTextAlignmentLeft;
+    [_backgroundView addSubview:postCountLabel];
+
+    
+    _backgroundView.frame=CGRectMake(0, 72, 320, variance+16+18+16);
+    [self.view addSubview:_backgroundView];
 
     // Do any additional setup after loading the view.
 }
@@ -240,17 +413,19 @@
                 
                 
                 
-                id activities=[response objectForKey:@"activities"];
-                if (activities != nil && [activities class] != [NSNull class]) {
+                id interest=[response objectForKey:@"interest"];
+                if (interest != nil && [interest class] != [NSNull class]) {
                     
                     
-                    id happenarndu=[activities objectForKey:@"beagle_happenarndu"];
-                    if (happenarndu != nil && [happenarndu class] != [NSNull class]) {
-                        NSMutableArray *activitiesArray=[[NSMutableArray alloc]init];
-                        for(id el in happenarndu){
-                            BeagleActivityClass *actclass=[[BeagleActivityClass alloc]initWithDictionary:el];
-                            [activitiesArray addObject:actclass];
+                    id participants=[interest objectForKey:@"participants"];
+                    if (participants != nil && [participants class] != [NSNull class] && [participants count]!=0) {
+                        NSMutableArray *participantsArray=[[NSMutableArray alloc]init];
+                        for(id el in participants){
+                            BeagleUserClass *userClass=[[BeagleUserClass alloc]initWithDictionary:el];
+                            [participantsArray addObject:userClass];
                         }
+                        [self setUpPlayerScroll:participantsArray];
+
                         
                     }
                     
@@ -259,8 +434,7 @@
                 }
                 
                 
-                
-                
+
                 
             }
         }
@@ -295,6 +469,29 @@
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
     [alert show];
+}
+- (void)setUpPlayerScroll:(NSArray*)elements{
+	NSMutableArray *array = [[NSMutableArray alloc] init];
+	for (BeagleUserClass * player in elements)
+    {
+        
+		PlayerProfileItem *item = [[PlayerProfileItem alloc] initProfileItem:player.profileImageUrl
+                                   
+                                                label:player.first_name playerId:player.beagleUserId
+                                           andAction: ^(PlayerProfileItem *item)  {
+                                               
+                                               NSLog(@"Block called! %d", player.beagleUserId);
+                                               //DO somenthing here
+                                           }];
+        
+		[array addObject:item];
+	}
+    
+	[_scrollMenu setUpPlayerScrollMenu:array];
+    
+	//We choose an animation when the user touch the item (you can create your own animation)
+	[_scrollMenu setAnimationType:PlayerZoomOut];
+	_scrollMenu.delegate = self;
 }
 /*
 #pragma mark - Navigation

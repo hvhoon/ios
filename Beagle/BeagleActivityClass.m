@@ -16,7 +16,6 @@
     self = [super init];
     if (self)
     {
-#if 1
         self.activityId = [[dictionary valueForKey:@"id"]integerValue];
         self.activityType = [[dictionary valueForKey:@"atype"]integerValue];
         self.startActivityDate = [dictionary valueForKey:@"start_when"];
@@ -35,7 +34,6 @@
         self.participantsCount = [[dictionary valueForKey:@"total_count"]integerValue];
         self.locationName=[NSString stringWithFormat:@"%@, %@",self.city,self.state];
         self.isParticipant=[[dictionary valueForKey:@"isParticipant"]boolValue];
-#endif
     }
     return self;
 }

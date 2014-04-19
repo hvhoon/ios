@@ -182,7 +182,7 @@ static UIFont *thirdTextFont = nil;
                                                                                                                                                                                  context:nil].size;
     
     [@"I'm Interested" drawInRect:CGRectMake(42,69+8+commentTextRect.size.height+16+locationTextSize.height+participantsCountTextSize.height+16,
-                                                                                                                                                      interestedSize.width, 18.0f) withAttributes:attrs];
+                                                                                                                                                      interestedSize.width, interestedSize.height) withAttributes:attrs];
     
     
     if(self.bg_activity.postCount>0)

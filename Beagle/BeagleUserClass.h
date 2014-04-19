@@ -22,4 +22,5 @@
 @property(nonatomic,assign)BOOL fb_ticker;
 @property(nonatomic,assign)NSInteger beagleUserId;
 @property(nonatomic,strong)NSData*profileData;
+-(id) initWithDictionary:(NSDictionary *)dictionary;
 @end

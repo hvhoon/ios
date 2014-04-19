@@ -29,7 +29,6 @@
 		180AF0B418DC7FB200EE87D6 /* BlankHomePageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 180AF0B218DC7FB200EE87D6 /* BlankHomePageView.m */; };
 		180AF0B818DC7FE500EE87D6 /* HomeTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 180AF0B718DC7FE500EE87D6 /* HomeTableViewCell.m */; };
 		180AF0BB18DC801500EE87D6 /* ABTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 180AF0BA18DC801500EE87D6 /* ABTableViewCell.m */; };
-		180AF0BE18DC805700EE87D6 /* UIView+HidingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 180AF0BD18DC805700EE87D6 /* UIView+HidingView.m */; };
 		180AF0C018DC809E00EE87D6 /* User.plist in Resources */ = {isa = PBXBuildFile; fileRef = 180AF0BF18DC809E00EE87D6 /* User.plist */; };
 		18216B1D18E350A800D9721F /* IconDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 18216B1C18E350A800D9721F /* IconDownloader.m */; };
 		18E7AF0918BBAA1700EBBDE2 /* FacebookLoginSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E7AF0818BBAA1700EBBDE2 /* FacebookLoginSession.m */; };
@@ -83,6 +82,10 @@
 		18EC233D18B5A6B600316B6E /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC233C18B5A6B600316B6E /* Accounts.framework */; };
 		18EC233F18B5A6BD00316B6E /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC233E18B5A6BD00316B6E /* Social.framework */; };
 		18EC234218B5A72F00316B6E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18EC234118B5A72F00316B6E /* Main.storyboard */; };
+		18F8898C1902C15400C80011 /* DetailInterestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F8898B1902C15400C80011 /* DetailInterestViewController.m */; };
+		18F889901902C72400C80011 /* BeaglePlayerScrollMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F8898E1902C72400C80011 /* BeaglePlayerScrollMenu.m */; };
+		18F889941902C7FF00C80011 /* PlayerProfileItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F889921902C7FF00C80011 /* PlayerProfileItem.m */; };
+		18F889951902C7FF00C80011 /* PlayerProfileItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18F889931902C7FF00C80011 /* PlayerProfileItem.xib */; };
 		18F8F4DB18DA07C700B26AC6 /* UIViewController+MJPopupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F8F4D918DA07C700B26AC6 /* UIViewController+MJPopupViewController.m */; };
 		18F8F4DD18DA07F800B26AC6 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18F8F4DC18DA07F800B26AC6 /* Accelerate.framework */; };
 		18F8F4E218DA088500B26AC6 /* Location.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F8F4DF18DA088500B26AC6 /* Location.m */; };
@@ -246,6 +249,13 @@
 		18EC233C18B5A6B600316B6E /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		18EC233E18B5A6BD00316B6E /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		18EC234118B5A72F00316B6E /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		18F8898A1902C15400C80011 /* DetailInterestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailInterestViewController.h; sourceTree = "<group>"; };
+		18F8898B1902C15400C80011 /* DetailInterestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailInterestViewController.m; sourceTree = "<group>"; };
+		18F8898E1902C72400C80011 /* BeaglePlayerScrollMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeaglePlayerScrollMenu.m; sourceTree = "<group>"; };
+		18F8898F1902C72400C80011 /* BeaglePlayerScrollMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeaglePlayerScrollMenu.h; sourceTree = "<group>"; };
+		18F889911902C7FF00C80011 /* PlayerProfileItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerProfileItem.h; sourceTree = "<group>"; };
+		18F889921902C7FF00C80011 /* PlayerProfileItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerProfileItem.m; sourceTree = "<group>"; };
+		18F889931902C7FF00C80011 /* PlayerProfileItem.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlayerProfileItem.xib; sourceTree = "<group>"; };
 		18F8F4D818DA07C700B26AC6 /* UIViewController+MJPopupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+MJPopupViewController.h"; sourceTree = "<group>"; };
 		18F8F4D918DA07C700B26AC6 /* UIViewController+MJPopupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+MJPopupViewController.m"; sourceTree = "<group>"; };
 		18F8F4DC18DA07F800B26AC6 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
@@ -516,6 +526,7 @@
 		18EC22A618B5A0B400316B6E /* Beagle */ = {
 			isa = PBXGroup;
 			children = (
+				18F889891902C14000C80011 /* Detailed Interest */,
 				180AF0B518DC7FC200EE87D6 /* Home Table View Cell */,
 				18F9FE5E18DB40D2004BFE4E /* Beagle Manager */,
 				1805CED418C8D24700AC8556 /* Filter Views */,
@@ -529,6 +540,7 @@
 				18E7AF0618BBAA0400EBBDE2 /* Facebook */,
 				18FADBA018B66A6600A62287 /* Notifications Screen */,
 				18FADB9F18B66A5600A62287 /* Settings Screen */,
+				18FADB9818B669C100A62287 /* Home Screen */,
 				18FADB8E18B6680C00A62287 /* Sliding Drawer */,
 				18007F0418C6542000230C23 /* Categories */,
 				18FADB8A18B6625A00A62287 /* Login Screen */,
@@ -681,6 +693,28 @@
 			name = Storyboard;
 			sourceTree = "<group>";
 		};
+		18F889891902C14000C80011 /* Detailed Interest */ = {
+			isa = PBXGroup;
+			children = (
+				18F8898D1902C71500C80011 /* Scroll Menu */,
+				18F8898A1902C15400C80011 /* DetailInterestViewController.h */,
+				18F8898B1902C15400C80011 /* DetailInterestViewController.m */,
+			);
+			name = "Detailed Interest";
+			sourceTree = "<group>";
+		};
+		18F8898D1902C71500C80011 /* Scroll Menu */ = {
+			isa = PBXGroup;
+			children = (
+				18F889911902C7FF00C80011 /* PlayerProfileItem.h */,
+				18F889921902C7FF00C80011 /* PlayerProfileItem.m */,
+				18F889931902C7FF00C80011 /* PlayerProfileItem.xib */,
+				18F8898F1902C72400C80011 /* BeaglePlayerScrollMenu.h */,
+				18F8898E1902C72400C80011 /* BeaglePlayerScrollMenu.m */,
+			);
+			name = "Scroll Menu";
+			sourceTree = "<group>";
+		};
 		18F9FE5E18DB40D2004BFE4E /* Beagle Manager */ = {
 			isa = PBXGroup;
 			children = (
@@ -706,7 +740,6 @@
 				18FADB9218B668A500A62287 /* ECSlidingViewController.m */,
 				18FADB8F18B6683000A62287 /* InitialSlidingViewController.h */,
 				18FADB9018B6683000A62287 /* InitialSlidingViewController.m */,
-				18FADB9818B669C100A62287 /* Home Screen */,
 			);
 			name = "Sliding Drawer";
 			sourceTree = "<group>";
@@ -817,6 +850,7 @@
 				18EC234218B5A72F00316B6E /* Main.storyboard in Resources */,
 				18EBCFDC18CE350600FDC624 /* CustomPickerView.xib in Resources */,
 				18EC22AB18B5A0B400316B6E /* InfoPlist.strings in Resources */,
+				18F889951902C7FF00C80011 /* PlayerProfileItem.xib in Resources */,
 				18EC22B318B5A0B400316B6E /* Images.xcassets in Resources */,
 				1805CED918C8D25800AC8556 /* TimeFilterView.xib in Resources */,
 				180AF0B318DC7FB200EE87D6 /* BlankHomePageView.xib in Resources */,
@@ -870,12 +904,14 @@
 				18007F0118C6541200230C23 /* UIImage+Alpha.m in Sources */,
 				18EC231718B5A42D00316B6E /* ASIHTTPRequest.m in Sources */,
 				18EC232318B5A42D00316B6E /* NSObject+SBJSON.m in Sources */,
+				18F8898C1902C15400C80011 /* DetailInterestViewController.m in Sources */,
 				18007ED818C64EDD00230C23 /* BGFlickrManager.m in Sources */,
 				18FADB9618B668A500A62287 /* ECSlidingViewController.m in Sources */,
 				18F9FE6618DB410D004BFE4E /* BeagleActivityClass.m in Sources */,
 				18007EF318C6508200230C23 /* OFXMLMapper.m in Sources */,
 				18007F0818C6551700230C23 /* BeagleAlert.m in Sources */,
 				18007EF218C6508200230C23 /* OFUtilities.m in Sources */,
+				18F889901902C72400C80011 /* BeaglePlayerScrollMenu.m in Sources */,
 				18EC232518B5A42D00316B6E /* SBJSON.m in Sources */,
 				18EC231218B5A42D00316B6E /* ASIAuthenticationDialog.m in Sources */,
 				18F8F4E218DA088500B26AC6 /* Location.m in Sources */,
@@ -898,7 +934,6 @@
 				1805CED818C8D25800AC8556 /* TimeFilterView.m in Sources */,
 				18FADB9118B6683000A62287 /* InitialSlidingViewController.m in Sources */,
 				18216B1D18E350A800D9721F /* IconDownloader.m in Sources */,
-				180AF0BE18DC805700EE87D6 /* UIView+HidingView.m in Sources */,
 				18F8F4DB18DA07C700B26AC6 /* UIViewController+MJPopupViewController.m in Sources */,
 				18EC231818B5A42D00316B6E /* ASIInputStream.m in Sources */,
 				18EC22AD18B5A0B400316B6E /* main.m in Sources */,
@@ -912,6 +947,7 @@
 				18EC231918B5A42D00316B6E /* ASINetworkQueue.m in Sources */,
 				18EC231418B5A42D00316B6E /* ASIDataDecompressor.m in Sources */,
 				18EC231E18B5A42D00316B6E /* ASICloudFilesObject.m in Sources */,
+				18F889941902C7FF00C80011 /* PlayerProfileItem.m in Sources */,
 				18E7AF0D18BBAA6600EBBDE2 /* BeagleUserClass.m in Sources */,
 				18FADB9718B668A500A62287 /* UIImage+ImageWithUIView.m in Sources */,
 				18EC231518B5A42D00316B6E /* ASIDownloadCache.m in Sources */,
