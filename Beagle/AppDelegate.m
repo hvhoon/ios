@@ -23,9 +23,6 @@ void uncaughtExceptionHandler(NSException *exception) {
     
     [Crashlytics startWithAPIKey:@"e8e7ac59367e936ecae821876cc411ec67427e47"];
     NSString *storyboardId = [[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"] ? @"initialNavBeagle" : @"loginNavScreen";
-    if([storyboardId isEqualToString:@"initialNavBeagle"]){
-        [[BeagleManager SharedInstance]getUserObjectInAutoSignInMode];
-    }
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     UIViewController *initViewController = [storyboard instantiateViewControllerWithIdentifier:storyboardId];
 

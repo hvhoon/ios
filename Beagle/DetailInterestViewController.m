@@ -398,7 +398,7 @@
 #pragma mark - server calls
 
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
-    if(serverRequest==kServercallGetDetailedInterest){
+    if(serverRequest==kServerCallGetDetailedInterest){
         
         
         _interestServerManager.delegate = nil;
@@ -446,7 +446,7 @@
 
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {
-    if(serverRequest==kServercallGetDetailedInterest)
+    if(serverRequest==kServerCallGetDetailedInterest)
     {
         _interestServerManager.delegate = nil;
         [_interestServerManager releaseServerManager];
@@ -460,7 +460,7 @@
 
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
 {
-    if(serverRequest==kServercallGetDetailedInterest)
+    if(serverRequest==kServerCallGetDetailedInterest)
     {
         _interestServerManager.delegate = nil;
         [_interestServerManager releaseServerManager];
@@ -480,7 +480,7 @@
                                                 label:player.first_name playerId:player.beagleUserId
                                            andAction: ^(PlayerProfileItem *item)  {
                                                
-                                               NSLog(@"Block called! %d", player.beagleUserId);
+                                               NSLog(@"Block called! %ld", (long)player.beagleUserId);
                                                //DO somenthing here
                                            }];
         

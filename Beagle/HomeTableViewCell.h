@@ -12,11 +12,13 @@
 
 @optional
 -(void)detailedInterestScreenRedirect:(NSInteger)index;
+-(void)updateInterestedStatus:(NSInteger)index;
 @end
 
 @interface HomeTableViewCell : ABTableViewCell{
    BeagleActivityClass *bg_activity;
    UIImage *photoImage;
+    CGRect interestedRect;
 }
 @property(nonatomic,strong)UIImage*photoImage;
 @property (nonatomic,weak)id <HomeTableViewCellDelegate> delegate;

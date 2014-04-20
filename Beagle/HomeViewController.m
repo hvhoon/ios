@@ -31,6 +31,7 @@
     NSInteger count;
     UIRefreshControl *refreshControl;
     BOOL isPushAuto;
+    NSInteger interestIndex;
 }
 @property(nonatomic, weak) NSTimer *timer;
 @property(nonatomic,strong)  NSMutableDictionary *imageDownloadsInProgress;
@@ -39,6 +40,7 @@
 @property (strong,nonatomic) NSMutableArray *filteredCandyArray;
 @property (strong,nonatomic) UIRefreshControl *refreshControl;
 @property(strong,nonatomic)ServerManager *homeActivityManager;
+@property(strong,nonatomic)ServerManager *interestUpdateManager;
 @end
 
 @implementation HomeViewController
@@ -47,7 +49,7 @@
 @synthesize currentLocation;
 @synthesize _locationManager = locationManager;
 @synthesize refreshControl;
-
+@synthesize interestUpdateManager=_interestUpdateManager;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -94,6 +96,9 @@
 {
     [super viewDidLoad];
     
+    if([[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"]){
+        [[BeagleManager SharedInstance]getUserObjectInAutoSignInMode];
+    }
 
 
     if (![self.slidingViewController.underLeftViewController isKindOfClass:[SettingsViewController class]]) {
@@ -196,7 +201,7 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
     
     if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
         
-        [self.refreshControl beginRefreshing];
+        [self refresh:self.refreshControl];
         
         
     }
@@ -266,6 +271,8 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
     if(isPushAuto)
        [self.tableView setContentOffset:CGPointMake(0, -REFRESH_HEADER_HEIGHT) animated:YES];
     //self.tableView.contentInset = UIEdgeInsetsMake(REFRESH_HEADER_HEIGHT, 0, 0, 0);
+    
+    
     if(_homeActivityManager!=nil){
         _homeActivityManager.delegate = nil;
         [_homeActivityManager releaseServerManager];
@@ -739,6 +746,29 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
         
         
     }
+    else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
+            _interestUpdateManager.delegate = nil;
+            [_interestUpdateManager releaseServerManager];
+            _interestUpdateManager = nil;
+        
+        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
+            
+            id status=[response objectForKey:@"status"];
+            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
+                 BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:interestIndex];
+                    if(play.isParticipant){
+                        play.isParticipant=FALSE;
+                    }
+                    else{
+                        play.isParticipant=TRUE;
+                    }
+                    [self.tableView reloadData];
+                    
+            
+       }
+        }
+
+    }
 }
 
 
@@ -754,6 +784,11 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
         [_homeActivityManager releaseServerManager];
         _homeActivityManager = nil;
     }
+    else if(serverRequest==kServerCallLeaveInterest ||serverRequest==kServerCallParticipateInterest){
+            _interestUpdateManager.delegate = nil;
+            [_interestUpdateManager releaseServerManager];
+            _interestUpdateManager = nil;
+        }
     
     NSString *message = NSLocalizedString (@"Unable to initiate request.",
                                            @"NSURLConnection initialization method failed.");
@@ -772,6 +807,12 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
         [_homeActivityManager releaseServerManager];
         _homeActivityManager = nil;
     }
+    else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
+        _interestUpdateManager.delegate = nil;
+        [_interestUpdateManager releaseServerManager];
+        _interestUpdateManager = nil;
+    }
+
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
     [alert show];
@@ -904,5 +945,28 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
     viewController.interestActivity=play;
     [self.navigationController pushViewController:viewController animated:YES];
 
+}
+
+-(void)updateInterestedStatus:(NSInteger)index{
+        BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:index];
+    
+    interestIndex=index;
+    if(_interestUpdateManager!=nil){
+        _interestUpdateManager.delegate = nil;
+        [_interestUpdateManager releaseServerManager];
+        _interestUpdateManager = nil;
+    }
+    
+    _interestUpdateManager=[[ServerManager alloc]init];
+    _interestUpdateManager.delegate=self;
+
+    if (play.isParticipant) {
+        [_interestUpdateManager removeMembership:play.activityId];
+    }
+    else{
+        [_interestUpdateManager participateMembership:play.activityId];
+        
+    }
+    
 }
 @end

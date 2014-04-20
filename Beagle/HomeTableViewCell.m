@@ -184,6 +184,7 @@ static UIFont *thirdTextFont = nil;
     [@"I'm Interested" drawInRect:CGRectMake(42,69+8+commentTextRect.size.height+16+locationTextSize.height+participantsCountTextSize.height+16,
                                                                                                                                                       interestedSize.width, interestedSize.height) withAttributes:attrs];
     
+    interestedRect=CGRectMake(16, 69+8+commentTextRect.size.height+16+locationTextSize.height+participantsCountTextSize.height+16, 26+interestedSize.width, interestedSize.height);
     
     if(self.bg_activity.postCount>0)
     [[UIImage imageNamed:@"Comment"] drawInRect:CGRectMake(306-21, 69+8+commentTextRect.size.height+16+locationTextSize.height+participantsCountTextSize.height+16, 21, 18)];
@@ -214,10 +215,17 @@ static UIFont *thirdTextFont = nil;
 
 }
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
-//    UITouch *touch =[touches anyObject];
-//    CGPoint startPoint =[touch locationInView:self.contentView];
+    UITouch *touch =[touches anyObject];
+    CGPoint startPoint =[touch locationInView:self.contentView];
+    
+    if(CGRectContainsPoint(interestedRect,startPoint)){
+        if(self.bg_activity.dosRelation!=0){
 
-    [self.delegate detailedInterestScreenRedirect:cellIndex];
+            [delegate updateInterestedStatus:cellIndex];
+        }
+    }
+    else
+      [self.delegate detailedInterestScreenRedirect:cellIndex];
     [super touchesEnded:touches withEvent:event];
 }
 @end

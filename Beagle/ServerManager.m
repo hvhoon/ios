@@ -145,7 +145,7 @@
     }
 }
 -(void)getDetailedInterest:(NSInteger)activityId{
-    _serverCallType = kServercallGetDetailedInterest;
+    _serverCallType = kServerCallGetDetailedInterest;
     if([self isInternetAvailable])
     {
         [self callServerWithUrl:[NSString stringWithFormat:@"%@getactivity.json", _serverUrl]
@@ -156,6 +156,52 @@
                                  [NSNumber numberWithFloat:[[BeagleManager SharedInstance]currentLocation].coordinate.latitude],@"lat",
                                  [NSNumber numberWithFloat:[[BeagleManager SharedInstance]currentLocation].coordinate.longitude],@"lng",
                                  nil] data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+}
+-(void)removeMembership:(NSInteger)activityId{
+    _serverCallType = kServerCallLeaveInterest;
+    if([self isInternetAvailable])
+    {
+        
+        NSMutableDictionary* updateMembership =[[NSMutableDictionary alloc] init];
+        [updateMembership setObject:[NSNumber numberWithInteger:[[BeagleManager SharedInstance] beaglePlayer].beagleUserId] forKey:@"pid"];
+        [updateMembership setObject:[NSNumber numberWithInteger:activityId] forKey:@"id"];
+        [updateMembership setObject:@"true" forKey:@"pstatus"];
+        
+        NSData *postData = [[updateMembership JSONRepresentation] dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
+        
+        
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@leaveactivity.json", _serverUrl]
+                         method:@"POST"
+                         params:nil data:postData];
+
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+}
+-(void)participateMembership:(NSInteger)activityId{
+    _serverCallType = kServerCallParticipateInterest;
+    if([self isInternetAvailable])
+    {
+        
+        NSMutableDictionary* updateMembership =[[NSMutableDictionary alloc] init];
+        [updateMembership setObject:[NSNumber numberWithInteger:[[BeagleManager SharedInstance] beaglePlayer].beagleUserId] forKey:@"pid"];
+        [updateMembership setObject:[NSNumber numberWithInt:activityId] forKey:@"id"];
+        [updateMembership setObject:@"true" forKey:@"pstatus"];
+        
+        NSData *postData = [[updateMembership JSONRepresentation] dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
+        
+        
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@joinactivity.json", _serverUrl]
+                         method:@"PUT"
+                         params:nil data:postData];
+        
     }
     else
     {
@@ -253,17 +299,7 @@
     {
         request = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:requestUrl]];
         [request setPostBody:[NSMutableData dataWithData:data]];
-
-//        [request appendPostData:data];
-
-//        for (NSString *key in [params allKeys])
-//        {
-//            NSString *value = [params valueForKey:key];
-//            
-//            [request setPostValue:value forKey:key];
-//            
-//        }
-    }
+     }
     
     
 
