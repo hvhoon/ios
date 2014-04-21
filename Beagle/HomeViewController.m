@@ -132,6 +132,11 @@
     stockImageView.image=[UIImage imageNamed:@"defaultLocation"];
     stockImageView.tag=3456;
     [self.view addSubview:stockImageView];
+    
+    UIImageView *topGradient=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"gradient"]];
+    topGradient.frame = CGRectMake(0, 0, 320, 64);
+    [self.view addSubview:topGradient];
+    
 #endif
 
     [self addCityName:@"New York"];
