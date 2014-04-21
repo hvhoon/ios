@@ -118,9 +118,6 @@ static BGFlickrManager *sharedManager = nil;
     
         self.flickrRequestInfo = [[FlickrRequestInfo alloc] init];
         
-        
-        //NSArray *photos=[[inResponseDictionary objectForKey:@"photos"]objectForKey:@"photo"];
-        
         NSArray *photos = [inResponseDictionary valueForKeyPath:@"photos.photo"];
                 
         int numberOfPhotos = (int)[photos count] - 1;
@@ -132,35 +129,32 @@ static BGFlickrManager *sharedManager = nil;
             NSDictionary *photoDict = [photos objectAtIndex:randomPhotoIndex];
             NSURL *photoURL = [self.flickrContext photoSourceURLFromDictionary:photoDict size:OFFlickrMedium640Size];
             NSLog(@"photoUrl=%@",photoURL);
-                        
-//            NSString *photoId = (NSString *)[photoDict objectForKey:@"id"];
-//            NSString *owner = (NSString *)[photoDict objectForKey:@"owner"];
             
             self.flickrRequestInfo.userPhotoWebPageURL = [self.flickrContext photoWebPageURLFromDictionary:photoDict];
             
-        
             dispatch_queue_t queue = dispatch_queue_create(kAsyncQueueLabel, NULL);
             dispatch_queue_t main = dispatch_get_main_queue();
             
             dispatch_async(queue, ^{
                 
-                self.flickrRequestInfo.photo = [UIImage imageWithData:[NSData dataWithContentsOfURL:photoURL]];
+                self.flickrRequestInfo.photo = [UIImage imageWithData:UIImageJPEGRepresentation([UIImage imageWithData:[NSData dataWithContentsOfURL:photoURL]], 1)];
+                
+                // Scale the image appropriately
+                self.flickrRequestInfo.photo=[UIImage imageWithCGImage:[self.flickrRequestInfo.photo CGImage] scale:2.0 orientation:UIImageOrientationUp];
+
                 
                 float height=self.flickrRequestInfo.photo.size.height-334.0;
                 if(height>0){
                 
-                UIImage *stockBottomImage1=[BeagleUtilities imageByCropping:self.flickrRequestInfo.photo toRect:CGRectMake(0, height/2, 320, 167) withOrientation:UIImageOrientationDownMirrored];
+                if(height>0) {
+                    UIImage *stockBottomImage1=[BeagleUtilities imageByCropping:self.flickrRequestInfo.photo toRect:CGRectMake(0, height/2, 320, 167) withOrientation:UIImageOrientationDownMirrored];
                     self.flickrRequestInfo.photo=stockBottomImage1;
                     
-//                    self.flickrRequestInfo.photo = [BeagleUtilities compressImage:self.flickrRequestInfo.photo size:CGSizeMake(320,167)];
-                }else{
-                    [self resizeCropPhoto];
                 }
-                
+            
                 dispatch_async(main, ^{
                     
                     self.completionBlock(self.flickrRequestInfo, nil);
-                    
                     [self cleanUpFlickrManager];
 
 

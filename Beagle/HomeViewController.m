@@ -114,10 +114,12 @@
     
     UIImage *stockBottomImage1=[BeagleUtilities imageByCropping:[UIImage imageNamed:@"defaultLocation"] toRect:CGRectMake(0, 0, 320, 64) withOrientation:UIImageOrientationDownMirrored];
     topNavigationView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 64)];
-    
     topNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockBottomImage1];
     [self.view addSubview:topNavigationView];
     
+    // Adding a gradient to the top navigation bar so that the image is more visible
+    UIImageView *topGradient=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"gradient"]];
+    [topNavigationView addSubview:topGradient];
     
     UIImage *stockBottomImage2=[BeagleUtilities imageByCropping:[UIImage imageNamed:@"defaultLocation"] toRect:CGRectMake(0, 64, 320, 103) withOrientation:UIImageOrientationDownMirrored];
     bottomNavigationView=[[UIView alloc]initWithFrame:CGRectMake(0, 64, 320, 147)];
@@ -321,38 +323,43 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
 }
 - (void) retrieveLocationAndUpdateBackgroundPhoto {
     
+    BeagleManager *BG=[BeagleManager SharedInstance];
     
-                   BeagleManager *BG=[BeagleManager SharedInstance];
-
+    // Setup string to get weather conditions
+    NSString *urlString=[NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f",BG.placemark.location.coordinate.latitude,BG.placemark.location.coordinate.longitude];
+    urlString = [urlString stringByReplacingOccurrencesOfString:@" " withString:@""];
+    NSURL *url = [NSURL URLWithString:urlString];
+    __weak ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
     
-#if 0
-                    NSString *urlString=[NSString stringWithFormat:@"http://api.wunderground.com/api/5706a66cb7258dd4/conditions/q/%@/%@.json",BG.placemark.administrativeArea,[BG.placemark.addressDictionary objectForKey:@"City"]];
-                    
-#else
-                    NSString *urlString=[NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f",BG.placemark.location.coordinate.latitude,BG.placemark.location.coordinate.longitude];
-                    
-#endif
-                    
-                    
+    [request setCompletionBlock:^{
+        NSError* error;
+        NSString *weather=nil;
+        
+        // Pull weather information
+        NSString *jsonString = [request responseString];
+        NSDictionary* weatherDictionary = [NSJSONSerialization JSONObjectWithData:[jsonString dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:&error];
+        NSDictionary *current_observation=[weatherDictionary objectForKey:@"weather"];
+        
+        for(id mainWeather in current_observation) {
+            weather=[mainWeather objectForKey:@"main"];
+        }
+        NSLog(@"weather=%@",weather);
+        BG.weatherCondition=weather;
+        
+        // Pull image from Flickr
+        [[BGFlickrManager sharedManager] randomPhotoRequest:^(FlickrRequestInfo * flickrRequestInfo, NSError * error) {
+            if(!error) {
+                [self.timer invalidate];
+                [self crossDissolvePhotos:flickrRequestInfo.photo withTitle:flickrRequestInfo.userInfo];
+            }
+        }];
+    }];
     
-                    urlString = [urlString stringByReplacingOccurrencesOfString:@" " withString:@""];
-                    NSURL *url = [NSURL URLWithString:urlString];
-                    __weak ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
-                    [request setCompletionBlock:^{
-                        // Use when fetching text data
-                        NSError* error;
-                        NSString *weather=nil;
-                        NSString *jsonString = [request responseString];
-                        NSDictionary* weatherDictionary = [NSJSONSerialization JSONObjectWithData:[jsonString dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:&error];
-#if 0
-                        NSDictionary *current_observation=[weatherDictionary objectForKey:@"current_observation"];
-                        NSString *weather=[current_observation objectForKey:@"weather"];
-                        
-#else
-                        NSDictionary *current_observation=[weatherDictionary objectForKey:@"weather"];
-                        for(id mainWeather in current_observation){
-                            weather=[mainWeather objectForKey:@"main"];
-                        }
+    [request setFailedBlock:^{
+        NSError *error = [request error];
+        NSLog(@"error=%@",[error description]);
+    }];
+    [request startAsynchronous];
 
 #endif
                             NSLog(@"weather=%@",weather);
@@ -393,9 +400,7 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
 #if stockCroppingCheck
         
         UIImage *stockBottomImage1=[BeagleUtilities imageByCropping:photo toRect:CGRectMake(0, 0, 320, 64) withOrientation:UIImageOrientationDownMirrored];
-        
         topNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockBottomImage1];
-        
         
         UIImage *stockBottomImage2=[BeagleUtilities imageByCropping:photo toRect:CGRectMake(0, 64, 320, 103) withOrientation:UIImageOrientationDownMirrored];
         bottomNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockBottomImage2];

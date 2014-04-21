@@ -819,6 +819,9 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = soclivity;
 				TargetAttributes = {
+					18EC229C18B5A0B400316B6E = {
+						DevelopmentTeam = RLC9X36TPX;
+					};
 					18EC22B718B5A0B400316B6E = {
 						TestTargetID = 18EC229C18B5A0B400316B6E;
 					};
@@ -1068,8 +1071,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Harish Hoon (B99DQ79SBX)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Harish Hoon (B99DQ79SBX)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
@@ -1078,7 +1081,7 @@
 				GCC_PREFIX_HEADER = "Beagle/Beagle-Prefix.pch";
 				INFOPLIST_FILE = "Beagle/Beagle-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "DA3E6DAA-11EC-4865-B40E-8CA1BCC193A1";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1088,8 +1091,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Harish Hoon (B99DQ79SBX)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Harish Hoon (B99DQ79SBX)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
@@ -1098,7 +1101,7 @@
 				GCC_PREFIX_HEADER = "Beagle/Beagle-Prefix.pch";
 				INFOPLIST_FILE = "Beagle/Beagle-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "DA3E6DAA-11EC-4865-B40E-8CA1BCC193A1";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
