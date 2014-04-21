@@ -3,12 +3,12 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "powerIcon.png"
+      "filename" : "Power.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "powerIcon@2x.png"
+      "filename" : "Power@2x.png"
     }
   ],
   "info" : {
