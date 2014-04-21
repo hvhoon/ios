@@ -78,8 +78,6 @@
 
 -(void)pushToHomeScreen{
     
-    [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"FacebookLogin"];
-    [[NSUserDefaults standardUserDefaults]synchronize];
     [activityIndicatorView stopAnimating];
     [activityIndicatorView setHidden:YES];
 
