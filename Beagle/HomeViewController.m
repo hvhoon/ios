@@ -98,6 +98,10 @@
     
     if([[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"]){
         [[BeagleManager SharedInstance]getUserObjectInAutoSignInMode];
+    }else{
+        [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"FacebookLogin"];
+        [[NSUserDefaults standardUserDefaults]synchronize];
+
     }
 
 
