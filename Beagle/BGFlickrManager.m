@@ -143,8 +143,7 @@ static BGFlickrManager *sharedManager = nil;
                 self.flickrRequestInfo.photo=[UIImage imageWithCGImage:[self.flickrRequestInfo.photo CGImage] scale:2.0 orientation:UIImageOrientationUp];
 
                 
-                float height=self.flickrRequestInfo.photo.size.height-334.0;
-                if(height>0){
+                float height=self.flickrRequestInfo.photo.size.height-167.0;
                 
                 if(height>0) {
                     UIImage *stockBottomImage1=[BeagleUtilities imageByCropping:self.flickrRequestInfo.photo toRect:CGRectMake(0, height/2, 320, 167) withOrientation:UIImageOrientationDownMirrored];

@@ -128,7 +128,6 @@
     [self.view addSubview:bottomNavigationView];
 
 #else
-    
     UIImageView *stockImageView= [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 320, 167)];
     stockImageView.image=[UIImage imageNamed:@"defaultLocation"];
     stockImageView.tag=3456;
@@ -151,8 +150,6 @@
 #else
     [self.view addSubview:eventButton];
 #endif
-
-    
     
     UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [settingsButton addTarget:self action:@selector(revealMenu:)forControlEvents:UIControlEventTouchUpInside];
@@ -191,7 +188,7 @@
     [filterView addSubview:[self renderFilterHeaderView]];
     [self.view addSubview:filterView];
 #endif
-
+    
 self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1.0];
     
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
@@ -213,7 +210,6 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
     isPushAuto=TRUE;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (updateActivityEvents) name:@"AutoRefreshEvents" object:nil];
 
-   
 }
 -(void)updateActivityEvents{
     isPushAuto=TRUE;
@@ -361,56 +357,27 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
     }];
     [request startAsynchronous];
 
-#endif
-                            NSLog(@"weather=%@",weather);
-                        BG.weatherCondition=weather;
-                        
-                        
-
-                            //Flickr
-                            [[BGFlickrManager sharedManager] randomPhotoRequest:^(FlickrRequestInfo * flickrRequestInfo, NSError * error) {
-                                
-                                if(!error) {
-                                    [self.timer invalidate];
-                                    
-                                    [self crossDissolvePhotos:flickrRequestInfo.photo withTitle:flickrRequestInfo.userInfo];
-                                } else {
-                                    
-                                    //Error : Stock photos
-                                    [self crossDissolvePhotos:[UIImage imageNamed:@"defaultLocation"] withTitle:@""];
-                                    count++;
-                                    NSLog(@"Flickr: %@", error.description);
-                                    if(count!=3)
-                                        [self retrieveLocationAndUpdateBackgroundPhoto];
-                                }
-                            }];
-
-                }];
-                    [request setFailedBlock:^{
-                        NSError *error = [request error];
-                        NSLog(@"error=%@",[error description]);
-                    }];
-                    [request startAsynchronous];
-
 }
 
 - (void) crossDissolvePhotos:(UIImage *) photo withTitle:(NSString *) title {
     [UIView transitionWithView:self.view duration:1.0f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
         
 #if stockCroppingCheck
-        
+
         UIImage *stockBottomImage1=[BeagleUtilities imageByCropping:photo toRect:CGRectMake(0, 0, 320, 64) withOrientation:UIImageOrientationDownMirrored];
         topNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockBottomImage1];
         
         UIImage *stockBottomImage2=[BeagleUtilities imageByCropping:photo toRect:CGRectMake(0, 64, 320, 103) withOrientation:UIImageOrientationDownMirrored];
         bottomNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockBottomImage2];
+        
 #else
         UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
         stockImageView.image=photo;
         [stockImageView setContentMode:UIViewContentModeScaleAspectFit];
-
-#endif
         
+#endif
+
+         
     } completion:NULL];
 }
 
@@ -952,10 +919,10 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
 
 }
 
--(void)updateInterestedStatus:(NSInteger)index{
-        BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:index];
-    
+-(void)updateInterestedStatus:(NSInteger)index {
+    BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:index];
     interestIndex=index;
+    
     if(_interestUpdateManager!=nil){
         _interestUpdateManager.delegate = nil;
         [_interestUpdateManager releaseServerManager];
@@ -964,14 +931,13 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
     
     _interestUpdateManager=[[ServerManager alloc]init];
     _interestUpdateManager.delegate=self;
-
+    
     if (play.isParticipant) {
         [_interestUpdateManager removeMembership:play.activityId];
     }
     else{
         [_interestUpdateManager participateMembership:play.activityId];
-        
     }
-    
 }
 @end
+
