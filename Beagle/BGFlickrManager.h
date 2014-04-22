@@ -22,6 +22,7 @@
 @property(nonatomic, copy) void (^completionBlock)(FlickrRequestInfo *, NSError *);
 
 @property(nonatomic, assign) bool isRunning;
+@property(nonatomic, assign) bool found;
 @property(nonatomic, strong) OFFlickrAPIContext *flickrContext;
 @property(nonatomic, strong) OFFlickrAPIRequest *flickrRequest;
 @property(nonatomic, strong) FlickrRequestInfo *flickrRequestInfo;

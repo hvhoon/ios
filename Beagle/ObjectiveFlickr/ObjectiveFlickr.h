@@ -39,7 +39,6 @@ extern NSString *const OFFlickrDeletePermission;
 // OAuth URL
 - (NSURL *)userAuthorizationURLWithRequestToken:(NSString *)inRequestToken requestedPermission:(NSString *)inPermission;
 
-
 // URL provisioning
 - (NSURL *)photoSourceURLFromDictionary:(NSDictionary *)inDictionary size:(NSString *)inSizeModifier;
 - (NSURL *)photoWebPageURLFromDictionary:(NSDictionary *)inDictionary;
@@ -64,7 +63,6 @@ extern NSString *const OFFlickrDeletePermission;
 
 - (void)setAuthToken:(NSString *)inAuthToken;
 - (NSString *)authToken;
-
 
 - (void)setRESTAPIEndpoint:(NSString *)inEndpoint;
 - (NSString *)RESTAPIEndpoint;
@@ -96,9 +94,7 @@ enum {
     OFFlickrAPIRequestConnectionError = 0x7fff0001,
     OFFlickrAPIRequestTimeoutError = 0x7fff0002,    
 	OFFlickrAPIRequestFaultyXMLResponseError = 0x7fff0003,
-    
     OFFlickrAPIRequestOAuthError = 0x7fff0004,
-
     OFFlickrAPIRequestUnknownError = 0x7fff0042    
 };
 
@@ -106,7 +102,6 @@ extern NSString *const OFFlickrAPIRequestOAuthErrorUserInfoKey;
 
 extern NSString *const OFFetchOAuthRequestTokenSession;
 extern NSString *const OFFetchOAuthAccessTokenSession;
-
 
 @class OFFlickrAPIRequest;
 

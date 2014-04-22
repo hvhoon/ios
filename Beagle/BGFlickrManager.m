@@ -70,6 +70,7 @@ static BGFlickrManager *sharedManager = nil;
 - (void) randomPhotoRequest: (void (^)(FlickrRequestInfo *, NSError *)) completion {
     if(!self.isRunning) {
         self.isRunning = true;
+        self.found = false;
         self.completionBlock = completion;
         
         [self performSelector:@selector(stopFlickrManager:) withObject:nil afterDelay:kFlickrSearchQuitTimeoutDurationInSeconds];
@@ -78,14 +79,19 @@ static BGFlickrManager *sharedManager = nil;
 }
 
 - (void) photoRequest {
-    if (![self.flickrRequest isRunning]) {
-        ((FlickrAPIRequestSessionInfo *)self.flickrRequest.sessionInfo).flickrAPIRequestType = FlickrAPIRequestPhotoSearch;
-        
-        BeagleManager *BG=[BeagleManager SharedInstance];
-        [self.flickrRequest callAPIMethodWithGET:@"flickr.photos.search" arguments:[NSDictionary dictionaryWithObjectsAndKeys:@"1463451@N25",@"group_id",BG.weatherCondition, @"tags", @"all",@"tag_mode", @"photos", @"content_type", [[BeagleManager SharedInstance]photoId], @"place_id",nil] tag:0];
 
-        
-    }
+    dispatch_queue_t queue = dispatch_queue_create(kAsyncQueueLabel, NULL);
+    dispatch_queue_t main = dispatch_get_main_queue();
+    
+    dispatch_async(queue, ^{
+        dispatch_async(main, ^{
+            if (![self.flickrRequest isRunning]) {
+                ((FlickrAPIRequestSessionInfo *)self.flickrRequest.sessionInfo).flickrAPIRequestType = FlickrAPIRequestPhotoSearch;
+                BeagleManager *BG=[BeagleManager SharedInstance];
+                [self.flickrRequest callAPIMethodWithGET:@"flickr.photos.search" arguments:[NSDictionary dictionaryWithObjectsAndKeys:@"1463451@N25",@"group_id",BG.weatherCondition, @"tags", @"all",@"tag_mode", @"photos", @"content_type",[[BeagleManager SharedInstance]photoId], @"place_id",nil] tag:0];
+            }
+        });
+    });
 }
 - (void) photoIdRequest {
     if (![self.flickrRequest isRunning]) {
@@ -111,9 +117,12 @@ static BGFlickrManager *sharedManager = nil;
     [self.flickrRequest cancel];
     
     self.isRunning = false;
+    self.found = false;
 }
 
 - (void)flickrAPIRequest:(OFFlickrAPIRequest *)inRequest didCompleteWithResponse:(NSDictionary *)inResponseDictionary {
+    
+    // Processing post a photo search API request
     if(((FlickrAPIRequestSessionInfo *)inRequest.sessionInfo).flickrAPIRequestType == FlickrAPIRequestPhotoSearch) {
     
         self.flickrRequestInfo = [[FlickrRequestInfo alloc] init];
@@ -122,116 +131,73 @@ static BGFlickrManager *sharedManager = nil;
                 
         int numberOfPhotos = (int)[photos count] - 1;
         
+        // Did we get any photos back?
         if(numberOfPhotos >=0) {
             
-            int randomPhotoIndex = [BeagleUtilities getRandomIntBetweenLow:0 andHigh:numberOfPhotos];
-            
-            NSDictionary *photoDict = [photos objectAtIndex:randomPhotoIndex];
-            NSURL *photoURL = [self.flickrContext photoSourceURLFromDictionary:photoDict size:OFFlickrMedium640Size];
-            NSLog(@"photoUrl=%@",photoURL);
-            
-            self.flickrRequestInfo.userPhotoWebPageURL = [self.flickrContext photoWebPageURLFromDictionary:photoDict];
-            
-            dispatch_queue_t queue = dispatch_queue_create(kAsyncQueueLabel, NULL);
-            dispatch_queue_t main = dispatch_get_main_queue();
-            
-            dispatch_async(queue, ^{
+            for (int itr=0; !self.found || itr >=numberOfPhotos; itr++)
+            {
+                int randomPhotoIndex = [BeagleUtilities getRandomIntBetweenLow:0 andHigh:numberOfPhotos];
+                self.found = true;
                 
-                self.flickrRequestInfo.photo = [UIImage imageWithData:UIImageJPEGRepresentation([UIImage imageWithData:[NSData dataWithContentsOfURL:photoURL]], 1)];
-                
-                // Scale the image appropriately
-                self.flickrRequestInfo.photo=[UIImage imageWithCGImage:[self.flickrRequestInfo.photo CGImage] scale:2.0 orientation:UIImageOrientationUp];
-
-                
-                float height=self.flickrRequestInfo.photo.size.height-167.0;
-                
-                if(height>0) {
-                    UIImage *stockBottomImage1=[BeagleUtilities imageByCropping:self.flickrRequestInfo.photo toRect:CGRectMake(0, height/2, 320, 167) withOrientation:UIImageOrientationDownMirrored];
-                    self.flickrRequestInfo.photo=stockBottomImage1;
+                if(self.found) {
                     
+                    NSDictionary *photoDict = [photos objectAtIndex:randomPhotoIndex];
+                    NSURL *photoURL = [self.flickrContext photoSourceURLFromDictionary:photoDict size:OFFlickrMedium640Size];
+                    NSLog(@"photoUrl=%@",photoURL);
+                    
+                    self.flickrRequestInfo.userPhotoWebPageURL = [self.flickrContext photoWebPageURLFromDictionary:photoDict];
+                    
+                    dispatch_queue_t queue = dispatch_queue_create(kAsyncQueueLabel, NULL);
+                    dispatch_queue_t main = dispatch_get_main_queue();
+                    
+                    dispatch_async(queue, ^{
+                        
+                        self.flickrRequestInfo.photo = [UIImage imageWithData:UIImageJPEGRepresentation([UIImage imageWithData:[NSData dataWithContentsOfURL:photoURL]], 1)];
+                        
+                        // Scale the image appropriately
+                        self.flickrRequestInfo.photo=[UIImage imageWithCGImage:[self.flickrRequestInfo.photo CGImage] scale:2.0 orientation:UIImageOrientationUp];
+                        float height=self.flickrRequestInfo.photo.size.height-167.0;
+                        
+                        if(height>0) {
+                            UIImage *locationImage=[BeagleUtilities imageByCropping:self.flickrRequestInfo.photo toRect:CGRectMake(0, height/2, 320, 167) withOrientation:UIImageOrientationDownMirrored];
+                            self.flickrRequestInfo.photo=locationImage;
+                            
+                        }
+                        
+                        dispatch_async(main, ^{
+                            
+                            self.completionBlock(self.flickrRequestInfo, nil);
+                            [self cleanUpFlickrManager];
+                            
+                        });
+                    });
                 }
-            
-                dispatch_async(main, ^{
-                    
-                    self.completionBlock(self.flickrRequestInfo, nil);
-                    [self cleanUpFlickrManager];
-
-
-//                    self.flickrRequestInfo.userId = owner;
-//                    
-//                    if (![self.flickrRequest isRunning]) {
-//                        ((FlickrAPIRequestSessionInfo *)self.flickrRequest.sessionInfo).flickrAPIRequestType = FlickrAPIRequestPhotoSizes;
-//                        
-//                        [self.flickrRequest callAPIMethodWithGET:@"flickr.photos.getSizes" arguments:[NSDictionary dictionaryWithObjectsAndKeys:photoId, @"photo_id", nil] tag:1];
-//                    }
-                });
-            });
-        } else {
+            }
+        }
+        // If no images were returned
+        else {
             NSError *error = [NSError errorWithDomain:@kAsyncQueueLabel code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"FlickrManager did not return any photos.", NSLocalizedDescriptionKey, nil]];
             
             self.completionBlock(nil, error);
-            
             [self cleanUpFlickrManager];
-        }
 
-    } else if(((FlickrAPIRequestSessionInfo *)inRequest.sessionInfo).flickrAPIRequestType == FlickrAPIRequestPhotoSizes) {
+        }
+    }
+    
+    // Upon completion of the Flickr API request for photo sizes
+    else if(((FlickrAPIRequestSessionInfo *)inRequest.sessionInfo).flickrAPIRequestType == FlickrAPIRequestPhotoSizes) {
                 
         NSDictionary *photoSizes = [inResponseDictionary valueForKeyPath:@"sizes.size"];
         
-        bool found = false;
-        
         for (NSDictionary *size in photoSizes) {
             if([[NSString stringWithString:(NSString *)[size objectForKey:@"label"]] isEqualToString:@"Medium 640"]) {
-                found = true;
-                
-                dispatch_queue_t queue = dispatch_queue_create(kAsyncQueueLabel, NULL);
-                dispatch_queue_t main = dispatch_get_main_queue();
-                
-                dispatch_async(queue, ^{
-                    
-                    [self resizeCropPhoto];
-                    
-                    dispatch_async(main, ^{
-                        self.completionBlock(self.flickrRequestInfo, nil);
-                        
-                        [self cleanUpFlickrManager];
-                    });
-                });
+                self.found = true;
             }
         }
-        
-        if(!found) {
-            [self photoRequest];
-        }
             
-    } else if(((FlickrAPIRequestSessionInfo *)inRequest.sessionInfo).flickrAPIRequestType == FlickrAPIRequestPhotoOwner) {
-
-        NSDictionary *person = [inResponseDictionary valueForKeyPath:@"person"];
-        NSString *username =  [person valueForKeyPath:@"username._text"];
-        
-        NSString *userInfo = @"";
-        
-        if([username length]) {
-            userInfo = [NSString stringWithFormat:@"© %@", username];
-        }
-        
-        self.flickrRequestInfo.userInfo = userInfo;
-        
-        dispatch_queue_t queue = dispatch_queue_create(kAsyncQueueLabel, NULL);
-        dispatch_queue_t main = dispatch_get_main_queue();
-        
-        dispatch_async(queue, ^{
-    
-            //[self resizeCropPhoto];
-                    
-            dispatch_async(main, ^{
-                self.completionBlock(self.flickrRequestInfo, nil);
-                
-                [self cleanUpFlickrManager];
-            });
-        });
     }
-    
+        
+    // Upon completion of the Flickr API request for a place id
     else if(((FlickrAPIRequestSessionInfo *)inRequest.sessionInfo).flickrAPIRequestType == FlickrAPIRequestPhotoId) {
         
         NSDictionary *places = [inResponseDictionary valueForKeyPath:@"places"];
@@ -239,26 +205,10 @@ static BGFlickrManager *sharedManager = nil;
         NSDictionary *item=[place objectAtIndex:0];
         BeagleManager *BG=[BeagleManager SharedInstance];
         BG.photoId =[item valueForKeyPath:@"place_id"];
-        dispatch_queue_t queue = dispatch_queue_create(kAsyncQueueLabel, NULL);
-        dispatch_queue_t main = dispatch_get_main_queue();
         
-        dispatch_async(queue, ^{
-            
-            
-            dispatch_async(main, ^{
-                
-                
-                
-                if (![self.flickrRequest isRunning]) {
-                    ((FlickrAPIRequestSessionInfo *)self.flickrRequest.sessionInfo).flickrAPIRequestType = FlickrAPIRequestPhotoSearch;
-                    BeagleManager *BG=[BeagleManager SharedInstance];
-                    [self.flickrRequest callAPIMethodWithGET:@"flickr.photos.search" arguments:[NSDictionary dictionaryWithObjectsAndKeys:@"1463451@N25",@"group_id",BG.weatherCondition, @"tags", @"all",@"tag_mode", @"photos", @"content_type",[[BeagleManager SharedInstance]photoId], @"place_id",nil] tag:0];
-                }
-            });
-        });
+        [self photoRequest];
     }
 }
-
 
 - (void) resizeCropPhoto {
     float goldenRatio = 1.6;
@@ -295,7 +245,6 @@ static BGFlickrManager *sharedManager = nil;
 
 - (void)flickrAPIRequest:(OFFlickrAPIRequest *)inRequest didFailWithError:(NSError *)inError {
     self.completionBlock(nil, inError);
-    
     [self cleanUpFlickrManager];
 }
 

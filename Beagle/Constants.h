@@ -19,7 +19,7 @@
 #define KFlickrSearchLicense @"4,5,6,7"
 #define KFlickrSearchRadiusInMiles @"20"
 #define kFlickrSearchInvalidateCacheTimeoutDurationInSeconds 900 //15min (60 * 15)
-#define kFlickrSearchQuitTimeoutDurationInSeconds 15
+#define kFlickrSearchQuitTimeoutDurationInSeconds 3600
 
 //Async Queue Label
 #define kAsyncQueueLabel "org.tempuri"
