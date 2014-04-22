@@ -339,16 +339,28 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
     [request setCompletionBlock:^{
         NSError* error;
         NSString *weather=nil;
+        NSString *time=nil;
         
         // Pull weather information
         NSString *jsonString = [request responseString];
+        
+        NSLog(@"Request=%@", jsonString);
+        
         NSDictionary* weatherDictionary = [NSJSONSerialization JSONObjectWithData:[jsonString dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:&error];
         NSDictionary *current_observation=[weatherDictionary objectForKey:@"weather"];
         
+        // Parsing out the weather and time of day info.
         for(id mainWeather in current_observation) {
             weather=[mainWeather objectForKey:@"main"];
+            time=[mainWeather objectForKey:@"icon"];
         }
-        NSLog(@"weather=%@",weather);
+        
+        // Figuring out whether it's day or night.
+        time = [time substringFromIndex: [time length] - 1];
+        time = ([time isEqualToString:@"d"]) ? @"day": @"night";
+        
+        // Assigning the time of day and the weather
+        BG.timeOfDay=time;
         BG.weatherCondition=weather;
         
         // Pull image from Flickr
@@ -369,7 +381,7 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
 }
 
 - (void) crossDissolvePhotos:(UIImage *) photo withTitle:(NSString *) title {
-    [UIView transitionWithView:self.view duration:1.0f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+    [UIView transitionWithView:self.view duration:0.5f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
         
 #if stockCroppingCheck
 

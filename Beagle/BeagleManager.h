@@ -17,6 +17,7 @@
 @property(nonatomic,strong)BeagleUserClass*beaglePlayer;
 @property(nonatomic,strong)CLPlacemark *placemark;
 @property(nonatomic,strong)NSString *weatherCondition;
+@property(nonatomic,strong)NSString *timeOfDay;
 @property(nonatomic,strong)NSString*photoId;
 @property(nonatomic,assign)BOOL activtyCreated;
 
