@@ -83,7 +83,6 @@
 		18EC233F18B5A6BD00316B6E /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC233E18B5A6BD00316B6E /* Social.framework */; };
 		18EC234218B5A72F00316B6E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18EC234118B5A72F00316B6E /* Main.storyboard */; };
 		18F3394F190825A500CCCB18 /* InterestChatClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F3394E190825A500CCCB18 /* InterestChatClass.m */; };
-		18F33952190826B400CCCB18 /* RDRStickyKeyboardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F33950190826B400CCCB18 /* RDRStickyKeyboardView.m */; };
 		18F8898C1902C15400C80011 /* DetailInterestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F8898B1902C15400C80011 /* DetailInterestViewController.m */; };
 		18F889901902C72400C80011 /* BeaglePlayerScrollMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F8898E1902C72400C80011 /* BeaglePlayerScrollMenu.m */; };
 		18F889941902C7FF00C80011 /* PlayerProfileItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F889921902C7FF00C80011 /* PlayerProfileItem.m */; };
@@ -253,8 +252,6 @@
 		18EC234118B5A72F00316B6E /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		18F3394D190825A500CCCB18 /* InterestChatClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InterestChatClass.h; sourceTree = "<group>"; };
 		18F3394E190825A500CCCB18 /* InterestChatClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InterestChatClass.m; sourceTree = "<group>"; };
-		18F33950190826B400CCCB18 /* RDRStickyKeyboardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDRStickyKeyboardView.m; sourceTree = "<group>"; };
-		18F33951190826B400CCCB18 /* RDRStickyKeyboardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDRStickyKeyboardView.h; sourceTree = "<group>"; };
 		18F8898A1902C15400C80011 /* DetailInterestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailInterestViewController.h; sourceTree = "<group>"; };
 		18F8898B1902C15400C80011 /* DetailInterestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailInterestViewController.m; sourceTree = "<group>"; };
 		18F8898E1902C72400C80011 /* BeaglePlayerScrollMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeaglePlayerScrollMenu.m; sourceTree = "<group>"; };
@@ -704,8 +701,6 @@
 		18F889891902C14000C80011 /* Detailed Interest */ = {
 			isa = PBXGroup;
 			children = (
-				18F33951190826B400CCCB18 /* RDRStickyKeyboardView.h */,
-				18F33950190826B400CCCB18 /* RDRStickyKeyboardView.m */,
 				18F8898D1902C71500C80011 /* Scroll Menu */,
 				18F8898A1902C15400C80011 /* DetailInterestViewController.h */,
 				18F8898B1902C15400C80011 /* DetailInterestViewController.m */,
@@ -964,7 +959,6 @@
 				18F889941902C7FF00C80011 /* PlayerProfileItem.m in Sources */,
 				18E7AF0D18BBAA6600EBBDE2 /* BeagleUserClass.m in Sources */,
 				18FADB9718B668A500A62287 /* UIImage+ImageWithUIView.m in Sources */,
-				18F33952190826B400CCCB18 /* RDRStickyKeyboardView.m in Sources */,
 				18EC231518B5A42D00316B6E /* ASIDownloadCache.m in Sources */,
 				18007EEE18C6508200230C23 /* LFHTTPRequest.m in Sources */,
 			);

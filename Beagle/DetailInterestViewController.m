@@ -11,16 +11,13 @@
 #import "BeaglePlayerScrollMenu.h"
 #import "PlayerProfileItem.h"
 #import "InterestChatClass.h"
-#import "RDRStickyKeyboardView.h"
 static NSString * const CellIdentifier = @"cell";
-@interface DetailInterestViewController ()<BeaglePlayerScrollMenuDelegate,ServerManagerDelegate,UIGestureRecognizerDelegate,UITableViewDataSource,UITableViewDelegate>
+@interface DetailInterestViewController ()<BeaglePlayerScrollMenuDelegate,ServerManagerDelegate,UIGestureRecognizerDelegate>
 
 @property (strong, nonatomic) UIView *backgroundView;
 @property (strong, nonatomic) UIImageView *profileImageView;
 @property (strong,nonatomic)BeaglePlayerScrollMenu *scrollMenu;
 @property(nonatomic,strong)ServerManager*interestUpdateManager;
-@property(nonatomic,strong)UITableView*chatTableView;
-@property (nonatomic, strong) RDRStickyKeyboardView *contentWrapper;
 @end
 
 @implementation DetailInterestViewController
@@ -28,8 +25,6 @@ static NSString * const CellIdentifier = @"cell";
 @synthesize scrollMenu=_scrollMenu;
 @synthesize interestUpdateManager=_interestUpdateManager;
 @synthesize profileImageView=_profileImageView;
-@synthesize chatTableView;
-@synthesize contentWrapper;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -393,53 +388,8 @@ static NSString * const CellIdentifier = @"cell";
     [self.view addSubview:_backgroundView];
 
     
-    self.chatTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 72+variance+16+18+16, 320, self.view.frame.size.height-44-64-72+variance+16+18+16)
-                                                  style:UITableViewStylePlain];
-    
-    self.chatTableView.dataSource = self;
-    self.chatTableView.delegate = self;
-    self.chatTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth
-    |UIViewAutoresizingFlexibleHeight;
-    [self.chatTableView registerClass:[UITableViewCell class]
-           forCellReuseIdentifier:CellIdentifier];
-    
-    self.contentWrapper = [[RDRStickyKeyboardView alloc] initWithScrollView:self.chatTableView];
-    self.contentWrapper.frame = self.view.bounds;
-    self.contentWrapper.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
-    [self.view addSubview:self.contentWrapper];
-
-    // Do any additional setup after loading the view.
 }
 
-#pragma mark - UITableViewDelegate/UITableViewDataSource
-
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 44.0f;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier
-                                                            forIndexPath:indexPath];
-    
-    cell.backgroundColor = [UIColor whiteColor];
-    cell.contentView.backgroundColor = [UIColor whiteColor];
-    
-    cell.textLabel.text = @"Lorem ipsum";
-    cell.textLabel.textColor = [UIColor blackColor];
-    
-    return cell;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return 1;
-}
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    return 1;
-}
 
 -(void)handleTapGestures:(UITapGestureRecognizer*)sender{
     
