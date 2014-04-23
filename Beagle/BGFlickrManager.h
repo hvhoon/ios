@@ -17,18 +17,25 @@
 
 @end
 
+typedef enum {
+    fullSearch,
+    weatherLocationOnly,
+    locationOnly,
+} searchType;
+
 @interface BGFlickrManager : NSObject<OFFlickrAPIRequestDelegate>
 
 @property(nonatomic, copy) void (^completionBlock)(FlickrRequestInfo *, NSError *);
 
 @property(nonatomic, assign) bool isRunning;
+@property(nonatomic, assign) bool found;
 @property(nonatomic, strong) OFFlickrAPIContext *flickrContext;
 @property(nonatomic, strong) OFFlickrAPIRequest *flickrRequest;
 @property(nonatomic, strong) FlickrRequestInfo *flickrRequestInfo;
 
 @property(nonatomic, strong) NSDate *searchInvalidateCacheTimeout;
 @property(nonatomic, strong) NSDate *searchQuitTimeout;
-
+@property(nonatomic, assign) searchType currentSearchType;
 
 + (BGFlickrManager *) sharedManager;
 - (void) randomPhotoRequest: (void (^)(FlickrRequestInfo *, NSError *)) completion;
@@ -41,6 +48,7 @@ typedef enum {
     FlickrAPIRequestPhotoOwner = 4,
     FlickrAPIRequestPhotoId=1,
 } FlickrAPIRequestType;
+
 
 @interface FlickrAPIRequestSessionInfo : NSObject
 
