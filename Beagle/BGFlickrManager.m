@@ -100,9 +100,9 @@ static BGFlickrManager *sharedManager = nil;
         tags = [tags stringByAppendingString:BG.timeOfDay];
         searchTypePrint = @"Full";
     }
-    else if (self.currentSearchType == weatherLocationOnly) {
-        tags = BG.weatherCondition;
-        searchTypePrint = @"Weather and Location only";
+    else if (self.currentSearchType == timeLocationOnly) {
+        tags = BG.timeOfDay;
+        searchTypePrint = @"Time and Location only";
     }
     else
         tags = @"";
@@ -187,10 +187,10 @@ static BGFlickrManager *sharedManager = nil;
                 // If no landscape images were found then let's try again with a different search
                 if (!self.found) {
                     if (self.currentSearchType == fullSearch) {
-                        self.currentSearchType = weatherLocationOnly;
+                        self.currentSearchType = timeLocationOnly;
                         [self photoSearch];
                     }
-                    else if (self.currentSearchType == weatherLocationOnly) {
+                    else if (self.currentSearchType == timeLocationOnly) {
                         self.currentSearchType = locationOnly;
                         [self photoSearch];
                     }
@@ -206,10 +206,10 @@ static BGFlickrManager *sharedManager = nil;
         // If no images were returned at all
         else {
             if (self.currentSearchType == fullSearch) {
-                self.currentSearchType = weatherLocationOnly;
+                self.currentSearchType = timeLocationOnly;
                 [self photoSearch];
             }
-            else if (self.currentSearchType == weatherLocationOnly) {
+            else if (self.currentSearchType == timeLocationOnly) {
                 self.currentSearchType = locationOnly;
                 [self photoSearch];
             }

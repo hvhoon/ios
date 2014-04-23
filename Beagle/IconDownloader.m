@@ -77,6 +77,9 @@
     // Set appIcon and clear temporary data/image
     UIImage *image = [[UIImage alloc] initWithData:self.activeDownload];
     
+    // Setting the correct scale for the image
+    image = [UIImage imageWithCGImage:[image CGImage] scale:2.0 orientation:UIImageOrientationUp];
+    
     if(image.size.height != image.size.width)
         image = [BeagleUtilities autoCrop:image];
     

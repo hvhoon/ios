@@ -217,7 +217,7 @@
 
     if(self.interestActivity.ownerid==[[[BeagleManager SharedInstance]beaglePlayer]beagleUserId]){
         //owner
-        if(self.interestActivity.participantsCount>=1){
+        if(self.interestActivity.participantsCount>1){
             _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, 72+commentTextRect.size.height+16+participantsCountTextSize.height+16, 268, 55)];
             [_backgroundView addSubview:_scrollMenu];
             variance=72+commentTextRect.size.height+16+participantsCountTextSize.height+16+55;
