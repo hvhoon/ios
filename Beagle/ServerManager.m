@@ -192,7 +192,7 @@
         
         NSMutableDictionary* updateMembership =[[NSMutableDictionary alloc] init];
         [updateMembership setObject:[NSNumber numberWithInteger:[[BeagleManager SharedInstance] beaglePlayer].beagleUserId] forKey:@"pid"];
-        [updateMembership setObject:[NSNumber numberWithInt:activityId] forKey:@"id"];
+        [updateMembership setObject:[NSNumber numberWithInteger:activityId] forKey:@"id"];
         [updateMembership setObject:@"true" forKey:@"pstatus"];
         
         NSData *postData = [[updateMembership JSONRepresentation] dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];

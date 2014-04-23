@@ -10,17 +10,26 @@
 #import "BeagleActivityClass.h"
 #import "BeaglePlayerScrollMenu.h"
 #import "PlayerProfileItem.h"
-@interface DetailInterestViewController ()<BeaglePlayerScrollMenuDelegate>
+#import "InterestChatClass.h"
+#import "RDRStickyKeyboardView.h"
+static NSString * const CellIdentifier = @"cell";
+@interface DetailInterestViewController ()<BeaglePlayerScrollMenuDelegate,ServerManagerDelegate,UIGestureRecognizerDelegate,UITableViewDataSource,UITableViewDelegate>
 
 @property (strong, nonatomic) UIView *backgroundView;
 @property (strong, nonatomic) UIImageView *profileImageView;
 @property (strong,nonatomic)BeaglePlayerScrollMenu *scrollMenu;
+@property(nonatomic,strong)ServerManager*interestUpdateManager;
+@property(nonatomic,strong)UITableView*chatTableView;
+@property (nonatomic, strong) RDRStickyKeyboardView *contentWrapper;
 @end
 
 @implementation DetailInterestViewController
 @synthesize interestActivity,interestServerManager=_interestServerManager,backgroundView=_backgroundView;
 @synthesize scrollMenu=_scrollMenu;
+@synthesize interestUpdateManager=_interestUpdateManager;
 @synthesize profileImageView=_profileImageView;
+@synthesize chatTableView;
+@synthesize contentWrapper;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -179,6 +188,7 @@
     participantsCountTextLabel.textColor = [UIColor blackColor];
     participantsCountTextLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
     participantsCountTextLabel.textAlignment = NSTextAlignmentLeft;
+    participantsCountTextLabel.tag=347;
     
     if(self.interestActivity.participantsCount>0 && self.interestActivity.dos2Count>0){
         
@@ -217,7 +227,7 @@
 
     if(self.interestActivity.ownerid==[[[BeagleManager SharedInstance]beaglePlayer]beagleUserId]){
         //owner
-        if(self.interestActivity.participantsCount>=1){
+        if(self.interestActivity.participantsCount>1){
             _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, 72+commentTextRect.size.height+16+participantsCountTextSize.height+16, 268, 55)];
             [_backgroundView addSubview:_scrollMenu];
             variance=72+commentTextRect.size.height+16+participantsCountTextSize.height+16+55;
@@ -301,7 +311,10 @@
         }
 
     }
+    
+    
     UIImageView *starImageView = [[UIImageView alloc] initWithFrame:CGRectMake(16, variance+16, 16, 15)];
+    starImageView.tag=345;
     [_backgroundView addSubview:starImageView];
 
     if(self.interestActivity.isParticipant){
@@ -330,13 +343,18 @@
                                                              context:nil].size;
     
     UILabel *interestedLabel = [[UILabel alloc] initWithFrame:CGRectMake(42,variance+16, interestedSize.width, interestedSize.height)];
-
+    interestedLabel.tag=346;
     interestedLabel.backgroundColor = [UIColor clearColor];
     interestedLabel.text = @"I'm Interested";
     interestedLabel.textColor = [UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0];
     interestedLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15.0f];
     interestedLabel.textAlignment = NSTextAlignmentLeft;
     [_backgroundView addSubview:interestedLabel];
+    
+    interestedLabel.userInteractionEnabled = YES;
+    UITapGestureRecognizer *tapGesture =
+    [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGestures:)];
+    [interestedLabel addGestureRecognizer:tapGesture];
 
     
     
@@ -374,8 +392,76 @@
     _backgroundView.frame=CGRectMake(0, 72, 320, variance+16+18+16);
     [self.view addSubview:_backgroundView];
 
+    
+    self.chatTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 72+variance+16+18+16, 320, self.view.frame.size.height-44-64-72+variance+16+18+16)
+                                                  style:UITableViewStylePlain];
+    
+    self.chatTableView.dataSource = self;
+    self.chatTableView.delegate = self;
+    self.chatTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth
+    |UIViewAutoresizingFlexibleHeight;
+    [self.chatTableView registerClass:[UITableViewCell class]
+           forCellReuseIdentifier:CellIdentifier];
+    
+    self.contentWrapper = [[RDRStickyKeyboardView alloc] initWithScrollView:self.chatTableView];
+    self.contentWrapper.frame = self.view.bounds;
+    self.contentWrapper.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+    [self.view addSubview:self.contentWrapper];
+
     // Do any additional setup after loading the view.
 }
+
+#pragma mark - UITableViewDelegate/UITableViewDataSource
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return 44.0f;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier
+                                                            forIndexPath:indexPath];
+    
+    cell.backgroundColor = [UIColor whiteColor];
+    cell.contentView.backgroundColor = [UIColor whiteColor];
+    
+    cell.textLabel.text = @"Lorem ipsum";
+    cell.textLabel.textColor = [UIColor blackColor];
+    
+    return cell;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return 1;
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+-(void)handleTapGestures:(UITapGestureRecognizer*)sender{
+    
+    if(self.interestActivity.dosRelation!=0){
+        if(_interestUpdateManager!=nil){
+            _interestUpdateManager.delegate = nil;
+            [_interestUpdateManager releaseServerManager];
+            _interestUpdateManager = nil;
+        }
+        
+        _interestUpdateManager=[[ServerManager alloc]init];
+        _interestUpdateManager.delegate=self;
+        
+        if (self.interestActivity.isParticipant) {
+            [_interestUpdateManager removeMembership:self.interestActivity.activityId];
+        }
+        else{
+            [_interestUpdateManager participateMembership:self.interestActivity.activityId];
+        }
+        
+    }
+  }
 
 - (void)loadProfileImage:(NSString*)url {
     NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:url]];
@@ -428,8 +514,16 @@
 
                         
                     }
-                    
-                    
+                     id chats=[interest objectForKey:@"chats"];
+                    if (chats != nil && [chats class] != [NSNull class] && [chats count]!=0) {
+                        NSMutableArray *chatsArray=[[NSMutableArray alloc]init];
+                        for(id el in chats){
+                            InterestChatClass *userClass=[[InterestChatClass alloc]initWithDictionary:el];
+                            [chatsArray addObject:userClass];
+                        }
+                        
+                        
+                    }
                     
                 }
                 
@@ -439,6 +533,49 @@
             }
         }
         
+        
+    }
+    
+    else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
+        _interestUpdateManager.delegate = nil;
+        [_interestUpdateManager releaseServerManager];
+        _interestUpdateManager = nil;
+        
+        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
+            
+            id status=[response objectForKey:@"status"];
+            id message=[response objectForKey:@"message"];
+            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
+                
+                UILabel *participantsCountTextLabel=(UILabel*)[self.view viewWithTag:347];
+                if([message isEqualToString:@"Joined"]){
+                    self.interestActivity.participantsCount++;
+                    
+                }else{
+                    self.interestActivity.participantsCount--;
+                    
+                }
+                if(self.interestActivity.participantsCount>0 && self.interestActivity.dos2Count>0){
+                    
+                    participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested -  %ld Friends",(long)self.interestActivity.participantsCount,(long)self.interestActivity.dos2Count];
+                }else{
+                     participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested",(long)self.interestActivity.participantsCount];
+                }
+                UIImageView *starImageView=(UIImageView*)[self.view viewWithTag:345];
+
+                if(self.interestActivity.isParticipant){
+                    self.interestActivity.isParticipant=FALSE;
+                    starImageView.image=[UIImage imageNamed:@"Star-Unfilled"];
+                }
+                else{
+                    self.interestActivity.isParticipant=TRUE;
+                    starImageView.image=[UIImage imageNamed:@"Star"];
+                }
+                
+                
+
+            }
+        }
         
     }
 }
@@ -451,6 +588,11 @@
         _interestServerManager.delegate = nil;
         [_interestServerManager releaseServerManager];
         _interestServerManager = nil;
+    }
+    else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
+        _interestUpdateManager.delegate = nil;
+        [_interestUpdateManager releaseServerManager];
+        _interestUpdateManager = nil;
     }
     
     NSString *message = NSLocalizedString (@"Unable to initiate request.",
@@ -465,6 +607,11 @@
         _interestServerManager.delegate = nil;
         [_interestServerManager releaseServerManager];
         _interestServerManager = nil;
+    }
+    else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
+        _interestUpdateManager.delegate = nil;
+        [_interestUpdateManager releaseServerManager];
+        _interestUpdateManager = nil;
     }
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
@@ -493,6 +640,7 @@
 	[_scrollMenu setAnimationType:PlayerZoomOut];
 	_scrollMenu.delegate = self;
 }
+
 /*
 #pragma mark - Navigation
 

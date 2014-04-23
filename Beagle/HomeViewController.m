@@ -377,11 +377,10 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
         NSLog(@"error=%@",[error description]);
     }];
     [request startAsynchronous];
-
+    
 }
-
 - (void) crossDissolvePhotos:(UIImage *) photo withTitle:(NSString *) title {
-    [UIView transitionWithView:self.view duration:0.5f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+    [UIView transitionWithView:self.view duration:1.0f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
         
 #if stockCroppingCheck
 
@@ -747,8 +746,14 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
             id status=[response objectForKey:@"status"];
+            id message=[response objectForKey:@"message"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                  BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:interestIndex];
+                if([message isEqualToString:@"Joined"]){
+                    play.participantsCount++;
+                }else{
+                    play.participantsCount--;
+                }
                     if(play.isParticipant){
                         play.isParticipant=FALSE;
                     }
