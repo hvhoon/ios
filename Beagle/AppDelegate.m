@@ -10,6 +10,7 @@
 #import <Crashlytics/Crashlytics.h>
 @implementation AppDelegate
 @synthesize progressIndicator=_progressIndicator;
+@synthesize listViewController;
 void uncaughtExceptionHandler(NSException *exception) {
     NSLog(@"CRASH: %@", exception);
     NSLog(@"Stack Trace: %@", [exception callStackSymbols]);

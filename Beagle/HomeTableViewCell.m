@@ -92,10 +92,15 @@ static UIFont *thirdTextFont = nil;
                                           52.5-organizerNameSize.height,
                                           organizerNameSize.width, organizerNameSize.height) withAttributes:attrs];
     
-    if(bg_activity.dosRelation==0){
+    if(bg_activity.dosRelation!=0){
+        
+    if(bg_activity.dosRelation==1){
         [[UIImage imageNamed:@"DOS2"] drawInRect:CGRectMake(76+10+organizerNameSize.width, 52.5-15, 27, 15)];
+    }else{
+        [[UIImage imageNamed:@"DOS3"] drawInRect:CGRectMake(76+10+organizerNameSize.width, 52.5-15, 27, 15)];
+        
     }
-    
+    }
     attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                              firstTextFont, NSFontAttributeName,
                              [UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
@@ -135,7 +140,17 @@ static UIFont *thirdTextFont = nil;
            style, NSParagraphStyleAttributeName, nil];
 
     CGSize participantsCountTextSize;
-    if(self.bg_activity.participantsCount>0 && self.bg_activity.dos2Count>0){
+    
+    if(self.bg_activity.participantsCount==0){
+        participantsCountTextSize = [[NSString stringWithFormat:@"No Participants"]  boundingRectWithSize:CGSizeMake(288, r.size.height)
+                                                                                                                                                                                          options:NSStringDrawingUsesLineFragmentOrigin
+                                                                                                                                                                                       attributes:attrs
+                                                                                                                                                                                          context:nil].size;
+        
+        [[NSString stringWithFormat:@"No Participants"] drawInRect:CGRectMake(16,69+8+commentTextRect.size.height+16+locationTextSize.height,
+                                                                                                                                                                      participantsCountTextSize.width, participantsCountTextSize.height) withAttributes:attrs];
+    }
+   else if(self.bg_activity.participantsCount>0 && self.bg_activity.dos2Count>0){
        
 
         participantsCountTextSize = [[NSString stringWithFormat:@"%ld Interested -  %ld Friends",(long)self.bg_activity.participantsCount,(long)self.bg_activity.dos2Count]  boundingRectWithSize:CGSizeMake(288, r.size.height)
@@ -147,7 +162,7 @@ static UIFont *thirdTextFont = nil;
                                                              participantsCountTextSize.width, participantsCountTextSize.height) withAttributes:attrs];
         
         
-    }else{
+    }else if(self.bg_activity.participantsCount>0){
         
         participantsCountTextSize = [[NSString stringWithFormat:@"%ld Interested",(long)self.bg_activity.participantsCount]  boundingRectWithSize:CGSizeMake(288, r.size.height)
                                                                                                                                                                                      options:NSStringDrawingUsesLineFragmentOrigin

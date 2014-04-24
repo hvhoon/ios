@@ -20,6 +20,7 @@
     [self.navigationController setNavigationBarHidden:YES];
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     self.topViewController =[storyboard instantiateViewControllerWithIdentifier:@"homeScreen"];
+    [(AppDelegate*)[[UIApplication sharedApplication] delegate]setListViewController: self.topViewController];
 
 }
 

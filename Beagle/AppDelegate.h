@@ -11,7 +11,7 @@
 @interface AppDelegate : UIResponder <UIApplicationDelegate,MBProgressHUDDelegate>{
         MBProgressHUD *progressIndicator;
 }
-
+@property (nonatomic,strong)id listViewController;
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic,strong)MBProgressHUD *progressIndicator;
 -(void)showProgressIndicator:(NSInteger)type;

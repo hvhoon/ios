@@ -293,7 +293,7 @@ enum Weeks {
 	}
 	if(flag == NO)
 	{
-		countTextLabel.text= [[NSString alloc] initWithFormat:@"%u",140-[descriptionTextView.text length]-1];
+		countTextLabel.text= [[NSString alloc] initWithFormat:@"%lu",140-[descriptionTextView.text length]-1];
 		
 		
 	}

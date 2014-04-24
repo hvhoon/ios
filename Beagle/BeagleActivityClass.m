@@ -34,6 +34,7 @@
         self.participantsCount = [[dictionary valueForKey:@"total_count"]integerValue];
         self.locationName=[NSString stringWithFormat:@"%@, %@",self.city,self.state];
         self.isParticipant=[[dictionary valueForKey:@"isParticipant"]boolValue];
+        self.postCount = [[dictionary valueForKey:@"postCount"]integerValue];
     }
     return self;
 }

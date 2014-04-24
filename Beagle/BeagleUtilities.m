@@ -332,4 +332,77 @@
     return image;
 
 }
+
++(NSString *)calculateChatTimestamp:(NSString *)timeString{
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
+    NSTimeZone *gmt = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
+    [dateFormatter setTimeZone:gmt];
+    
+    // how to get back time from current time in the same format
+    NSDate *lastDate = [dateFormatter dateFromString:timeString];//add the string
+    NSString *todayDate = [dateFormatter stringFromDate:[NSDate date]];
+    NSDate *currentDate=[dateFormatter dateFromString:todayDate];
+    
+    NSTimeInterval interval = [lastDate timeIntervalSinceDate:currentDate];
+    unsigned long seconds = interval;
+    unsigned long minutes = seconds / 60;
+    seconds %= 60;
+    unsigned long hours = minutes / 60;
+    if(hours)
+        minutes %= 60;
+    unsigned long days=hours/24;
+    if(days)
+        hours %=24;
+    
+    NSMutableString * result = [NSMutableString new];
+    dateFormatter.dateFormat=@"EEE, MMM d, h:mma";
+    
+    NSTimeZone* destinationTimeZone = [NSTimeZone systemTimeZone];
+    NSInteger destinationGMTOffset1 = [destinationTimeZone secondsFromGMTForDate:lastDate];
+    NSInteger destinationGMTOffset2 = [destinationTimeZone secondsFromGMTForDate:currentDate];
+    
+    NSTimeInterval interval2 = destinationGMTOffset1;
+    NSTimeInterval interval3 = destinationGMTOffset2;
+    
+    NSDate* destinationDate =[[NSDate alloc] initWithTimeInterval:interval2 sinceDate:lastDate];
+    NSDate* currentDateTime = [[NSDate alloc] initWithTimeInterval:interval3 sinceDate:currentDate];
+    
+    NSString *activityTime=[dateFormatter stringFromDate:destinationDate];
+    
+    NSCalendar* calendar = [NSCalendar currentCalendar];
+    NSInteger differenceInDays =
+    [calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSEraCalendarUnit forDate:destinationDate]-
+    [calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSEraCalendarUnit forDate:currentDateTime];
+    switch (differenceInDays) {
+        case -1:
+        {
+            dateFormatter.dateFormat=@"h:mma";
+            [result appendFormat:@"%@",[NSString stringWithFormat:@"Yesterday, %@",[dateFormatter stringFromDate:destinationDate]]];
+        }
+            break;
+        case 0:
+        {
+            
+            dateFormatter.dateFormat=@"h:mma";
+            [result appendFormat:@"%@",[NSString stringWithFormat:@"Today, %@",[dateFormatter stringFromDate:destinationDate]]];
+        }
+            break;
+        case 1:
+        {
+            [result appendFormat: @"Tommorow"];
+            dateFormatter.dateFormat=@"h:mma";
+            
+            [result appendFormat:@"%@",[NSString stringWithFormat:@"Tomorrow, %@",[dateFormatter stringFromDate:destinationDate]]];
+        }
+            break;
+        default: {
+            [result appendFormat:@"%@",activityTime];
+        }
+            break;
+    }
+    
+    return result;
+}
 @end
