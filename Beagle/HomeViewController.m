@@ -18,6 +18,7 @@
 #import "BeagleActivityClass.h"
 #import "IconDownloader.h"
 #import "DetailInterestViewController.h"
+#import "BeagleUtilities.h"
 #define REFRESH_HEADER_HEIGHT 50.0f
 #define stockCroppingCheck 0
 #define kTimerIntervalInSeconds 10
@@ -75,6 +76,7 @@
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
      BeagleManager *BG=[BeagleManager SharedInstance];
     if(BG.activtyCreated){
         isPushAuto=TRUE;
@@ -118,7 +120,7 @@
     
     UIImage *stockBottomImage1=[BeagleUtilities imageByCropping:[UIImage imageNamed:@"defaultLocation"] toRect:CGRectMake(0, 0, 320, 64) withOrientation:UIImageOrientationDownMirrored];
     topNavigationView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 64)];
-    topNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockBottomImage1];
+    topNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockBottomImage2]
     [self.view addSubview:topNavigationView];
     
     // Adding a gradient to the top navigation bar so that the image is more visible
@@ -133,26 +135,23 @@
 
 #else
     UIImageView *stockImageView= [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 320, 167)];
-    stockImageView.image=[UIImage imageNamed:@"defaultLocation"];
+    stockImageView.backgroundColor = [UIColor grayColor];
     stockImageView.tag=3456;
     [self.view addSubview:stockImageView];
     
     UIImageView *topGradient=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"gradient"]];
     topGradient.frame = CGRectMake(0, 0, 320, 64);
-    [self.view addSubview:topGradient];
+    [stockImageView addSubview:topGradient];
     
 #endif
 
-    [self addCityName:@"New York"];
+    [self addCityName:@"Hello"];
     UIButton *eventButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [eventButton setBackgroundImage:[UIImage imageNamed:@"add"] forState:UIControlStateNormal];
+    
     [eventButton addTarget:self action:@selector(createANewActivity:)forControlEvents:UIControlEventTouchUpInside];
-    [eventButton setTitle:@"+" forState:UIControlStateNormal];
-    [eventButton setTitleColor:[UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1.0] forState:UIControlStateNormal];
-    eventButton.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Light" size:60.0f];
-    [eventButton.titleLabel setTextAlignment:NSTextAlignmentRight];
-    eventButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
 
-    eventButton.frame = CGRectMake(244.0, 4.0, 60.0, 60.0);
+    eventButton.frame = CGRectMake(251.0, 20.0, 69.0, 44.0);
     
 #if stockCroppingCheck
     [topNavigationView addSubview:eventButton];
@@ -236,39 +235,28 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
     if(textLabel!=nil){
         [textLabel removeFromSuperview];
     }
-    CGSize size = CGSizeMake(180,999);
     
-    /// Make a copy of the default paragraph style
-    NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-    /// Set line break mode
-    paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
-    /// Set text alignment
-    paragraphStyle.alignment = NSTextAlignmentLeft;
+    UILabel *fromLabel = [[UILabel alloc]initWithFrame:CGRectMake(16, 20, 251, 44)];
     
-    
-    CGRect textRect = [name
-                       boundingRectWithSize:size
-                       options:NSStringDrawingUsesLineFragmentOrigin
-                       attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Light" size:30.0],NSForegroundColorAttributeName:[UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:0.95],NSParagraphStyleAttributeName: paragraphStyle, }
-                       context:nil];
-    
-    
-    UILabel *fromLabel = [[UILabel alloc]initWithFrame:CGRectMake(16,22, textRect.size.width, textRect.size.height)];
     fromLabel.text = name;
     fromLabel.tag=1234;
     fromLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:30.0];
     fromLabel.numberOfLines = 1;
-    fromLabel.baselineAdjustment = UIBaselineAdjustmentAlignBaselines;
-    fromLabel.adjustsFontSizeToFitWidth = YES;
-    fromLabel.adjustsFontSizeToFitWidth = YES;
+    fromLabel.adjustsFontSizeToFitWidth = NO;
     fromLabel.clipsToBounds = YES;
     fromLabel.backgroundColor = [UIColor clearColor];
-    fromLabel.textColor = [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:0.95];
+    fromLabel.textColor = [UIColor whiteColor];
     fromLabel.textAlignment = NSTextAlignmentLeft;
+    fromLabel.alpha = 1.0;
 #if stockCroppingCheck
     [topNavigationView addSubview:fromLabel];
 #else
-    [self.view addSubview:fromLabel];
+    
+    [UIView transitionWithView:self.view duration:1.0f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+        [self.view addSubview:fromLabel];
+        
+    } completion:NULL];
+    
 #endif
 
 }
@@ -305,8 +293,6 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
         if(!error) {
             BeagleManager *BG=[BeagleManager SharedInstance];
                 BG.placemark=[placemarks objectAtIndex:0];
-                [self addCityName:[BG.placemark.addressDictionary objectForKey:@"City"]];
-
                 [self retrieveLocationAndUpdateBackgroundPhoto];
             }
                 else{
@@ -369,13 +355,18 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
                 [self.timer invalidate];
                 [self crossDissolvePhotos:flickrRequestInfo.photo withTitle:flickrRequestInfo.userInfo];
             }
+        
+        [self addCityName:[BG.placemark.addressDictionary objectForKey:@"City"]];
         }];
+    
     }];
     
     [request setFailedBlock:^{
         NSError *error = [request error];
         NSLog(@"error=%@",[error description]);
     }];
+    
+
     [request startAsynchronous];
     
 }
@@ -391,6 +382,7 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
         bottomNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockBottomImage2];
         
 #else
+        
         UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
         stockImageView.image=photo;
         [stockImageView setContentMode:UIViewContentModeScaleAspectFit];

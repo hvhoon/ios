@@ -59,6 +59,18 @@
     return image;
 }
 
++ (UIColor*)returnBackgroundColor:(NSInteger)colorID {
+    
+    switch (colorID) {
+        case 1:
+            return [UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0];
+                    
+        default:
+            return [UIColor whiteColor];
+    }
+    
+}
+
 + (UIImage*) getSubImageFrom: (UIImage*) img rect: (CGRect) rect {
     
     UIGraphicsBeginImageContext(rect.size);

@@ -51,14 +51,15 @@ enum Weeks {
     return self;
 }
 -(void)viewWillAppear:(BOOL)animated{
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
-
+    
     [self.navigationController setNavigationBarHidden:NO];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
     
 }
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
     bg_activity=[[BeagleActivityClass alloc]init];
     self.optionIndices = [NSMutableIndexSet indexSetWithIndex:1];
     
@@ -138,22 +139,8 @@ enum Weeks {
     
     self.navigationItem.rightBarButtonItem.enabled=NO;
     
-    
-    placeholderLabel = [[UILabel alloc] initWithFrame:CGRectMake(3, 0, descriptionTextView.frame.size.width - 20.0, 34.0)];
-    [placeholderLabel setText:@"Tell us more..."];
-    // placeholderLabel is instance variable retained by view controller
-    [placeholderLabel setBackgroundColor:[UIColor clearColor]];
-    placeholderLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
-    placeholderLabel.textColor=[UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0];
-    
-    descriptionTextView.returnKeyType=UIReturnKeyDone;
-    [descriptionTextView setFont:[UIFont fontWithName:@"HelveticaNeue" size:17.0f]];
-    // textView is UITextView object you want add placeholder text to
-    [descriptionTextView addSubview:placeholderLabel];
-    
     countTextLabel.text= [[NSString alloc] initWithFormat:@"%lu",(unsigned long)140-[descriptionTextView.text length]];
     [descriptionTextView becomeFirstResponder];
-
 
     [timeFilterButton setTitle:@"Next Weekend" forState:UIControlStateNormal];
     [timeFilterButton setTitleColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0] forState:UIControlStateNormal];

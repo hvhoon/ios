@@ -185,8 +185,8 @@ static BGFlickrManager *sharedManager = nil;
                         [self photoSearch];
                     }
                     else {
-                        NSError *error = [NSError errorWithDomain:@kAsyncQueueLabel code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"FlickrManager did not return any photos.", NSLocalizedDescriptionKey, nil]];
-                        self.completionBlock(nil, error);
+                        self.flickrRequestInfo.photo = [UIImage imageNamed:@"defaultLocation"];
+                        self.completionBlock(self.flickrRequestInfo, nil);
                         [self cleanUpFlickrManager];
                     }
                 }
