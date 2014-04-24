@@ -39,7 +39,7 @@
         _internetReachability = [Reachability reachabilityForInternetConnection];
 
 
-        _serverUrl =herokuHost;
+        _serverUrl =localHost;
 
         [self populateErrorCodes];
     }
@@ -200,6 +200,30 @@
         
         [self callServerWithUrl:[NSString stringWithFormat:@"%@joinactivity.json", _serverUrl]
                          method:@"PUT"
+                         params:nil data:postData];
+        
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+}
+
+-(void)postAComment:(NSInteger)activityId desc:(NSString*)desc{
+    _serverCallType = kServerCallPostComment;
+    if([self isInternetAvailable])
+    {
+        
+        NSMutableDictionary* postComment =[[NSMutableDictionary alloc] init];
+        [postComment setObject:[NSNumber numberWithInteger:[[BeagleManager SharedInstance] beaglePlayer].beagleUserId] forKey:@"player_id"];
+        [postComment setObject:[NSNumber numberWithInteger:activityId] forKey:@"activity_id"];
+        [postComment setObject:desc forKey:@"description"];
+        
+        NSData *postData = [[postComment JSONRepresentation] dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
+        
+        
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats.json", _serverUrl]
+                         method:@"POST"
                          params:nil data:postData];
         
     }

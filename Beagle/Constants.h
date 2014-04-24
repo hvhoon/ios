@@ -32,3 +32,4 @@
 #define kTimerIntervalInSeconds 10
 
 #define kParticipantInActivity 12
+#define kInterestChat 13

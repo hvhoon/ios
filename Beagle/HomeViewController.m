@@ -74,6 +74,10 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES];
+    
+    if(self.tableView!=nil){
+        [self.tableView reloadData];
+    }
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
      BeagleManager *BG=[BeagleManager SharedInstance];
     if(BG.activtyCreated){

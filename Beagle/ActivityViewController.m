@@ -392,7 +392,7 @@ enum Weeks {
 			int j = [Temp intValue];
             
 			j = j-1 ;
-			countTextLabel.text= [[NSString alloc] initWithFormat:@"%u",141-[textView.text length]];
+			countTextLabel.text= [[NSString alloc] initWithFormat:@"%lu",141-[textView.text length]];
             
 			return YES;
 		}
@@ -408,7 +408,7 @@ enum Weeks {
 	}
 	if(flag == NO)
 	{
-		countTextLabel.text= [[NSString alloc] initWithFormat:@"%u",140-[descriptionTextView.text length]-1];
+		countTextLabel.text= [[NSString alloc] initWithFormat:@"%lu",140-[descriptionTextView.text length]-1];
 		
 		
 	}

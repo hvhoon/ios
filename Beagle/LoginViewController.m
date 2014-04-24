@@ -28,6 +28,13 @@
     }
     return self;
 }
+
+-(void)viewWillAppear:(BOOL)animated{
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    
+    
+}
+
 -(IBAction)signInUsingFacebookClicked:(id)sender{
     
     [activityIndicatorView setHidden:NO];
@@ -123,6 +130,8 @@
                 id beagleId=[player objectForKey:@"id"];
                 if (beagleId != nil && [beagleId class] != [NSNull class]) {
                   [[[BeagleManager SharedInstance] beaglePlayer]setBeagleUserId:[beagleId integerValue]];
+                    [[BeagleManager SharedInstance] userProfileDataUpdate];
+
                     NSLog(@"beagleId=%ld",(long)[beagleId integerValue]);
                     
                 }
@@ -164,7 +173,6 @@
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     [[BeagleManager SharedInstance] processFacebookProfilePictureData:_data];
-    [[BeagleManager SharedInstance] userProfileDataUpdate];
 }
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {

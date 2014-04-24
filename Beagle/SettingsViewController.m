@@ -69,11 +69,44 @@
 -(void)imageCircular:(UIImage*)image{
     _profileImageView.image=[BeagleUtilities imageCircularBySize:image sqr:52.0f];
 }
+- (IBAction)sliderButtonClicked:(id)sender{
+    NSString *identifier = [NSString stringWithFormat:@"mainScreen"];
+    UIButton *button=(UIButton*)sender;
+    switch (button.tag) {
+        case 2:
+        {
+            identifier=@"homeScreen";
+        }
+            break;
+            
+        case 8:
+        {
+            identifier=@"loginScreen";
+            [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
+            [[NSUserDefaults standardUserDefaults]synchronize];
 
+        }
+            break;
+    }
+    
+    UIViewController *newTopViewController = [self.storyboard instantiateViewControllerWithIdentifier:identifier];
+ 
+        if([identifier isEqualToString:@"homeScreen"]&& [(AppDelegate*)[[UIApplication sharedApplication] delegate]listViewController] != nil){
+            newTopViewController=[(AppDelegate*)[[UIApplication sharedApplication] delegate]listViewController];
+        }
+    
+    [self.slidingViewController anchorTopViewOffScreenTo:ECRight animations:nil onComplete:^{
+        CGRect frame = self.slidingViewController.topViewController.view.frame;
+        self.slidingViewController.topViewController = newTopViewController;
+        self.slidingViewController.topViewController.view.frame = frame;
+        [self.slidingViewController resetTopView];
+    }];
+}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
 
 @end

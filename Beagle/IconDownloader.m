@@ -7,6 +7,7 @@
 //  Copyright (c) 2014 soclivity. All rights reserved.
 //
 #import "IconDownloader.h"
+#import "InterestChatClass.h"
 #import "BeagleActivityClass.h"
 #define kIconHeight 56
 #define kIconWidth 56
@@ -19,6 +20,7 @@
 @synthesize activeDownload;
 @synthesize imageConnection;
 @synthesize tagkey;
+@synthesize chatRecord;
 #pragma mark
 
 
@@ -36,6 +38,20 @@
                 NSURLConnection *conn = [[NSURLConnection alloc] initWithRequest:
                                          [NSURLRequest requestWithURL:
                                           [NSURL URLWithString:appRecord.photoUrl]] delegate:self];
+                self.imageConnection = conn;
+            }
+            
+        }
+            break;
+            
+        case kInterestChat:
+        {
+            if(chatRecord.player_photo_url != nil)
+            {
+                
+                NSURLConnection *conn = [[NSURLConnection alloc] initWithRequest:
+                                         [NSURLRequest requestWithURL:
+                                          [NSURL URLWithString:chatRecord.player_photo_url]] delegate:self];
                 self.imageConnection = conn;
             }
             
@@ -91,7 +107,14 @@
                 
             }
                 break;
-                
+               
+           case kInterestChat:
+           {
+               self.chatRecord.playerImage = image;
+               
+           }
+               break;
+               
         }
 
      self.activeDownload = nil;
