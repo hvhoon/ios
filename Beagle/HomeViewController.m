@@ -399,44 +399,34 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
 
 -(UIView*)renderFilterHeaderView{
     UIView *headerView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 44)];
-    headerView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1.0];
+    headerView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
     
     CGSize size = CGSizeMake(220,999);
     
-    /// Make a copy of the default paragraph style
-    NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-    /// Set line break mode
-    paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
-    /// Set text alignment
-    paragraphStyle.alignment = NSTextAlignmentLeft;
+    NSString* filterText = @"What's Happening Around You?";
     
-    
-    CGRect textRect = [@"Happening Around You"
+    CGRect textRect = [filterText
                        boundingRectWithSize:size
                        options:NSStringDrawingUsesLineFragmentOrigin
-                       attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:1.0],NSParagraphStyleAttributeName: paragraphStyle, }
+                       attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0]}
                        context:nil];
-
-    UILabel *activityFilterLabel = [[UILabel alloc]initWithFrame:CGRectMake(16,15, textRect.size.width, textRect.size.height)];
-    activityFilterLabel.text = @"Happening Around You";
+    
+    UILabel *activityFilterLabel = [[UILabel alloc]initWithFrame:CGRectMake(16, 0, textRect.size.width, 44)];
+    activityFilterLabel.text = @"What's Happening Around You?";
     activityFilterLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0];
-    activityFilterLabel.numberOfLines = 1;
-    activityFilterLabel.baselineAdjustment = UIBaselineAdjustmentAlignBaselines;
-    activityFilterLabel.adjustsFontSizeToFitWidth = YES;
-    activityFilterLabel.adjustsFontSizeToFitWidth = YES;
-    activityFilterLabel.clipsToBounds = YES;
     activityFilterLabel.backgroundColor = [UIColor clearColor];
     activityFilterLabel.textAlignment = NSTextAlignmentLeft;
+
     [headerView addSubview:activityFilterLabel];
     
     UIImageView *filterImageView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Filter"]];
-    filterImageView.frame=CGRectMake(16+textRect.size.width+10,20, 15, 8);
+    filterImageView.frame=CGRectMake(16+10+textRect.size.width, 19, 15, 8);
     [headerView addSubview:filterImageView];
     
     UIButton *searchButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [searchButton addTarget:self action:@selector(searchIconClicked:)forControlEvents:UIControlEventTouchUpInside];
     [searchButton setBackgroundImage:[UIImage imageNamed:@"Search"] forState:UIControlStateNormal];
-    searchButton.frame = CGRectMake(285.0, 12.0, 19.0, 19.0);
+    searchButton.frame = CGRectMake(285, 12, 19, 19);
     [headerView addSubview:searchButton];
 
     return headerView;
