@@ -18,5 +18,5 @@
 +(NSString*)activityTime:(NSString*)startDate endate:(NSString*)endDate;
 +(UIImage*)imageCircularBySize:(UIImage*)image sqr:(CGFloat)sqr;
 +(NSString *)calculateChatTimestamp:(NSString *)timeString;
-+(UIColor*)returnBackgroundColor:(NSInteger)colorID;
++(UIColor*)returnBeagleColor:(NSInteger)colorID;
 @end
