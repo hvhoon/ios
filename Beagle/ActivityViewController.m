@@ -80,63 +80,12 @@ enum Weeks {
         [self imageCircular:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
     }
     
-//    NSArray* fontNames = [UIFont fontNamesForFamilyName:@"Helvetica Neue"];
-//    for( NSString* aFontName in fontNames ) {
-//        NSLog( @"Font name: %@", aFontName );
-//    }
-    [self.navigationController.navigationBar setTintColor:[UIColor colorWithRed:248.0/255.0 green:248.0/255.0 blue:248.0/255.0 alpha:1.0]];
-    UIButton *cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    cancelButton.frame = CGRectMake(0, 0, 30, 30);
-    [cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
-    [cancelButton addTarget:self action:@selector(cancelButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
 
-    CGSize constrainedSize = CGSizeMake(320, 9999);
-    
-    NSDictionary *attributesDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-                                          [UIFont fontWithName:@"HelveticaNeue-Light" size:17.0], NSFontAttributeName,[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
-                                          nil];
-    
-    NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:@"Cancel" attributes:attributesDictionary];
-    
-    CGRect requiredHeight = [string boundingRectWithSize:constrainedSize options:NSStringDrawingUsesLineFragmentOrigin context:nil];
-    
-    if (requiredHeight.size.width > 320) {
-        requiredHeight = CGRectMake(0,0, 320, requiredHeight.size.height);
-    }
-    CGRect newFrame = cancelButton.frame;
-    newFrame.size.height = requiredHeight.size.height;
-    newFrame.size.width = requiredHeight.size.width;
-    cancelButton.frame=newFrame;
-    [cancelButton setTitleColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0] forState:UIControlStateNormal];
-    cancelButton.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Light" size:17.0];
-    self.navigationItem.leftBarButtonItem =[[UIBarButtonItem alloc] initWithCustomView:cancelButton];
-    
-    
-    UIButton *createButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    createButton.frame = CGRectMake(0, 0, 30, 30);
-    [createButton setTitle:@"Create" forState:UIControlStateNormal];
-    [createButton addTarget:self action:@selector(createButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
-    
-    
-    attributesDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-                                          [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f], NSFontAttributeName,[UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
-                                          nil];
-    
-    string = [[NSMutableAttributedString alloc] initWithString:@"Create" attributes:attributesDictionary];
-    
-     requiredHeight = [string boundingRectWithSize:constrainedSize options:NSStringDrawingUsesLineFragmentOrigin context:nil];
-    
-    if (requiredHeight.size.width > 320) {
-        requiredHeight = CGRectMake(0,0, 320, requiredHeight.size.height);
-    }
-    newFrame = createButton.frame;
-    newFrame.size.height = requiredHeight.size.height;
-    newFrame.size.width = requiredHeight.size.width;
-    createButton.frame=newFrame;
-    [createButton setTitleColor:[UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0] forState:UIControlStateNormal];
-    createButton.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f];
-    self.navigationItem.rightBarButtonItem =[[UIBarButtonItem alloc] initWithCustomView:createButton];
-    
+    [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:248.0/255.0 green:248.0/255.0 blue:248.0/255.0 alpha:1.0]];
+    [self.navigationController.navigationBar setTintColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0]];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(cancelButtonClicked:)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Create" style:UIBarButtonItemStyleDone target:self action:@selector(createButtonClicked:)];
+    [self.navigationItem.rightBarButtonItem setTintColor:[UIColor darkGrayColor]];
     self.navigationItem.rightBarButtonItem.enabled=NO;
     
     countTextLabel.text= [[NSString alloc] initWithFormat:@"%lu",(unsigned long)140-[descriptionTextView.text length]];
@@ -295,65 +244,14 @@ enum Weeks {
 
 -(void)textViewDidChange:(UITextView *)textView{
     
-    if(![textView hasText]) {
-        placeholderLabel.hidden = NO;
-    }
-    else{
-        placeholderLabel.hidden = YES;
-    }
-    CGSize constrainedSize = CGSizeMake(320, 9999);
-    UIButton *createButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    createButton.frame = CGRectMake(0, 0, 30, 30);
-    [createButton setTitle:@"Create" forState:UIControlStateNormal];
-    [createButton addTarget:self action:@selector(createButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
-    
     if([[textView text]length]!=0){
         
-        
-        NSDictionary *attributesDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-                                              [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f], NSFontAttributeName,[UIColor colorWithRed:0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
-                                              nil];
-        
-        NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:@"Create" attributes:attributesDictionary];
-        
-        CGRect requiredHeight = [string boundingRectWithSize:constrainedSize options:NSStringDrawingUsesLineFragmentOrigin context:nil];
-        
-        if (requiredHeight.size.width > 320) {
-            requiredHeight = CGRectMake(0,0, 320, requiredHeight.size.height);
-        }
-        CGRect newFrame = createButton.frame;
-        newFrame.size.height = requiredHeight.size.height;
-        newFrame.size.width = requiredHeight.size.width;
-        createButton.frame=newFrame;
-        [createButton setTitleColor:[UIColor colorWithRed:0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0] forState:UIControlStateNormal];
-        createButton.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f];
-        self.navigationItem.rightBarButtonItem =[[UIBarButtonItem alloc] initWithCustomView:createButton];
+        [self.navigationItem.rightBarButtonItem setTintColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0]];
         self.navigationItem.rightBarButtonItem.enabled=YES;
-        
-        
     }
-    else{
-        NSDictionary *attributesDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-                                              [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f], NSFontAttributeName,[UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
-                                              nil];
-        
-        NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:@"Create" attributes:attributesDictionary];
-        
-        CGRect requiredHeight = [string boundingRectWithSize:constrainedSize options:NSStringDrawingUsesLineFragmentOrigin context:nil];
-        
-        if (requiredHeight.size.width > 320) {
-            requiredHeight = CGRectMake(0,0, 320, requiredHeight.size.height);
-        }
-        CGRect  newFrame = createButton.frame;
-        newFrame.size.height = requiredHeight.size.height;
-        newFrame.size.width = requiredHeight.size.width;
-        createButton.frame=newFrame;
-        [createButton setTitleColor:[UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0] forState:UIControlStateNormal];
-        createButton.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f];
-        self.navigationItem.rightBarButtonItem =[[UIBarButtonItem alloc] initWithCustomView:createButton];
+    else {
+        [self.navigationItem.rightBarButtonItem setTintColor:[UIColor darkGrayColor]];
         self.navigationItem.rightBarButtonItem.enabled=NO;
-        
-        
     }
 
 }
@@ -379,7 +277,7 @@ enum Weeks {
 			int j = [Temp intValue];
             
 			j = j-1 ;
-			countTextLabel.text= [[NSString alloc] initWithFormat:@"%u",141-[textView.text length]];
+			countTextLabel.text= [[NSString alloc] initWithFormat:@"%lu",141-[textView.text length]];
             
 			return YES;
 		}
