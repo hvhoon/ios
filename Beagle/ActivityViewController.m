@@ -92,27 +92,27 @@ enum Weeks {
     [descriptionTextView becomeFirstResponder];
 
     [timeFilterButton setTitle:@"Next Weekend" forState:UIControlStateNormal];
-    [timeFilterButton setTitleColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0] forState:UIControlStateNormal];
-    [timeFilterButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:17.0]];
-    [timeFilterButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
+    //[timeFilterButton setTitleColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0] forState:UIControlStateNormal];
+    //[timeFilterButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:17.0]];
+    //[timeFilterButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
     
     [visibilityFilterButton setTitle:@"Friends Only" forState:UIControlStateNormal];
-    [visibilityFilterButton setTitleColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0] forState:UIControlStateNormal];
-    [visibilityFilterButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:17.0]];
-    [visibilityFilterButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
+    //[visibilityFilterButton setTitleColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0] forState:UIControlStateNormal];
+    //[visibilityFilterButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:17.0]];
+    //[visibilityFilterButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
 
     NSString *locationFilter=[NSString stringWithFormat:@"%@, %@",[[[BeagleManager SharedInstance]placemark].addressDictionary objectForKey:@"City"],[[BeagleManager SharedInstance]placemark].administrativeArea];
     [locationFilterButton setTitle:locationFilter forState:UIControlStateNormal];
-    [locationFilterButton setTitleColor:[UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1.0] forState:UIControlStateNormal];
-    [locationFilterButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:17.0]];
-    [locationFilterButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
-   locationFilterButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+    //[locationFilterButton setTitleColor:[UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1.0] forState:UIControlStateNormal];
+    //[locationFilterButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:17.0]];
+    //[locationFilterButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
+   //locationFilterButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     
-    backgroundView.backgroundColor=[UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0];
+    //backgroundView.backgroundColor=[UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0];
     
     [countTextLabel setTextAlignment:NSTextAlignmentRight];
-    [countTextLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:17.0]];
-    [countTextLabel setTextColor:[UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1.0]];
+    //[countTextLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:17.0]];
+    //[countTextLabel setTextColor:[UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1.0]];
     
 
 	// Do any additional setup after loading the view.
