@@ -169,10 +169,10 @@
 
     
 #if stockCroppingCheck
-    settingsButton.frame = CGRectMake(16.0, 78.0, 20.0, 13.0);
+    settingsButton.frame = CGRectMake(0, 38, 65, 65);
     [bottomNavigationView addSubview:eventButton];
 #else
-    settingsButton.frame = CGRectMake(16.0, 142.0, 20.0, 13.0);
+    settingsButton.frame = CGRectMake(0, 102, 65, 65);
     [self.view addSubview:settingsButton];
 #endif
 
@@ -183,10 +183,10 @@
 
     
 #if stockCroppingCheck
-    notificationsButton.frame = CGRectMake(287.0, 72.0, 17.0, 19.0);
+    notificationsButton.frame = CGRectMake(255, 38, 65, 65);
     [bottomNavigationView addSubview:notificationsButton];
 #else
-    notificationsButton.frame = CGRectMake(287.0, 136.0, 17.0, 19.0);
+    notificationsButton.frame = CGRectMake(255, 102, 65, 65);
     [self.view addSubview:notificationsButton];
 #endif
     
