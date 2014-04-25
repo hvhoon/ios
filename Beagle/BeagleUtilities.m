@@ -59,6 +59,39 @@
     return image;
 }
 
++ (UIColor*)returnBeagleColor:(NSInteger)colorID {
+    
+    switch (colorID) {
+        
+        // This is the brilliant blue highlights
+        case 1:
+            return [UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0];
+        
+        // This is the light gray screen which is the back of most screens
+        case 2:
+            return [UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1.0];
+        
+        // This is the darker gray back of the settings screen and some text
+        case 3:
+            return [UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0];
+        
+        // This is the dark gray used for text
+        case 4:
+            return [UIColor colorWithRed:75.0/255.0 green:75.0/255.0 blue:75.0/255.0 alpha:1.0];
+        
+        // This is the background for the comments section
+        case 5:
+            return [UIColor colorWithRed:230.0/255.0 green:240.0/255.0 blue:255.0/255.0 alpha:1.0];
+        case 6:
+            return [UIColor colorWithRed:178.0/255.0 green:178.0/255.0 blue:178.0/255.0 alpha:1.0];
+        case 7:
+            return [UIColor colorWithRed:88.0/255.0 green:89.0/255.0 blue:91.0/255.0 alpha:1.0];
+        default:
+            return [UIColor whiteColor];
+    }
+    
+}
+
 + (UIImage*) getSubImageFrom: (UIImage*) img rect: (CGRect) rect {
     
     UIGraphicsBeginImageContext(rect.size);

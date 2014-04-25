@@ -18,6 +18,7 @@
 #import "BeagleActivityClass.h"
 #import "IconDownloader.h"
 #import "DetailInterestViewController.h"
+#import "BeagleUtilities.h"
 #define REFRESH_HEADER_HEIGHT 50.0f
 #define stockCroppingCheck 0
 #define kTimerIntervalInSeconds 10
@@ -79,6 +80,7 @@
         [self.tableView reloadData];
     }
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
      BeagleManager *BG=[BeagleManager SharedInstance];
     if(BG.activtyCreated){
         isPushAuto=TRUE;
@@ -122,7 +124,7 @@
     
     UIImage *stockBottomImage1=[BeagleUtilities imageByCropping:[UIImage imageNamed:@"defaultLocation"] toRect:CGRectMake(0, 0, 320, 64) withOrientation:UIImageOrientationDownMirrored];
     topNavigationView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 64)];
-    topNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockBottomImage1];
+    topNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockBottomImage2]
     [self.view addSubview:topNavigationView];
     
     // Adding a gradient to the top navigation bar so that the image is more visible
@@ -137,26 +139,23 @@
 
 #else
     UIImageView *stockImageView= [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 320, 167)];
-    stockImageView.image=[UIImage imageNamed:@"defaultLocation"];
+    stockImageView.backgroundColor = [UIColor grayColor];
     stockImageView.tag=3456;
     [self.view addSubview:stockImageView];
     
     UIImageView *topGradient=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"gradient"]];
     topGradient.frame = CGRectMake(0, 0, 320, 64);
-    [self.view addSubview:topGradient];
+    [stockImageView addSubview:topGradient];
     
 #endif
 
-    [self addCityName:@"New York"];
+    [self addCityName:@"Hello"];
     UIButton *eventButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [eventButton setBackgroundImage:[UIImage imageNamed:@"add"] forState:UIControlStateNormal];
+    
     [eventButton addTarget:self action:@selector(createANewActivity:)forControlEvents:UIControlEventTouchUpInside];
-    [eventButton setTitle:@"+" forState:UIControlStateNormal];
-    [eventButton setTitleColor:[UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1.0] forState:UIControlStateNormal];
-    eventButton.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Light" size:60.0f];
-    [eventButton.titleLabel setTextAlignment:NSTextAlignmentRight];
-    eventButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
 
-    eventButton.frame = CGRectMake(244.0, 4.0, 60.0, 60.0);
+    eventButton.frame = CGRectMake(251.0, 20.0, 69.0, 44.0);
     
 #if stockCroppingCheck
     [topNavigationView addSubview:eventButton];
@@ -170,10 +169,10 @@
 
     
 #if stockCroppingCheck
-    settingsButton.frame = CGRectMake(16.0, 78.0, 20.0, 13.0);
+    settingsButton.frame = CGRectMake(0, 38, 65, 65);
     [bottomNavigationView addSubview:eventButton];
 #else
-    settingsButton.frame = CGRectMake(16.0, 142.0, 20.0, 13.0);
+    settingsButton.frame = CGRectMake(0, 102, 65, 65);
     [self.view addSubview:settingsButton];
 #endif
 
@@ -184,10 +183,10 @@
 
     
 #if stockCroppingCheck
-    notificationsButton.frame = CGRectMake(287.0, 72.0, 17.0, 19.0);
+    notificationsButton.frame = CGRectMake(255, 38, 65, 65);
     [bottomNavigationView addSubview:notificationsButton];
 #else
-    notificationsButton.frame = CGRectMake(287.0, 136.0, 17.0, 19.0);
+    notificationsButton.frame = CGRectMake(255, 102, 65, 65);
     [self.view addSubview:notificationsButton];
 #endif
     
@@ -202,7 +201,7 @@
     [self.view addSubview:filterView];
 #endif
     
-self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1.0];
+self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
     
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 
@@ -240,39 +239,28 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
     if(textLabel!=nil){
         [textLabel removeFromSuperview];
     }
-    CGSize size = CGSizeMake(180,999);
     
-    /// Make a copy of the default paragraph style
-    NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-    /// Set line break mode
-    paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
-    /// Set text alignment
-    paragraphStyle.alignment = NSTextAlignmentLeft;
+    UILabel *fromLabel = [[UILabel alloc]initWithFrame:CGRectMake(16, 20, 251, 44)];
     
-    
-    CGRect textRect = [name
-                       boundingRectWithSize:size
-                       options:NSStringDrawingUsesLineFragmentOrigin
-                       attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Light" size:30.0],NSForegroundColorAttributeName:[UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:0.95],NSParagraphStyleAttributeName: paragraphStyle, }
-                       context:nil];
-    
-    
-    UILabel *fromLabel = [[UILabel alloc]initWithFrame:CGRectMake(16,22, textRect.size.width, textRect.size.height)];
     fromLabel.text = name;
     fromLabel.tag=1234;
     fromLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:30.0];
     fromLabel.numberOfLines = 1;
-    fromLabel.baselineAdjustment = UIBaselineAdjustmentAlignBaselines;
-    fromLabel.adjustsFontSizeToFitWidth = YES;
-    fromLabel.adjustsFontSizeToFitWidth = YES;
+    fromLabel.adjustsFontSizeToFitWidth = NO;
     fromLabel.clipsToBounds = YES;
     fromLabel.backgroundColor = [UIColor clearColor];
-    fromLabel.textColor = [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:0.95];
+    fromLabel.textColor = [UIColor whiteColor];
     fromLabel.textAlignment = NSTextAlignmentLeft;
+    fromLabel.alpha = 1.0;
 #if stockCroppingCheck
     [topNavigationView addSubview:fromLabel];
 #else
-    [self.view addSubview:fromLabel];
+    
+    [UIView transitionWithView:self.view duration:1.0f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+        [self.view addSubview:fromLabel];
+        
+    } completion:NULL];
+    
 #endif
 
 }
@@ -309,8 +297,6 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
         if(!error) {
             BeagleManager *BG=[BeagleManager SharedInstance];
                 BG.placemark=[placemarks objectAtIndex:0];
-                [self addCityName:[BG.placemark.addressDictionary objectForKey:@"City"]];
-
                 [self retrieveLocationAndUpdateBackgroundPhoto];
             }
                 else{
@@ -373,13 +359,18 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
                 [self.timer invalidate];
                 [self crossDissolvePhotos:flickrRequestInfo.photo withTitle:flickrRequestInfo.userInfo];
             }
+        
+        [self addCityName:[BG.placemark.addressDictionary objectForKey:@"City"]];
         }];
+    
     }];
     
     [request setFailedBlock:^{
         NSError *error = [request error];
         NSLog(@"error=%@",[error description]);
     }];
+    
+
     [request startAsynchronous];
     
 }
@@ -395,6 +386,7 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
         bottomNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockBottomImage2];
         
 #else
+        
         UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
         stockImageView.image=photo;
         [stockImageView setContentMode:UIViewContentModeScaleAspectFit];
@@ -407,44 +399,34 @@ self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255
 
 -(UIView*)renderFilterHeaderView{
     UIView *headerView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 44)];
-    headerView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1.0];
+    headerView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
     
     CGSize size = CGSizeMake(220,999);
     
-    /// Make a copy of the default paragraph style
-    NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-    /// Set line break mode
-    paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
-    /// Set text alignment
-    paragraphStyle.alignment = NSTextAlignmentLeft;
+    NSString* filterText = @"What's Happening Around You?";
     
-    
-    CGRect textRect = [@"Happening Around You"
+    CGRect textRect = [filterText
                        boundingRectWithSize:size
                        options:NSStringDrawingUsesLineFragmentOrigin
-                       attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:1.0],NSParagraphStyleAttributeName: paragraphStyle, }
+                       attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0]}
                        context:nil];
-
-    UILabel *activityFilterLabel = [[UILabel alloc]initWithFrame:CGRectMake(16,15, textRect.size.width, textRect.size.height)];
-    activityFilterLabel.text = @"Happening Around You";
+    
+    UILabel *activityFilterLabel = [[UILabel alloc]initWithFrame:CGRectMake(16, 0, textRect.size.width, 44)];
+    activityFilterLabel.text = @"What's Happening Around You?";
     activityFilterLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0];
-    activityFilterLabel.numberOfLines = 1;
-    activityFilterLabel.baselineAdjustment = UIBaselineAdjustmentAlignBaselines;
-    activityFilterLabel.adjustsFontSizeToFitWidth = YES;
-    activityFilterLabel.adjustsFontSizeToFitWidth = YES;
-    activityFilterLabel.clipsToBounds = YES;
     activityFilterLabel.backgroundColor = [UIColor clearColor];
     activityFilterLabel.textAlignment = NSTextAlignmentLeft;
+
     [headerView addSubview:activityFilterLabel];
     
     UIImageView *filterImageView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Filter"]];
-    filterImageView.frame=CGRectMake(16+textRect.size.width+10,20, 15, 8);
+    filterImageView.frame=CGRectMake(16+10+textRect.size.width, 19, 15, 8);
     [headerView addSubview:filterImageView];
     
     UIButton *searchButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [searchButton addTarget:self action:@selector(searchIconClicked:)forControlEvents:UIControlEventTouchUpInside];
     [searchButton setBackgroundImage:[UIImage imageNamed:@"Search"] forState:UIControlStateNormal];
-    searchButton.frame = CGRectMake(285.0, 12.0, 19.0, 19.0);
+    searchButton.frame = CGRectMake(285, 12, 19, 19);
     [headerView addSubview:searchButton];
 
     return headerView;

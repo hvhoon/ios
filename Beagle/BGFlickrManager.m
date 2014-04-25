@@ -100,9 +100,9 @@ static BGFlickrManager *sharedManager = nil;
         tags = [tags stringByAppendingString:BG.timeOfDay];
         searchTypePrint = @"Full";
     }
-    else if (self.currentSearchType == weatherLocationOnly) {
-        tags = BG.weatherCondition;
-        searchTypePrint = @"Weather and Location only";
+    else if (self.currentSearchType == timeLocationOnly) {
+        tags = BG.timeOfDay;
+        searchTypePrint = @"Time and Location only";
     }
     else
         tags = @"";
@@ -119,17 +119,15 @@ static BGFlickrManager *sharedManager = nil;
     NSError *error = [NSError errorWithDomain:@kAsyncQueueLabel code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"FlickrManager timeout. No photos returned.", NSLocalizedDescriptionKey, nil]];
     
     self.completionBlock(nil, error);
-    
     [self cleanUpFlickrManager];
 }
 
 - (void) cleanUpFlickrManager {
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(stopFlickrManager:) object:nil];
     [self.flickrRequest cancel];
-    
-    self.currentSearchType = fullSearch;
     self.isRunning = false;
     self.found = false;
+    self.currentSearchType = fullSearch;
 }
 
 - (void)flickrAPIRequest:(OFFlickrAPIRequest *)inRequest didCompleteWithResponse:(NSDictionary *)inResponseDictionary {
@@ -141,84 +139,59 @@ static BGFlickrManager *sharedManager = nil;
         
         NSArray *photos = [inResponseDictionary valueForKeyPath:@"photos.photo"];
                 
-        int numberOfPhotos = (int)[photos count] - 1;
+        int numberOfPhotos = (int)[photos count];
+        NSLog(@"Number of photos = %d", numberOfPhotos);
         
-        // Did we get any photos back?
-        if(numberOfPhotos >=0) {
-            
-            dispatch_queue_t queue = dispatch_queue_create(kAsyncQueueLabel, NULL);
-            dispatch_queue_t main = dispatch_get_main_queue();
-            
-            dispatch_async(queue, ^{
-                
-                for (int itr=0; !self.found && itr < numberOfPhotos; itr++)
-                {
-                    int randomPhotoIndex = [BeagleUtilities getRandomIntBetweenLow:0 andHigh:numberOfPhotos];
-                    NSDictionary *photoDict = [photos objectAtIndex:randomPhotoIndex];
+        dispatch_queue_t queue = dispatch_queue_create(kAsyncQueueLabel, NULL);
+        dispatch_async(queue, ^{
+        
+            // Process if we got photos back
+            for (int itr=0; !self.found && itr < numberOfPhotos; itr++)
+            {
+                int randomPhotoIndex = [BeagleUtilities getRandomIntBetweenLow:0 andHigh:numberOfPhotos-1];
+                NSDictionary *photoDict = [photos objectAtIndex:randomPhotoIndex];
 
-                    NSURL *photoURL = [self.flickrContext photoSourceURLFromDictionary:photoDict size:OFFlickrMedium640Size];
-                    NSLog(@"photoUrl=%@",photoURL);
+                NSURL *photoURL = [self.flickrContext photoSourceURLFromDictionary:photoDict size:OFFlickrMedium640Size];
+                NSLog(@"photoUrl=%@",photoURL);
+                
+                self.flickrRequestInfo.photo = [UIImage imageWithData:UIImageJPEGRepresentation([UIImage imageWithData:[NSData dataWithContentsOfURL:photoURL]], 1)];
+                        
+                // Scale the image appropriately
+                self.flickrRequestInfo.photo=[UIImage imageWithCGImage:[self.flickrRequestInfo.photo CGImage] scale:2.0 orientation:UIImageOrientationUp];
                     
-                    self.flickrRequestInfo.userPhotoWebPageURL = [self.flickrContext photoWebPageURLFromDictionary:photoDict];
-                    self.flickrRequestInfo.photo = [UIImage imageWithData:UIImageJPEGRepresentation([UIImage imageWithData:[NSData dataWithContentsOfURL:photoURL]], 1)];
-                    
-                    // Scale the image appropriately
-                    self.flickrRequestInfo.photo=[UIImage imageWithCGImage:[self.flickrRequestInfo.photo CGImage] scale:2.0 orientation:UIImageOrientationUp];
-                    
-                    // You've got the image of the right dimensions
-                    if (self.flickrRequestInfo.photo.size.width == 320 && self.flickrRequestInfo.photo.size.width > self.flickrRequestInfo.photo.size.height)
-                        self.found = true;
-                    
-                    // Setting the image correctly if it's found
-                    if(self.found) {
-                        float height=self.flickrRequestInfo.photo.size.height-167.0;
-                        if(height>0) {
-                            UIImage *locationImage=[BeagleUtilities imageByCropping:self.flickrRequestInfo.photo toRect:CGRectMake(0, height/2, 320, 167) withOrientation:UIImageOrientationDownMirrored];
-                            self.flickrRequestInfo.photo=locationImage;
-                        }
-                        // return back to the main thread with the new image
-                        dispatch_async(main, ^{
-                            self.completionBlock(self.flickrRequestInfo, nil);
-                            [self cleanUpFlickrManager];
-                        });
+                // You've got the image of the right dimensions
+                if (self.flickrRequestInfo.photo.size.width == 320 && self.flickrRequestInfo.photo.size.width > self.flickrRequestInfo.photo.size.height) {
+                    self.found = true;
+                    float height=self.flickrRequestInfo.photo.size.height-167.0;
+                    if(height>0) {
+                        UIImage *locationImage=[BeagleUtilities imageByCropping:self.flickrRequestInfo.photo toRect:CGRectMake(0, height/2, 320, 167) withOrientation:UIImageOrientationDownMirrored];
+                        self.flickrRequestInfo.photo=locationImage;
                     }
                 }
-            
-                // If no landscape images were found then let's try again with a different search
-                if (!self.found) {
+            }
+            // Deal with the results and join to the main branch
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if(self.found) {
+                    self.completionBlock(self.flickrRequestInfo, nil);
+                    [self cleanUpFlickrManager];
+                }
+                else {
                     if (self.currentSearchType == fullSearch) {
-                        self.currentSearchType = weatherLocationOnly;
+                        self.currentSearchType = timeLocationOnly;
                         [self photoSearch];
                     }
-                    else if (self.currentSearchType == weatherLocationOnly) {
+                    else if (self.currentSearchType == timeLocationOnly) {
                         self.currentSearchType = locationOnly;
                         [self photoSearch];
                     }
                     else {
-                        NSError *error = [NSError errorWithDomain:@kAsyncQueueLabel code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"FlickrManager did not return any photos.", NSLocalizedDescriptionKey, nil]];
-                        self.completionBlock(nil, error);
+                        self.flickrRequestInfo.photo = [UIImage imageNamed:@"defaultLocation"];
+                        self.completionBlock(self.flickrRequestInfo, nil);
                         [self cleanUpFlickrManager];
                     }
                 }
-            }); // end the async block
-        }
-
-        // If no images were returned at all
-        else {
-            if (self.currentSearchType == fullSearch) {
-                self.currentSearchType = weatherLocationOnly;
-                [self photoSearch];
-            }
-            else if (self.currentSearchType == weatherLocationOnly) {
-                self.currentSearchType = locationOnly;
-                [self photoSearch];
-            }
-            else {
-                NSError *error = [NSError errorWithDomain:@kAsyncQueueLabel code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"FlickrManager did not return any photos.", NSLocalizedDescriptionKey, nil]];
-                self.completionBlock(nil, error);
-                [self cleanUpFlickrManager];
-            }
-        }
+            });
+        }); // end of the async block
     }
 
     // Upon completion of the Flickr API request for a place id

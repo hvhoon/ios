@@ -19,7 +19,7 @@
 
 typedef enum {
     fullSearch,
-    weatherLocationOnly,
+    timeLocationOnly,
     locationOnly,
 } searchType;
 
