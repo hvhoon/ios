@@ -88,6 +88,7 @@ static NSString * const CellIdentifier = @"cell";
     self.detailedInterestTableView.delegate = self;
     self.detailedInterestTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth
     |UIViewAutoresizingFlexibleHeight;
+    [self.detailedInterestTableView setBackgroundColor:[UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1.0]];
 
 //    [self.detailedInterestTableView registerClass:[UITableViewCell class]
 //                           forCellReuseIdentifier:CellIdentifier];
@@ -439,10 +440,6 @@ static NSString * const CellIdentifier = @"cell";
         }else{
             variance=72+textRect.size.height+16+17+55;
         }
-//        if([self.chatPostsArray count]==0){
-//            variance=variance+self.view.frame.size.height-(variance+16+18+16)-44-64;
-//            
-//        }
 
         return variance+52.0f;
     }else{
@@ -790,12 +787,6 @@ static NSString * const CellIdentifier = @"cell";
         _backgroundView.frame=CGRectMake(0, 8, 320, variance+16+18+16);
         [cell.contentView addSubview:_backgroundView];
         
-//        if([self.chatPostsArray count]==0){
-//            UIView *seperatorLineView=[[UIView alloc]initWithFrame:CGRectMake(0, 8+variance+16+18+16, 320, self.view.frame.size.height-variance+16+18+16-44-64)];
-//            [seperatorLineView setBackgroundColor:[UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1.0]];
-//            [cell.contentView addSubview:seperatorLineView];
-//
-//        }
     
     return cell;
 
