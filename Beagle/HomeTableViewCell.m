@@ -88,18 +88,14 @@ static UIFont *thirdTextFont = nil;
                               attributes:attrs
                                  context:nil].size;
     
-    [bg_activity.organizerName drawInRect:CGRectMake(76,
-                                          52.5-organizerNameSize.height,
-                                          organizerNameSize.width, organizerNameSize.height) withAttributes:attrs];
+    [bg_activity.organizerName drawInRect:CGRectMake(75, 55.5-organizerNameSize.height, organizerNameSize.width, organizerNameSize.height) withAttributes:attrs];
     
     if(bg_activity.dosRelation!=0){
-        
-    if(bg_activity.dosRelation==1){
-        [[UIImage imageNamed:@"DOS2"] drawInRect:CGRectMake(76+10+organizerNameSize.width, 52.5-15, 27, 15)];
-    }else{
-        [[UIImage imageNamed:@"DOS3"] drawInRect:CGRectMake(76+10+organizerNameSize.width, 52.5-15, 27, 15)];
-        
-    }
+        if(bg_activity.dosRelation==1) {
+            [[UIImage imageNamed:@"DOS2"] drawInRect:CGRectMake(75+8+organizerNameSize.width, 38.5, 27, 15)];
+        }else {
+            [[UIImage imageNamed:@"DOS3"] drawInRect:CGRectMake(75+8+organizerNameSize.width, 38.5, 32, 15)];
+        }
     }
     attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                              firstTextFont, NSFontAttributeName,

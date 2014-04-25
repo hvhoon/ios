@@ -201,7 +201,7 @@
     [self.view addSubview:filterView];
 #endif
     
-self.tableView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1.0];
+self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
     
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 
