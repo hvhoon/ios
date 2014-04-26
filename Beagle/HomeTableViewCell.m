@@ -60,7 +60,7 @@ static UIFont *forthTextFont = nil;
     fromTheTop = 8; // top spacing
     
     //Draw the scaled and cropped image
-    CGRect thisRect = CGRectMake(16, fromTheTop, 52.5, 52.5);
+    CGRect thisRect = CGRectMake(16, fromTheTop, 50, 50);
     [newImage drawInRect:thisRect];
 
     
@@ -243,7 +243,7 @@ static UIFont *forthTextFont = nil;
         [[UIImage imageNamed:@"Add-Comment"] drawInRect:CGRectMake(304-21, fromTheTop, 21, 18)];
     
     fromTheTop = fromTheTop+16;
-    fromTheTop = fromTheTop+9;
+    fromTheTop = fromTheTop+10;
     
     // Drawing the card seperator
     CGRect stripRect = {0, fromTheTop, 320, 8};
