@@ -401,7 +401,7 @@
     
     CGSize size = CGSizeMake(220,999);
     
-    NSString* filterText = @"What's Happening Around You?";
+    NSString* filterText = @"Happening Around You";
     
     CGRect textRect = [filterText
                        boundingRectWithSize:size
@@ -410,7 +410,7 @@
                        context:nil];
     
     UILabel *activityFilterLabel = [[UILabel alloc]initWithFrame:CGRectMake(16, 0, textRect.size.width, 44)];
-    activityFilterLabel.text = @"What's Happening Around You?";
+    activityFilterLabel.text = @"Happening Around You";
     activityFilterLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0];
     activityFilterLabel.backgroundColor = [UIColor clearColor];
     activityFilterLabel.textAlignment = NSTextAlignmentLeft;
@@ -456,13 +456,13 @@
     CGSize maximumLabelSize = CGSizeMake(288,999);
     
     CGRect textRect = [play.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
-                                                     attributes:attrs
-                                                        context:nil];
-
-    if(indexPath.row==[self.tableData count]-1){
-        return 174.0f+textRect.size.height;
-    }
-    return 182.0f+textRect.size.height;
+                                                     attributes:attrs context:nil];
+    
+    // If there are no participants, reduce the size of the card
+    if (play.participantsCount==0) return 142.0f+textRect.size.height;
+    
+    return 177.0f+textRect.size.height;
+    
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *CellIdentifier = @"MediaTableCell";
