@@ -149,11 +149,6 @@
                         NSLog(@"Failed to download picture");
                     }
                 }
-                
-            
-                
-                
-                
         }
         }
         
