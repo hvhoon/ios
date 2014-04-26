@@ -19,7 +19,7 @@
 #import "IconDownloader.h"
 #import "DetailInterestViewController.h"
 #import "BeagleUtilities.h"
-#define REFRESH_HEADER_HEIGHT 50.0f
+#define REFRESH_HEADER_HEIGHT 70.0f
 #define stockCroppingCheck 0
 #define kTimerIntervalInSeconds 10
 
@@ -201,20 +201,18 @@
     [self.view addSubview:filterView];
 #endif
     
-self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
-    
+    self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-
+    
+    UITableViewController *tableViewController = [[UITableViewController alloc] init];
+    tableViewController.tableView = self.tableView;
+    
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
-    [self.tableView addSubview:self.refreshControl];
-    
+    tableViewController.refreshControl = self.refreshControl;
     
     if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
-        
         [self refresh:self.refreshControl];
-        
-        
     }
     else{
         [self startStandardUpdates];
@@ -226,6 +224,7 @@ self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
 -(void)updateActivityEvents{
     isPushAuto=TRUE;
     [self refresh:self.refreshControl];
+    [self retrieveLocationAndUpdateBackgroundPhoto];
 }
 
 -(void)dealloc{
@@ -265,13 +264,13 @@ self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
 
 }
 - (void)refresh:(UIRefreshControl *)refreshControl {
+    
     [self.refreshControl beginRefreshing];
     
-    if(isPushAuto)
-       [self.tableView setContentOffset:CGPointMake(0, -REFRESH_HEADER_HEIGHT) animated:YES];
-    //self.tableView.contentInset = UIEdgeInsetsMake(REFRESH_HEADER_HEIGHT, 0, 0, 0);
-    
-    
+    if(isPushAuto) {
+        [self.tableView setContentOffset:CGPointMake(0, -REFRESH_HEADER_HEIGHT) animated:YES];
+    }
+        
     if(_homeActivityManager!=nil){
         _homeActivityManager.delegate = nil;
         [_homeActivityManager releaseServerManager];
@@ -281,9 +280,8 @@ self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
     _homeActivityManager=[[ServerManager alloc]init];
     _homeActivityManager.delegate=self;
     [_homeActivityManager getActivities];
-
     
-
+    
 }
 
 -(void)LocationAcquired{
@@ -651,7 +649,7 @@ self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
 
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
     if(serverRequest==kServerCallGetActivities){
-        
+        [self.refreshControl endRefreshing];
         
         _homeActivityManager.delegate = nil;
         [_homeActivityManager releaseServerManager];
@@ -683,19 +681,11 @@ self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
                     
                     
                 }
-                
-                
-                
-
-                
             }
         }
         if(isPushAuto){
             isPushAuto=FALSE;
         }
-        [self.refreshControl endRefreshing];
-        //self.tableView.contentInset = UIEdgeInsetsZero;
-        
         if([self.tableData count]!=0){
             self.imageDownloadsInProgress = [NSMutableDictionary dictionary];
 
@@ -719,10 +709,7 @@ self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
             blankHomePageView.userInteractionEnabled=YES;
             blankHomePageView.tag=1245;
             [self.view addSubview:blankHomePageView];
-
         }
-        
-        
     }
     else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
             _interestUpdateManager.delegate = nil;
@@ -747,8 +734,6 @@ self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
                         play.isParticipant=TRUE;
                     }
                     [self.tableView reloadData];
-                    
-            
        }
         }
 
@@ -809,21 +794,16 @@ self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
             
         }
             break;
-            
         case 1:
         {
             
         }
             break;
-
-            
         case 2:
         {
             
         }
             break;
-
-            
         case 3:
         {
             [self createANewActivity:self];
@@ -912,7 +892,6 @@ self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
     
 	dispatch_async(dispatch_get_main_queue(), ^{
         
-        
         [self LocationAcquired];
 	});
 }
@@ -928,7 +907,6 @@ self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
     [viewController.interestServerManager getDetailedInterest:play.activityId];
     viewController.interestActivity=play;
     [self.navigationController pushViewController:viewController animated:YES];
-
 }
 
 -(void)updateInterestedStatus:(NSInteger)index {
