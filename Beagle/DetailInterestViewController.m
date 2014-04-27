@@ -281,6 +281,14 @@ static NSString * const CellIdentifier = @"cell";
                     starImageView.image=[UIImage imageNamed:@"Star-Unfilled"];
                     [self.contentWrapper.inputView setHidden:YES];
                     [self.contentWrapper.dummyInputView setHidden:YES];
+                    NSMutableArray *testArray=[NSMutableArray new];
+                    for(BeagleUserClass *data in self.interestActivity.participantsArray){
+                        if(data.beagleUserId!=[[[BeagleManager SharedInstance]beaglePlayer]beagleUserId]){
+        
+                            [testArray addObject:data];
+                        }
+                    }
+                    self.interestActivity.participantsArray=testArray;
 
                 }
                 else{
@@ -288,6 +296,10 @@ static NSString * const CellIdentifier = @"cell";
                     starImageView.image=[UIImage imageNamed:@"Star"];
                         [self.contentWrapper.inputView setHidden:NO];
                         [self.contentWrapper.dummyInputView setHidden:NO];
+                        NSMutableArray*interestArray=[NSMutableArray new];
+                        [interestArray addObject:[[BeagleManager SharedInstance]beaglePlayer]];
+                        [interestArray addObjectsFromArray:self.interestActivity.participantsArray];
+                         self.interestActivity.participantsArray=interestArray;
 
                 }
                 
@@ -441,7 +453,7 @@ static NSString * const CellIdentifier = @"cell";
             variance=72+textRect.size.height+16+17;
             
             if(self.interestActivity.ownerid!=[[[BeagleManager SharedInstance]beaglePlayer]beagleUserId]){
-                variance=variance+16;
+                variance=variance+30;
             }
             
         }else{
@@ -479,10 +491,10 @@ static NSString * const CellIdentifier = @"cell";
         
         
         UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-        if (cell == nil) {
+//        if (cell == nil) {
             cell =[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
             cell.selectionStyle=UITableViewCellSelectionStyleNone;
-        }
+//        }
 
 //    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier
 //                                                            forIndexPath:indexPath];

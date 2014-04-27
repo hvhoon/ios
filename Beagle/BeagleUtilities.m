@@ -269,9 +269,7 @@
     NSLog(@"endOfDay=%@",endOfDay);
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
-    NSTimeZone *gmt = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
-    [dateFormatter setTimeZone:gmt];
+    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     NSDate *startActivityDate = [dateFormatter dateFromString:startDate];
     NSDate *endActivityDate = [dateFormatter dateFromString:endDate];
     NSArray *array = [NSArray arrayWithObjects:startActivityDate,[NSDate date],endActivityDate, nil];
