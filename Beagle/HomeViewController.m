@@ -214,7 +214,10 @@
 
     
     if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
-        [self refresh];
+        
+        [self LocationAcquired];
+        
+        
     }
     else{
         [self startStandardUpdates];
@@ -224,9 +227,16 @@
 
 }
 -(void)updateActivityEvents{
-    isPushAuto=TRUE;
-    [self refresh];
-    [self retrieveLocationAndUpdateBackgroundPhoto];
+    
+    if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
+        isPushAuto=TRUE;
+        [self LocationAcquired];
+        
+    }
+    else{
+        [self startStandardUpdates];
+    }
+
 }
 
 -(void)dealloc{
