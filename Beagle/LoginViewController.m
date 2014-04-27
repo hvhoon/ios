@@ -12,6 +12,7 @@
 #import <Social/Social.h>
 @interface LoginViewController ()<FacebookLoginSessionDelegate,ServerManagerDelegate>{
     IBOutlet UIActivityIndicatorView *activityIndicatorView;
+    __weak IBOutlet UIImageView *NextArrow;
     ServerManager *loginServerManager;
      NSMutableData *_data;
 }
@@ -37,6 +38,7 @@
 
 -(IBAction)signInUsingFacebookClicked:(id)sender{
     
+    [NextArrow setHidden:YES];
     [activityIndicatorView setHidden:NO];
     [activityIndicatorView startAnimating];
     
@@ -75,6 +77,7 @@
             [[NSUserDefaults standardUserDefaults]synchronize];
             [activityIndicatorView stopAnimating];
             [activityIndicatorView setHidden:YES];
+            [NextArrow setHidden:NO];
 
         }];
     });
@@ -87,6 +90,7 @@
     
     [activityIndicatorView stopAnimating];
     [activityIndicatorView setHidden:YES];
+    [NextArrow setHidden:NO];
 
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     

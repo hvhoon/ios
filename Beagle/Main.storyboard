@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="Tvt-5e-zCq">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13C1021" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="Tvt-5e-zCq">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
@@ -36,50 +36,68 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="green_play" translatesAutoresizingMaskIntoConstraints="NO" id="ibs-qq-6W0">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Welcome" translatesAutoresizingMaskIntoConstraints="NO" id="ibs-qq-6W0">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5F8-nW-xgb">
-                                <rect key="frame" x="29" y="263" width="262" height="42"/>
+                                <rect key="frame" x="0.0" y="446" width="320" height="122"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" image="S01_signIn">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="320" id="ydh-ka-ooY"/>
+                                    <constraint firstAttribute="height" constant="122" id="zca-fQ-DOR"/>
+                                </constraints>
+                                <state key="normal">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
                                     <action selector="signInUsingFacebookClicked:" destination="7pi-6C-XLG" eventType="touchUpInside" id="61m-ki-BOW"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sign in Using Facebook" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="C7c-Yk-gkW">
-                                <rect key="frame" x="74" y="274" width="173" height="20"/>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="I4P-5s-SbQ">
+                                <rect key="frame" x="268" y="494" width="37" height="37"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="173" id="COC-bZ-mfl"/>
+                                    <constraint firstAttribute="width" constant="37" id="FaF-Qe-uM0"/>
+                                    <constraint firstAttribute="height" constant="37" id="H3L-Rm-Jgu"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="I4P-5s-SbQ">
-                                <rect key="frame" x="255" y="274" width="20" height="20"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </activityIndicatorView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="beagle" translatesAutoresizingMaskIntoConstraints="NO" id="ai2-E1-4qz">
+                                <rect key="frame" x="30" y="449" width="266" height="119"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="119" id="5Pj-GI-69E"/>
+                                    <constraint firstAttribute="width" constant="266" id="5lL-Ec-AuG"/>
+                                </constraints>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Next-Arrow" translatesAutoresizingMaskIntoConstraints="NO" id="8ri-y9-k08">
+                                <rect key="frame" x="248" y="473" width="67" height="79"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="79" id="QRF-f7-Z9K"/>
+                                    <constraint firstAttribute="width" constant="67" id="jg1-Ee-Bvp"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="centerY" secondItem="I4P-5s-SbQ" secondAttribute="centerY" id="3Nd-oE-y2A"/>
-                            <constraint firstAttribute="centerY" secondItem="I4P-5s-SbQ" secondAttribute="centerY" id="5uY-Re-k3F"/>
-                            <constraint firstAttribute="centerX" secondItem="5F8-nW-xgb" secondAttribute="centerX" id="6At-kD-fFQ"/>
-                            <constraint firstAttribute="centerY" secondItem="5F8-nW-xgb" secondAttribute="centerY" id="95Y-go-Qil"/>
-                            <constraint firstAttribute="trailing" secondItem="I4P-5s-SbQ" secondAttribute="trailing" constant="45" id="Ox4-vX-uH8"/>
-                            <constraint firstAttribute="centerY" secondItem="C7c-Yk-gkW" secondAttribute="centerY" id="UAO-ai-3uS"/>
-                            <constraint firstItem="5F8-nW-xgb" firstAttribute="leading" secondItem="bIx-1C-8jM" secondAttribute="leading" constant="29" id="Xl3-Ke-DBe"/>
-                            <constraint firstAttribute="centerY" secondItem="C7c-Yk-gkW" secondAttribute="centerY" id="hJU-VC-dy8"/>
-                            <constraint firstAttribute="centerX" secondItem="C7c-Yk-gkW" secondAttribute="centerX" id="kU1-Rw-pUH"/>
+                            <constraint firstItem="I4P-5s-SbQ" firstAttribute="leading" secondItem="bIx-1C-8jM" secondAttribute="leading" constant="268" id="6aI-tK-TRG"/>
+                            <constraint firstItem="4gp-wI-KSS" firstAttribute="top" secondItem="ai2-E1-4qz" secondAttribute="bottom" id="7xc-mp-bYc"/>
+                            <constraint firstAttribute="trailing" secondItem="8ri-y9-k08" secondAttribute="trailing" constant="5" id="8aq-R8-LBB"/>
+                            <constraint firstItem="4gp-wI-KSS" firstAttribute="top" secondItem="5F8-nW-xgb" secondAttribute="bottom" id="SyX-Ru-dpO"/>
+                            <constraint firstItem="5F8-nW-xgb" firstAttribute="leading" secondItem="bIx-1C-8jM" secondAttribute="leading" id="UE9-Y8-raf"/>
+                            <constraint firstItem="4gp-wI-KSS" firstAttribute="top" secondItem="8ri-y9-k08" secondAttribute="bottom" constant="16" id="e5e-ll-U3o"/>
+                            <constraint firstItem="ai2-E1-4qz" firstAttribute="leading" secondItem="bIx-1C-8jM" secondAttribute="leading" constant="30" id="fBp-ch-PfW"/>
+                            <constraint firstItem="8ri-y9-k08" firstAttribute="leading" secondItem="bIx-1C-8jM" secondAttribute="leading" constant="248" id="gxn-u9-Bal"/>
+                            <constraint firstAttribute="trailing" secondItem="I4P-5s-SbQ" secondAttribute="trailing" constant="15" id="nEc-LB-dWq"/>
+                            <constraint firstAttribute="trailing" secondItem="5F8-nW-xgb" secondAttribute="trailing" id="op9-fL-FBI"/>
+                            <constraint firstItem="4gp-wI-KSS" firstAttribute="top" secondItem="I4P-5s-SbQ" secondAttribute="bottom" constant="37" id="uKS-GC-wzD"/>
+                            <constraint firstAttribute="trailing" secondItem="ai2-E1-4qz" secondAttribute="trailing" constant="24" id="yuH-xL-Q3T"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="3u9-9B-H5N"/>
                     <connections>
+                        <outlet property="NextArrow" destination="8ri-y9-k08" id="NkR-5o-nZA"/>
                         <outlet property="activityIndicatorView" destination="I4P-5s-SbQ" id="lRC-3y-hlg"/>
                     </connections>
                 </viewController>
@@ -581,13 +599,14 @@
         <image name="Facebook" width="28" height="28"/>
         <image name="Home" width="24" height="24"/>
         <image name="Info" width="23" height="23"/>
+        <image name="Next-Arrow" width="67" height="79"/>
         <image name="Power" width="23" height="23"/>
-        <image name="S01_signIn" width="262" height="42"/>
         <image name="Time" width="20" height="20"/>
         <image name="User-Agreement" width="22" height="22"/>
         <image name="Visibility" width="25" height="15"/>
+        <image name="Welcome" width="320" height="568"/>
+        <image name="beagle" width="266" height="119"/>
         <image name="bug_icon" width="27" height="24"/>
-        <image name="green_play" width="320" height="460"/>
         <image name="invite_icon" width="27" height="21"/>
         <image name="megaphone" width="27" height="20"/>
     </resources>
