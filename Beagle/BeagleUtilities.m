@@ -357,9 +357,7 @@
 +(NSString *)calculateChatTimestamp:(NSString *)timeString{
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
-    NSTimeZone *gmt = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
-    [dateFormatter setTimeZone:gmt];
+    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     
     // how to get back time from current time in the same format
     NSDate *lastDate = [dateFormatter dateFromString:timeString];//add the string
@@ -400,14 +398,14 @@
         case -1:
         {
             dateFormatter.dateFormat=@"h:mma";
-            [result appendFormat:@"%@",[NSString stringWithFormat:@"Yesterday, %@",[dateFormatter stringFromDate:destinationDate]]];
+            [result appendFormat:@"%@",[NSString stringWithFormat:@"Yesterday at %@",[dateFormatter stringFromDate:destinationDate]]];
         }
             break;
         case 0:
         {
             
             dateFormatter.dateFormat=@"h:mma";
-            [result appendFormat:@"%@",[NSString stringWithFormat:@"Today, %@",[dateFormatter stringFromDate:destinationDate]]];
+            [result appendFormat:@"%@",[NSString stringWithFormat:@"Today at %@",[dateFormatter stringFromDate:destinationDate]]];
         }
             break;
         case 1:
@@ -415,7 +413,7 @@
             [result appendFormat: @"Tommorow"];
             dateFormatter.dateFormat=@"h:mma";
             
-            [result appendFormat:@"%@",[NSString stringWithFormat:@"Tomorrow, %@",[dateFormatter stringFromDate:destinationDate]]];
+            [result appendFormat:@"%@",[NSString stringWithFormat:@"Tomorrow at %@",[dateFormatter stringFromDate:destinationDate]]];
         }
             break;
         default: {

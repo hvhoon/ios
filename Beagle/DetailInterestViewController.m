@@ -505,19 +505,19 @@ static NSString * const CellIdentifier = @"cell";
         [_backgroundView addSubview:_profileImageView];
         if(interestActivity.profilePhotoImage==nil){
             
-//            [self imageCircular:[UIImage imageNamed:@"picbox"]];
-//            
-//            
-//            NSOperationQueue *queue = [NSOperationQueue new];
-//            NSInvocationOperation *operation = [[NSInvocationOperation alloc]
-//                                                initWithTarget:self
-//                                                selector:@selector(loadProfileImage:)
-//                                                object:interestActivity.photoUrl];
-//            [queue addOperation:operation];
+            [self imageCircular:[UIImage imageNamed:@"picbox"]];
+            
+            
+            NSOperationQueue *queue = [NSOperationQueue new];
+            NSInvocationOperation *operation = [[NSInvocationOperation alloc]
+                                                initWithTarget:self
+                                                selector:@selector(loadProfileImage:)
+                                                object:interestActivity.photoUrl];
+            [queue addOperation:operation];
             
         }
         else{
-//            _profileImageView.image=[BeagleUtilities imageCircularBySize:interestActivity.profilePhotoImage sqr:52.0];
+            _profileImageView.image=[BeagleUtilities imageCircularBySize:interestActivity.profilePhotoImage sqr:52.0];
         }
         
         
@@ -867,12 +867,8 @@ static NSString * const CellIdentifier = @"cell";
                  style, NSParagraphStyleAttributeName, nil];
 
         
-        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
-        NSTimeZone *gmt = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
-        [dateFormatter setTimeZone:gmt];
         
-        NSString *timestamp=[BeagleUtilities calculateChatTimestamp:[dateFormatter stringFromDate:chatCell.timestamp]];
+        NSString *timestamp=[BeagleUtilities calculateChatTimestamp:chatCell.timestamp];
         
         CGSize dateTextSize = [timestamp boundingRectWithSize:CGSizeMake(300,999)
                                                            options:NSStringDrawingUsesLineFragmentOrigin
