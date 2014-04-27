@@ -297,9 +297,16 @@ static NSString * const CellIdentifier = @"cell";
                         [self.contentWrapper.inputView setHidden:NO];
                         [self.contentWrapper.dummyInputView setHidden:NO];
                         NSMutableArray*interestArray=[NSMutableArray new];
+                    
+                    if([self.interestActivity.participantsArray count]!=0){
                         [interestArray addObject:[[BeagleManager SharedInstance]beaglePlayer]];
                         [interestArray addObjectsFromArray:self.interestActivity.participantsArray];
                          self.interestActivity.participantsArray=interestArray;
+                    }else{
+                        [interestArray addObject:[[BeagleManager SharedInstance]beaglePlayer]];
+                        self.interestActivity.participantsArray=interestArray;
+                    }
+                    [self.contentWrapper _setInitialFrames];
 
                 }
                 

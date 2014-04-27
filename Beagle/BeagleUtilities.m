@@ -270,7 +270,12 @@
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    
+    NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+    [dateFormatter setTimeZone:utcTimeZone];
     NSDate *startActivityDate = [dateFormatter dateFromString:startDate];
+    
+
     NSDate *endActivityDate = [dateFormatter dateFromString:endDate];
     NSArray *array = [NSArray arrayWithObjects:startActivityDate,[NSDate date],endActivityDate, nil];
     
@@ -357,10 +362,11 @@
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     
-    // how to get back time from current time in the same format
-    NSDate *lastDate = [dateFormatter dateFromString:timeString];//add the string
-    NSString *todayDate = [dateFormatter stringFromDate:[NSDate date]];
-    NSDate *currentDate=[dateFormatter dateFromString:todayDate];
+    NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+    [dateFormatter setTimeZone:utcTimeZone];
+    NSDate *lastDate = [dateFormatter dateFromString:timeString];
+    
+    NSDate *currentDate=[NSDate date];
     
     NSTimeInterval interval = [lastDate timeIntervalSinceDate:currentDate];
     unsigned long seconds = interval;
