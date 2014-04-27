@@ -221,8 +221,6 @@ static UIFont *forthTextFont = nil;
     CGSize interestedSize = [expressInterestText boundingRectWithSize:CGSizeMake(288, r.size.height) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
     [expressInterestText drawInRect:CGRectMake(16+19+5, fromTheTop, interestedSize.width, interestedSize.height) withAttributes:attrs];
     
-    // add the interest rectangle back!!
-    
     fromTheTop = fromTheTop+3;
     
     // Comments icon and text now
@@ -250,6 +248,9 @@ static UIFont *forthTextFont = nil;
     
     CGContextSetRGBFillColor(context, 230.0/255.0, 230.0/255.0, 230.0/255.0, 1.0);
     CGContextFillRect(context, stripRect);
+    
+    // add the interested touchzone rectangle back!!
+    interestedRect=CGRectMake(0, fromTheTop-8-35, 250, 35);
     
 
 }

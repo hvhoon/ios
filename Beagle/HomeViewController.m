@@ -22,6 +22,7 @@
 #define REFRESH_HEADER_HEIGHT 70.0f
 #define stockCroppingCheck 0
 #define kTimerIntervalInSeconds 10
+#define rowHeight 142.0f
 
 @interface HomeViewController ()<UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,HomeTableViewCellDelegate,ServerManagerDelegate,IconDownloaderDelegate,BlankHomePageViewDelegate>{
     UIView *topNavigationView;
@@ -30,7 +31,6 @@
     ServerManager *homeActivityManager;
     NSMutableDictionary *imageDownloadsInProgress;
     NSInteger count;
-    UIRefreshControl *refreshControl;
     BOOL isPushAuto;
     NSInteger interestIndex;
 }
@@ -38,8 +38,8 @@
 @property(nonatomic,strong)  NSMutableDictionary *imageDownloadsInProgress;
 @property (nonatomic, strong) NSArray *tableData;
 @property(nonatomic, weak) IBOutlet UITableView*tableView;
+@property(nonatomic, strong) UITableViewController*tableViewController;
 @property (strong,nonatomic) NSMutableArray *filteredCandyArray;
-@property (strong,nonatomic) UIRefreshControl *refreshControl;
 @property(strong,nonatomic)ServerManager *homeActivityManager;
 @property(strong,nonatomic)ServerManager *interestUpdateManager;
 @end
@@ -49,7 +49,6 @@
 @synthesize imageDownloadsInProgress;
 @synthesize currentLocation;
 @synthesize _locationManager = locationManager;
-@synthesize refreshControl;
 @synthesize interestUpdateManager=_interestUpdateManager;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -87,7 +86,7 @@
         BG.activtyCreated=FALSE;
     if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
        
-        [self refresh:self.refreshControl];
+        [self refresh];
         
     }
     else{
@@ -201,18 +200,21 @@
     [self.view addSubview:filterView];
 #endif
     
+    _tableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStylePlain];
+    [self addChildViewController:_tableViewController];
+    
+    _tableViewController.refreshControl = [UIRefreshControl new];
+    [_tableViewController.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
+    
+    _tableViewController.tableView = self.tableView;
+    
+    // Setting up the table and the refresh animation
     self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-    
-    UITableViewController *tableViewController = [[UITableViewController alloc] init];
-    tableViewController.tableView = self.tableView;
-    
-    self.refreshControl = [[UIRefreshControl alloc] init];
-    [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
-    tableViewController.refreshControl = self.refreshControl;
+
     
     if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
-        [self refresh:self.refreshControl];
+        [self refresh];
     }
     else{
         [self startStandardUpdates];
@@ -223,7 +225,7 @@
 }
 -(void)updateActivityEvents{
     isPushAuto=TRUE;
-    [self refresh:self.refreshControl];
+    [self refresh];
     [self retrieveLocationAndUpdateBackgroundPhoto];
 }
 
@@ -263,11 +265,10 @@
 #endif
 
 }
-- (void)refresh:(UIRefreshControl *)refreshControl {
-    
-    [self.refreshControl beginRefreshing];
-    
+- (void)refresh {
+        
     if(isPushAuto) {
+        [_tableViewController.refreshControl beginRefreshing];
         [self.tableView setContentOffset:CGPointMake(0, -REFRESH_HEADER_HEIGHT) animated:YES];
     }
         
@@ -281,11 +282,10 @@
     _homeActivityManager.delegate=self;
     [_homeActivityManager getActivities];
     
-    
 }
 
 -(void)LocationAcquired{
-    [self refresh:self.refreshControl];
+    [self refresh];
     
     CLGeocoder * geoCoder = [[CLGeocoder alloc] init];
     CLLocation *newLocation=[[CLLocation alloc]initWithLatitude:[[BeagleManager SharedInstance]currentLocation].coordinate.latitude longitude:[[BeagleManager SharedInstance]currentLocation].coordinate.longitude];
@@ -459,9 +459,9 @@
                                                      attributes:attrs context:nil];
     
     // If there are no participants, reduce the size of the card
-    if (play.participantsCount==0) return 142.0f+textRect.size.height;
+    if (play.participantsCount==0) return rowHeight+textRect.size.height;
     
-    return 176.0f+textRect.size.height;
+    return rowHeight+17+18+textRect.size.height;
     
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -649,7 +649,7 @@
 
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
     if(serverRequest==kServerCallGetActivities){
-        [self.refreshControl endRefreshing];
+        [_tableViewController.refreshControl endRefreshing];
         
         _homeActivityManager.delegate = nil;
         [_homeActivityManager releaseServerManager];
@@ -744,7 +744,7 @@
     if(isPushAuto){
         isPushAuto=FALSE;
     }
-    [self.refreshControl endRefreshing];
+    [_tableViewController.refreshControl endRefreshing];
     if(serverRequest==kServerCallGetActivities)
     {
         _homeActivityManager.delegate = nil;
@@ -767,7 +767,7 @@
     if(isPushAuto){
         isPushAuto=FALSE;
     }
-    [self.refreshControl endRefreshing];
+    [_tableViewController.refreshControl endRefreshing];
     if(serverRequest==kServerCallGetActivities)
     {
         _homeActivityManager.delegate = nil;
