@@ -311,7 +311,6 @@ static inline UIViewAnimationOptions RDRAnimationOptionsForCurve(UIViewAnimation
     UIScrollView *scrollView = self;
     CGPoint contentOffset = scrollView.contentOffset;
     contentOffset.y = RDRContentOffsetForBottom(scrollView);
-    NSLog(@"glitch1");
     void(^animations)() = ^{
         scrollView.contentOffset = contentOffset;
     };
@@ -407,8 +406,9 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
     self.dummyInputView.autoresizingMask = UIViewAutoresizingFlexibleWidth|
     UIViewAutoresizingFlexibleTopMargin;
     self.dummyInputView.textView.inputAccessoryView = self.inputView;
-    self.dummyInputView.textView.tintColor = [UIColor clearColor]; // hide cursor
+    self.dummyInputView.textView.tintColor = [UIColor clearColor];
     self.dummyInputView.textView.delegate = self;
+    self.dummyInputView.textView.text=@"Write a comment...";
     [self addSubview:self.dummyInputView];
 }
 
@@ -631,7 +631,6 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
     }
     self.scrollView.scrollIndicatorInsets = scrollIndicatorInsets;
     
-     NSLog(@"glitch2");
 }
 
 #pragma mark - Input view

@@ -31,6 +31,6 @@
 @property(nonatomic,assign)NSInteger dos2Count;
 @property(nonatomic,assign) BOOL isParticipant;
 @property(nonatomic,assign)NSInteger postCount;
-
+@property(nonatomic,strong)NSArray*participantsArray;
 -(id) initWithDictionary:(NSDictionary *)dictionary;
 @end

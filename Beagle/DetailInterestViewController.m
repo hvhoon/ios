@@ -219,7 +219,8 @@ static NSString * const CellIdentifier = @"cell";
                             BeagleUserClass *userClass=[[BeagleUserClass alloc]initWithDictionary:el];
                             [participantsArray addObject:userClass];
                         }
-                        [self setUpPlayerScroll:participantsArray];
+                        self.interestActivity.participantsArray=participantsArray;
+//                        [self setUpPlayerScroll:participantsArray];
 
                         
                     }
@@ -278,10 +279,35 @@ static NSString * const CellIdentifier = @"cell";
                 if(self.interestActivity.isParticipant){
                     self.interestActivity.isParticipant=FALSE;
                     starImageView.image=[UIImage imageNamed:@"Star-Unfilled"];
+                    [self.contentWrapper.inputView setHidden:YES];
+                    [self.contentWrapper.dummyInputView setHidden:YES];
+                    NSMutableArray *testArray=[NSMutableArray new];
+                    for(BeagleUserClass *data in self.interestActivity.participantsArray){
+                        if(data.beagleUserId!=[[[BeagleManager SharedInstance]beaglePlayer]beagleUserId]){
+        
+                            [testArray addObject:data];
+                        }
+                    }
+                    self.interestActivity.participantsArray=testArray;
+
                 }
                 else{
                     self.interestActivity.isParticipant=TRUE;
                     starImageView.image=[UIImage imageNamed:@"Star"];
+                        [self.contentWrapper.inputView setHidden:NO];
+                        [self.contentWrapper.dummyInputView setHidden:NO];
+                        NSMutableArray*interestArray=[NSMutableArray new];
+                    
+                    if([self.interestActivity.participantsArray count]!=0){
+                        [interestArray addObject:[[BeagleManager SharedInstance]beaglePlayer]];
+                        [interestArray addObjectsFromArray:self.interestActivity.participantsArray];
+                         self.interestActivity.participantsArray=interestArray;
+                    }else{
+                        [interestArray addObject:[[BeagleManager SharedInstance]beaglePlayer]];
+                        self.interestActivity.participantsArray=interestArray;
+                    }
+                    [self.contentWrapper _setInitialFrames];
+
                 }
                 
                 
@@ -434,11 +460,11 @@ static NSString * const CellIdentifier = @"cell";
             variance=72+textRect.size.height+16+17;
             
             if(self.interestActivity.ownerid!=[[[BeagleManager SharedInstance]beaglePlayer]beagleUserId]){
-                variance=variance+16;
+                variance=variance+30;
             }
             
         }else{
-            variance=72+textRect.size.height+16+17+55;
+            variance=72+textRect.size.height+16+18+16+55;
         }
 
         return variance+52.0f;
@@ -472,10 +498,10 @@ static NSString * const CellIdentifier = @"cell";
         
         
         UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-        if (cell == nil) {
+//        if (cell == nil) {
             cell =[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
             cell.selectionStyle=UITableViewCellSelectionStyleNone;
-        }
+//        }
 
 //    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier
 //                                                            forIndexPath:indexPath];
@@ -673,16 +699,20 @@ static NSString * const CellIdentifier = @"cell";
         if(self.interestActivity.ownerid==[[[BeagleManager SharedInstance]beaglePlayer]beagleUserId]){
             //owner
             if(self.interestActivity.participantsCount>0){
+                if(_scrollMenu==nil)
                 _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, 72+commentTextRect.size.height+16+participantsCountTextSize.height+16, 268, 55)];
                 [_backgroundView addSubview:_scrollMenu];
+                [self setUpPlayerScroll:self.interestActivity.participantsArray];
                 variance=72+commentTextRect.size.height+16+participantsCountTextSize.height+16+55;
             }
         }
         else {
             //not a owner but a participant
             if(self.interestActivity.participantsCount>0){
+                if(_scrollMenu==nil)
                 _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, 72+commentTextRect.size.height+16+participantsCountTextSize.height+16, 268, 55)];
                 [_backgroundView addSubview:_scrollMenu];
+                [self setUpPlayerScroll:self.interestActivity.participantsArray];
                 variance=72+commentTextRect.size.height+16+participantsCountTextSize.height+16+55;
                 
                 
@@ -856,12 +886,8 @@ static NSString * const CellIdentifier = @"cell";
                  style, NSParagraphStyleAttributeName, nil];
 
         
-        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
-        NSTimeZone *gmt = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
-        [dateFormatter setTimeZone:gmt];
         
-        NSString *timestamp=[BeagleUtilities calculateChatTimestamp:[dateFormatter stringFromDate:chatCell.timestamp]];
+        NSString *timestamp=[BeagleUtilities calculateChatTimestamp:chatCell.timestamp];
         
         CGSize dateTextSize = [timestamp boundingRectWithSize:CGSizeMake(300,999)
                                                            options:NSStringDrawingUsesLineFragmentOrigin
