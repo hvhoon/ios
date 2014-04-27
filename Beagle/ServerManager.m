@@ -13,7 +13,7 @@
 #import "SBJSON.h"
 #import "JSON.h"
 #import "BeagleActivityClass.h"
-#define localHost @"http://localhost:3000/"
+#define localHost @"http://192.168.0.100:3000/"
 #define herokuHost @"http://infinite-spire-6520.herokuapp.com/"
 @interface ServerManager()
 {
@@ -39,7 +39,7 @@
         _internetReachability = [Reachability reachabilityForInternetConnection];
 
 
-        _serverUrl =herokuHost;
+        _serverUrl =localHost;
 
         [self populateErrorCodes];
     }
@@ -105,7 +105,7 @@
         [activityEvent setObject:data.state  forKey:@"where_state"];
         [activityEvent setObject:data.activityDesc forKey:@"what"];
         [activityEvent setObject:data.visibiltyFilter forKey:@"access"];
-        [activityEvent setObject:[NSNumber numberWithInteger:data.ownerid] forKey:@"ownnerid"];
+        [activityEvent setObject:[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"] forKey:@"ownnerid"];
         [activityEvent setObject:data.endActivityDate  forKey:@"stop_when"];
         
         
@@ -134,7 +134,7 @@
         [self callServerWithUrl:[NSString stringWithFormat:@"%@getactivities.json", _serverUrl]
                          method:@"GET"
                          params:[NSDictionary dictionaryWithObjectsAndKeys:
-                                 [NSNumber numberWithInteger:[[BeagleManager SharedInstance] beaglePlayer].beagleUserId],@"pid",
+                                 [[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],@"pid",
                                  [NSNumber numberWithFloat:[[BeagleManager SharedInstance]currentLocation].coordinate.latitude],@"lat",
                                  [NSNumber numberWithFloat:[[BeagleManager SharedInstance]currentLocation].coordinate.longitude],@"lng",
                                  nil] data:nil];
@@ -151,7 +151,7 @@
         [self callServerWithUrl:[NSString stringWithFormat:@"%@getactivity.json", _serverUrl]
                          method:@"GET"
                          params:[NSDictionary dictionaryWithObjectsAndKeys:
-                                 [NSNumber numberWithInteger:[[BeagleManager SharedInstance] beaglePlayer].beagleUserId],@"pid",
+                                 [[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],@"pid",
                                  [NSNumber numberWithInteger:activityId],@"id",
                                  [NSNumber numberWithFloat:[[BeagleManager SharedInstance]currentLocation].coordinate.latitude],@"lat",
                                  [NSNumber numberWithFloat:[[BeagleManager SharedInstance]currentLocation].coordinate.longitude],@"lng",
@@ -168,7 +168,7 @@
     {
         
         NSMutableDictionary* updateMembership =[[NSMutableDictionary alloc] init];
-        [updateMembership setObject:[NSNumber numberWithInteger:[[BeagleManager SharedInstance] beaglePlayer].beagleUserId] forKey:@"pid"];
+        [updateMembership setObject:[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"] forKey:@"pid"];
         [updateMembership setObject:[NSNumber numberWithInteger:activityId] forKey:@"id"];
         [updateMembership setObject:@"true" forKey:@"pstatus"];
         
@@ -191,7 +191,7 @@
     {
         
         NSMutableDictionary* updateMembership =[[NSMutableDictionary alloc] init];
-        [updateMembership setObject:[NSNumber numberWithInteger:[[BeagleManager SharedInstance] beaglePlayer].beagleUserId] forKey:@"pid"];
+        [updateMembership setObject:[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"] forKey:@"pid"];
         [updateMembership setObject:[NSNumber numberWithInteger:activityId] forKey:@"id"];
         [updateMembership setObject:@"true" forKey:@"pstatus"];
         
@@ -215,7 +215,7 @@
     {
         
         NSMutableDictionary* postComment =[[NSMutableDictionary alloc] init];
-        [postComment setObject:[NSNumber numberWithInteger:[[BeagleManager SharedInstance] beaglePlayer].beagleUserId] forKey:@"player_id"];
+        [postComment setObject:[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"] forKey:@"player_id"];
         [postComment setObject:[NSNumber numberWithInteger:activityId] forKey:@"activity_id"];
         [postComment setObject:desc forKey:@"description"];
         

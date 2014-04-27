@@ -20,6 +20,11 @@ void uncaughtExceptionHandler(NSException *exception) {
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    
+    if (application.applicationIconBadgeNumber != 0) {
+        application.applicationIconBadgeNumber = 0;
+    }
+
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     
     [Crashlytics startWithAPIKey:@"e8e7ac59367e936ecae821876cc411ec67427e47"];
@@ -65,8 +70,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     
     
     if (application.applicationIconBadgeNumber != 0) {
-        
-        application.applicationIconBadgeNumber = 0;
+         application.applicationIconBadgeNumber = 0;
     }
     
     

@@ -212,7 +212,7 @@ self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
     
     if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
         
-        [self refresh:self.refreshControl];
+        [self LocationAcquired];
         
         
     }
@@ -224,8 +224,16 @@ self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
 
 }
 -(void)updateActivityEvents{
-    isPushAuto=TRUE;
-    [self refresh:self.refreshControl];
+    
+    if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
+        isPushAuto=TRUE;
+        [self LocationAcquired];
+        
+    }
+    else{
+        [self startStandardUpdates];
+    }
+
 }
 
 -(void)dealloc{

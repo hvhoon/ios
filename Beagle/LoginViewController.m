@@ -131,8 +131,9 @@
                 if (beagleId != nil && [beagleId class] != [NSNull class]) {
                   [[[BeagleManager SharedInstance] beaglePlayer]setBeagleUserId:[beagleId integerValue]];
                     [[BeagleManager SharedInstance] userProfileDataUpdate];
-
-                    NSLog(@"beagleId=%ld",(long)[beagleId integerValue]);
+                    [[NSUserDefaults standardUserDefaults]setObject:[NSNumber numberWithInteger:[beagleId integerValue]] forKey:@"beagleId"];
+                    [[NSUserDefaults standardUserDefaults]synchronize];
+                     NSLog(@"beagleId=%ld",(long)[beagleId integerValue]);
                     
                 }
 
@@ -161,19 +162,6 @@
     }
 }
 
-#pragma mark - NSURLConnectionDataDelegate
-
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
-    _data = [[NSMutableData alloc] init];
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-    [_data appendData:data];
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-    [[BeagleManager SharedInstance] processFacebookProfilePictureData:_data];
-}
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {
 
@@ -203,6 +191,19 @@
     [alert show];
 }
 
+#pragma mark - NSURLConnectionDataDelegate
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+    _data = [[NSMutableData alloc] init];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+    [_data appendData:data];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+    [[BeagleManager SharedInstance] processFacebookProfilePictureData:_data];
+}
 
 - (void)didReceiveMemoryWarning
 {

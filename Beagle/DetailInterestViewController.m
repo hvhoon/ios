@@ -219,7 +219,8 @@ static NSString * const CellIdentifier = @"cell";
                             BeagleUserClass *userClass=[[BeagleUserClass alloc]initWithDictionary:el];
                             [participantsArray addObject:userClass];
                         }
-                        [self setUpPlayerScroll:participantsArray];
+                        self.interestActivity.participantsArray=participantsArray;
+//                        [self setUpPlayerScroll:participantsArray];
 
                         
                     }
@@ -278,10 +279,16 @@ static NSString * const CellIdentifier = @"cell";
                 if(self.interestActivity.isParticipant){
                     self.interestActivity.isParticipant=FALSE;
                     starImageView.image=[UIImage imageNamed:@"Star-Unfilled"];
+                    [self.contentWrapper.inputView setHidden:YES];
+                    [self.contentWrapper.dummyInputView setHidden:YES];
+
                 }
                 else{
                     self.interestActivity.isParticipant=TRUE;
                     starImageView.image=[UIImage imageNamed:@"Star"];
+                        [self.contentWrapper.inputView setHidden:NO];
+                        [self.contentWrapper.dummyInputView setHidden:NO];
+
                 }
                 
                 
@@ -438,7 +445,7 @@ static NSString * const CellIdentifier = @"cell";
             }
             
         }else{
-            variance=72+textRect.size.height+16+17+55;
+            variance=72+textRect.size.height+16+18+16+55;
         }
 
         return variance+52.0f;
@@ -498,19 +505,19 @@ static NSString * const CellIdentifier = @"cell";
         [_backgroundView addSubview:_profileImageView];
         if(interestActivity.profilePhotoImage==nil){
             
-            [self imageCircular:[UIImage imageNamed:@"picbox"]];
-            
-            
-            NSOperationQueue *queue = [NSOperationQueue new];
-            NSInvocationOperation *operation = [[NSInvocationOperation alloc]
-                                                initWithTarget:self
-                                                selector:@selector(loadProfileImage:)
-                                                object:interestActivity.photoUrl];
-            [queue addOperation:operation];
+//            [self imageCircular:[UIImage imageNamed:@"picbox"]];
+//            
+//            
+//            NSOperationQueue *queue = [NSOperationQueue new];
+//            NSInvocationOperation *operation = [[NSInvocationOperation alloc]
+//                                                initWithTarget:self
+//                                                selector:@selector(loadProfileImage:)
+//                                                object:interestActivity.photoUrl];
+//            [queue addOperation:operation];
             
         }
         else{
-            _profileImageView.image=[BeagleUtilities imageCircularBySize:interestActivity.profilePhotoImage sqr:52.0];
+//            _profileImageView.image=[BeagleUtilities imageCircularBySize:interestActivity.profilePhotoImage sqr:52.0];
         }
         
         
@@ -673,16 +680,20 @@ static NSString * const CellIdentifier = @"cell";
         if(self.interestActivity.ownerid==[[[BeagleManager SharedInstance]beaglePlayer]beagleUserId]){
             //owner
             if(self.interestActivity.participantsCount>0){
+                if(_scrollMenu==nil)
                 _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, 72+commentTextRect.size.height+16+participantsCountTextSize.height+16, 268, 55)];
                 [_backgroundView addSubview:_scrollMenu];
+                [self setUpPlayerScroll:self.interestActivity.participantsArray];
                 variance=72+commentTextRect.size.height+16+participantsCountTextSize.height+16+55;
             }
         }
         else {
             //not a owner but a participant
             if(self.interestActivity.participantsCount>0){
+                if(_scrollMenu==nil)
                 _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, 72+commentTextRect.size.height+16+participantsCountTextSize.height+16, 268, 55)];
                 [_backgroundView addSubview:_scrollMenu];
+                [self setUpPlayerScroll:self.interestActivity.participantsArray];
                 variance=72+commentTextRect.size.height+16+participantsCountTextSize.height+16+55;
                 
                 
