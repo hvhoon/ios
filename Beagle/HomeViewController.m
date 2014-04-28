@@ -19,9 +19,10 @@
 #import "IconDownloader.h"
 #import "DetailInterestViewController.h"
 #import "BeagleUtilities.h"
-#define REFRESH_HEADER_HEIGHT 50.0f
+#define REFRESH_HEADER_HEIGHT 70.0f
 #define stockCroppingCheck 0
 #define kTimerIntervalInSeconds 10
+#define rowHeight 142.0f
 
 @interface HomeViewController ()<UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,HomeTableViewCellDelegate,ServerManagerDelegate,IconDownloaderDelegate,BlankHomePageViewDelegate>{
     UIView *topNavigationView;
@@ -30,7 +31,6 @@
     ServerManager *homeActivityManager;
     NSMutableDictionary *imageDownloadsInProgress;
     NSInteger count;
-    UIRefreshControl *refreshControl;
     BOOL isPushAuto;
     NSInteger interestIndex;
 }
@@ -38,8 +38,8 @@
 @property(nonatomic,strong)  NSMutableDictionary *imageDownloadsInProgress;
 @property (nonatomic, strong) NSArray *tableData;
 @property(nonatomic, weak) IBOutlet UITableView*tableView;
+@property(nonatomic, strong) UITableViewController*tableViewController;
 @property (strong,nonatomic) NSMutableArray *filteredCandyArray;
-@property (strong,nonatomic) UIRefreshControl *refreshControl;
 @property(strong,nonatomic)ServerManager *homeActivityManager;
 @property(strong,nonatomic)ServerManager *interestUpdateManager;
 @end
@@ -49,7 +49,6 @@
 @synthesize imageDownloadsInProgress;
 @synthesize currentLocation;
 @synthesize _locationManager = locationManager;
-@synthesize refreshControl;
 @synthesize interestUpdateManager=_interestUpdateManager;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -87,7 +86,7 @@
         BG.activtyCreated=FALSE;
     if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
        
-        [self refresh:self.refreshControl];
+        [self refresh];
         
     }
     else{
@@ -201,14 +200,18 @@
     [self.view addSubview:filterView];
 #endif
     
-self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
+    _tableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStylePlain];
+    [self addChildViewController:_tableViewController];
     
+    _tableViewController.refreshControl = [UIRefreshControl new];
+    [_tableViewController.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
+    
+    _tableViewController.tableView = self.tableView;
+    
+    // Setting up the table and the refresh animation
+    self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 
-    self.refreshControl = [[UIRefreshControl alloc] init];
-    [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
-    [self.tableView addSubview:self.refreshControl];
-    
     
     if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
         
@@ -272,14 +275,14 @@ self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
 #endif
 
 }
-- (void)refresh:(UIRefreshControl *)refreshControl {
-    [self.refreshControl beginRefreshing];
+- (void)refresh {
+    NSLog(@"Starting up query");
     
-    if(isPushAuto)
-       [self.tableView setContentOffset:CGPointMake(0, -REFRESH_HEADER_HEIGHT) animated:YES];
-    //self.tableView.contentInset = UIEdgeInsetsMake(REFRESH_HEADER_HEIGHT, 0, 0, 0);
-    
-    
+    if(isPushAuto) {
+        [_tableViewController.refreshControl beginRefreshing];
+        [self.tableView setContentOffset:CGPointMake(0, -REFRESH_HEADER_HEIGHT) animated:YES];
+    }
+        
     if(_homeActivityManager!=nil){
         _homeActivityManager.delegate = nil;
         [_homeActivityManager releaseServerManager];
@@ -289,13 +292,11 @@ self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
     _homeActivityManager=[[ServerManager alloc]init];
     _homeActivityManager.delegate=self;
     [_homeActivityManager getActivities];
-
     
-
 }
 
 -(void)LocationAcquired{
-    [self refresh:self.refreshControl];
+    [self refresh];
     
     CLGeocoder * geoCoder = [[CLGeocoder alloc] init];
     CLLocation *newLocation=[[CLLocation alloc]initWithLatitude:[[BeagleManager SharedInstance]currentLocation].coordinate.latitude longitude:[[BeagleManager SharedInstance]currentLocation].coordinate.longitude];
@@ -411,7 +412,7 @@ self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
     
     CGSize size = CGSizeMake(220,999);
     
-    NSString* filterText = @"What's Happening Around You?";
+    NSString* filterText = @"Happening Around You";
     
     CGRect textRect = [filterText
                        boundingRectWithSize:size
@@ -420,7 +421,7 @@ self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
                        context:nil];
     
     UILabel *activityFilterLabel = [[UILabel alloc]initWithFrame:CGRectMake(16, 0, textRect.size.width, 44)];
-    activityFilterLabel.text = @"What's Happening Around You?";
+    activityFilterLabel.text = @"Happening Around You";
     activityFilterLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0];
     activityFilterLabel.backgroundColor = [UIColor clearColor];
     activityFilterLabel.textAlignment = NSTextAlignmentLeft;
@@ -466,13 +467,13 @@ self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
     CGSize maximumLabelSize = CGSizeMake(288,999);
     
     CGRect textRect = [play.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
-                                                     attributes:attrs
-                                                        context:nil];
-
-    if(indexPath.row==[self.tableData count]-1){
-        return 174.0f+textRect.size.height;
-    }
-    return 182.0f+textRect.size.height;
+                                                     attributes:attrs context:nil];
+    
+    // If there are no participants, reduce the size of the card
+    if (play.participantsCount==0) return rowHeight+textRect.size.height;
+    
+    return rowHeight+17+18+textRect.size.height;
+    
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *CellIdentifier = @"MediaTableCell";
@@ -660,7 +661,7 @@ self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
 
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
     if(serverRequest==kServerCallGetActivities){
-        
+        [_tableViewController.refreshControl endRefreshing];
         
         _homeActivityManager.delegate = nil;
         [_homeActivityManager releaseServerManager];
@@ -689,22 +690,12 @@ self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
 
                     }
                     
-                    
-                    
                 }
-                
-                
-                
-
-                
             }
         }
         if(isPushAuto){
             isPushAuto=FALSE;
         }
-        [self.refreshControl endRefreshing];
-        //self.tableView.contentInset = UIEdgeInsetsZero;
-        
         if([self.tableData count]!=0){
             self.imageDownloadsInProgress = [NSMutableDictionary dictionary];
 
@@ -728,10 +719,7 @@ self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
             blankHomePageView.userInteractionEnabled=YES;
             blankHomePageView.tag=1245;
             [self.view addSubview:blankHomePageView];
-
         }
-        
-        
     }
     else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
             _interestUpdateManager.delegate = nil;
@@ -756,8 +744,6 @@ self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
                         play.isParticipant=TRUE;
                     }
                     [self.tableView reloadData];
-                    
-            
        }
         }
 
@@ -770,7 +756,7 @@ self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
     if(isPushAuto){
         isPushAuto=FALSE;
     }
-    [self.refreshControl endRefreshing];
+    [_tableViewController.refreshControl endRefreshing];
     if(serverRequest==kServerCallGetActivities)
     {
         _homeActivityManager.delegate = nil;
@@ -793,7 +779,7 @@ self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
     if(isPushAuto){
         isPushAuto=FALSE;
     }
-    [self.refreshControl endRefreshing];
+    [_tableViewController.refreshControl endRefreshing];
     if(serverRequest==kServerCallGetActivities)
     {
         _homeActivityManager.delegate = nil;
@@ -818,21 +804,16 @@ self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
             
         }
             break;
-            
         case 1:
         {
             
         }
             break;
-
-            
         case 2:
         {
             
         }
             break;
-
-            
         case 3:
         {
             [self createANewActivity:self];
@@ -921,7 +902,6 @@ self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
     
 	dispatch_async(dispatch_get_main_queue(), ^{
         
-        
         [self LocationAcquired];
 	});
 }
@@ -937,7 +917,6 @@ self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
     [viewController.interestServerManager getDetailedInterest:play.activityId];
     viewController.interestActivity=play;
     [self.navigationController pushViewController:viewController animated:YES];
-
 }
 
 -(void)updateInterestedStatus:(NSInteger)index {
