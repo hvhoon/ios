@@ -323,6 +323,21 @@
         }
      else {
         NSLog(@"NO");
+         NSInteger weekday1 = [[[NSCalendar currentCalendar] components:NSWeekdayCalendarUnit
+                                                        fromDate:startActivityDate] weekday];
+         
+         NSInteger weekday2 = [[[NSCalendar currentCalendar] components:NSWeekdayCalendarUnit
+                                                              fromDate:endActivityDate] weekday];
+         
+         NSTimeInterval Interval=[endActivityDate timeIntervalSinceDate:startActivityDate];
+         NSLog(@"inteval=%f",Interval);
+
+         if (weekday1 == 7 && weekday2 ==1 && Interval>=172680.000000) {
+             
+             return @"Next weekend";
+         }else if(weekday1 == 2 && weekday2 ==1 && Interval>=604680.000000){
+             return @"Next Week";
+         }// Sun = 1, Sat = 7
     }
     
     

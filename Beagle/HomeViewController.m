@@ -483,10 +483,11 @@ self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
         cell =[[HomeTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         cell.selectionStyle=UITableViewCellSelectionStyleNone;
     }
+    BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexPath.row];
     
     cell.delegate=self;
     cell.cellIndex=indexPath.row;
-    BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexPath.row];
+    NSLog(@"result=%@",[BeagleUtilities activityTime:play.startActivityDate endate:play.endActivityDate]);
     cell.bg_activity = play;
     
     if (!play.profilePhotoImage)
