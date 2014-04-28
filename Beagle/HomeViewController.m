@@ -276,7 +276,8 @@
 
 }
 - (void)refresh {
-        
+    NSLog(@"Starting up query");
+    
     if(isPushAuto) {
         [_tableViewController.refreshControl beginRefreshing];
         [self.tableView setContentOffset:CGPointMake(0, -REFRESH_HEADER_HEIGHT) animated:YES];
