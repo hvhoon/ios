@@ -9,8 +9,8 @@
 #import "IconDownloader.h"
 #import "InterestChatClass.h"
 #import "BeagleActivityClass.h"
-#define kIconHeight 56
-#define kIconWidth 56
+#define kIconHeight 50
+#define kIconWidth 50
 
 @implementation IconDownloader
 
@@ -93,11 +93,11 @@
     // Set appIcon and clear temporary data/image
     UIImage *image = [[UIImage alloc] initWithData:self.activeDownload];
     
-    // Setting the correct scale for the image
-    image = [UIImage imageWithCGImage:[image CGImage] scale:2.0 orientation:UIImageOrientationUp];
-    
     if(image.size.height != image.size.width)
         image = [BeagleUtilities autoCrop:image];
+    
+    // Setting the correct scale for the image
+    image = [UIImage imageWithCGImage:[image CGImage] scale:2.0 orientation:UIImageOrientationUp];
     
     // If the image needs to be compressed
     if(image.size.height > kIconHeight || image.size.width > kIconHeight)

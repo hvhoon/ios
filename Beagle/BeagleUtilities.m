@@ -50,6 +50,10 @@
 // Function to compress a large image
 +(UIImage*) compressImage:(UIImage *)image size:(CGSize)size{
     
+    // Set the right scale first
+    size.height = size.height*image.scale;
+    size.width = size.width*image.scale;
+    
     UIGraphicsBeginImageContext(size);
     CGRect imageRect = CGRectMake(0.0, 0.0, size.width, size.height);
     [image drawInRect:imageRect];
