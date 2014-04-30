@@ -74,13 +74,13 @@ static UIFont *forthTextFont = nil;
                             color,NSForegroundColorAttributeName,
                             style, NSParagraphStyleAttributeName, nil];
     
-    CGSize dateTextSize = [@"Later Today" boundingRectWithSize:CGSizeMake(300, r.size.height)
+    CGSize dateTextSize = [[BeagleUtilities activityTime:bg_activity.startActivityDate endate:bg_activity.endActivityDate] boundingRectWithSize:CGSizeMake(300, r.size.height)
                                                    options:NSStringDrawingUsesLineFragmentOrigin
                                                 attributes:attrs
                                                    context:nil].size;
     
     
-    [@"Later Today" drawInRect:CGRectMake(304-dateTextSize.width,
+    [[BeagleUtilities activityTime:bg_activity.startActivityDate endate:bg_activity.endActivityDate] drawInRect:CGRectMake(304-dateTextSize.width,
                                           fromTheTop,
                                           dateTextSize.width,dateTextSize.height) withAttributes:attrs];
 

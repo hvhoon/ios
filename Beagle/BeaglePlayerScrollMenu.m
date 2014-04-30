@@ -32,7 +32,7 @@
 	if (menuItems.count == 0) {
 		return nil;
 	}
-    
+
 	[self setUpPlayerScrollMenu:menuItems];
     
 	return self;
@@ -42,9 +42,9 @@
 	if (menuItems.count == 0) {
 		return;
 	}
+
     playerItemsDictionary = [[NSMutableDictionary alloc] init];
 
-    
 	NSInteger menuItemsArrayCount = menuItems.count;
     
 	// Setting ScrollView

@@ -208,26 +208,61 @@ enum Weeks {
     if([thisSatStart timeIntervalSinceDate:[NSDate date]]<0){
         thisSatStart=[NSDate date];
     }
+    
+    components = [myCalendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit
+                               fromDate:[[NSDate date] dateByAddingTimeInterval:60*60*24]];
+    
+    
+    [components setHour:00];
+    [components setMinute:01];
+    [components setSecond:00];
+    NSDate *tomorrowStart=[myCalendar dateFromComponents:components];
+    NSLog(@"tomorrowStart=%@",tomorrowStart);
+    
+    [components setHour:23];
+    [components setMinute:59];
+    [components setSecond:00];
+    
+    NSDate *tomorrowEnd=[myCalendar dateFromComponents:components];
+    NSLog(@"tomorrowEnd=%@",tomorrowEnd);
+    
+    components = [myCalendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit
+                               fromDate:[NSDate date]];
+    
+    
+    [components setHour:23];
+    [components setMinute:59];
+    [components setSecond:00];
+    
+    NSDate *laterToday=[myCalendar dateFromComponents:components];
+    NSLog(@"laterToday=%@",laterToday);
+    
+    NSDateComponents *monthComponents = [[NSDateComponents alloc] init];
+    monthComponents.month = 1;
+    NSDate *oneMonthFromNow = [[NSCalendar currentCalendar] dateByAddingComponents:components toDate:[NSDate date] options:0];
+    
+     NSLog(@"oneMonthFromNow=%@",oneMonthFromNow);
+
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     
     NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
     [dateFormatter setTimeZone:utcTimeZone];
-//    NSDate *startActivityDate = [dateFormatter dateFromString:startDate];
-
-    
-//    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-//    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
-//    NSTimeZone *gmt = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
-//    [dateFormatter setTimeZone:gmt];
     
     
-    bg_activity.startActivityDate=[dateFormatter stringFromDate:nextFridayStart];//next weekend
-    bg_activity.startActivityDate=[dateFormatter stringFromDate:nextMondayStart];//next week
+    bg_activity.startActivityDate=[dateFormatter stringFromDate:nextFridayStart];//next weekend start
+    bg_activity.startActivityDate=[dateFormatter stringFromDate:nextMondayStart];//next week start
     bg_activity.startActivityDate=[dateFormatter stringFromDate:thisSatStart];//this weekend start
-    bg_activity.endActivityDate=[dateFormatter stringFromDate:nextSundayEnd];
-    bg_activity.endActivityDate=[dateFormatter stringFromDate:endOfThisWeekend];//end of this weekend
+    
+    bg_activity.startActivityDate=[dateFormatter stringFromDate:tomorrowStart];//tomorrow start
+    bg_activity.startActivityDate=[dateFormatter stringFromDate:[NSDate date]];//this weekStart && later today start
 
+    bg_activity.endActivityDate=[dateFormatter stringFromDate:nextSundayEnd];//next weekend end
+
+    bg_activity.endActivityDate=[dateFormatter stringFromDate:tomorrowEnd];//tomorrow end
+    bg_activity.endActivityDate=[dateFormatter stringFromDate:laterToday];//later today end
+    bg_activity.endActivityDate=[dateFormatter stringFromDate:endOfThisWeekend];//end thisweekend    
+    
     bg_activity.visibiltyFilter=@"Public";
     bg_activity.state=[[BeagleManager SharedInstance]placemark].administrativeArea;
     bg_activity.city=[[[BeagleManager SharedInstance]placemark].addressDictionary objectForKey:@"City"];

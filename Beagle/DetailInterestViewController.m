@@ -67,7 +67,7 @@ static NSString * const CellIdentifier = @"cell";
                            [UIColor colorWithRed:75.0/255.0 green:75.0/255.0 blue:75.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
                            style, NSParagraphStyleAttributeName, nil];
     
-    CGSize dateTextSize = [@"Later Today" boundingRectWithSize:CGSizeMake(300, 999)
+    CGSize dateTextSize = [[BeagleUtilities activityTime:self.interestActivity.startActivityDate endate:self.interestActivity.endActivityDate] boundingRectWithSize:CGSizeMake(300, 999)
                                                        options:NSStringDrawingUsesLineFragmentOrigin
                                                     attributes:attrs
                                                        context:nil].size;
@@ -75,7 +75,7 @@ static NSString * const CellIdentifier = @"cell";
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,0, dateTextSize.width, dateTextSize.height)];
     
     titleLabel.backgroundColor = [UIColor clearColor];
-    titleLabel.text = @"Later Today";
+    titleLabel.text = [BeagleUtilities activityTime:self.interestActivity.startActivityDate endate:self.interestActivity.endActivityDate];
     titleLabel.textColor = [UIColor colorWithRed:75.0/255.0 green:75.0/255.0 blue:75.0/255.0 alpha:1.0];
     titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f];
     titleLabel.textAlignment = NSTextAlignmentCenter;

@@ -688,6 +688,21 @@
                         }
                         self.tableData=[NSArray arrayWithArray:activitiesArray];
 
+                        self.tableData = [self.tableData sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
+                            
+                            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+                            
+                            NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+                            [dateFormatter setTimeZone:utcTimeZone];
+
+                            NSDate *s1 = [dateFormatter dateFromString:a.startActivityDate];//add the string
+                            NSDate *s2 = [dateFormatter dateFromString:b.startActivityDate];
+                            
+                            return [s1 compare:s2];
+                        }];
+
+
                     }
                     
                 }

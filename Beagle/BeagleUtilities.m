@@ -281,15 +281,27 @@
     
 
     NSDate *endActivityDate = [dateFormatter dateFromString:endDate];
-    NSArray *array = [NSArray arrayWithObjects:startActivityDate,[NSDate date],endActivityDate, nil];
+    NSDate *currentDate=[NSDate date];
+    NSArray *array = [NSArray arrayWithObjects:startActivityDate,currentDate,endActivityDate, nil];
     
     array = [array sortedArrayUsingComparator: ^(NSDate *s1, NSDate *s2){
         
         return [s1 compare:s2];
     }];
     
+    NSInteger weekday1 = [[[NSCalendar currentCalendar] components:NSWeekdayCalendarUnit
+                                                          fromDate:startActivityDate] weekday];
+    
+    NSInteger weekday2 = [[[NSCalendar currentCalendar] components:NSWeekdayCalendarUnit
+                                                          fromDate:endActivityDate] weekday];
+
+    NSTimeInterval Interval1=[endActivityDate timeIntervalSinceDate:startActivityDate];
+    NSTimeInterval Interval2=[endActivityDate timeIntervalSinceDate:[NSDate date]];
+    NSLog(@"interval1=%f",Interval1);
+    NSLog(@"interval2=%f",Interval2);
+
     NSUInteger indexOfDay1 = [array indexOfObject:startActivityDate];
-    NSUInteger indexOfDay2 = [array indexOfObject:[NSDate date]];
+    NSUInteger indexOfDay2 = [array indexOfObject:currentDate];
     NSUInteger indexOfDay3 = [array indexOfObject:endActivityDate];
     
     if (((indexOfDay1 <= indexOfDay2 ) && (indexOfDay2 < indexOfDay3)) ||
@@ -304,7 +316,7 @@
         [nowComponents setSecond:01];
         
         NSDate *satMorning=[gregorian dateFromComponents:nowComponents];
-        
+        NSLog(@"satMorning=%@",satMorning);
         [nowComponents setWeekday:0];
         
         [nowComponents setHour:23];
@@ -312,34 +324,32 @@
         [nowComponents setSecond:59];
         
         NSDate *sundayEvening=[gregorian dateFromComponents:nowComponents];
-
-        if([[NSDate date] timeIntervalSinceDate:startActivityDate]<0 && (0<[endActivityDate timeIntervalSinceDate:[NSDate date]]<24))
+        NSLog(@"sundayEvening=%@",sundayEvening);
+        if(weekday2 ==1){
+            return @"This Week";
+        }
+        else if([[NSDate date] timeIntervalSinceDate:startActivityDate]>0 && (0<[endActivityDate timeIntervalSinceDate:[NSDate date]]<86400.00))
                  return @"Later Today";
-        else if([[NSDate date] timeIntervalSinceDate:startActivityDate]>0 && (0<[endActivityDate timeIntervalSinceDate:[NSDate date]]<48))
+        else if([[NSDate date] timeIntervalSinceDate:startActivityDate]>0 && Interval2>86400.00 && Interval2<172800.00)
             return @"Tomorrow";
-        else if(48<[endActivityDate timeIntervalSinceDate:[NSDate date]]<120)
-            return @"This week";
+        else if(Interval2>172800.00 && Interval2<432000.000)
+            return @"This Week";
             
-        else if(0<=[startActivityDate timeIntervalSinceDate:satMorning]<1 && 0<=[endActivityDate timeIntervalSinceDate:sundayEvening]<1){
-                return @"This weekend";
-            }
 
         }
      else {
         NSLog(@"NO");
-         NSInteger weekday1 = [[[NSCalendar currentCalendar] components:NSWeekdayCalendarUnit
-                                                        fromDate:startActivityDate] weekday];
          
-         NSInteger weekday2 = [[[NSCalendar currentCalendar] components:NSWeekdayCalendarUnit
-                                                              fromDate:endActivityDate] weekday];
-         
-         NSTimeInterval Interval=[endActivityDate timeIntervalSinceDate:startActivityDate];
-         NSLog(@"inteval=%f",Interval);
-
-         if (weekday1 == 7 && weekday2 ==1 && Interval>=172680.000000) {
+         if(Interval2>86400.00 && Interval2<172800.00)
+             return @"Tomorrow";
+        else  if (weekday1 == 7 && weekday2 ==1 && Interval1>=172680.000000 && Interval2>=521400.00) {
+            
+             return @"Next Weekend";
+         }
+         else if (weekday1 == 7 && weekday2 ==1 && Interval1>=172680.000000) {
              
-             return @"Next weekend";
-         }else if(weekday1 == 2 && weekday2 ==1 && Interval>=604680.000000){
+             return @"This Weekend";
+         }else if(weekday1 == 2 && weekday2 ==1 && Interval1>=604680.000000){
              return @"Next Week";
          }// Sun = 1, Sat = 7
     }
