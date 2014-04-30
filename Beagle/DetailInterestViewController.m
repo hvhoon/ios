@@ -853,7 +853,8 @@ static NSString * const CellIdentifier = @"cell";
         }
         else
         {
-            cellImageView.image = chatCell.playerImage;
+            
+            cellImageView.image = [BeagleUtilities imageCircularBySize:chatCell.playerImage sqr:35.0f];
         }
         cellImageView.tag=[[NSString stringWithFormat:@"111%li",(long)indexPath.row]integerValue];
         [cell.contentView addSubview:cellImageView];
@@ -979,10 +980,9 @@ static NSString * const CellIdentifier = @"cell";
     if (iconDownloader != nil)
     {
         UITableViewCell *cell = (UITableViewCell*)[self.detailedInterestTableView cellForRowAtIndexPath:iconDownloader.indexPathInTableView];
-        UIImageView *cellImageView=(UIImageView*)[cell viewWithTag:[[NSString stringWithFormat:@"111%ld",indexPath.row]integerValue]];
-        iconDownloader.chatRecord.playerImage= [BeagleUtilities imageCircularBySize:iconDownloader.chatRecord.playerImage sqr:35.0f];
+        UIImageView *cellImageView=(UIImageView*)[cell viewWithTag:[[NSString stringWithFormat:@"111%ld",(long)indexPath.row]integerValue]];
         // Display the newly loaded image
-        cellImageView.image = iconDownloader.chatRecord.playerImage ;
+        cellImageView.image = [BeagleUtilities imageCircularBySize:iconDownloader.chatRecord.playerImage sqr:35.0f] ;
     }
     
     [self.detailedInterestTableView reloadData];
