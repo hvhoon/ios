@@ -17,7 +17,7 @@
 @end
 
 @implementation BeagleManager
-@synthesize beaglePlayer,currentLocation,placemark,weatherCondition,timeOfDay,photoId,activtyCreated;
+@synthesize beaglePlayer,currentLocation,placemark,weatherCondition,timeOfDay,photoId,activityCreated,activityDeleted;
 @synthesize signInServerManager=_signInServerManager;
 + (id) SharedInstance {
 	static id sharedManager = nil;
@@ -94,9 +94,7 @@
     
     
     [array setObject:[NSNumber numberWithInteger:self.beaglePlayer.beagleUserId] forKey:@"id"];
-
-
-        [array setObject:[NSNumber numberWithBool:self.beaglePlayer.fb_ticker] forKey:@"facebook_ticker"];
+    [array setObject:[NSNumber numberWithBool:self.beaglePlayer.fb_ticker] forKey:@"facebook_ticker"];
     if(self.beaglePlayer.email != nil && [self.beaglePlayer.email class] != [NSNull class])
           [array setObject:self.beaglePlayer.email forKey:@"email"];
     [array setObject:[NSNumber numberWithInteger:self.beaglePlayer.fbuid ]forKey:@"fbuid"];
@@ -152,6 +150,7 @@
     player.beagleUserId=[[array valueForKey:@"id"]integerValue];
     player.profileImageUrl=[array valueForKey:@"photo_url"];
     player.profileData=[array valueForKey:@"photoData"];
+    player.fb_ticker=[[array valueForKey:@"facebook_ticker"]boolValue];
     self.beaglePlayer=player;
     
     [self autoSign];

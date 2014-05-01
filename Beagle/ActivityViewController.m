@@ -31,17 +31,23 @@ enum Weeks {
     IBOutlet UIButton *timeFilterButton;
     IBOutlet UIButton *visibilityFilterButton;
     IBOutlet UIButton *locationFilterButton;
+    IBOutlet UIButton *deleteButton;
     IBOutlet UIImageView *backgroundView;
     ServerManager *activityServerManager;
+    ServerManager *deleteActivityManager;
+    IBOutlet UIImageView *visibilityImageView;
 }
 @property (nonatomic, strong) NSMutableIndexSet *optionIndices;
-@property(nonatomic,strong)BeagleActivityClass *bg_activity;
+
 @property(nonatomic,strong)ServerManager *activityServerManager;
+@property(nonatomic,strong)ServerManager *deleteActivityManager;
 @end
 
 @implementation ActivityViewController
 @synthesize bg_activity;
 @synthesize activityServerManager;
+@synthesize editState;
+@synthesize deleteActivityManager=_deleteActivityManager;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -59,8 +65,9 @@ enum Weeks {
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    if(!editState)
+        bg_activity=[[BeagleActivityClass alloc]init];
     
-    bg_activity=[[BeagleActivityClass alloc]init];
     self.optionIndices = [NSMutableIndexSet indexSetWithIndex:1];
     
     
@@ -84,10 +91,23 @@ enum Weeks {
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:248.0/255.0 green:248.0/255.0 blue:248.0/255.0 alpha:1.0]];
     [self.navigationController.navigationBar setTintColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0]];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(cancelButtonClicked:)];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Create" style:UIBarButtonItemStyleDone target:self action:@selector(createButtonClicked:)];
-    [self.navigationItem.rightBarButtonItem setTintColor:[UIColor darkGrayColor]];
-    self.navigationItem.rightBarButtonItem.enabled=NO;
     
+    if(editState){
+        
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleDone target:self action:@selector(saveButtonClicked:)];
+    [self.navigationItem.rightBarButtonItem setTintColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0]];
+    self.navigationItem.rightBarButtonItem.enabled=YES;
+        
+    }else{
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Create" style:UIBarButtonItemStyleDone target:self action:@selector(createButtonClicked:)];
+        [self.navigationItem.rightBarButtonItem setTintColor:[UIColor darkGrayColor]];
+        self.navigationItem.rightBarButtonItem.enabled=NO;
+        
+    }
+    
+    if(editState){
+        descriptionTextView.text=self.bg_activity.activityDesc;
+    }
     countTextLabel.text= [[NSString alloc] initWithFormat:@"%lu",(unsigned long)140-[descriptionTextView.text length]];
     [descriptionTextView becomeFirstResponder];
 
@@ -114,7 +134,12 @@ enum Weeks {
     //[countTextLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:17.0]];
     //[countTextLabel setTextColor:[UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1.0]];
     
-
+    if(editState){
+        visibilityFilterButton.hidden=YES;
+        locationFilterButton.hidden=YES;
+        deleteButton.hidden=NO;
+        visibilityImageView.hidden=YES;
+    }
 	// Do any additional setup after loading the view.
 }
 
@@ -146,7 +171,6 @@ enum Weeks {
         return;
     }
     bg_activity.activityDesc=descriptionTextView.text;
-    bg_activity.visibiltyFilter=@"Friends only";
     
     
     
@@ -263,7 +287,7 @@ enum Weeks {
     bg_activity.endActivityDate=[dateFormatter stringFromDate:laterToday];//later today end
     bg_activity.endActivityDate=[dateFormatter stringFromDate:endOfThisWeekend];//end thisweekend    
     
-    bg_activity.visibiltyFilter=@"Public";
+    bg_activity.visibility=@"Public";
     bg_activity.state=[[BeagleManager SharedInstance]placemark].administrativeArea;
     bg_activity.city=[[[BeagleManager SharedInstance]placemark].addressDictionary objectForKey:@"City"];
     bg_activity.timeFilter=@"Next Weekend";
@@ -283,6 +307,60 @@ enum Weeks {
     [self.activityServerManager createActivityOnBeagle:bg_activity];
 
     
+}
+-(void)saveButtonClicked:(id)sender{
+    
+    bg_activity.activityDesc=descriptionTextView.text;
+    if(self.activityServerManager!=nil){
+        self.activityServerManager.delegate = nil;
+        [self.activityServerManager releaseServerManager];
+        self.activityServerManager = nil;
+    }
+    
+    self.activityServerManager=[[ServerManager alloc]init];
+    self.activityServerManager.delegate=self;
+    [self.activityServerManager updateActivityOnBeagle:bg_activity];
+
+}
+#define kDeleteActivity 2
+-(IBAction)deleteButtonClicked:(id)sender{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Are you sure you want to delete the Activity"
+                                                    message:nil
+                                                   delegate:self cancelButtonTitle:@"OK" otherButtonTitles:@"Cancel",nil];
+    alert.tag=kDeleteActivity;
+    [alert show];
+
+}
+
+#pragma mark -
+#pragma mark UIAlertView methods
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    
+    [alertView resignFirstResponder];
+    
+        if (buttonIndex == 0) {
+            
+            switch (alertView.tag) {
+                case kDeleteActivity:
+                {
+                    if(_deleteActivityManager!=nil){
+                        _deleteActivityManager.delegate = nil;
+                        [_deleteActivityManager releaseServerManager];
+                        _deleteActivityManager = nil;
+                    }
+                    
+                    _deleteActivityManager=[[ServerManager alloc]init];
+                    _deleteActivityManager.delegate=self;
+                    [_deleteActivityManager deleteAnInterest:bg_activity.activityId];
+                }
+                    break;
+                    
+            }
+        }
+        
+        else{
+            NSLog(@"Clicked Cancel Button");
+        }
 }
 - (void)didReceiveMemoryWarning
 {
@@ -329,7 +407,7 @@ enum Weeks {
 			int j = [Temp intValue];
             
 			j = j-1 ;
-			countTextLabel.text= [[NSString alloc] initWithFormat:@"%u",141-[textView.text length]];
+			countTextLabel.text= [[NSString alloc] initWithFormat:@"%ld",141-[textView.text length]];
             
 			return YES;
 		}
@@ -345,7 +423,7 @@ enum Weeks {
 	}
 	if(flag == NO)
 	{
-		countTextLabel.text= [[NSString alloc] initWithFormat:@"%u",140-[descriptionTextView.text length]-1];
+		countTextLabel.text= [[NSString alloc] initWithFormat:@"%ld",140-[descriptionTextView.text length]-1];
 		
 		
 	}
@@ -395,7 +473,7 @@ enum Weeks {
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
 
     
-    if(serverRequest==kServerCallCreateActivity){
+    if(serverRequest==kServerCallCreateActivity||serverRequest==kServerCallEditActivity){
         
         self.activityServerManager.delegate = nil;
         [self.activityServerManager releaseServerManager];
@@ -406,23 +484,48 @@ enum Weeks {
             id status=[response objectForKey:@"status"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 BeagleManager *BG=[BeagleManager SharedInstance];
-                BG.activtyCreated=TRUE;
+                BG.activityCreated=TRUE;
                 [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
 
             }
         }
         
     }
+    else if (serverRequest==kServerCallDeleteActivity){
+        
+        _deleteActivityManager.delegate = nil;
+        [_deleteActivityManager releaseServerManager];
+        _deleteActivityManager = nil;
+
+        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
+            
+            id status=[response objectForKey:@"status"];
+            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
+                BeagleManager *BG=[BeagleManager SharedInstance];
+                BG.activityDeleted=TRUE;
+                 BG.activityCreated=TRUE;
+                [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
+                
+            }
+        }
+
+    }
 }
 
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {
 
-    if(serverRequest==kServerCallCreateActivity)
+    if(serverRequest==kServerCallCreateActivity||serverRequest==kServerCallEditActivity)
     {
         self.activityServerManager.delegate = nil;
         [self.activityServerManager releaseServerManager];
         self.activityServerManager = nil;
+    }
+    else if (serverRequest==kServerCallDeleteActivity){
+        
+        _deleteActivityManager.delegate = nil;
+        [_deleteActivityManager releaseServerManager];
+        _deleteActivityManager = nil;
     }
     
     NSString *message = NSLocalizedString (@"Unable to initiate request.",
@@ -433,13 +536,18 @@ enum Weeks {
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
 {
 
-    if(serverRequest==kServerCallCreateActivity)
+    if(serverRequest==kServerCallCreateActivity||serverRequest==kServerCallEditActivity)
     {
         self.activityServerManager.delegate = nil;
         [self.activityServerManager releaseServerManager];
         self.activityServerManager = nil;
     }
-    
+    else if (serverRequest==kServerCallDeleteActivity){
+        
+        _deleteActivityManager.delegate = nil;
+        [_deleteActivityManager releaseServerManager];
+        _deleteActivityManager = nil;
+    }
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
     [alert show];
 }

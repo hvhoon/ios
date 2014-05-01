@@ -15,7 +15,10 @@ typedef enum {
     kServerCallGetDetailedInterest,
     kServerCallLeaveInterest,
     kServerCallParticipateInterest,
-    kServerCallPostComment
+    kServerCallPostComment,
+    kServerCallDeleteActivity,
+    kServerCallEditActivity,
+    kServerCallUpdateFbTicker
 } ServerCallType;
 
 @class ServerManager;
@@ -45,4 +48,7 @@ typedef enum {
 -(void)removeMembership:(NSInteger)activityId;
 -(void)participateMembership:(NSInteger)activityId;
 -(void)postAComment:(NSInteger)activityId desc:(NSString*)desc;
+-(void)deleteAnInterest:(NSInteger)activityId;
+-(void)updateActivityOnBeagle:(BeagleActivityClass*)data;
+-(void)updateFacebookTickerStatus:(BOOL)status;
 @end

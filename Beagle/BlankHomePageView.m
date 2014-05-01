@@ -12,7 +12,7 @@
 @property (weak, nonatomic)IBOutlet NSLayoutConstraint *verticalSpacing;
 @property (weak, nonatomic)IBOutlet NSLayoutConstraint *gapBetween_1_2_FilterBtns;
 @property (weak, nonatomic)IBOutlet NSLayoutConstraint *gapBetween_2_3_FilterBtns;
- @property (weak, nonatomic) IBOutlet NSLayoutConstraint *gapBetween_3_4_FilterBtns;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *gapBetween_3_4_FilterBtns;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *verticalSpacingForLabel;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *verticalSpaceForLabel_1_2;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *verticalSpaceForLabel_2_3;

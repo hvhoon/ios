@@ -14,6 +14,7 @@
 #import "HomeTableViewCell.h"
 #import "MessageKeyboardView.h"
 #import "IconDownloader.h"
+#import "ActivityViewController.h"
 static NSString * const CellIdentifier = @"cell";
 @interface DetailInterestViewController ()<BeaglePlayerScrollMenuDelegate,ServerManagerDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,IconDownloaderDelegate>
 
@@ -49,7 +50,15 @@ static NSString * const CellIdentifier = @"cell";
     
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     
+    BeagleManager *BG=[BeagleManager SharedInstance];
+    if(BG.activityDeleted){
+        BG.activityDeleted=FALSE;
+        [self.navigationController popViewControllerAnimated:YES];
+    }
     
+    if(self.interestActivity.dosRelation==0){
+        [self.detailedInterestTableView reloadData];
+    }
 }
 
 
@@ -57,7 +66,10 @@ static NSString * const CellIdentifier = @"cell";
 {
     [super viewDidLoad];
     
-    
+    if(self.interestActivity.dosRelation==0){
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStyleDone target:self action:@selector(editButtonClicked:)];
+
+    }
     NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     [style setAlignment:NSTextAlignmentCenter];
 
@@ -106,7 +118,16 @@ static NSString * const CellIdentifier = @"cell";
     }
 
 }
+-(void)editButtonClicked:(id)sender{
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    ActivityViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"activityScreen"];
+    viewController.bg_activity=self.interestActivity;
+    viewController.editState=TRUE;
+    UINavigationController *activityNavigationController=[[UINavigationController alloc]initWithRootViewController:viewController];
+    
+    [self.navigationController presentViewController:activityNavigationController animated:YES completion:nil];
 
+}
 -(void)postClicked:(id)sender{
     if([[self.contentWrapper.inputView.textView text]length]!=0){
         

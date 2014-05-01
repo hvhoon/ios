@@ -9,7 +9,7 @@
 #import "BeagleActivityClass.h"
 
 @implementation BeagleActivityClass
-@synthesize activityDesc,startActivityDate,endActivityDate,visibility,locationName,city,state,activityId,latitude,longitude,timeFilter,visibiltyFilter,ownerid,activityType,organizerName,photoUrl,dosRelation,participantsCount,profilePhotoImage,dos2Count,isParticipant,postCount,participantsArray;
+@synthesize activityDesc,startActivityDate,endActivityDate,visibility,locationName,city,state,activityId,latitude,longitude,timeFilter,ownerid,activityType,organizerName,photoUrl,dosRelation,participantsCount,profilePhotoImage,dos2Count,isParticipant,postCount,participantsArray;
 
 -(id) initWithDictionary:(NSDictionary *)dictionary
 {

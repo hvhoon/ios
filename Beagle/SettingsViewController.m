@@ -8,12 +8,15 @@
 
 #import "SettingsViewController.h"
 
-@interface SettingsViewController ()
+@interface SettingsViewController ()<ServerManagerDelegate>
+@property(nonatomic,strong)ServerManager*updateFBTickerManager;
 @property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
 @property (weak, nonatomic) IBOutlet UILabel *profileNameLabel;
+@property (weak, nonatomic) IBOutlet UISwitch *fbTickerSwitch;
 @end
 
 @implementation SettingsViewController
+@synthesize updateFBTickerManager=_updateFBTickerManager;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -52,8 +55,10 @@
     else{
         _profileNameLabel.text =[[[BeagleManager SharedInstance]beaglePlayer]first_name];
     }
-    
+    BeagleManager *BG=[BeagleManager SharedInstance];
+    BeagleUserClass *player=BG.beaglePlayer;
 
+    _fbTickerSwitch.on= player.fb_ticker;
 	// Do any additional setup after loading the view.
 }
 
@@ -101,6 +106,101 @@
         [self.slidingViewController resetTopView];
     }];
 }
+
+- (IBAction) switchChanged:(id)sender {
+    UISwitch* switchControl = sender;
+    NSLog( @"The switch is %@", switchControl.on ? @"ON" : @"OFF" );
+    
+    BeagleManager *BG=[BeagleManager SharedInstance];
+    BeagleUserClass *player=BG.beaglePlayer;
+    player.fb_ticker=switchControl.on;
+    
+    if(_updateFBTickerManager!=nil){
+        _updateFBTickerManager.delegate = nil;
+        [_updateFBTickerManager releaseServerManager];
+        _updateFBTickerManager = nil;
+    }
+    
+    _updateFBTickerManager=[[ServerManager alloc]init];
+    _updateFBTickerManager.delegate=self;
+    [_updateFBTickerManager updateFacebookTickerStatus:player.fb_ticker];
+
+}
+#pragma mark - server calls
+
+- (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
+    
+    if(serverRequest==kServerCallUpdateFbTicker){
+        
+        _updateFBTickerManager.delegate = nil;
+        [_updateFBTickerManager releaseServerManager];
+        _updateFBTickerManager = nil;
+        
+        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
+            
+            id status=[response objectForKey:@"status"];
+            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
+                
+                
+                
+                
+                id player=[response objectForKey:@"player"];
+                if (player != nil && [player class] != [NSNull class]) {
+                    
+                    id fb_ticker=[player objectForKey:@"fb_ticker"];
+                    if (fb_ticker != nil && [fb_ticker class] != [NSNull class]) {
+                        [[BeagleManager SharedInstance] userProfileDataUpdate];
+                        
+                    }
+                    
+                    
+                    
+                }
+            }
+        }
+        
+    }
+}
+
+- (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
+{
+    
+    if(serverRequest==kServerCallUpdateFbTicker)
+    {
+            _updateFBTickerManager.delegate = nil;
+            [_updateFBTickerManager releaseServerManager];
+            _updateFBTickerManager = nil;
+    }
+    BeagleManager *BG=[BeagleManager SharedInstance];
+    BeagleUserClass *player=BG.beaglePlayer;
+    player.fb_ticker=!player.fb_ticker;
+    
+    [_fbTickerSwitch setOn:player.fb_ticker animated:YES];
+
+    NSString *message = NSLocalizedString (@"Unable to initiate request.",
+                                           @"NSURLConnection initialization method failed.");
+    BeagleAlertWithMessage(message);
+}
+
+- (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
+{
+    BeagleManager *BG=[BeagleManager SharedInstance];
+    BeagleUserClass *player=BG.beaglePlayer;
+    player.fb_ticker=!player.fb_ticker;
+    
+    [_fbTickerSwitch setOn:player.fb_ticker animated:YES];
+
+    if(serverRequest==kServerCallUpdateFbTicker)
+    {
+            _updateFBTickerManager.delegate = nil;
+            [_updateFBTickerManager releaseServerManager];
+            _updateFBTickerManager = nil;
+    }
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
+    [alert show];
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];

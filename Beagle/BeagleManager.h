@@ -19,8 +19,8 @@
 @property(nonatomic,strong)NSString *weatherCondition;
 @property(nonatomic,strong)NSString *timeOfDay;
 @property(nonatomic,strong)NSString*photoId;
-@property(nonatomic,assign)BOOL activtyCreated;
-
+@property(nonatomic,assign)BOOL activityDeleted;
+@property(nonatomic,assign)BOOL activityCreated;
 + (id)SharedInstance;
 -(void)userProfileDataUpdate;
 -(void)getUserObjectInAutoSignInMode;
