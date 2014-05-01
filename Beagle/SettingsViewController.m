@@ -47,7 +47,7 @@
         
     }
     else{
-        _profileImageView.image=[BeagleUtilities imageCircularBySize:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData] scale:2.0] sqr:50.0f];
+        _profileImageView.image=[BeagleUtilities imageCircularBySize:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]] sqr:50.0f];
     }
     
     if([[[[BeagleManager SharedInstance]beaglePlayer]last_name]length]!=0)
@@ -67,10 +67,11 @@
     BeagleManager *BG=[BeagleManager SharedInstance];
     NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:url]];
     BG.beaglePlayer.profileData=imageData;
-    UIImage* image =[[UIImage alloc] initWithData:imageData scale:2.0];
+    UIImage* image =[[UIImage alloc] initWithData:imageData];
     [self performSelectorOnMainThread:@selector(imageCircular:) withObject:image waitUntilDone:NO];
 }
 -(void)imageCircular:(UIImage*)image{
+    
     _profileImageView.image=[BeagleUtilities imageCircularBySize:image sqr:50.0f];
 }
 - (IBAction)sliderButtonClicked:(id)sender{

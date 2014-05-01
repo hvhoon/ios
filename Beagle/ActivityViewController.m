@@ -84,7 +84,7 @@ enum Weeks {
 
     }
     else{
-        [self imageCircular:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData] scale:2.0]];
+        [self imageCircular:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
     }
     
 
