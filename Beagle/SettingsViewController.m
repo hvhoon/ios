@@ -47,7 +47,7 @@
         
     }
     else{
-        _profileImageView.image=[BeagleUtilities imageCircularBySize:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]] sqr:50.0f];
+        _profileImageView.image=[BeagleUtilities imageCircularBySize:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]] sqr:100.0f];
     }
     
     if([[[[BeagleManager SharedInstance]beaglePlayer]last_name]length]!=0)
@@ -72,7 +72,7 @@
 }
 -(void)imageCircular:(UIImage*)image{
     
-    _profileImageView.image=[BeagleUtilities imageCircularBySize:image sqr:50.0f];
+    _profileImageView.image=[BeagleUtilities imageCircularBySize:image sqr:100.0f];
 }
 - (IBAction)sliderButtonClicked:(id)sender{
     NSString *identifier = [NSString stringWithFormat:@"mainScreen"];
