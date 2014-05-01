@@ -105,7 +105,7 @@
         [activityEvent setObject:data.city forKey:@"where_city"];
         [activityEvent setObject:data.state  forKey:@"where_state"];
         [activityEvent setObject:data.activityDesc forKey:@"what"];
-        [activityEvent setObject:data.visibiltyFilter forKey:@"access"];
+        [activityEvent setObject:data.visibility forKey:@"access"];
         [activityEvent setObject:[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"] forKey:@"ownnerid"];
         [activityEvent setObject:data.endActivityDate  forKey:@"stop_when"];
         
@@ -225,6 +225,76 @@
         
         [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats.json", _serverUrl]
                          method:@"POST"
+                         params:nil data:postData];
+        
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+}
+
+-(void)deleteAnInterest:(NSInteger)activityId{
+    _serverCallType = kServerCallDeleteActivity;
+    if([self isInternetAvailable])
+    {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activities/%ld.json", _serverUrl,(long)activityId]
+                         method:@"DELETE"
+                         params:nil data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+}
+-(void)updateActivityOnBeagle:(BeagleActivityClass*)data{
+    _serverCallType=kServerCallEditActivity;
+    if([self isInternetAvailable]){
+        
+        
+        NSMutableDictionary* activityEvent =[[NSMutableDictionary alloc] init];
+        [activityEvent setObject:[NSNumber numberWithInteger:1] forKey:@"atype"];
+        [activityEvent setObject:data.startActivityDate forKey:@"start_when"];
+        [activityEvent setObject:[NSNumber numberWithFloat:data.latitude] forKey:@"where_lat"];
+        [activityEvent setObject:[NSNumber numberWithFloat:data.longitude] forKey:@"where_lng"];
+        [activityEvent setObject:data.city forKey:@"where_city"];
+        [activityEvent setObject:data.state  forKey:@"where_state"];
+        [activityEvent setObject:data.activityDesc forKey:@"what"];
+        [activityEvent setObject:data.visibility forKey:@"access"];
+        [activityEvent setObject:[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"] forKey:@"ownnerid"];
+        [activityEvent setObject:data.endActivityDate  forKey:@"stop_when"];
+        
+        
+        
+        
+        NSData *postData = [[activityEvent JSONRepresentation] dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
+        
+        
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activities/%ld.json", _serverUrl,(long)data.activityId]
+                         method:@"PUT"
+                         params:nil data:postData];
+    }
+    else{
+        [self internetNotAvailable];
+    }
+    
+    
+    
+}
+
+-(void)updateFacebookTickerStatus:(BOOL)status{
+    _serverCallType = kServerCallUpdateFbTicker;
+    if([self isInternetAvailable])
+    {
+        
+        NSMutableDictionary* updateStatus =[[NSMutableDictionary alloc] init];
+        [updateStatus setObject:[NSNumber numberWithBool:status] forKey:@"fb_ticker"];
+        
+        NSData *postData = [[updateStatus JSONRepresentation] dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
+        
+        
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@/players/%ld.json", _serverUrl,[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]]
+                         method:@"PUT"
                          params:nil data:postData];
         
     }

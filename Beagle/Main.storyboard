@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13C1021" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="Tvt-5e-zCq">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5053" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="Tvt-5e-zCq">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
@@ -259,9 +259,12 @@
                                 <rect key="frame" x="16" y="362" width="22" height="22"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FIn-5f-J2w">
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="FIn-5f-J2w">
                                 <rect key="frame" x="205" y="502" width="51" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <connections>
+                                    <action selector="switchChanged:" destination="uYK-CY-Sol" eventType="valueChanged" id="qgO-aP-p1W"/>
+                                </connections>
                             </switch>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Facebook" translatesAutoresizingMaskIntoConstraints="NO" id="8Fx-wv-yU7">
                                 <rect key="frame" x="16" y="493" width="28" height="28"/>
@@ -304,6 +307,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="fbTickerSwitch" destination="FIn-5f-J2w" id="yZE-jF-kNc"/>
                         <outlet property="profileImageView" destination="S6h-4g-xhL" id="L5d-DJ-sJC"/>
                         <outlet property="profileNameLabel" destination="n0w-kW-vyK" id="aEu-eD-FPP"/>
                     </connections>
@@ -458,6 +462,16 @@
                                     <constraint firstAttribute="height" constant="15" id="VFs-eo-1D2"/>
                                 </constraints>
                             </imageView>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BsK-la-ctD">
+                                <rect key="frame" x="284" y="280" width="20" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" backgroundImage="trash">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="deleteButtonClicked:" destination="S9M-sC-S9q" eventType="touchUpInside" id="ip7-7g-lBp"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
@@ -471,8 +485,10 @@
                             <constraint firstItem="DL6-bG-I82" firstAttribute="top" secondItem="8k2-Wd-CIH" secondAttribute="bottom" constant="18" id="CY1-FF-zvV"/>
                             <constraint firstItem="DL6-bG-I82" firstAttribute="leading" secondItem="Bme-OF-b41" secondAttribute="trailing" constant="21" id="DYp-Xx-ff2"/>
                             <constraint firstItem="Bme-OF-b41" firstAttribute="top" secondItem="8k2-Wd-CIH" secondAttribute="bottom" constant="17" id="Dr4-YX-7ol"/>
+                            <constraint firstItem="sqL-0B-EFK" firstAttribute="top" secondItem="BsK-la-ctD" secondAttribute="bottom" constant="12" id="EvX-L3-WNg"/>
                             <constraint firstItem="3MQ-a9-lKU" firstAttribute="top" secondItem="8k2-Wd-CIH" secondAttribute="bottom" constant="17" id="For-xj-SSj"/>
                             <constraint firstItem="8k2-Wd-CIH" firstAttribute="top" secondItem="9iY-EO-BXw" secondAttribute="bottom" constant="10" id="Icc-VY-YpT"/>
+                            <constraint firstAttribute="trailing" secondItem="BsK-la-ctD" secondAttribute="trailing" constant="16" id="K1j-lJ-9xG"/>
                             <constraint firstItem="HMZ-Fh-jty" firstAttribute="leading" secondItem="ygx-zD-J8O" secondAttribute="leading" constant="16" id="K4b-zD-MVx"/>
                             <constraint firstItem="5Kw-tX-RGq" firstAttribute="leading" secondItem="1A7-qG-45x" secondAttribute="trailing" id="PFb-og-YqP"/>
                             <constraint firstItem="8k2-Wd-CIH" firstAttribute="leading" secondItem="FOF-FV-DTm" secondAttribute="trailing" constant="5" id="PtI-yF-3pe"/>
@@ -497,11 +513,13 @@
                     <connections>
                         <outlet property="backgroundView" destination="sqL-0B-EFK" id="QQf-H3-oVr"/>
                         <outlet property="countTextLabel" destination="5Kw-tX-RGq" id="Jc8-YN-v6N"/>
+                        <outlet property="deleteButton" destination="BsK-la-ctD" id="GoL-w8-JEj"/>
                         <outlet property="descriptionTextView" destination="8k2-Wd-CIH" id="LCU-Qq-ikD"/>
                         <outlet property="locationFilterButton" destination="1A7-qG-45x" id="X8n-sX-hqt"/>
                         <outlet property="profileImageView" destination="FOF-FV-DTm" id="njT-Of-LIz"/>
                         <outlet property="timeFilterButton" destination="Bme-OF-b41" id="CKD-VE-3jC"/>
                         <outlet property="visibilityFilterButton" destination="3MQ-a9-lKU" id="P3C-HL-hQC"/>
+                        <outlet property="visibilityImageView" destination="DL6-bG-I82" id="IhX-G5-cS5"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0gS-gS-A5f" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -607,6 +625,7 @@
         <image name="bug_icon" width="27" height="24"/>
         <image name="invite_icon" width="27" height="21"/>
         <image name="megaphone" width="27" height="20"/>
+        <image name="trash" width="20" height="20"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>

@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-
+@class BeagleActivityClass;
 @interface ActivityViewController : UIViewController
-
+@property(nonatomic,strong)BeagleActivityClass *bg_activity;
+@property(nonatomic,assign)BOOL editState;
 @end
