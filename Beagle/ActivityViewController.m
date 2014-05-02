@@ -13,7 +13,7 @@
 #import "LocationTableViewController.h"
 #import "UIViewController+MJPopupViewController.h"
 #import "BeagleActivityClass.h"
-
+#import "ActivityTimeViewController.h"
 enum Weeks {
     SUNDAY = 1,
     MONDAY,
@@ -23,7 +23,7 @@ enum Weeks {
     FRIDAY,
     SATURDAY
 };
-@interface ActivityViewController ()<UITextViewDelegate,LocationTableViewDelegate,ServerManagerDelegate>{
+@interface ActivityViewController ()<UITextViewDelegate,LocationTableViewDelegate,ServerManagerDelegate,ActivityTimeViewControllerDelegate>{
     IBOutlet UIImageView *profileImageView;
     IBOutlet UITextView *descriptionTextView;
     UILabel *placeholderLabel;
@@ -58,8 +58,11 @@ enum Weeks {
 }
 -(void)viewWillAppear:(BOOL)animated{
     
-    [self.navigationController setNavigationBarHidden:NO];
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
+    
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+
+
     
 }
 - (void)viewDidLoad
@@ -458,7 +461,10 @@ enum Weeks {
 
 
 - (IBAction)timeFilter:(id)sender{
-    
+    ActivityTimeViewController *viewController = [self.storyboard instantiateViewControllerWithIdentifier:@"activityTimeScreen"];
+    viewController.delegate=self;
+    [self presentPopupViewController:viewController animationType:MJPopupViewAnimationSlideLeftRight];
+
 }
 
 - (void)dismissLocationTable:(LocationTableViewController*)viewController{
@@ -466,6 +472,12 @@ enum Weeks {
     [self dismissPopupViewControllerWithanimationType:MJPopupViewAnimationSlideLeftLeft];
     [descriptionTextView becomeFirstResponder];
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+}
+
+- (void)dismissactivityTimeFilter:(ActivityTimeViewController*)viewController{
+    [self dismissPopupViewControllerWithanimationType:MJPopupViewAnimationSlideLeftLeft];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+    
 }
 
 #pragma mark - server calls
