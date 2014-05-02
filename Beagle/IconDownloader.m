@@ -9,8 +9,8 @@
 #import "IconDownloader.h"
 #import "InterestChatClass.h"
 #import "BeagleActivityClass.h"
-#define kIconHeight 50
-#define kIconWidth 50
+#define kIconHeight 100
+#define kIconWidth 100
 
 @implementation IconDownloader
 
@@ -95,9 +95,6 @@
     
     if(image.size.height != image.size.width)
         image = [BeagleUtilities autoCrop:image];
-    
-    // Setting the correct scale for the image
-    image = [UIImage imageWithCGImage:[image CGImage] scale:2.0 orientation:UIImageOrientationUp];
     
     // If the image needs to be compressed
     if(image.size.height > kIconHeight || image.size.width > kIconHeight)
