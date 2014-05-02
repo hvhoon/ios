@@ -67,32 +67,17 @@ static NSString * const CellIdentifier = @"cell";
     [super viewDidLoad];
     
     if(self.interestActivity.dosRelation==0){
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStyleDone target:self action:@selector(editButtonClicked:)];
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(editButtonClicked:)];
 
     }
-    NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-    [style setAlignment:NSTextAlignmentCenter];
+    
+    [self.navigationController.navigationBar setBarTintColor:[BeagleUtilities returnBeagleColor:8]];
+    [self.navigationItem.titleView setTintColor:[BeagleUtilities returnBeagleColor:4]];
+    
+    // Set the screen title.
+    NSString* screenTitle = [BeagleUtilities activityTime:self.interestActivity.startActivityDate endate:self.interestActivity.endActivityDate];
+    self.navigationItem.title = screenTitle;
 
-    
-    NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                           [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f], NSFontAttributeName,
-                           [UIColor colorWithRed:75.0/255.0 green:75.0/255.0 blue:75.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
-                           style, NSParagraphStyleAttributeName, nil];
-    
-    CGSize dateTextSize = [[BeagleUtilities activityTime:self.interestActivity.startActivityDate endate:self.interestActivity.endActivityDate] boundingRectWithSize:CGSizeMake(300, 999)
-                                                       options:NSStringDrawingUsesLineFragmentOrigin
-                                                    attributes:attrs
-                                                       context:nil].size;
-
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,0, dateTextSize.width, dateTextSize.height)];
-    
-    titleLabel.backgroundColor = [UIColor clearColor];
-    titleLabel.text = [BeagleUtilities activityTime:self.interestActivity.startActivityDate endate:self.interestActivity.endActivityDate];
-    titleLabel.textColor = [UIColor colorWithRed:75.0/255.0 green:75.0/255.0 blue:75.0/255.0 alpha:1.0];
-    titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f];
-    titleLabel.textAlignment = NSTextAlignmentCenter;
-    self.navigationItem.titleView = titleLabel;
-    
     self.detailedInterestTableView = [[UITableView alloc] initWithFrame:CGRectZero
                                                   style:UITableViewStylePlain];
     self.detailedInterestTableView.dataSource = self;
@@ -203,7 +188,7 @@ static NSString * const CellIdentifier = @"cell";
     [self performSelectorOnMainThread:@selector(imageCircular:) withObject:image waitUntilDone:NO];
 }
 -(void)imageCircular:(UIImage*)image{
-    _profileImageView.image=[BeagleUtilities imageCircularBySize:image sqr:52.0f];
+    _profileImageView.image=[BeagleUtilities imageCircularBySize:image sqr:100.0f];
 }
 
 - (void)didReceiveMemoryWarning
@@ -1025,6 +1010,9 @@ static NSString * const CellIdentifier = @"cell";
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     
     [self loadImagesForOnscreenRows];
+}
+-(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+    self.navigationItem.backBarButtonItem=[[UIBarButtonItem alloc] initWithTitle:@"NEW TITLE" style:UIBarButtonItemStylePlain target:nil action:nil];
 }
 
 /*
