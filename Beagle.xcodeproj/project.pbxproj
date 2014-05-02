@@ -101,6 +101,7 @@
 		18FADB9B18B669E500A62287 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FADB9A18B669E500A62287 /* HomeViewController.m */; };
 		18FADB9E18B66A4C00A62287 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FADB9D18B66A4C00A62287 /* SettingsViewController.m */; };
 		18FADBA318B66A8D00A62287 /* NotificationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FADBA218B66A8D00A62287 /* NotificationsViewController.m */; };
+		18FEA6E519141B54005C8433 /* ActivityTimeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FEA6E319141B54005C8433 /* ActivityTimeViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -289,6 +290,8 @@
 		18FADBA218B66A8D00A62287 /* NotificationsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsViewController.m; sourceTree = "<group>"; };
 		18FC279B18CF721B00F33576 /* SideTransitionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SideTransitionController.h; sourceTree = "<group>"; };
 		18FC279C18CF721B00F33576 /* SideTransitionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SideTransitionController.m; sourceTree = "<group>"; };
+		18FEA6E319141B54005C8433 /* ActivityTimeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityTimeViewController.m; sourceTree = "<group>"; };
+		18FEA6E419141B54005C8433 /* ActivityTimeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityTimeViewController.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -438,6 +441,8 @@
 		1805CED418C8D24700AC8556 /* Filter Views */ = {
 			isa = PBXGroup;
 			children = (
+				18FEA6E419141B54005C8433 /* ActivityTimeViewController.h */,
+				18FEA6E319141B54005C8433 /* ActivityTimeViewController.m */,
 				180AF0B118DC7FB200EE87D6 /* BlankHomePageView.h */,
 				180AF0B218DC7FB200EE87D6 /* BlankHomePageView.m */,
 				180AF0B018DC7FB200EE87D6 /* BlankHomePageView.xib */,
@@ -916,6 +921,7 @@
 				18EC231118B5A42D00316B6E /* ServerManager.m in Sources */,
 				18007F0118C6541200230C23 /* UIImage+Alpha.m in Sources */,
 				18EC231718B5A42D00316B6E /* ASIHTTPRequest.m in Sources */,
+				18FEA6E519141B54005C8433 /* ActivityTimeViewController.m in Sources */,
 				18EC232318B5A42D00316B6E /* NSObject+SBJSON.m in Sources */,
 				18F8898C1902C15400C80011 /* DetailInterestViewController.m in Sources */,
 				18007ED818C64EDD00230C23 /* BGFlickrManager.m in Sources */,

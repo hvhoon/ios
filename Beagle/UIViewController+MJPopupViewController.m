@@ -326,7 +326,7 @@ static void * const keypath = (void*)&keypath;
     dismissButton.frame = sourceView.bounds;
     [overlayView addSubview:dismissButton];
     
-    popupView.alpha = 0.0f;
+    popupView.alpha = 0.1f;
     [overlayView addSubview:popupView];
     
     if(animationType==MJPopupViewAnimationSlideLeftLeft)

@@ -30,8 +30,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self.view setBackgroundColor:[UIColor clearColor]];
-    [self.view setAlpha:0.50];
+    [self.view setBackgroundColor:[UIColor colorWithRed:162.0/255.0 green:162.0/255.0 blue:162.0/255.0 alpha:1.0]];
+    [self.view setAlpha:0.10];
     
     
          [[UIApplication sharedApplication] setStatusBarHidden:YES];
