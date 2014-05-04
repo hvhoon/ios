@@ -30,12 +30,15 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self.view setBackgroundColor:[UIColor colorWithRed:162.0/255.0 green:162.0/255.0 blue:162.0/255.0 alpha:1.0]];
-    [self.view setAlpha:0.10];
+//    [self.view setBackgroundColor:[UIColor colorWithRed:162.0/255.0 green:162.0/255.0 blue:162.0/255.0 alpha:1.0]];
+//    [self.view setAlpha:0.10];
+    [self.view setBackgroundColor:[UIColor clearColor]];
+    
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+
     
     
-         [[UIApplication sharedApplication] setStatusBarHidden:YES];
-        
         for (int i = 0; i < 2; i++) {
             
             switch (i) {
@@ -76,7 +79,10 @@
             
             
         }
-        
+    _scrollView.pagingEnabled = YES;
+    _scrollView.bounces=NO;
+
+    _scrollView.clipsToBounds=YES;
     _scrollView.contentSize = CGSizeMake(320,2*self.view.frame.size.height);
     
     // Do any additional setup after loading the view.
