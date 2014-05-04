@@ -306,10 +306,9 @@ static void * const keypath = (void*)&keypath;
     
     UIImage *blurImage = [sourceView rn_screenshot];
     blurImage = [blurImage applyBlurWithRadius:10 tintColor:[UIColor clearColor] saturationDeltaFactor:1.8 maskImage:nil];
-    UIImageView *imageView=[[UIImageView alloc]initWithImage:blurImage];
-    [overlayView setBackgroundColor:[UIColor colorWithRed:162.0/255.0 green:162.0/255.0 blue:162.0/255.0 alpha:1.0]];
-    [overlayView addSubview:imageView];
-    [imageView setAlpha:.69];
+    
+    [overlayView setBackgroundColor:[UIColor colorWithPatternImage:blurImage]];
+    [overlayView setAlpha:.98];
 //    [overlayView addSubview:_nativeBlurView];
 //    [overlayView insertSubview:_nativeBlurView atIndex:0];
 
