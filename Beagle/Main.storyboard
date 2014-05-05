@@ -462,10 +462,10 @@
                                     <constraint firstAttribute="height" constant="15" id="VFs-eo-1D2"/>
                                 </constraints>
                             </imageView>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BsK-la-ctD">
-                                <rect key="frame" x="284" y="280" width="20" height="20"/>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BsK-la-ctD">
+                                <rect key="frame" x="280" y="280" width="20" height="20"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" backgroundImage="trash">
+                                <state key="normal" image="Delete" backgroundImage="trash">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
@@ -488,7 +488,7 @@
                             <constraint firstItem="sqL-0B-EFK" firstAttribute="top" secondItem="BsK-la-ctD" secondAttribute="bottom" constant="12" id="EvX-L3-WNg"/>
                             <constraint firstItem="3MQ-a9-lKU" firstAttribute="top" secondItem="8k2-Wd-CIH" secondAttribute="bottom" constant="17" id="For-xj-SSj"/>
                             <constraint firstItem="8k2-Wd-CIH" firstAttribute="top" secondItem="9iY-EO-BXw" secondAttribute="bottom" constant="10" id="Icc-VY-YpT"/>
-                            <constraint firstAttribute="trailing" secondItem="BsK-la-ctD" secondAttribute="trailing" constant="16" id="K1j-lJ-9xG"/>
+                            <constraint firstAttribute="trailing" secondItem="BsK-la-ctD" secondAttribute="trailing" constant="20" id="K1j-lJ-9xG"/>
                             <constraint firstItem="HMZ-Fh-jty" firstAttribute="leading" secondItem="ygx-zD-J8O" secondAttribute="leading" constant="16" id="K4b-zD-MVx"/>
                             <constraint firstItem="5Kw-tX-RGq" firstAttribute="leading" secondItem="1A7-qG-45x" secondAttribute="trailing" id="PFb-og-YqP"/>
                             <constraint firstItem="8k2-Wd-CIH" firstAttribute="leading" secondItem="FOF-FV-DTm" secondAttribute="trailing" constant="5" id="PtI-yF-3pe"/>
@@ -642,6 +642,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="Delete" width="16" height="20"/>
         <image name="Facebook" width="28" height="28"/>
         <image name="Home" width="24" height="24"/>
         <image name="Info" width="23" height="23"/>
