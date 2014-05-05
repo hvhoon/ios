@@ -61,7 +61,7 @@
 
 -(void)buildTheLogic{
     
-    
+    [self setAlpha:.69];
 //    CGSize pickerSize = [pickerView sizeThatFits:CGSizeZero];
 //    
 //    UIView *pickerTransformView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, pickerSize.width, pickerSize.height)];
@@ -70,10 +70,10 @@
 //    [pickerTransformView addSubview:pickerView];
 //    [self addSubview:pickerTransformView];
 //    
-//    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
-//    // make your gesture recognizer priority
-//    singleTap.numberOfTapsRequired = 1;
-//    [self addGestureRecognizer:singleTap];
+    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
+    // make your gesture recognizer priority
+    singleTap.numberOfTapsRequired = 1;
+    [self addGestureRecognizer:singleTap];
 
     [ pickerView setMinimumDate:[NSDate date]];
     NSDate *today = [[NSDate alloc] init];

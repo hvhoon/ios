@@ -227,9 +227,13 @@ static void * const keypath = (void*)&keypath;
 
 - (void)dismissPopupViewControllerWithanimationType:(MJPopupViewAnimation)animationType
 {
-    //UIView *sourceView = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
-    
-    UIView *sourceView = [self topView];
+    UIView *sourceView=nil;
+    if(animationType!=MJPopupViewAnimationSlideLeftLeft)
+        sourceView = [self topView];
+    else{
+        sourceView = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
+        
+    }
     UIView *popupView = [sourceView viewWithTag:kMJPopupViewTag];
     UIView *overlayView = [sourceView viewWithTag:kMJOverlayViewTag];
     
@@ -264,10 +268,14 @@ static void * const keypath = (void*)&keypath;
 
 - (void)presentPopupView:(UIView*)popupView animationType:(MJPopupViewAnimation)animationType dismissed:(void(^)(void))dismissed
 {
-    
-   // UIView *sourceView = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
-    UIView *sourceView = [self topView];
-    
+    UIView *sourceView=nil;
+//    if(animationType==MJPopupViewAnimationSlideLeftLeft)
+//       sourceView = [self topView];
+//    else{
+//        sourceView = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
+//        
+//    }
+    sourceView = [self topView];
     sourceView.tag = kMJSourceViewTag;
     popupView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin |UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin;
     popupView.tag = kMJPopupViewTag;
@@ -298,9 +306,9 @@ static void * const keypath = (void*)&keypath;
     
     UIImage *blurImage = [sourceView rn_screenshot];
     blurImage = [blurImage applyBlurWithRadius:10 tintColor:[UIColor clearColor] saturationDeltaFactor:1.8 maskImage:nil];
+    
     [overlayView setBackgroundColor:[UIColor colorWithPatternImage:blurImage]];
-
-    [overlayView setAlpha:.99];
+    [overlayView setAlpha:.98];
 //    [overlayView addSubview:_nativeBlurView];
 //    [overlayView insertSubview:_nativeBlurView atIndex:0];
 
@@ -320,8 +328,13 @@ static void * const keypath = (void*)&keypath;
     
     popupView.alpha = 0.0f;
     [overlayView addSubview:popupView];
-//    [[[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1]addSubview:overlayView];
-    [sourceView addSubview:overlayView];
+    
+    if(animationType==MJPopupViewAnimationSlideLeftLeft)
+        [sourceView addSubview:overlayView];
+    else{
+        [sourceView addSubview:overlayView];
+    [[[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1]addSubview:overlayView];
+    }
     
     [dismissButton addTarget:self action:@selector(dismissPopupViewControllerWithanimation:) forControlEvents:UIControlEventTouchUpInside];
     switch (animationType) {
