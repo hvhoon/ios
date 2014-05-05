@@ -72,11 +72,12 @@ static NSString * const CellIdentifier = @"cell";
     }
     
     [self.navigationController.navigationBar setBarTintColor:[BeagleUtilities returnBeagleColor:8]];
-    [self.navigationItem.titleView setTintColor:[BeagleUtilities returnBeagleColor:4]];
     
     // Set the screen title.
     NSString* screenTitle = [BeagleUtilities activityTime:self.interestActivity.startActivityDate endate:self.interestActivity.endActivityDate];
     self.navigationItem.title = screenTitle;
+    
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [BeagleUtilities returnBeagleColor:4]}];
 
     self.detailedInterestTableView = [[UITableView alloc] initWithFrame:CGRectZero
                                                   style:UITableViewStylePlain];
@@ -498,6 +499,11 @@ static NSString * const CellIdentifier = @"cell";
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
+    int fromTheTop = 0;
+    
+    // Let's begin spacing from the top
+    fromTheTop = 8;
+    
     if(indexPath.row==0){
 
         static NSString *CellIdentifier = @"MediaTableCell";
@@ -520,13 +526,13 @@ static NSString * const CellIdentifier = @"cell";
                                [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f], NSFontAttributeName,
                                [UIColor colorWithRed:75.0/255.0 green:75.0/255.0 blue:75.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
                                style, NSParagraphStyleAttributeName, nil];
-
-    
-
-        UIView *_backgroundView=[[UIView alloc]initWithFrame:CGRectMake(0, 8, 320, 400)];
+        
+        // Setting up the card (background)
+        UIView *_backgroundView=[[UIView alloc]initWithFrame:CGRectMake(0, fromTheTop, 320, 400)];
         _backgroundView.backgroundColor=[UIColor whiteColor];
         
-        _profileImageView=[[UIImageView alloc]initWithFrame:CGRectMake(16, 8, 52, 52)];
+        // Profile picture
+        _profileImageView=[[UIImageView alloc]initWithFrame:CGRectMake(16, fromTheTop, 50, 50)];
         [_backgroundView addSubview:_profileImageView];
         if(interestActivity.profilePhotoImage==nil){
             
@@ -542,11 +548,11 @@ static NSString * const CellIdentifier = @"cell";
             
         }
         else{
-            _profileImageView.image=[BeagleUtilities imageCircularBySize:interestActivity.profilePhotoImage sqr:52.0];
+            _profileImageView.image=[BeagleUtilities imageCircularBySize:interestActivity.profilePhotoImage sqr:100.0f];
         }
         
         
-        
+        // Location information
         [style setAlignment:NSTextAlignmentRight];
         UIColor *color=[UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0];
         attrs = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -559,7 +565,7 @@ static NSString * const CellIdentifier = @"cell";
                                                                            attributes:attrs
                                                                               context:nil].size;
         
-        UILabel *locationLabel = [[UILabel alloc] initWithFrame:CGRectMake(304-locationTextSize.width,8, locationTextSize.width, locationTextSize.height)];
+        UILabel *locationLabel = [[UILabel alloc] initWithFrame:CGRectMake(304-locationTextSize.width, fromTheTop, locationTextSize.width, locationTextSize.height)];
         
         locationLabel.backgroundColor = [UIColor clearColor];
         locationLabel.text = interestActivity.locationName;
@@ -568,6 +574,7 @@ static NSString * const CellIdentifier = @"cell";
         locationLabel.textAlignment = NSTextAlignmentRight;
         [_backgroundView addSubview:locationLabel];
         
+        // Organizer information
         [style setAlignment:NSTextAlignmentLeft];
         attrs=[NSDictionary dictionaryWithObjectsAndKeys:
                [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f], NSFontAttributeName,
@@ -579,7 +586,7 @@ static NSString * const CellIdentifier = @"cell";
                                                                            attributes:attrs
                                                                               context:nil].size;
         
-        UILabel *organizerNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(76,52-organizerNameSize.height, organizerNameSize.width, organizerNameSize.height)];
+        UILabel *organizerNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(75,55.5-organizerNameSize.height, organizerNameSize.width, organizerNameSize.height)];
         
         organizerNameLabel.backgroundColor = [UIColor clearColor];
         organizerNameLabel.text = interestActivity.organizerName;
@@ -588,21 +595,28 @@ static NSString * const CellIdentifier = @"cell";
         organizerNameLabel.textAlignment = NSTextAlignmentLeft;
         [_backgroundView addSubview:organizerNameLabel];
         
-        
-        UIImageView *dosRelationImageView = [[UIImageView alloc] initWithFrame:CGRectMake(76+10+organizerNameSize.width,52-15, 27, 15)];
-        if(self.interestActivity.dosRelation==1)
-            dosRelationImageView.image = [UIImage imageNamed:@"DOS2"];
+        // Adding the appropriate DOS icon
+        if(self.interestActivity.dosRelation==1) {
+            UIImageView *dos1RelationImageView = [[UIImageView alloc] initWithFrame:CGRectMake(75+8+organizerNameSize.width, 38.5, 27, 15)];
+            dos1RelationImageView.image = [UIImage imageNamed:@"DOS2"];
+            [_backgroundView addSubview:dos1RelationImageView];
+        }
         else if(self.interestActivity.dosRelation==2){
-            dosRelationImageView.image = [UIImage imageNamed:@"DOS3"];
+            UIImageView *dos2RelationImageView = [[UIImageView alloc] initWithFrame:CGRectMake(75+8+organizerNameSize.width, 38.5, 32, 15)];
+            dos2RelationImageView.image = [UIImage imageNamed:@"DOS3"];
+            [_backgroundView addSubview:dos2RelationImageView];
         }
-        else{
-            dosRelationImageView.image = nil;
-        }
-        [_backgroundView addSubview:dosRelationImageView];
         
+        // Adding the height of the profile picture
+        fromTheTop = fromTheTop+50;
+        
+        // Adding buffer below the top section with the profile picture
+        fromTheTop = fromTheTop+8;
+        
+        // Activity description
         attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                  [UIFont fontWithName:@"HelveticaNeue" size:17.0f], NSFontAttributeName,
-                 [UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
+                 [UIColor blackColor],NSForegroundColorAttributeName,
                  style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
         
         CGSize maximumLabelSize = CGSizeMake(288,999);
@@ -611,28 +625,26 @@ static NSString * const CellIdentifier = @"cell";
                                                                                attributes:attrs
                                                                                   context:nil];
         
-        
-        
-        UILabel *activityDescLabel = [[UILabel alloc] initWithFrame:CGRectMake(16,72,commentTextRect.size.width,commentTextRect.size.height)];
+        UILabel *activityDescLabel = [[UILabel alloc] initWithFrame:CGRectMake(16,fromTheTop,commentTextRect.size.width,commentTextRect.size.height)];
         activityDescLabel.numberOfLines=0;
         activityDescLabel.lineBreakMode=NSLineBreakByWordWrapping;
         activityDescLabel.backgroundColor = [UIColor clearColor];
         activityDescLabel.text = interestActivity.activityDesc;
-        activityDescLabel.textColor = [UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0];
+        activityDescLabel.textColor = [UIColor blackColor];
         activityDescLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:17.0f];
         activityDescLabel.textAlignment = NSTextAlignmentLeft;
         [_backgroundView addSubview:activityDescLabel];
         
+        fromTheTop = fromTheTop+commentTextRect.size.height;
+        fromTheTop = fromTheTop+16; // buffer after the description
         
-        
-        
-        
+        // Number of participants
         attrs=[NSDictionary dictionaryWithObjectsAndKeys:
                [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f], NSFontAttributeName,
                [UIColor blackColor],NSForegroundColorAttributeName,
                style, NSParagraphStyleAttributeName, nil];
         CGSize participantsCountTextSize;
-        UILabel *participantsCountTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(16,72+commentTextRect.size.height+16,
+        UILabel *participantsCountTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(16,fromTheTop,
                                                                                         participantsCountTextSize.width, participantsCountTextSize.height)];
         
         participantsCountTextLabel.backgroundColor = [UIColor clearColor];
@@ -650,7 +662,7 @@ static NSString * const CellIdentifier = @"cell";
                                                                              context:nil].size;
             
             
-            participantsCountTextLabel.frame=CGRectMake(16,72+commentTextRect.size.height+16,
+            participantsCountTextLabel.frame=CGRectMake(16, fromTheTop,
                                                         participantsCountTextSize.width, participantsCountTextSize.height);
 
             
@@ -671,7 +683,7 @@ static NSString * const CellIdentifier = @"cell";
                                                                                                                                                                                                      attributes:attrs
                                                                                                                                                                                                         context:nil].size;
             
-            participantsCountTextLabel.frame=CGRectMake(16,72+commentTextRect.size.height+16,
+            participantsCountTextLabel.frame=CGRectMake(16, fromTheTop,
                                                         participantsCountTextSize.width, participantsCountTextSize.height);
             participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested -  %ld Friends",(long)self.interestActivity.participantsCount,(long)self.interestActivity.dos2Count];
             
@@ -686,7 +698,7 @@ static NSString * const CellIdentifier = @"cell";
                                                                                                                                                    options:NSStringDrawingUsesLineFragmentOrigin
                                                                                                                                                 attributes:attrs
                                                                                                                                                    context:nil].size;
-            participantsCountTextLabel.frame=CGRectMake(16,72+commentTextRect.size.height+16,
+            participantsCountTextLabel.frame=CGRectMake(16, fromTheTop,
                                                         participantsCountTextSize.width, participantsCountTextSize.height);
             participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested",(long)self.interestActivity.participantsCount];
             [_backgroundView addSubview:participantsCountTextLabel];
