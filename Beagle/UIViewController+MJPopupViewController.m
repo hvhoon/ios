@@ -228,7 +228,7 @@ static void * const keypath = (void*)&keypath;
 - (void)dismissPopupViewControllerWithanimationType:(MJPopupViewAnimation)animationType
 {
     UIView *sourceView=nil;
-    if(animationType!=MJPopupViewAnimationSlideLeftLeft)
+    if(animationType==MJPopupViewAnimationSlideLeftLeft)
         sourceView = [self topView];
     else{
         sourceView = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
@@ -326,7 +326,7 @@ static void * const keypath = (void*)&keypath;
     dismissButton.frame = sourceView.bounds;
     [overlayView addSubview:dismissButton];
     
-    popupView.alpha = 0.0f;
+    popupView.alpha = 1.0f;
     [overlayView addSubview:popupView];
     
     if(animationType==MJPopupViewAnimationSlideLeftLeft)

@@ -23,9 +23,6 @@
     }
     return self;
 }
-- (BOOL)prefersStatusBarHidden {
-    return YES;
-}
 
 - (void)viewDidLoad
 {
@@ -34,8 +31,7 @@
 //    [self.view setAlpha:0.10];
     [self.view setBackgroundColor:[UIColor clearColor]];
     
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
-    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 
     
     

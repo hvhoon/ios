@@ -463,7 +463,7 @@ enum Weeks {
 - (IBAction)timeFilter:(id)sender{
     ActivityTimeViewController *viewController = [self.storyboard instantiateViewControllerWithIdentifier:@"activityTimeScreen"];
     viewController.delegate=self;
-    [self presentPopupViewController:viewController animationType:MJPopupViewAnimationSlideLeftRight];
+    [self presentPopupViewController:viewController animationType:MJPopupViewAnimationFade];
 
 }
 
@@ -475,9 +475,8 @@ enum Weeks {
 }
 
 - (void)dismissactivityTimeFilter:(ActivityTimeViewController*)viewController{
-    [self dismissPopupViewControllerWithanimationType:MJPopupViewAnimationSlideLeftLeft];
-    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
-    
+    [self dismissPopupViewControllerWithanimationType:MJPopupViewAnimationFade];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];    
 }
 
 #pragma mark - server calls
