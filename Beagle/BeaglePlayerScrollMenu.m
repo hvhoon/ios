@@ -77,7 +77,7 @@
         }
         else
         {
-             menuItem.iconImage.image  = [BeagleUtilities imageCircularBySize:[UIImage imageNamed:@"picbox"] sqr:35.0f];
+             menuItem.iconImage.image  = [BeagleUtilities imageCircularBySize:[UIImage imageNamed:@"picbox"] sqr:70.0f];
 
             if(!isDragging && !isDecelerating && !menuItem.isInitialized)
             {
@@ -96,7 +96,7 @@
 
 		menuItem.tag = 1000 + i;
 //		menuItem.center = CGPointMake((menuItem.frame.size.width * i)/2, self.frame.size.height / 2);
-        menuItem.frame=CGRectMake(67*i, 0, 67, 55);
+        menuItem.frame=CGRectMake(66*i, 0, 66, 53);
             
 		menuItem.delegate = self;
 		[_scrollView addSubview:menuItem];
@@ -200,7 +200,7 @@
 -(void)downloadProfileImage:(PlayerProfileItem *)itemPath
 {
     UIImage *image = [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:itemPath.profileImageUrl]]];
-    image=[BeagleUtilities imageCircularBySize:image sqr:35.0f];
+    image=[BeagleUtilities imageCircularBySize:image sqr:70.0f];
     
     if(image)
     {

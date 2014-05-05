@@ -446,36 +446,31 @@ static NSString * const CellIdentifier = @"cell";
 
 -(CGFloat)tableView:(UITableView*)tableView heightForRowAtIndexPath:(NSIndexPath*)indexPath {
     
-    if(indexPath.row==0){
-    CGFloat variance=0.0;
-    NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-    [style setAlignment:NSTextAlignmentLeft];
+    // For the main card section
+    if(indexPath.row==0) {
+        int cardHeight=0;
+        
+        NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+        [style setAlignment:NSTextAlignmentLeft];
     
-    NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+        NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                            [UIFont fontWithName:@"HelveticaNeue" size:17.0f], NSFontAttributeName,
-                           [UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
+                           [UIColor blackColor],NSForegroundColorAttributeName,
                            style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
     
+        CGSize maximumLabelSize = CGSizeMake(288,999);
     
-    CGSize maximumLabelSize = CGSizeMake(288,999);
-    
-    CGRect textRect = [self.interestActivity.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
-                                                   attributes:attrs
-                                                      context:nil];
+        CGRect textRect = [self.interestActivity.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
         
-        if(self.interestActivity.participantsCount==0){
-            variance=72+textRect.size.height+16+17;
-            
-            if(self.interestActivity.ownerid!=[[[BeagleManager SharedInstance]beaglePlayer]beagleUserId]){
-                variance=variance+30;
-            }
-            
-        }else{
-            variance=72+textRect.size.height+16+18+16+55;
-        }
-
-        return variance+52.0f;
-    }else{
+        if(self.interestActivity.participantsCount==0)
+            cardHeight=118+textRect.size.height; //156
+        else
+            cardHeight=221+textRect.size.height; //228
+        
+        return cardHeight;
+    }
+    
+    else{
         {
             InterestChatClass *chatCell=[self.chatPostsArray objectAtIndex:indexPath.row-1];
             NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
@@ -493,7 +488,7 @@ static NSString * const CellIdentifier = @"cell";
                                                                             attributes:attrs
                                                                                context:nil];
             
-            return 67.0f+textRect.size.height;
+            return 66.0f+textRect.size.height;
         }
     }
 }
@@ -521,7 +516,7 @@ static NSString * const CellIdentifier = @"cell";
         NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
         [style setAlignment:NSTextAlignmentCenter];
         
-        cell.backgroundColor = [UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1.0];
+        cell.backgroundColor = [BeagleUtilities returnBeagleColor:2];
         NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                                [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f], NSFontAttributeName,
                                [UIColor colorWithRed:75.0/255.0 green:75.0/255.0 blue:75.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
@@ -639,224 +634,190 @@ static NSString * const CellIdentifier = @"cell";
         fromTheTop = fromTheTop+16; // buffer after the description
         
         // Number of participants
-        attrs=[NSDictionary dictionaryWithObjectsAndKeys:
-               [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f], NSFontAttributeName,
-               [UIColor blackColor],NSForegroundColorAttributeName,
-               style, NSParagraphStyleAttributeName, nil];
-        CGSize participantsCountTextSize;
-        UILabel *participantsCountTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(16,fromTheTop,
-                                                                                        participantsCountTextSize.width, participantsCountTextSize.height)];
         
-        participantsCountTextLabel.backgroundColor = [UIColor clearColor];
-        participantsCountTextLabel.textColor = [UIColor blackColor];
-        participantsCountTextLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
-        participantsCountTextLabel.textAlignment = NSTextAlignmentLeft;
-        participantsCountTextLabel.tag=347;
-
-        if(self.interestActivity.participantsCount==0){
-            
-            
-            participantsCountTextSize = [@"No participants" boundingRectWithSize:CGSizeMake(300, 999)
-                                                                             options:NSStringDrawingUsesLineFragmentOrigin
-                                                                          attributes:attrs
-                                                                             context:nil].size;
-            
-            
-            participantsCountTextLabel.frame=CGRectMake(16, fromTheTop,
-                                                        participantsCountTextSize.width, participantsCountTextSize.height);
-
+        // If there is more than 1 participant
+        if(self.interestActivity.participantsCount > 0) {
+            attrs=[NSDictionary dictionaryWithObjectsAndKeys:
+                   [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f], NSFontAttributeName,
+                   [UIColor blackColor],NSForegroundColorAttributeName,
+                   style, NSParagraphStyleAttributeName, nil];
+            CGSize participantsCountTextSize;
+            UILabel *participantsCountTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(16,fromTheTop,
+                                                                                            participantsCountTextSize.width, participantsCountTextSize.height)];
             
             participantsCountTextLabel.backgroundColor = [UIColor clearColor];
-            participantsCountTextLabel.text = @"No participants";
             participantsCountTextLabel.textColor = [UIColor blackColor];
             participantsCountTextLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
             participantsCountTextLabel.textAlignment = NSTextAlignmentLeft;
-            [_backgroundView addSubview:participantsCountTextLabel];
+            participantsCountTextLabel.tag=347;
             
-   
-        }
-        else if(self.interestActivity.participantsCount>0 && self.interestActivity.dos2Count>0){
-        
+            // Are any of your friends participants?
+            if (self.interestActivity.dos2Count>0) {
+                participantsCountTextSize = [[NSString stringWithFormat:@"%ld Interested -  %ld Friends",(long)self.interestActivity.participantsCount,(long)self.interestActivity.dos2Count]  boundingRectWithSize:CGSizeMake(288, 999) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
+                
+                participantsCountTextLabel.frame=CGRectMake(16, fromTheTop, participantsCountTextSize.width, participantsCountTextSize.height);
+                
+                participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested -  %ld Friends",(long)self.interestActivity.participantsCount,(long)self.interestActivity.dos2Count];
+                
+                [_backgroundView addSubview:participantsCountTextLabel];
+            }
+            else {
+                participantsCountTextSize = [[NSString stringWithFormat:@"%ld Interested",(long)self.interestActivity.participantsCount]  boundingRectWithSize:CGSizeMake(288, 999) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
+                
+                participantsCountTextLabel.frame=CGRectMake(16, fromTheTop, participantsCountTextSize.width, participantsCountTextSize.height);
+                
+                participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested",(long)self.interestActivity.participantsCount];
+                
+                [_backgroundView addSubview:participantsCountTextLabel];
+            }
             
-            participantsCountTextSize = [[NSString stringWithFormat:@"%ld Interested -  %ld Friends",(long)self.interestActivity.participantsCount,(long)self.interestActivity.dos2Count]  boundingRectWithSize:CGSizeMake(288, 999)
-                                                                                                                                                                                                        options:NSStringDrawingUsesLineFragmentOrigin
-                                                                                                                                                                                                     attributes:attrs
-                                                                                                                                                                                                        context:nil].size;
-            
-            participantsCountTextLabel.frame=CGRectMake(16, fromTheTop,
-                                                        participantsCountTextSize.width, participantsCountTextSize.height);
-            participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested -  %ld Friends",(long)self.interestActivity.participantsCount,(long)self.interestActivity.dos2Count];
+            fromTheTop = fromTheTop + participantsCountTextSize.height;
+            fromTheTop = fromTheTop + 16; // Added buffer at the end of the participant count
             
             
-            [_backgroundView addSubview:participantsCountTextLabel];
-
-            
-            
-        }else if(self.interestActivity.participantsCount>0){
-            
-            participantsCountTextSize = [[NSString stringWithFormat:@"%ld Interested",(long)self.interestActivity.participantsCount]  boundingRectWithSize:CGSizeMake(288, 999)
-                                                                                                                                                   options:NSStringDrawingUsesLineFragmentOrigin
-                                                                                                                                                attributes:attrs
-                                                                                                                                                   context:nil].size;
-            participantsCountTextLabel.frame=CGRectMake(16, fromTheTop,
-                                                        participantsCountTextSize.width, participantsCountTextSize.height);
-            participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested",(long)self.interestActivity.participantsCount];
-            [_backgroundView addSubview:participantsCountTextLabel];
-
-        }
-        
-        [style setAlignment:NSTextAlignmentLeft];
-        attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+            // Setup the participants panel
+            [style setAlignment:NSTextAlignmentLeft];
+            attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                  [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f], NSFontAttributeName,
                  [UIColor blackColor],NSForegroundColorAttributeName,
                  style, NSParagraphStyleAttributeName, nil];
         
-        CGFloat variance=0.0f;
-        variance=72+commentTextRect.size.height+16+participantsCountTextSize.height;
-
-        if(self.interestActivity.ownerid==[[[BeagleManager SharedInstance]beaglePlayer]beagleUserId]){
+            if(self.interestActivity.ownerid==[[[BeagleManager SharedInstance]beaglePlayer]beagleUserId]){
             //owner
-            if(self.interestActivity.participantsCount>0){
-                if(_scrollMenu==nil)
-                _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, 72+commentTextRect.size.height+16+participantsCountTextSize.height+16, 268, 55)];
-                [_backgroundView addSubview:_scrollMenu];
-                [self setUpPlayerScroll:self.interestActivity.participantsArray];
-                variance=72+commentTextRect.size.height+16+participantsCountTextSize.height+16+55;
+                if(self.interestActivity.participantsCount>0){
+                    if(_scrollMenu==nil)
+                        _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, fromTheTop, 268, 55)];
+                    [_backgroundView addSubview:_scrollMenu];
+                    [self setUpPlayerScroll:self.interestActivity.participantsArray];
+                }
             }
-        }
-        else {
+            else {
             //not a owner but a participant
-            if(self.interestActivity.participantsCount>0){
-                if(_scrollMenu==nil)
-                _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, 72+commentTextRect.size.height+16+participantsCountTextSize.height+16, 268, 55)];
-                [_backgroundView addSubview:_scrollMenu];
-                [self setUpPlayerScroll:self.interestActivity.participantsArray];
-                variance=72+commentTextRect.size.height+16+participantsCountTextSize.height+16+55;
-                
-                
+                if(self.interestActivity.participantsCount>0){
+                    if(_scrollMenu==nil)
+                        _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, fromTheTop, 268, 55)];
+                    [_backgroundView addSubview:_scrollMenu];
+                    [self setUpPlayerScroll:self.interestActivity.participantsArray];
+                }
             }
-            else{
-                CGSize noParticipantsTextSize = [@"Be the first one to express interest!" boundingRectWithSize:CGSizeMake(300, 999)
-                                                                                                       options:NSStringDrawingUsesLineFragmentOrigin
-                                                                                                    attributes:attrs
-                                                                                                       context:nil].size;
-                
-                UILabel *noParticipantsLabel = [[UILabel alloc] initWithFrame:CGRectMake(16,72+commentTextRect.size.height+16+participantsCountTextSize.height+16, noParticipantsTextSize.width, noParticipantsTextSize.height)];
-                
-                noParticipantsLabel.backgroundColor = [UIColor clearColor];
-                noParticipantsLabel.text = @"Be the first one to express interest!";
-                noParticipantsLabel.textColor = [UIColor blackColor];
-                noParticipantsLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
-                noParticipantsLabel.textAlignment = NSTextAlignmentLeft;
-                [_backgroundView addSubview:noParticipantsLabel];
-                variance=72+commentTextRect.size.height+16+participantsCountTextSize.height+16+noParticipantsTextSize.height;
-                
-                
-            }
+            fromTheTop = fromTheTop + 55;
+            fromTheTop = fromTheTop + 16;
         }
-        
-        
-        UIImageView *starImageView = [[UIImageView alloc] initWithFrame:CGRectMake(16, variance+16, 16, 15)];
+    
+        // Adding the star image
+        UIImageView *starImageView = [[UIImageView alloc] initWithFrame:CGRectMake(16, fromTheTop, 19, 18)];
         starImageView.tag=345;
         [_backgroundView addSubview:starImageView];
         
-        if(self.interestActivity.isParticipant){
-            
+        if(self.interestActivity.isParticipant)
             starImageView.image=[UIImage imageNamed:@"Star"];
-            
-        }
-        
-        else{
-            
+        else
             starImageView.image=[UIImage imageNamed:@"Star-Unfilled"];
-            
-        }
+        
+        // Adding the interested text
+        
+        NSString *interestedText = nil;
         
         attrs=[NSDictionary dictionaryWithObjectsAndKeys:
-               [UIFont fontWithName:@"HelveticaNeue-Medium" size:15.0f], NSFontAttributeName,
-               [UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
+               [UIFont fontWithName:@"HelveticaNeue" size:15.0f], NSFontAttributeName,
+               [BeagleUtilities returnBeagleColor:1],NSForegroundColorAttributeName,
                style, NSParagraphStyleAttributeName, nil];
         
+        // If it's the organizer
+        if (self.interestActivity.dosRelation==0) {
+            interestedText = @"Created by you";
+            attrs=[NSDictionary dictionaryWithObjectsAndKeys:
+                   [UIFont fontWithName:@"HelveticaNeue-Medium" size:15.0f], NSFontAttributeName, [BeagleUtilities returnBeagleColor:1], NSForegroundColorAttributeName, style, NSParagraphStyleAttributeName, nil];
+        }
+        // If you are the first one to express interest
+        else if(self.interestActivity.dosRelation > 0 && self.interestActivity.participantsCount == 0) {
+            interestedText = @"Be the first to join";
+        }
+        // You are not the organizer and have already expressed interest
+        else if(self.interestActivity.dosRelation > 0 && self.interestActivity.isParticipant)
+        {
+            interestedText = @"Count me in";
+            attrs=[NSDictionary dictionaryWithObjectsAndKeys:
+                   [UIFont fontWithName:@"HelveticaNeue-Medium" size:15.0f], NSFontAttributeName, [BeagleUtilities returnBeagleColor:1], NSForegroundColorAttributeName, style, NSParagraphStyleAttributeName, nil];
+        }
+        // You are not the organizer and have not expressed interest
+        else
+            interestedText = @"Are you in?";
         
+        CGSize interestedSize = [interestedText boundingRectWithSize:CGSizeMake(288, 999) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
         
-        
-        CGSize interestedSize = [@"I'm Interested"  boundingRectWithSize:CGSizeMake(288, 999)
-                                                                 options:NSStringDrawingUsesLineFragmentOrigin
-                                                              attributes:attrs
-                                                                 context:nil].size;
-        
-        UILabel *interestedLabel = [[UILabel alloc] initWithFrame:CGRectMake(42,variance+16, interestedSize.width, interestedSize.height)];
+        UILabel *interestedLabel = [[UILabel alloc] initWithFrame:CGRectMake(16+19+5, fromTheTop, interestedSize.width, interestedSize.height)];
         interestedLabel.tag=346;
-        interestedLabel.backgroundColor = [UIColor clearColor];
-        interestedLabel.text = @"I'm Interested";
-        interestedLabel.textColor = [UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0];
-        interestedLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15.0f];
-        interestedLabel.textAlignment = NSTextAlignmentLeft;
-        [_backgroundView addSubview:interestedLabel];
         
+        //interestedLabel.text = interestedText;
+        interestedLabel.attributedText = [[NSAttributedString alloc] initWithString:interestedText attributes:attrs];
+        
+        [_backgroundView addSubview:interestedLabel];
+    
         interestedLabel.userInteractionEnabled = YES;
         UITapGestureRecognizer *tapGesture =
         [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGestures:)];
         [interestedLabel addGestureRecognizer:tapGesture];
         
+        fromTheTop = fromTheTop + 3; // buffer
         
-        
-        UIImageView *commentImageView = [[UIImageView alloc] initWithFrame:CGRectMake(306-21, variance+16, 21, 18)];
+        // Adding the comments icon
+        UIImageView *commentImageView = [[UIImageView alloc] initWithFrame:CGRectMake(304-21, fromTheTop, 21, 18)];
         [_backgroundView addSubview:commentImageView];
         
-        if(self.interestActivity.postCount>0)
-            commentImageView.image=[UIImage imageNamed:@"Comment"];
-        else{
-            commentImageView.image=[UIImage imageNamed:@"Add-Comment"];
+        // Are there comments already?
+        if(self.interestActivity.postCount>0) {
+            commentImageView.image=[UIImage imageNamed:@"Comment-Blue"];
+            
+            [style setAlignment:NSTextAlignmentLeft];
+            
+            attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+                     [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f], NSFontAttributeName,
+                     [BeagleUtilities returnBeagleColor:1], NSForegroundColorAttributeName,
+                     style, NSParagraphStyleAttributeName, nil];
+            
+            CGSize postCountTextSize = [[NSString stringWithFormat:@"%ld",(long)self.interestActivity.postCount]  boundingRectWithSize:CGSizeMake(288, 999) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
+            
+            UILabel *postCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(301-21-postCountTextSize.width, fromTheTop-1, postCountTextSize.width, postCountTextSize.height)];
+            
+            postCountLabel.attributedText = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld",(long)self.interestActivity.postCount] attributes:attrs];
+            
+            UIImageView *triangle = [[UIImageView alloc] initWithFrame:CGRectMake(304-19, fromTheTop+21+3, 17, 10)];
+            triangle.image   = [UIImage imageNamed:@"Triangle"];
+            [_backgroundView addSubview:triangle];
+            [_backgroundView addSubview:postCountLabel];
+        
         }
+        // If no comments have been added yet
+        else
+            commentImageView.image=[UIImage imageNamed:@"Add-Comment"];
         
-        [style setAlignment:NSTextAlignmentLeft];
+        fromTheTop = fromTheTop + 21+3;
+        fromTheTop = fromTheTop + 10;
         
-        attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                 [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f], NSFontAttributeName,
-                 [UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
-                 style, NSParagraphStyleAttributeName, nil];
-        
-        CGSize postCountTextSize = [[NSString stringWithFormat:@"%ld",(long)self.interestActivity.postCount]  boundingRectWithSize:CGSizeMake(288, 999)
-                                                                                                                           options:NSStringDrawingUsesLineFragmentOrigin
-                                                                                                                        attributes:attrs
-                                                                                                                           context:nil].size;
-        
-        UILabel *postCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(300-21- postCountTextSize.width,variance+16-2, postCountTextSize.width, postCountTextSize.height)];
-        
-        postCountLabel.backgroundColor = [UIColor clearColor];
-        postCountLabel.text = [NSString stringWithFormat:@"%ld",(long)self.interestActivity.postCount];
-        postCountLabel.textColor = [UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0];
-        postCountLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
-        postCountLabel.textAlignment = NSTextAlignmentLeft;
-        [_backgroundView addSubview:postCountLabel];
-        
-        
-        _backgroundView.frame=CGRectMake(0, 8, 320, variance+16+18+16);
+        _backgroundView.frame=CGRectMake(0, 8, 320, fromTheTop);
         [cell.contentView addSubview:_backgroundView];
         
-    
-    return cell;
-
-    
-    }else{
+        fromTheTop = 0;
+        return cell;
+    }
+    else {
+        
+        int cellTop = 0;
+        cellTop = cellTop + 8;
         
         static NSString *CellIdentifier = @"MediaTableCell2";
         
-        
         UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-//        if (cell == nil) {
-            cell =[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-            cell.selectionStyle=UITableViewCellSelectionStyleNone;
-//        }
-
-//        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier
-//                                                                forIndexPath:indexPath];
         
-        cell.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:240.0/255.0 blue:255.0/255.0 alpha:1.0];
+        cell =[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        cell.selectionStyle=UITableViewCellSelectionStyleNone;
+        cell.backgroundColor=[BeagleUtilities returnBeagleColor:5];
         
         InterestChatClass *chatCell=[self.chatPostsArray objectAtIndex:indexPath.row-1];
-        UIImageView *cellImageView=[[UIImageView alloc]initWithFrame:CGRectMake(16, 8, 35, 35)];
+        
+        // Profile picture
+        UIImageView *cellImageView=[[UIImageView alloc]initWithFrame:CGRectMake(16, cellTop, 35, 35)];
         
         if (!chatCell.playerImage)
         {
@@ -865,21 +826,19 @@ static NSString * const CellIdentifier = @"cell";
                 [self startIconDownload:chatCell forIndexPath:indexPath];
             }
             // if a download is deferred or in progress, return a placeholder image
-            
-            cellImageView.image = [BeagleUtilities imageCircularBySize:[UIImage imageNamed:@"picbox.png"] sqr:35.0f];
-            
+            cellImageView.image = [BeagleUtilities imageCircularBySize:[UIImage imageNamed:@"picbox.png"] sqr:70.0f];
         }
         else
-        {
-            
-            cellImageView.image = [BeagleUtilities imageCircularBySize:chatCell.playerImage sqr:35.0f];
-        }
+            cellImageView.image = [BeagleUtilities imageCircularBySize:chatCell.playerImage sqr:70.0f];
+        
         cellImageView.tag=[[NSString stringWithFormat:@"111%li",(long)indexPath.row]integerValue];
         [cell.contentView addSubview:cellImageView];
         
+        
+        // Organizer name
         NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
         [style setAlignment:NSTextAlignmentLeft];
-        UIColor *color=[UIColor colorWithRed:75.0/255.0 green:75.0/255.0 blue:75.0/255.0 alpha:1.0];
+        UIColor *color=[BeagleUtilities returnBeagleColor:4];
         NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                                [UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0f], NSFontAttributeName,
                                color,NSForegroundColorAttributeName,
@@ -890,21 +849,16 @@ static NSString * const CellIdentifier = @"cell";
                                                                       attributes:attrs
                                                                          context:nil].size;
 
-        UILabel *organizerNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(61,16, organizerNameSize.width, organizerNameSize.height)];
+        UILabel *organizerNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(59, cellTop+8, organizerNameSize.width, organizerNameSize.height)];
         
-        organizerNameLabel.backgroundColor = [UIColor clearColor];
-        organizerNameLabel.text = chatCell.player_name;
-        organizerNameLabel.textColor = [UIColor colorWithRed:75.0/255.0 green:75.0/255.0 blue:75.0/255.0 alpha:1.0];
-        organizerNameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0f];
-        organizerNameLabel.textAlignment = NSTextAlignmentLeft;
+        organizerNameLabel.attributedText = [[NSAttributedString alloc] initWithString:chatCell.player_name attributes:attrs];
         [cell.contentView addSubview:organizerNameLabel];
         
+        // Time stamp
         attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                 [UIFont fontWithName:@"HelveticaNeue-Medium" size:11.0f], NSFontAttributeName,
+                 [UIFont fontWithName:@"HelveticaNeue-Light" size:11.0f], NSFontAttributeName,
                  color,NSForegroundColorAttributeName,
                  style, NSParagraphStyleAttributeName, nil];
-
-        
         
         NSString *timestamp=[BeagleUtilities calculateChatTimestamp:chatCell.timestamp];
         
@@ -912,17 +866,16 @@ static NSString * const CellIdentifier = @"cell";
                                                            options:NSStringDrawingUsesLineFragmentOrigin
                                                         attributes:attrs
                                                            context:nil].size;
-
         
-        UILabel *timeStampLabel = [[UILabel alloc] initWithFrame:CGRectMake(61,16+organizerNameSize.height+3, dateTextSize.width, dateTextSize.height)];
+        UILabel *timeStampLabel = [[UILabel alloc] initWithFrame:CGRectMake(59,cellTop+8+organizerNameSize.height+1, dateTextSize.width, dateTextSize.height)];
         
-        timeStampLabel.backgroundColor = [UIColor clearColor];
-        timeStampLabel.text = timestamp;
-        timeStampLabel.textColor = color;
-        timeStampLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:11.0f];
-        timeStampLabel.textAlignment = NSTextAlignmentLeft;
+        timeStampLabel.attributedText = [[NSAttributedString alloc] initWithString:timestamp attributes:attrs];
         [cell.contentView  addSubview:timeStampLabel];
         
+        cellTop = cellTop + 35; // size of the profile picture
+        cellTop = cellTop + 8; // buffer below profile section
+        
+        // Comment text
         attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                  [UIFont fontWithName:@"HelveticaNeue" size:14.0f], NSFontAttributeName,
                  [UIColor blackColor],NSForegroundColorAttributeName,
@@ -930,31 +883,27 @@ static NSString * const CellIdentifier = @"cell";
         
         CGSize maximumLabelSize = CGSizeMake(288,999);
         
-        CGRect commentTextRect = [chatCell.text boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
-                                                                          attributes:attrs
-                                                                             context:nil];
+        CGRect commentTextRect = [chatCell.text boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
         
+        UILabel *chatDescLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, cellTop, commentTextRect.size.width, commentTextRect.size.height)];
+        chatDescLabel.attributedText = [[NSAttributedString alloc] initWithString:chatCell.text attributes:attrs];
+        chatDescLabel.numberOfLines=0;
+        [cell.contentView addSubview:chatDescLabel];
         
-            
-            
-            
-            UILabel *chatDescLabel = [[UILabel alloc] initWithFrame:CGRectMake(16,51,commentTextRect.size.width,commentTextRect.size.height)];
-            chatDescLabel.numberOfLines=0;
-            chatDescLabel.lineBreakMode=NSLineBreakByWordWrapping;
-            chatDescLabel.backgroundColor = [UIColor clearColor];
-            chatDescLabel.text = chatCell.text;
-            chatDescLabel.textColor = [UIColor blackColor];
-            chatDescLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:14.0f];
-            chatDescLabel.textAlignment = NSTextAlignmentLeft;
-            [cell.contentView addSubview:chatDescLabel];
+        cellTop = cellTop + commentTextRect.size.height;
+        cellTop = cellTop + 16;
 
-        if(indexPath.row!=[self.chatPostsArray count]){
-        UIView *seperatorLineView=[[UIView alloc]initWithFrame:CGRectMake(16,51+commentTextRect.size.height+7,288,1)];
-            seperatorLineView.alpha=0.5;
-        [seperatorLineView setBackgroundColor:[UIColor grayColor]];
-                    [cell.contentView addSubview:seperatorLineView];
+        // Add line seperator
+        if(indexPath.row!=[self.chatPostsArray count]) {
+            
+            UIView *seperatorLineView=[[UIView alloc]initWithFrame:CGRectMake(16, cellTop, 288, 0.5)];
+            seperatorLineView.alpha=0.15;
+            [seperatorLineView setBackgroundColor:[UIColor grayColor]];
+            [cell.contentView addSubview:seperatorLineView];
         }
-            return cell;
+        
+        cellTop = 0;
+        return cell;
     }
 }
 - (void)startIconDownload:(InterestChatClass*)appRecord forIndexPath:(NSIndexPath *)indexPath{
@@ -1000,7 +949,7 @@ static NSString * const CellIdentifier = @"cell";
         UITableViewCell *cell = (UITableViewCell*)[self.detailedInterestTableView cellForRowAtIndexPath:iconDownloader.indexPathInTableView];
         UIImageView *cellImageView=(UIImageView*)[cell viewWithTag:[[NSString stringWithFormat:@"111%ld",(long)indexPath.row]integerValue]];
         // Display the newly loaded image
-        cellImageView.image = [BeagleUtilities imageCircularBySize:iconDownloader.chatRecord.playerImage sqr:35.0f] ;
+        cellImageView.image = [BeagleUtilities imageCircularBySize:iconDownloader.chatRecord.playerImage sqr:70.0f] ;
     }
     
     [self.detailedInterestTableView reloadData];
@@ -1022,9 +971,6 @@ static NSString * const CellIdentifier = @"cell";
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     
     [self loadImagesForOnscreenRows];
-}
--(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
-    self.navigationItem.backBarButtonItem=[[UIBarButtonItem alloc] initWithTitle:@"NEW TITLE" style:UIBarButtonItemStylePlain target:nil action:nil];
 }
 
 /*
