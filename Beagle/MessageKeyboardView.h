@@ -35,5 +35,6 @@
 - (instancetype)initWithScrollView:(UIScrollView *)scrollView;
 - (void)reloadInputAccessoryView;
 - (void)textViewDidChange:(UITextView *)textView;
-
+- (void)_registerForNotifications;
+- (void)_unregisterForNotifications;
 @end

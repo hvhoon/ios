@@ -54,13 +54,21 @@ static NSString * const CellIdentifier = @"cell";
     if(BG.activityDeleted){
         BG.activityDeleted=FALSE;
         [self.navigationController popViewControllerAnimated:YES];
+        return;
     }
     
     if(self.interestActivity.dosRelation==0){
         [self.detailedInterestTableView reloadData];
     }
 }
-
+-(void)viewDidAppear:(BOOL)animated{
+    [self.contentWrapper _registerForNotifications];
+    
+}
+-(void)viewDidDisappear:(BOOL)animated{
+    [super viewDidDisappear:animated];
+    [self.contentWrapper _unregisterForNotifications];
+}
 
 - (void)viewDidLoad
 {
@@ -105,6 +113,8 @@ static NSString * const CellIdentifier = @"cell";
 
 }
 -(void)editButtonClicked:(id)sender{
+    
+    [self.contentWrapper _unregisterForNotifications];
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     ActivityViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"activityScreen"];
     viewController.bg_activity=self.interestActivity;

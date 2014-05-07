@@ -122,9 +122,17 @@
     
     // Release the connection now that it's finished
     self.imageConnection = nil;
-        
+    
+    
+    @try{
+        if (self.delegate && [self.delegate respondsToSelector:@selector(appImageDidLoad:)])
+               [self.delegate appImageDidLoad:self.indexPathInTableView];
+    }
+    @catch (NSException *e){
+        // if you get here then delegate is no longer valid regardless its reference is still valid
+    }
+
     // call our delegate and tell it that our icon is ready for display
-        [delegate appImageDidLoad:self.indexPathInTableView];
 }
 
 @end
