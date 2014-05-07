@@ -448,7 +448,7 @@ static NSString * const CellIdentifier = @"cell";
     
     // For the main card section
     if(indexPath.row==0) {
-        int cardHeight=0;
+        CGFloat cardHeight=0.0;
         
         NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
         [style setAlignment:NSTextAlignmentLeft];
@@ -463,9 +463,13 @@ static NSString * const CellIdentifier = @"cell";
         CGRect textRect = [self.interestActivity.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
         
         if(self.interestActivity.participantsCount==0)
-            cardHeight=118+textRect.size.height; //156
+            cardHeight=118.0+textRect.size.height;
         else
-            cardHeight=221+textRect.size.height; //228
+            cardHeight=221.0+textRect.size.height;
+        
+        if(self.interestActivity.postCount>0){
+            cardHeight=cardHeight+10.0;
+        }
         
         return cardHeight;
     }
@@ -478,7 +482,7 @@ static NSString * const CellIdentifier = @"cell";
             
             NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                                    [UIFont fontWithName:@"HelveticaNeue" size:14.0f], NSFontAttributeName,
-                                   [UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
+                                   [UIColor blackColor],NSForegroundColorAttributeName,
                                    style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
             
             
@@ -488,18 +492,18 @@ static NSString * const CellIdentifier = @"cell";
                                                                             attributes:attrs
                                                                                context:nil];
             
-            return 66.0f+textRect.size.height;
+            return 67.0f+textRect.size.height;
         }
     }
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    int fromTheTop = 0;
     
-    // Let's begin spacing from the top
-    fromTheTop = 8;
     
     if(indexPath.row==0){
+        // Let's begin spacing from the top
+
+        CGFloat fromTheTop = 8.0f;
 
         static NSString *CellIdentifier = @"MediaTableCell";
         
@@ -603,10 +607,10 @@ static NSString * const CellIdentifier = @"cell";
         }
         
         // Adding the height of the profile picture
-        fromTheTop = fromTheTop+50;
+        fromTheTop = fromTheTop+50.0f;
         
         // Adding buffer below the top section with the profile picture
-        fromTheTop = fromTheTop+8;
+        fromTheTop = fromTheTop+8.0f;
         
         // Activity description
         attrs = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -631,7 +635,7 @@ static NSString * const CellIdentifier = @"cell";
         [_backgroundView addSubview:activityDescLabel];
         
         fromTheTop = fromTheTop+commentTextRect.size.height;
-        fromTheTop = fromTheTop+16; // buffer after the description
+        fromTheTop = fromTheTop+16.0f; // buffer after the description
         
         // Number of participants
         
@@ -672,7 +676,7 @@ static NSString * const CellIdentifier = @"cell";
             }
             
             fromTheTop = fromTheTop + participantsCountTextSize.height;
-            fromTheTop = fromTheTop + 16; // Added buffer at the end of the participant count
+            fromTheTop = fromTheTop + 16.0f; // Added buffer at the end of the participant count
             
             
             // Setup the participants panel
@@ -700,8 +704,8 @@ static NSString * const CellIdentifier = @"cell";
                     [self setUpPlayerScroll:self.interestActivity.participantsArray];
                 }
             }
-            fromTheTop = fromTheTop + 55;
-            fromTheTop = fromTheTop + 16;
+            fromTheTop = fromTheTop + 55.0f;
+            fromTheTop = fromTheTop + 16.0f;
         }
     
         // Adding the star image
@@ -759,7 +763,7 @@ static NSString * const CellIdentifier = @"cell";
         [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGestures:)];
         [interestedLabel addGestureRecognizer:tapGesture];
         
-        fromTheTop = fromTheTop + 3; // buffer
+        fromTheTop = fromTheTop + 3.0f; // buffer
         
         // Adding the comments icon
         UIImageView *commentImageView = [[UIImageView alloc] initWithFrame:CGRectMake(304-21, fromTheTop, 21, 18)];
@@ -786,31 +790,29 @@ static NSString * const CellIdentifier = @"cell";
             triangle.image   = [UIImage imageNamed:@"Triangle"];
             [_backgroundView addSubview:triangle];
             [_backgroundView addSubview:postCountLabel];
-        
+            
+            fromTheTop = fromTheTop + 10.0f;
         }
         // If no comments have been added yet
         else
             commentImageView.image=[UIImage imageNamed:@"Add-Comment"];
         
-        fromTheTop = fromTheTop + 21+3;
-        fromTheTop = fromTheTop + 10;
+        fromTheTop = fromTheTop + 21.0f+3.0f;
         
         _backgroundView.frame=CGRectMake(0, 8, 320, fromTheTop);
         [cell.contentView addSubview:_backgroundView];
         
-        fromTheTop = 0;
         return cell;
     }
     else {
         
-        int cellTop = 0;
-        cellTop = cellTop + 8;
+        CGFloat cellTop = 8.0f;
         
         static NSString *CellIdentifier = @"MediaTableCell2";
         
         UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
         
-        cell =[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+         cell  =[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         cell.selectionStyle=UITableViewCellSelectionStyleNone;
         cell.backgroundColor=[BeagleUtilities returnBeagleColor:5];
         
@@ -872,8 +874,8 @@ static NSString * const CellIdentifier = @"cell";
         timeStampLabel.attributedText = [[NSAttributedString alloc] initWithString:timestamp attributes:attrs];
         [cell.contentView  addSubview:timeStampLabel];
         
-        cellTop = cellTop + 35; // size of the profile picture
-        cellTop = cellTop + 8; // buffer below profile section
+        cellTop = cellTop + 35.0f; // size of the profile picture
+        cellTop = cellTop + 8.0f; // buffer below profile section
         
         // Comment text
         attrs = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -891,7 +893,7 @@ static NSString * const CellIdentifier = @"cell";
         [cell.contentView addSubview:chatDescLabel];
         
         cellTop = cellTop + commentTextRect.size.height;
-        cellTop = cellTop + 16;
+        cellTop = cellTop + 16.0f;
 
         // Add line seperator
         if(indexPath.row!=[self.chatPostsArray count]) {
@@ -902,7 +904,6 @@ static NSString * const CellIdentifier = @"cell";
             [cell.contentView addSubview:seperatorLineView];
         }
         
-        cellTop = 0;
         return cell;
     }
 }

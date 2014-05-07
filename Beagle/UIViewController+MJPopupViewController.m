@@ -533,7 +533,7 @@ static void * const keypath = (void*)&keypath;
 
 - (void)fadeViewOut:(UIView*)popupView sourceView:(UIView*)sourceView overlayView:(UIView*)overlayView
 {
-    [UIView animateWithDuration:kPopupModalAnimationDuration animations:^{
+    [UIView animateWithDuration:0.2 animations:^{
         [self.mj_popupViewController viewWillDisappear:NO];
         popupView.alpha = 0.0f;
     } completion:^(BOOL finished) {

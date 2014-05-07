@@ -336,7 +336,6 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
 
 @interface MessageKeyboardView () <UITextViewDelegate> {
     UIInterfaceOrientation _currentOrientation;
-    int test;
 }
 
 
@@ -417,7 +416,7 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
     CGRect scrollViewFrame = CGRectZero;
     scrollViewFrame.origin.y=64;
     scrollViewFrame.size.width = self.frame.size.width;
-    scrollViewFrame.size.height = self.frame.size.height - self.inputView.frame.size.height;
+    scrollViewFrame.size.height = self.frame.size.height - self.inputView.frame.size.height-64;
     self.scrollView.frame = scrollViewFrame;
     
     CGRect inputViewFrame = self.inputView.frame;
@@ -613,22 +612,11 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
     bottomInset *= RDRKeyboardIsFullyHidden(keyboardFrame) ? 0 : 1;
     
     UIEdgeInsets contentInset = self.scrollView.contentInset;
-    if(test==0)
-        contentInset.bottom = bottomInset+64;
-    else{
-        contentInset.bottom = bottomInset;
-    }
+    contentInset.bottom = bottomInset;
     self.scrollView.contentInset = contentInset;
     
     UIEdgeInsets scrollIndicatorInsets = self.scrollView.scrollIndicatorInsets;
-    if(test==0){
-
-        scrollIndicatorInsets.bottom = bottomInset+64;
-        test=1;
-    }
-    else{
     scrollIndicatorInsets.bottom = bottomInset;
-    }
     self.scrollView.scrollIndicatorInsets = scrollIndicatorInsets;
     
 }
