@@ -7,6 +7,17 @@
 //
 
 #import "TimeFilterView.h"
+@interface TimeFilterView ()
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *topSpacingFromStatusBarLeft;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *topSpacingFromStatusBarRight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *spacingBetweenFiltersLeftFirst;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *spacingBetweenFiltersRightFirst;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *spacingBetweenFiltersLeftSecond;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *spacingBetweenFiltersRightSecond;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *spacingBetweenFiltersLeftThird;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *spacingBetweenFiltersRightThird;
+
+@end
 
 @implementation TimeFilterView
 @synthesize delegate = _delegate;
@@ -25,6 +36,22 @@
         singleTap.numberOfTapsRequired = 1;
         [self addGestureRecognizer:singleTap];
         
+        _topSpacingFromStatusBarLeft.constant =
+        [UIScreen mainScreen].bounds.size.height > 480.0f ? 58 : 29;
+        _topSpacingFromStatusBarRight.constant =
+        [UIScreen mainScreen].bounds.size.height > 480.0f ? 58 : 29;
+
+        _spacingBetweenFiltersLeftFirst.constant=[UIScreen mainScreen].bounds.size.height > 480.0f ? 31 : 21;
+        _spacingBetweenFiltersRightFirst.constant=[UIScreen mainScreen].bounds.size.height > 480.0f ? 31 : 21;
+        
+        _spacingBetweenFiltersLeftSecond.constant=[UIScreen mainScreen].bounds.size.height > 480.0f ? 31 : 21;
+        _spacingBetweenFiltersRightSecond.constant=[UIScreen mainScreen].bounds.size.height > 480.0f ? 31 : 21;
+        
+        _spacingBetweenFiltersLeftThird.constant=[UIScreen mainScreen].bounds.size.height > 480.0f ? 31 : 21;
+        _spacingBetweenFiltersRightThird.constant=[UIScreen mainScreen].bounds.size.height > 480.0f ? 31 : 21;
+
+
+
         
     }
     return self;
@@ -33,8 +60,65 @@
     [_delegate filterIndex:0];
     
 }
--(IBAction)timeFilterSelected:(id)sender{
-    [_delegate filterIndex:0];
+-(IBAction)timeFilterSelected:(UIButton*)sender{
+    
+    switch (sender.tag) {
+        case 1:
+        {
+            [_delegate filterIndex:sender.tag];
+        }
+            break;
+            
+        case 2:
+        {
+            [_delegate filterIndex:sender.tag];
+        }
+            break;
+
+            
+        case 3:
+        {
+            [_delegate filterIndex:sender.tag];
+        }
+            break;
+
+            
+        case 4:
+        {
+            [_delegate filterIndex:sender.tag];
+        }
+            break;
+
+            
+        case 5:
+        {
+            [_delegate filterIndex:sender.tag];
+        }
+            break;
+
+            
+        case 6:
+        {
+            [_delegate filterIndex:sender.tag];
+        }
+            break;
+
+            
+        case 7:
+        {
+            [_delegate filterIndex:sender.tag];
+        }
+            break;
+
+        case 8:
+        {
+            [_delegate filterIndex:sender.tag];
+        }
+            break;
+
+            
+    }
+    
 }
 /*
 // Only override drawRect: if you perform custom drawing.

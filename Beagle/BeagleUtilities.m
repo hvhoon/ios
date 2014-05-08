@@ -326,13 +326,16 @@
         if(weekday2 ==1){
             return @"This Week";
         }
-        else if([[NSDate date] timeIntervalSinceDate:startActivityDate]>0 && (0<[endActivityDate timeIntervalSinceDate:[NSDate date]]<86400.00))
+        else if([[NSDate date] timeIntervalSinceDate:startActivityDate]>0 && Interval2>0 && Interval2<86400.00)
                  return @"Later Today";
         else if([[NSDate date] timeIntervalSinceDate:startActivityDate]>0 && Interval2>86400.00 && Interval2<172800.00)
             return @"Tomorrow";
         else if(Interval2>172800.00 && Interval2<432000.000)
             return @"This Week";
-            
+        
+        else{
+            return @"This Month";
+        }
 
         }
      else {
@@ -340,8 +343,9 @@
          
          if(Interval2>86400.00 && Interval2<172800.00)
              return @"Tomorrow";
-        else  if (weekday1 == 7 && weekday2 ==1 && Interval1>=172680.000000 && Interval2>=521400.00) {
-            
+        
+         else  if (weekday1 == 7 && weekday2 ==1 && Interval1>=172680.000000 && Interval2>=521400.00) {
+             
              return @"Next Weekend";
          }
          else if (weekday1 == 7 && weekday2 ==1 && Interval1>=172680.000000) {
@@ -350,6 +354,10 @@
          }else if(weekday1 == 2 && weekday2 ==1 && Interval1>=604680.000000){
              return @"Next Week";
          }// Sun = 1, Sat = 7
+         
+         else{
+             return @"This Month";
+         }
     }
     
     

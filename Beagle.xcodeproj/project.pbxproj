@@ -21,6 +21,9 @@
 		18007F0318C6541200230C23 /* UIImage+RoundedCorner.m in Sources */ = {isa = PBXBuildFile; fileRef = 18007F0018C6541200230C23 /* UIImage+RoundedCorner.m */; };
 		18007F0818C6551700230C23 /* BeagleAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 18007F0718C6551700230C23 /* BeagleAlert.m */; };
 		18007F0B18C6568000230C23 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 18007F0A18C6567F00230C23 /* MBProgressHUD.m */; };
+		1805009A191BE585003AAD47 /* EventBlurView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18050098191BE585003AAD47 /* EventBlurView.m */; };
+		1805009D191BE592003AAD47 /* UIScreen+Screenshot.m in Sources */ = {isa = PBXBuildFile; fileRef = 1805009C191BE592003AAD47 /* UIScreen+Screenshot.m */; };
+		1805009F191BE5A2003AAD47 /* EventBlurView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1805009E191BE5A2003AAD47 /* EventBlurView.xib */; };
 		1805CECF18C8D22000AC8556 /* ActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1805CECE18C8D22000AC8556 /* ActivityViewController.m */; };
 		1805CED818C8D25800AC8556 /* TimeFilterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1805CED618C8D25800AC8556 /* TimeFilterView.m */; };
 		1805CED918C8D25800AC8556 /* TimeFilterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1805CED718C8D25800AC8556 /* TimeFilterView.xib */; };
@@ -145,6 +148,11 @@
 		18007F0718C6551700230C23 /* BeagleAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeagleAlert.m; sourceTree = "<group>"; };
 		18007F0918C6567F00230C23 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		18007F0A18C6567F00230C23 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
+		18050098191BE585003AAD47 /* EventBlurView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventBlurView.m; sourceTree = "<group>"; };
+		18050099191BE585003AAD47 /* EventBlurView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventBlurView.h; sourceTree = "<group>"; };
+		1805009B191BE592003AAD47 /* UIScreen+Screenshot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScreen+Screenshot.h"; sourceTree = "<group>"; };
+		1805009C191BE592003AAD47 /* UIScreen+Screenshot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScreen+Screenshot.m"; sourceTree = "<group>"; };
+		1805009E191BE5A2003AAD47 /* EventBlurView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EventBlurView.xib; sourceTree = "<group>"; };
 		1805CECD18C8D22000AC8556 /* ActivityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityViewController.h; sourceTree = "<group>"; };
 		1805CECE18C8D22000AC8556 /* ActivityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityViewController.m; sourceTree = "<group>"; };
 		1805CED518C8D25800AC8556 /* TimeFilterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeFilterView.h; sourceTree = "<group>"; };
@@ -393,6 +401,8 @@
 		18007F0418C6542000230C23 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				1805009B191BE592003AAD47 /* UIScreen+Screenshot.h */,
+				1805009C191BE592003AAD47 /* UIScreen+Screenshot.m */,
 				180AF0BC18DC805700EE87D6 /* UIView+HidingView.h */,
 				180AF0BD18DC805700EE87D6 /* UIView+HidingView.m */,
 				18F8F4D818DA07C700B26AC6 /* UIViewController+MJPopupViewController.h */,
@@ -441,6 +451,9 @@
 		1805CED418C8D24700AC8556 /* Filter Views */ = {
 			isa = PBXGroup;
 			children = (
+				18050099191BE585003AAD47 /* EventBlurView.h */,
+				18050098191BE585003AAD47 /* EventBlurView.m */,
+				1805009E191BE5A2003AAD47 /* EventBlurView.xib */,
 				18FEA6E419141B54005C8433 /* ActivityTimeViewController.h */,
 				18FEA6E319141B54005C8433 /* ActivityTimeViewController.m */,
 				180AF0B118DC7FB200EE87D6 /* BlankHomePageView.h */,
@@ -867,6 +880,7 @@
 			files = (
 				18EC234218B5A72F00316B6E /* Main.storyboard in Resources */,
 				18EBCFDC18CE350600FDC624 /* CustomPickerView.xib in Resources */,
+				1805009F191BE5A2003AAD47 /* EventBlurView.xib in Resources */,
 				18EC22AB18B5A0B400316B6E /* InfoPlist.strings in Resources */,
 				18F889951902C7FF00C80011 /* PlayerProfileItem.xib in Resources */,
 				18EC22B318B5A0B400316B6E /* Images.xcassets in Resources */,
@@ -941,6 +955,7 @@
 				18007EF718C6511000230C23 /* BeagleUtilities.m in Sources */,
 				18007EFA18C653C000230C23 /* UIImage+Resize.m in Sources */,
 				18EC231F18B5A42D00316B6E /* ASICloudFilesObjectRequest.m in Sources */,
+				1805009A191BE585003AAD47 /* EventBlurView.m in Sources */,
 				18F9FE6118DB40E4004BFE4E /* BeagleManager.m in Sources */,
 				18EC231A18B5A42D00316B6E /* ASICloudFilesCDNRequest.m in Sources */,
 				18EC232418B5A42D00316B6E /* NSString+SBJSON.m in Sources */,
@@ -965,6 +980,7 @@
 				18EC232218B5A42D00316B6E /* Reachability.m in Sources */,
 				18FADB9E18B66A4C00A62287 /* SettingsViewController.m in Sources */,
 				18EC231918B5A42D00316B6E /* ASINetworkQueue.m in Sources */,
+				1805009D191BE592003AAD47 /* UIScreen+Screenshot.m in Sources */,
 				18EC231418B5A42D00316B6E /* ASIDataDecompressor.m in Sources */,
 				18EC231E18B5A42D00316B6E /* ASICloudFilesObject.m in Sources */,
 				18F889941902C7FF00C80011 /* PlayerProfileItem.m in Sources */,

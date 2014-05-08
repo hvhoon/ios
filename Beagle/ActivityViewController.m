@@ -14,6 +14,7 @@
 #import "UIViewController+MJPopupViewController.h"
 #import "BeagleActivityClass.h"
 #import "ActivityTimeViewController.h"
+#import "EventBlurView.h"
 enum Weeks {
     SUNDAY = 1,
     MONDAY,
@@ -23,7 +24,7 @@ enum Weeks {
     FRIDAY,
     SATURDAY
 };
-@interface ActivityViewController ()<UITextViewDelegate,LocationTableViewDelegate,ServerManagerDelegate,ActivityTimeViewControllerDelegate>{
+@interface ActivityViewController ()<UITextViewDelegate,LocationTableViewDelegate,ServerManagerDelegate,ActivityTimeViewControllerDelegate,EventBlurViewDelegate>{
     IBOutlet UIImageView *profileImageView;
     IBOutlet UITextView *descriptionTextView;
     UILabel *placeholderLabel;
@@ -36,9 +37,10 @@ enum Weeks {
     ServerManager *activityServerManager;
     ServerManager *deleteActivityManager;
     IBOutlet UIImageView *visibilityImageView;
+    NSInteger timeIndex;
 }
 @property (nonatomic, strong) NSMutableIndexSet *optionIndices;
-
+@property(nonatomic, strong) EventBlurView *blrView;
 @property(nonatomic,strong)ServerManager *activityServerManager;
 @property(nonatomic,strong)ServerManager *deleteActivityManager;
 @end
@@ -64,6 +66,9 @@ enum Weeks {
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    timeIndex=7;
+    self.blrView = [EventBlurView load:self.view];
+    self.blrView.delegate=self;
     if(!editState)
         bg_activity=[[BeagleActivityClass alloc]init];
     
@@ -93,7 +98,7 @@ enum Weeks {
     
     if(editState){
         
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleDone target:self action:@selector(saveButtonClicked:)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleDone target:self action:@selector(createButtonClicked:)];
     [self.navigationItem.rightBarButtonItem setTintColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0]];
     self.navigationItem.rightBarButtonItem.enabled=YES;
         
@@ -110,10 +115,14 @@ enum Weeks {
     countTextLabel.text= [[NSString alloc] initWithFormat:@"%lu",(unsigned long)140-[descriptionTextView.text length]];
     [descriptionTextView becomeFirstResponder];
 
-    [timeFilterButton setTitle:@"Next Weekend" forState:UIControlStateNormal];
-    //[timeFilterButton setTitleColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0] forState:UIControlStateNormal];
-    //[timeFilterButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:17.0]];
-    //[timeFilterButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
+    if(editState){
+    [timeFilterButton setTitle:[BeagleUtilities activityTime:self.bg_activity.startActivityDate endate:self.bg_activity.endActivityDate] forState:UIControlStateNormal];
+    }else{
+    [timeFilterButton setTitle:@"Next Weekend" forState:UIControlStateNormal];        
+    }
+    [timeFilterButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
+    timeFilterButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+
     
     [visibilityFilterButton setTitle:@"Friends Only" forState:UIControlStateNormal];
     //[visibilityFilterButton setTitleColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0] forState:UIControlStateNormal];
@@ -164,7 +173,7 @@ enum Weeks {
     
     if([descriptionTextView.text length]==0){
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Missing Description"
-                                                        message:@"Your activity must have a description."
+                                                        message:@"Your interest must have a description."
                                                        delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
         [alert show];
         return;
@@ -273,23 +282,76 @@ enum Weeks {
     [dateFormatter setTimeZone:utcTimeZone];
     
     
-    bg_activity.startActivityDate=[dateFormatter stringFromDate:nextFridayStart];//next weekend start
-    bg_activity.startActivityDate=[dateFormatter stringFromDate:nextMondayStart];//next week start
-    bg_activity.startActivityDate=[dateFormatter stringFromDate:thisSatStart];//this weekend start
     
-    bg_activity.startActivityDate=[dateFormatter stringFromDate:tomorrowStart];//tomorrow start
-    bg_activity.startActivityDate=[dateFormatter stringFromDate:[NSDate date]];//this weekStart && later today start
+    [components setMonth:[components month]+1];
+    [components setDay:0];
+    NSDate *endOfMonth = [myCalendar dateFromComponents:components];
 
-    bg_activity.endActivityDate=[dateFormatter stringFromDate:nextSundayEnd];//next weekend end
+    NSLog(@"endOfMonth=%@",endOfMonth);
 
-    bg_activity.endActivityDate=[dateFormatter stringFromDate:tomorrowEnd];//tomorrow end
-    bg_activity.endActivityDate=[dateFormatter stringFromDate:laterToday];//later today end
-    bg_activity.endActivityDate=[dateFormatter stringFromDate:endOfThisWeekend];//end thisweekend    
-    
-    bg_activity.visibility=@"Public";
+    switch (timeIndex) {
+        case 1:
+        {
+            bg_activity.startActivityDate=[dateFormatter stringFromDate:[NSDate date]];//later today start
+            
+             bg_activity.endActivityDate=[dateFormatter stringFromDate:laterToday];//later today end
+        }
+            break;
+            
+        case 2:
+        {
+            bg_activity.startActivityDate=[dateFormatter stringFromDate:[NSDate date]];//this weekStart
+            
+            bg_activity.endActivityDate=[dateFormatter stringFromDate:endOfThisWeekend];//this  week end
+        }
+            break;
+            
+        case 3:
+        {
+            bg_activity.startActivityDate=[dateFormatter stringFromDate:nextMondayStart];//next week start
+            bg_activity.endActivityDate=[dateFormatter stringFromDate:nextSundayEnd];//next weekend end
+        }
+            break;
+                                         
+       case 4:
+        {
+            //this month
+            bg_activity.startActivityDate=[dateFormatter stringFromDate:[NSDate date]];//month start
+            bg_activity.endActivityDate=[dateFormatter stringFromDate:endOfMonth];//month end
+        }
+                                       
+        break;
+                                  
+         case 5:
+         {
+             bg_activity.startActivityDate=[dateFormatter stringFromDate:tomorrowStart];//tomorrow start
+             
+             bg_activity.endActivityDate=[dateFormatter stringFromDate:tomorrowEnd];//tomorrow end
+         }
+         break;
+                                         
+         case 6:
+         {
+             bg_activity.startActivityDate=[dateFormatter stringFromDate:thisSatStart];//this weekend start
+             
+             bg_activity.endActivityDate=[dateFormatter stringFromDate:endOfThisWeekend];//this weekend end
+         }
+         break;
+
+
+         case 7:
+         {
+             bg_activity.startActivityDate=[dateFormatter stringFromDate:nextFridayStart];//next weekend start
+             
+             bg_activity.endActivityDate=[dateFormatter stringFromDate:nextSundayEnd];//next weekend end
+         }
+         break;
+                                         
+            
+    }
+    bg_activity.visibility=@"public";
     bg_activity.state=[[BeagleManager SharedInstance]placemark].administrativeArea;
     bg_activity.city=[[[BeagleManager SharedInstance]placemark].addressDictionary objectForKey:@"City"];
-    bg_activity.timeFilter=@"Next Weekend";
     bg_activity.latitude=[[BeagleManager SharedInstance]currentLocation].coordinate.latitude;
     bg_activity.longitude=[[BeagleManager SharedInstance]currentLocation].coordinate.longitude;
 
@@ -303,23 +365,13 @@ enum Weeks {
 
     self.activityServerManager=[[ServerManager alloc]init];
     self.activityServerManager.delegate=self;
-    [self.activityServerManager createActivityOnBeagle:bg_activity];
-
-    
-}
--(void)saveButtonClicked:(id)sender{
-    
-    bg_activity.activityDesc=descriptionTextView.text;
-    if(self.activityServerManager!=nil){
-        self.activityServerManager.delegate = nil;
-        [self.activityServerManager releaseServerManager];
-        self.activityServerManager = nil;
-    }
-    
-    self.activityServerManager=[[ServerManager alloc]init];
-    self.activityServerManager.delegate=self;
+    if(editState)
     [self.activityServerManager updateActivityOnBeagle:bg_activity];
+    else{
+       [self.activityServerManager createActivityOnBeagle:bg_activity];
+    }
 
+    
 }
 #define kDeleteActivity 2
 -(IBAction)deleteButtonClicked:(id)sender{
@@ -457,9 +509,19 @@ enum Weeks {
 
 
 - (IBAction)timeFilter:(id)sender{
-    ActivityTimeViewController *viewController = [self.storyboard instantiateViewControllerWithIdentifier:@"activityTimeScreen"];
-    viewController.delegate=self;
-    [self presentPopupViewController:viewController animationType:MJPopupViewAnimationFade];
+
+    
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
+    
+        [self.blrView blurWithColor:[BlurColorComponents darkEffect]];
+        [self.blrView crossDissolveShow];
+        UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
+        
+        [keyboard addSubview:self.blrView];
+        
+//    ActivityTimeViewController *viewController = [self.storyboard instantiateViewControllerWithIdentifier:@"activityTimeScreen"];
+//    viewController.delegate=self;
+//    [self presentPopupViewController:viewController animationType:MJPopupViewAnimationFade];
 
 }
 
@@ -470,9 +532,78 @@ enum Weeks {
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
 }
 
-- (void)dismissactivityTimeFilter:(ActivityTimeViewController*)viewController{
-    [self dismissPopupViewControllerWithanimationType:MJPopupViewAnimationFade];
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];    
+
+#pragma mark -
+#pragma mark Event Blur Delegate Method
+
+-(void)changeTimeFilter:(NSInteger)index{
+    
+    timeIndex=index;
+    switch (index) {
+        case 1:
+        {
+            
+          [timeFilterButton setTitle:@"Later Today" forState:UIControlStateNormal];
+        }
+            break;
+            
+        case 2:
+        {
+                [timeFilterButton setTitle:@"This Week" forState:UIControlStateNormal];
+        }
+            break;
+            
+            
+        case 3:
+        {
+            [timeFilterButton setTitle:@"Next Week" forState:UIControlStateNormal];
+        }
+            break;
+            
+            
+        case 4:
+        {
+            [timeFilterButton setTitle:@"This Month" forState:UIControlStateNormal];
+        }
+            break;
+            
+            
+        case 5:
+        {
+
+            [timeFilterButton setTitle:@"Tomorrow" forState:UIControlStateNormal];
+        }
+            break;
+            
+            
+        case 6:
+        {
+            [timeFilterButton setTitle:@"This Weekend" forState:UIControlStateNormal];
+        }
+            
+            break;
+            
+            
+        case 7:
+        {
+            [timeFilterButton setTitle:@"Next Weekend" forState:UIControlStateNormal];
+        }
+            break;
+            
+        case 8:
+        {
+            [timeFilterButton setTitle:@"Pick a Date" forState:UIControlStateNormal];
+        }
+            break;
+            
+            
+    }
+}
+
+- (void)dismissactivityTimeFilter{
+    
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
+
 }
 
 #pragma mark - server calls

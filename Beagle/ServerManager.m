@@ -13,7 +13,7 @@
 #import "SBJSON.h"
 #import "JSON.h"
 #import "BeagleActivityClass.h"
-#define localHost @"http://192.168.0.104:3000/"
+#define localHost @"http://192.168.0.101:3000/"
 #define localHost1 @"http://localhost:3000/"
 #define herokuHost @"http://infinite-spire-6520.herokuapp.com/"
 @interface ServerManager()
@@ -40,7 +40,7 @@
         _internetReachability = [Reachability reachabilityForInternetConnection];
 
 
-        _serverUrl =herokuHost;
+        _serverUrl =localHost;
 
         [self populateErrorCodes];
     }

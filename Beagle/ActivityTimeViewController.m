@@ -42,6 +42,7 @@
                 {
                     TimeFilterView *filterView = [[TimeFilterView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
                     filterView.delegate=self;
+                    [filterView setUserInteractionEnabled:YES];
                     [filterView setBackgroundColor:[UIColor colorWithRed:162.0/255.0 green:162.0/255.0 blue:162.0/255.0 alpha:1.0]];
                     [filterView setAlpha:0.69];
                     [_scrollView addSubview:filterView];

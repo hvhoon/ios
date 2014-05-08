@@ -61,7 +61,7 @@
 
 -(void)buildTheLogic{
     
-    [self setAlpha:.69];
+//    [self setAlpha:.69];
 //    CGSize pickerSize = [pickerView sizeThatFits:CGSizeZero];
 //    
 //    UIView *pickerTransformView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, pickerSize.width, pickerSize.height)];

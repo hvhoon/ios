@@ -696,8 +696,8 @@
                             NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
                             [dateFormatter setTimeZone:utcTimeZone];
 
-                            NSDate *s1 = [dateFormatter dateFromString:a.startActivityDate];//add the string
-                            NSDate *s2 = [dateFormatter dateFromString:b.startActivityDate];
+                            NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
+                            NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
                             
                             return [s1 compare:s2];
                         }];

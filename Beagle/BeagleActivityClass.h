@@ -19,7 +19,6 @@
 @property(nonatomic,assign)NSInteger activityId;
 @property(nonatomic,assign)CGFloat latitude;
 @property(nonatomic,assign)CGFloat longitude;
-@property(nonatomic,strong)NSString *timeFilter;
 @property(nonatomic,assign)NSInteger ownerid;
 @property(nonatomic,assign)NSInteger activityType;
 @property(nonatomic,strong)NSString*organizerName;
