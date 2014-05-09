@@ -456,12 +456,12 @@
 		1805CED418C8D24700AC8556 /* Filter Views */ = {
 			isa = PBXGroup;
 			children = (
+				18F2B74D191D3AF500245C5A /* EventVisibilityBlurView.h */,
 				18F2B748191D3AF500245C5A /* EventVisibilityBlurView.m */,
 				18F2B749191D3AF500245C5A /* EventVisibilityBlurView.xib */,
-				18F2B74A191D3AF500245C5A /* EventTimeBlurView.xib */,
 				18F2B74B191D3AF500245C5A /* EventTimeBlurView.h */,
 				18F2B74C191D3AF500245C5A /* EventTimeBlurView.m */,
-				18F2B74D191D3AF500245C5A /* EventVisibilityBlurView.h */,
+				18F2B74A191D3AF500245C5A /* EventTimeBlurView.xib */,
 				18FEA6E419141B54005C8433 /* ActivityTimeViewController.h */,
 				18FEA6E319141B54005C8433 /* ActivityTimeViewController.m */,
 				180AF0B118DC7FB200EE87D6 /* BlankHomePageView.h */,

@@ -38,8 +38,6 @@
         _scrollView.frame=CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
         _scrollView.alwaysBounceHorizontal = NO;
         _scrollView.alwaysBounceVertical = YES;
-        _scrollView.bounces = YES;
-        _scrollView.clipsToBounds = NO;
         _scrollView.showsHorizontalScrollIndicator = NO;
         _scrollView.showsVerticalScrollIndicator = NO;
         
@@ -51,6 +49,7 @@
                     {
                         TimeFilterView *filterView = [[TimeFilterView alloc]initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
                         filterView.delegate=self;
+                        filterView.userInteractionEnabled=YES;
                         [filterView setBackgroundColor:[UIColor clearColor]];
                         [_scrollView addSubview:filterView];
                         
@@ -89,13 +88,13 @@
             }
             _scrollView.pagingEnabled = YES;
             _scrollView.bounces=NO;
-            
+            _scrollView.userInteractionEnabled=YES;
             _scrollView.clipsToBounds=YES;
             _scrollView.contentSize = CGSizeMake(320,2*self.frame.size.height);
         
             [self addSubview:_scrollView];
             
-        self.userInteractionEnabled=YES;
+           self.userInteractionEnabled=YES;
 
     }
     
@@ -177,30 +176,6 @@
     [self removeFromSuperview];
 }
 
-- (UIImage *)rn_screenshot
-{
-    UIGraphicsBeginImageContextWithOptions(self.parent.frame.size, NO, [UIScreen mainScreen].scale);
-    
-    if ([self respondsToSelector:@selector(drawViewHierarchyInRect:afterScreenUpdates:)]) {
-        
-        NSInvocation* invoc = [NSInvocation invocationWithMethodSignature:
-                               [self methodSignatureForSelector:
-                                @selector(drawViewHierarchyInRect:afterScreenUpdates:)]];
-        [invoc setTarget:self];
-        [invoc setSelector:@selector(drawViewHierarchyInRect:afterScreenUpdates:)];
-        CGRect arg2 = self.bounds;
-        BOOL arg3 = YES;
-        [invoc setArgument:&arg2 atIndex:2];
-        [invoc setArgument:&arg3 atIndex:3];
-        [invoc invoke];
-    } else {
-        [self.layer renderInContext:UIGraphicsGetCurrentContext()];
-    }
-    
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return image;
-}
 
 - (void) blurBackground {
     UIGraphicsBeginImageContextWithOptions(CGSizeMake(CGRectGetWidth(self.parent.frame), CGRectGetHeight(self.parent.frame)), NO, 1);

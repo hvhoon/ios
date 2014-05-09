@@ -30,6 +30,7 @@
         NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"TimeFilterView" owner:self options:nil];
         
         self=[nib objectAtIndex:0];
+        [self setUserInteractionEnabled:YES];
 
         UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
         // make your gesture recognizer priority
