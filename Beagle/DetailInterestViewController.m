@@ -84,6 +84,11 @@ static NSString * const CellIdentifier = @"cell";
     
     [self.navigationController.navigationBar setBarTintColor:[BeagleUtilities returnBeagleColor:8]];
     
+    
+    
+    self.navigationController.navigationBar.topItem.title = @"";
+    
+    
     // Set the screen title.
     NSString* screenTitle = [BeagleUtilities activityTime:self.interestActivity.startActivityDate endate:self.interestActivity.endActivityDate];
     self.navigationItem.title = screenTitle;
