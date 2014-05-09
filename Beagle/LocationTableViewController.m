@@ -153,21 +153,20 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
-    // Create a new Candy Object
-    Location *candy = nil;
+    Location *location = nil;
     cell.backgroundColor=[UIColor clearColor];
     // Check to see whether the normal table or search results table is being displayed and set the Candy object from the appropriate array
     if (tableView == self.searchDisplayController.searchResultsTableView)
 	{
-        candy = [self.filteredLocationArray objectAtIndex:[indexPath row]];
+        location = [self.filteredLocationArray objectAtIndex:[indexPath row]];
     }
 	else
 	{
-        candy = [self.locationArray objectAtIndex:[indexPath row]];
+        location = [self.locationArray objectAtIndex:[indexPath row]];
     }
     
     // Configure the cell
-    [[cell textLabel] setText:[candy name]];
+    [[cell textLabel] setText:[location name]];
     [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
     
     return cell;

@@ -261,14 +261,13 @@
     [components setMinute:00];
     [components setSecond:01];
     NSDate *startOfDay=[gregorian dateFromComponents:components];
-    NSLog(@"startOfDay=%@",startOfDay);
     
     [components setHour:23];
     [components setMinute:59];
     [components setSecond:59];
     
     NSDate *endOfDay=[gregorian dateFromComponents:components];
-    NSLog(@"endOfDay=%@",endOfDay);
+    
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
@@ -276,9 +275,11 @@
     NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
     [dateFormatter setTimeZone:utcTimeZone];
     NSDate *startActivityDate = [dateFormatter dateFromString:startDate];
-    
+    NSLog(@"startActivityDate=%@",startActivityDate);
+
 
     NSDate *endActivityDate = [dateFormatter dateFromString:endDate];
+    NSLog(@"endActivityDate=%@",endActivityDate);
     NSDate *currentDate=[NSDate date];
     NSArray *array = [NSArray arrayWithObjects:startActivityDate,currentDate,endActivityDate, nil];
     
@@ -295,8 +296,8 @@
 
     NSTimeInterval Interval1=[endActivityDate timeIntervalSinceDate:startActivityDate];
     NSTimeInterval Interval2=[endActivityDate timeIntervalSinceDate:[NSDate date]];
-    NSLog(@"interval1=%f",Interval1);
-    NSLog(@"interval2=%f",Interval2);
+    NSLog(@"interval1 in hrs =%f",Interval1/3600.0);
+    NSLog(@"interval2 n hrs =%f",Interval2/3600.0);
 
     NSUInteger indexOfDay1 = [array indexOfObject:startActivityDate];
     NSUInteger indexOfDay2 = [array indexOfObject:currentDate];
@@ -313,26 +314,22 @@
         [nowComponents setMinute:0];
         [nowComponents setSecond:01];
         
-        NSDate *satMorning=[gregorian dateFromComponents:nowComponents];
-        NSLog(@"satMorning=%@",satMorning);
+//        NSDate *satMorning=[gregorian dateFromComponents:nowComponents];
+//        NSLog(@"satMorning=%@",satMorning);
         [nowComponents setWeekday:0];
         
         [nowComponents setHour:23];
         [nowComponents setMinute:59];
         [nowComponents setSecond:59];
         
-        NSDate *sundayEvening=[gregorian dateFromComponents:nowComponents];
-        NSLog(@"sundayEvening=%@",sundayEvening);
-        if(weekday2 ==1){
-            return @"This Week";
-        }
-        else if([[NSDate date] timeIntervalSinceDate:startActivityDate]>0 && Interval2>0 && Interval2<86400.00)
+//        NSDate *sundayEvening=[gregorian dateFromComponents:nowComponents];
+//        NSLog(@"sundayEvening=%@",sundayEvening);
+         if([[NSDate date] timeIntervalSinceDate:startActivityDate]>0 && Interval2>0 && Interval2<=86400.00)
                  return @"Later Today";
-        else if([[NSDate date] timeIntervalSinceDate:startActivityDate]>0 && Interval2>86400.00 && Interval2<172800.00)
+        else if([[NSDate date] timeIntervalSinceDate:startActivityDate]>0 && Interval2>=86400.00 && Interval2<=172800.00)
             return @"Tomorrow";
-        else if(Interval2>172800.00 && Interval2<432000.000)
-            return @"This Week";
-        
+        else if(Interval1>=172680.000000 && Interval2<=585600.00)
+            return @"Next Week";
         else{
             return @"This Month";
         }
@@ -341,7 +338,7 @@
      else {
         NSLog(@"NO");
          
-         if(Interval2>86400.00 && Interval2<172800.00)
+         if(Interval2>=86400.00 && Interval2<=172800.00)
              return @"Tomorrow";
         
          else  if (weekday1 == 7 && weekday2 ==1 && Interval1>=172680.000000 && Interval2>=521400.00) {
@@ -355,7 +352,9 @@
              return @"Next Week";
          }// Sun = 1, Sat = 7
          
-         else{
+         else if(Interval1>=172680.000000 && Interval2<=585600.00){
+             return @"Next Week";
+         }else{
              return @"This Month";
          }
     }
@@ -463,4 +462,52 @@
     
     return result;
 }
+
++(BOOL)LastDistanceFromLocationExceeds_50M{
+    
+    // Retrieve the location
+    CLLocationDegrees latitude = [[NSUserDefaults standardUserDefaults] doubleForKey:@"LastLocationLat"];
+    CLLocationDegrees longitude = [[NSUserDefaults standardUserDefaults] doubleForKey:@"LastLocationLong"];
+    
+    if(latitude==0.0 && longitude==0.0f){
+
+        [[NSUserDefaults standardUserDefaults] setDouble:[[BeagleManager SharedInstance]currentLocation].coordinate.latitude forKey:@"LastLocationLat"];
+        [[NSUserDefaults standardUserDefaults] setDouble:[[BeagleManager SharedInstance]currentLocation].coordinate.longitude forKey:@"LastLocationLong"];
+        
+    }
+    CLLocation *oldLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+    
+    CLLocationDistance kmeters = [[[BeagleManager SharedInstance]currentLocation] distanceFromLocation:oldLocation]/1000.0;
+    //    NSLog(@"kmeters = %@", kmeters);
+    if(kmeters/1.6>=50.0f)
+        return YES;
+    
+    return NO;
+    // Store the location
+    
+    
+}
+
++(BOOL)hasBeenMoreThanSixtyMinutes{
+    NSDate *lastHourUpdate=[[NSUserDefaults standardUserDefaults] valueForKey:@"HourlyUpdate"];
+    
+    if(lastHourUpdate==nil){
+        [[NSUserDefaults standardUserDefaults] setValue:[NSDate date] forKey:@"HourlyUpdate"];
+    }
+    NSLog(@"interval%lf",[lastHourUpdate timeIntervalSinceNow]);
+    if ([lastHourUpdate timeIntervalSinceNow] <= -3600) {
+        
+        [[NSUserDefaults standardUserDefaults] setDouble:[[BeagleManager SharedInstance]currentLocation].coordinate.latitude forKey:@"LastLocationLat"];
+        [[NSUserDefaults standardUserDefaults] setDouble:[[BeagleManager SharedInstance]currentLocation].coordinate.longitude forKey:@"LastLocationLong"];
+        
+        [[NSUserDefaults standardUserDefaults] setValue:[NSDate date] forKey:@"HourlyUpdate"];
+        
+        
+        return YES;
+        
+    }
+    
+    return NO;
+}
+
 @end

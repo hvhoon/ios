@@ -37,6 +37,34 @@ void uncaughtExceptionHandler(NSException *exception) {
     [self.window makeKeyAndVisible];
     [self registerForNotifications];
     
+    if([[NSUserDefaults standardUserDefaults]valueForKey:@"HourlyUpdate"]==nil){
+        [[NSUserDefaults standardUserDefaults]setValue:[NSDate date] forKey:@"HourlyUpdate"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+    }
+    
+    if([[NSUserDefaults standardUserDefaults]valueForKey:@"HourlyUpdate"]==nil){
+        [[NSUserDefaults standardUserDefaults]setValue:[NSDate date] forKey:@"HourlyUpdate"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+    }
+
+    
+    if([[NSUserDefaults standardUserDefaults]valueForKey:@"LastLocationLat"]==nil){
+        [[NSUserDefaults standardUserDefaults]setDouble:0.0f  forKey:@"LastLocationLat"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+    }
+    if([[NSUserDefaults standardUserDefaults]valueForKey:@"LastLocationLong"]==nil){
+        [[NSUserDefaults standardUserDefaults]setDouble:0.0f  forKey:@"LastLocationLong"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+    }
+
+
+
+    
+    
     return YES;
 }
 

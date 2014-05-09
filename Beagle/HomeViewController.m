@@ -223,11 +223,23 @@
         [self startStandardUpdates];
     }
     isPushAuto=TRUE;
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (updateActivityEvents) name:@"AutoRefreshEvents" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (updateEventsInTransitionFromBg_Fg) name:@"AutoRefreshEvents" object:nil];
 
 }
--(void)updateActivityEvents{
+-(void)updateEventsInTransitionFromBg_Fg{
     
+    BOOL isSixty=[BeagleUtilities hasBeenMoreThanSixtyMinutes];
+    BOOL isMoreThan50_M=[BeagleUtilities LastDistanceFromLocationExceeds_50M];
+    
+    if((isSixty && isMoreThan50_M)||(isSixty && !isMoreThan50_M)){
+        [self startStandardUpdates];
+    }
+    else if(!isSixty && isMoreThan50_M){
+        isPushAuto=TRUE;
+        [self LocationAcquired];
+        
+    }
+   else if(![BeagleUtilities hasBeenMoreThanSixtyMinutes] && ![BeagleUtilities LastDistanceFromLocationExceeds_50M]){
     if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
         isPushAuto=TRUE;
         [self LocationAcquired];
@@ -235,6 +247,7 @@
     }
     else{
         [self startStandardUpdates];
+    }
     }
 
 }

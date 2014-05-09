@@ -21,9 +21,7 @@
 		18007F0318C6541200230C23 /* UIImage+RoundedCorner.m in Sources */ = {isa = PBXBuildFile; fileRef = 18007F0018C6541200230C23 /* UIImage+RoundedCorner.m */; };
 		18007F0818C6551700230C23 /* BeagleAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 18007F0718C6551700230C23 /* BeagleAlert.m */; };
 		18007F0B18C6568000230C23 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 18007F0A18C6567F00230C23 /* MBProgressHUD.m */; };
-		1805009A191BE585003AAD47 /* EventBlurView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18050098191BE585003AAD47 /* EventBlurView.m */; };
 		1805009D191BE592003AAD47 /* UIScreen+Screenshot.m in Sources */ = {isa = PBXBuildFile; fileRef = 1805009C191BE592003AAD47 /* UIScreen+Screenshot.m */; };
-		1805009F191BE5A2003AAD47 /* EventBlurView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1805009E191BE5A2003AAD47 /* EventBlurView.xib */; };
 		1805CECF18C8D22000AC8556 /* ActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1805CECE18C8D22000AC8556 /* ActivityViewController.m */; };
 		1805CED818C8D25800AC8556 /* TimeFilterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1805CED618C8D25800AC8556 /* TimeFilterView.m */; };
 		1805CED918C8D25800AC8556 /* TimeFilterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1805CED718C8D25800AC8556 /* TimeFilterView.xib */; };
@@ -85,6 +83,10 @@
 		18EC233D18B5A6B600316B6E /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC233C18B5A6B600316B6E /* Accounts.framework */; };
 		18EC233F18B5A6BD00316B6E /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC233E18B5A6BD00316B6E /* Social.framework */; };
 		18EC234218B5A72F00316B6E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18EC234118B5A72F00316B6E /* Main.storyboard */; };
+		18F2B74E191D3AF500245C5A /* EventVisibilityBlurView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F2B748191D3AF500245C5A /* EventVisibilityBlurView.m */; };
+		18F2B74F191D3AF500245C5A /* EventVisibilityBlurView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18F2B749191D3AF500245C5A /* EventVisibilityBlurView.xib */; };
+		18F2B750191D3AF500245C5A /* EventTimeBlurView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18F2B74A191D3AF500245C5A /* EventTimeBlurView.xib */; };
+		18F2B751191D3AF500245C5A /* EventTimeBlurView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F2B74C191D3AF500245C5A /* EventTimeBlurView.m */; };
 		18F3394F190825A500CCCB18 /* InterestChatClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F3394E190825A500CCCB18 /* InterestChatClass.m */; };
 		18F3CEFD1909774D00AE3C47 /* MessageKeyboardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F3CEFB1909774D00AE3C47 /* MessageKeyboardView.m */; };
 		18F8898C1902C15400C80011 /* DetailInterestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F8898B1902C15400C80011 /* DetailInterestViewController.m */; };
@@ -148,11 +150,8 @@
 		18007F0718C6551700230C23 /* BeagleAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeagleAlert.m; sourceTree = "<group>"; };
 		18007F0918C6567F00230C23 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		18007F0A18C6567F00230C23 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
-		18050098191BE585003AAD47 /* EventBlurView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventBlurView.m; sourceTree = "<group>"; };
-		18050099191BE585003AAD47 /* EventBlurView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventBlurView.h; sourceTree = "<group>"; };
 		1805009B191BE592003AAD47 /* UIScreen+Screenshot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScreen+Screenshot.h"; sourceTree = "<group>"; };
 		1805009C191BE592003AAD47 /* UIScreen+Screenshot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScreen+Screenshot.m"; sourceTree = "<group>"; };
-		1805009E191BE5A2003AAD47 /* EventBlurView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EventBlurView.xib; sourceTree = "<group>"; };
 		1805CECD18C8D22000AC8556 /* ActivityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityViewController.h; sourceTree = "<group>"; };
 		1805CECE18C8D22000AC8556 /* ActivityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityViewController.m; sourceTree = "<group>"; };
 		1805CED518C8D25800AC8556 /* TimeFilterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeFilterView.h; sourceTree = "<group>"; };
@@ -260,6 +259,12 @@
 		18EC233C18B5A6B600316B6E /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		18EC233E18B5A6BD00316B6E /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		18EC234118B5A72F00316B6E /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		18F2B748191D3AF500245C5A /* EventVisibilityBlurView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventVisibilityBlurView.m; sourceTree = "<group>"; };
+		18F2B749191D3AF500245C5A /* EventVisibilityBlurView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EventVisibilityBlurView.xib; sourceTree = "<group>"; };
+		18F2B74A191D3AF500245C5A /* EventTimeBlurView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EventTimeBlurView.xib; sourceTree = "<group>"; };
+		18F2B74B191D3AF500245C5A /* EventTimeBlurView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventTimeBlurView.h; sourceTree = "<group>"; };
+		18F2B74C191D3AF500245C5A /* EventTimeBlurView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventTimeBlurView.m; sourceTree = "<group>"; };
+		18F2B74D191D3AF500245C5A /* EventVisibilityBlurView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventVisibilityBlurView.h; sourceTree = "<group>"; };
 		18F3394D190825A500CCCB18 /* InterestChatClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InterestChatClass.h; sourceTree = "<group>"; };
 		18F3394E190825A500CCCB18 /* InterestChatClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InterestChatClass.m; sourceTree = "<group>"; };
 		18F3CEFB1909774D00AE3C47 /* MessageKeyboardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageKeyboardView.m; sourceTree = "<group>"; };
@@ -451,9 +456,12 @@
 		1805CED418C8D24700AC8556 /* Filter Views */ = {
 			isa = PBXGroup;
 			children = (
-				18050099191BE585003AAD47 /* EventBlurView.h */,
-				18050098191BE585003AAD47 /* EventBlurView.m */,
-				1805009E191BE5A2003AAD47 /* EventBlurView.xib */,
+				18F2B748191D3AF500245C5A /* EventVisibilityBlurView.m */,
+				18F2B749191D3AF500245C5A /* EventVisibilityBlurView.xib */,
+				18F2B74A191D3AF500245C5A /* EventTimeBlurView.xib */,
+				18F2B74B191D3AF500245C5A /* EventTimeBlurView.h */,
+				18F2B74C191D3AF500245C5A /* EventTimeBlurView.m */,
+				18F2B74D191D3AF500245C5A /* EventVisibilityBlurView.h */,
 				18FEA6E419141B54005C8433 /* ActivityTimeViewController.h */,
 				18FEA6E319141B54005C8433 /* ActivityTimeViewController.m */,
 				180AF0B118DC7FB200EE87D6 /* BlankHomePageView.h */,
@@ -880,7 +888,8 @@
 			files = (
 				18EC234218B5A72F00316B6E /* Main.storyboard in Resources */,
 				18EBCFDC18CE350600FDC624 /* CustomPickerView.xib in Resources */,
-				1805009F191BE5A2003AAD47 /* EventBlurView.xib in Resources */,
+				18F2B750191D3AF500245C5A /* EventTimeBlurView.xib in Resources */,
+				18F2B74F191D3AF500245C5A /* EventVisibilityBlurView.xib in Resources */,
 				18EC22AB18B5A0B400316B6E /* InfoPlist.strings in Resources */,
 				18F889951902C7FF00C80011 /* PlayerProfileItem.xib in Resources */,
 				18EC22B318B5A0B400316B6E /* Images.xcassets in Resources */,
@@ -955,7 +964,6 @@
 				18007EF718C6511000230C23 /* BeagleUtilities.m in Sources */,
 				18007EFA18C653C000230C23 /* UIImage+Resize.m in Sources */,
 				18EC231F18B5A42D00316B6E /* ASICloudFilesObjectRequest.m in Sources */,
-				1805009A191BE585003AAD47 /* EventBlurView.m in Sources */,
 				18F9FE6118DB40E4004BFE4E /* BeagleManager.m in Sources */,
 				18EC231A18B5A42D00316B6E /* ASICloudFilesCDNRequest.m in Sources */,
 				18EC232418B5A42D00316B6E /* NSString+SBJSON.m in Sources */,
@@ -981,10 +989,12 @@
 				18FADB9E18B66A4C00A62287 /* SettingsViewController.m in Sources */,
 				18EC231918B5A42D00316B6E /* ASINetworkQueue.m in Sources */,
 				1805009D191BE592003AAD47 /* UIScreen+Screenshot.m in Sources */,
+				18F2B74E191D3AF500245C5A /* EventVisibilityBlurView.m in Sources */,
 				18EC231418B5A42D00316B6E /* ASIDataDecompressor.m in Sources */,
 				18EC231E18B5A42D00316B6E /* ASICloudFilesObject.m in Sources */,
 				18F889941902C7FF00C80011 /* PlayerProfileItem.m in Sources */,
 				18E7AF0D18BBAA6600EBBDE2 /* BeagleUserClass.m in Sources */,
+				18F2B751191D3AF500245C5A /* EventTimeBlurView.m in Sources */,
 				18FADB9718B668A500A62287 /* UIImage+ImageWithUIView.m in Sources */,
 				18F3CEFD1909774D00AE3C47 /* MessageKeyboardView.m in Sources */,
 				18EC231518B5A42D00316B6E /* ASIDownloadCache.m in Sources */,

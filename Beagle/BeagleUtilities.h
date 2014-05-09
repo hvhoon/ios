@@ -19,4 +19,6 @@
 +(UIImage*)imageCircularBySize:(UIImage*)image sqr:(CGFloat)sqr;
 +(NSString *)calculateChatTimestamp:(NSString *)timeString;
 +(UIColor*)returnBeagleColor:(NSInteger)colorID;
++(BOOL)hasBeenMoreThanSixtyMinutes;
++(BOOL)LastDistanceFromLocationExceeds_50M;
 @end

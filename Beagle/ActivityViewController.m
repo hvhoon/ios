@@ -14,7 +14,8 @@
 #import "UIViewController+MJPopupViewController.h"
 #import "BeagleActivityClass.h"
 #import "ActivityTimeViewController.h"
-#import "EventBlurView.h"
+#import "EventTimeBlurView.h"
+#import "EventVisibilityBlurView.h"
 enum Weeks {
     SUNDAY = 1,
     MONDAY,
@@ -24,7 +25,7 @@ enum Weeks {
     FRIDAY,
     SATURDAY
 };
-@interface ActivityViewController ()<UITextViewDelegate,LocationTableViewDelegate,ServerManagerDelegate,ActivityTimeViewControllerDelegate,EventBlurViewDelegate>{
+@interface ActivityViewController ()<UITextViewDelegate,LocationTableViewDelegate,ServerManagerDelegate,ActivityTimeViewControllerDelegate,EventTimeBlurViewDelegate,EventVisibilityBlurViewDelegate>{
     IBOutlet UIImageView *profileImageView;
     IBOutlet UITextView *descriptionTextView;
     UILabel *placeholderLabel;
@@ -38,9 +39,11 @@ enum Weeks {
     ServerManager *deleteActivityManager;
     IBOutlet UIImageView *visibilityImageView;
     NSInteger timeIndex;
+    NSInteger visibilityIndex;
 }
 @property (nonatomic, strong) NSMutableIndexSet *optionIndices;
-@property(nonatomic, strong) EventBlurView *blrView;
+@property(nonatomic, strong) EventTimeBlurView *blrTimeView;
+@property(nonatomic, strong) EventVisibilityBlurView *blrVisbilityView;
 @property(nonatomic,strong)ServerManager *activityServerManager;
 @property(nonatomic,strong)ServerManager *deleteActivityManager;
 @end
@@ -67,8 +70,10 @@ enum Weeks {
 {
     [super viewDidLoad];
     
-    self.blrView = [EventBlurView load:self.view];
-    self.blrView.delegate=self;
+    self.blrTimeView = [EventTimeBlurView loadTimeFilter:self.view];
+    self.blrVisbilityView=[EventVisibilityBlurView loadVisibilityFilter:self.view];
+    self.blrVisbilityView.delegate=self;
+    self.blrTimeView.delegate=self;
     if(!editState)
         bg_activity=[[BeagleActivityClass alloc]init];
     
@@ -118,20 +123,24 @@ enum Weeks {
     
     if(editState){
         timeIndex=-1;
+        visibilityIndex=-1;
+    [visibilityFilterButton setTitle:self.bg_activity.visibility forState:UIControlStateNormal];
 
     [timeFilterButton setTitle:[BeagleUtilities activityTime:self.bg_activity.startActivityDate endate:self.bg_activity.endActivityDate] forState:UIControlStateNormal];
     }else{
          timeIndex=7;
-    [timeFilterButton setTitle:@"Next Weekend" forState:UIControlStateNormal];        
+        visibilityIndex=1;
+    [visibilityFilterButton setTitle:@"Public" forState:UIControlStateNormal];
+
+    [timeFilterButton setTitle:@"Next Weekend" forState:UIControlStateNormal];
     }
     [timeFilterButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
     timeFilterButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
 
     
-    [visibilityFilterButton setTitle:@"Friends Only" forState:UIControlStateNormal];
-    //[visibilityFilterButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:17.0]];
-    //[visibilityFilterButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
-
+    [visibilityFilterButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
+    visibilityFilterButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+    
     NSString *locationFilter=[NSString stringWithFormat:@"%@, %@",[[[BeagleManager SharedInstance]placemark].addressDictionary objectForKey:@"City"],[[BeagleManager SharedInstance]placemark].administrativeArea];
     [locationFilterButton setTitle:locationFilter forState:UIControlStateNormal];
     //[locationFilterButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
@@ -347,7 +356,30 @@ enum Weeks {
                                          
             
     }
-    bg_activity.visibility=@"public";
+    
+    switch (visibilityIndex) {
+        case 1:
+        {
+            bg_activity.visibility=@"public";
+            
+        }
+            break;
+            
+        case 2:
+        {
+            bg_activity.visibility=@"private";
+            
+        }
+            break;
+
+    
+        case 3:
+        {
+            bg_activity.visibility=@"private";
+            
+        }
+            break;
+}
     bg_activity.state=[[BeagleManager SharedInstance]placemark].administrativeArea;
     bg_activity.city=[[[BeagleManager SharedInstance]placemark].addressDictionary objectForKey:@"City"];
     bg_activity.latitude=[[BeagleManager SharedInstance]currentLocation].coordinate.latitude;
@@ -494,6 +526,15 @@ enum Weeks {
 
 - (IBAction)visibilityFilter:(id)sender{
     
+    
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
+    
+    [self.blrVisbilityView blurWithColor];
+    [self.blrVisbilityView crossDissolveShow];
+    UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
+    
+    [keyboard addSubview:self.blrVisbilityView];
+
 }
 
 - (IBAction)locationFilter:(id)sender{
@@ -509,13 +550,13 @@ enum Weeks {
 - (IBAction)timeFilter:(id)sender{
 
     
-        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
+
+    [self.blrTimeView blurWithColor:[BlurColorComponents darkEffect]];
+    [self.blrTimeView crossDissolveShow];
+    UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
     
-        [self.blrView blurWithColor:[BlurColorComponents darkEffect]];
-        [self.blrView crossDissolveShow];
-        UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
-        
-        [keyboard addSubview:self.blrView];
+    [keyboard addSubview:self.blrTimeView];
         
 //    ActivityTimeViewController *viewController = [self.storyboard instantiateViewControllerWithIdentifier:@"activityTimeScreen"];
 //    viewController.delegate=self;
@@ -598,12 +639,40 @@ enum Weeks {
     }
 }
 
-- (void)dismissactivityTimeFilter{
+- (void)dismissEventFilter{
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
 
 }
 
+
+-(void)changeVisibilityFilter:(NSInteger)index{
+    
+    switch (index) {
+        case 1:
+        {
+            
+            [visibilityFilterButton setTitle:@"Public" forState:UIControlStateNormal];
+        }
+            break;
+            
+        case 2:
+        {
+            [visibilityFilterButton setTitle:@"Friends Only" forState:UIControlStateNormal];
+        }
+            break;
+            
+            
+        case 3:
+        {
+            [visibilityFilterButton setTitle:@"Custom" forState:UIControlStateNormal];
+        }
+            break;
+            
+            
+            
+    }
+}
 #pragma mark - server calls
 
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
