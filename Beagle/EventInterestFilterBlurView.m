@@ -1,23 +1,23 @@
 //
-//  EventVisibilityBlurView.m
+//  EventInterestFilterBlurView.m
 //  Beagle
 //
-//  Created by Kanav Gupta on 09/05/14.
+//  Created by Kanav Gupta on 12/05/14.
 //  Copyright (c) 2014 soclivity. All rights reserved.
 //
 
-#import "EventVisibilityBlurView.h"
+#import "EventInterestFilterBlurView.h"
 #import "UIImage+ImageEffects.h"
 #import "UIScreen+Screenshot.h"
-@interface EventVisibilityBlurView ()<UIGestureRecognizerDelegate>
+@interface EventInterestFilterBlurView ()<UIGestureRecognizerDelegate>
 @property(nonatomic, weak)  UIView *parent;
 @property(nonatomic, assign) CGPoint location;
 @property(nonatomic, strong) dispatch_source_t timer;
-
+- (IBAction)changeInterestFilterIndex:(id)sender;
 @end
 
+@implementation EventInterestFilterBlurView
 
-@implementation EventVisibilityBlurView
 @synthesize delegate;
 - (id) initWithCoder:(NSCoder *) aDecoder {
     self = [super initWithCoder:aDecoder];
@@ -28,47 +28,48 @@
         // make your gesture recognizer priority
         singleTap.numberOfTapsRequired = 1;
         [self addGestureRecognizer:singleTap];
-
+        
     }
     
     return self;
 }
-- (IBAction)visibilityIndex:(id)sender {
+- (IBAction)changeInterestFilterIndex:(id)sender {
     
     UIButton *button=(UIButton*)sender;
     
-        
-        switch (button.tag) {
-            case 0:
-            {
-                
-                [self crossDissolveHide];
-            }
-                break;
-                
-            case 1:
-            case 2:
-            case 3:
-            {
-                if (self.delegate && [self.delegate respondsToSelector:@selector(changeVisibilityFilter:)])
-                    [self.delegate changeVisibilityFilter:button.tag];
-                
-                    [self crossDissolveHide];
-            }
-                break;
-                
-                
-                
+    
+    switch (button.tag) {
+        case 0:
+        {
+            
+            [self crossDissolveHide];
         }
-        
+            break;
+            
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+        {
+            if (self.delegate && [self.delegate respondsToSelector:@selector(changeInterestFilter:)])
+                [self.delegate changeInterestFilter:button.tag];
+            
+            [self crossDissolveHide];
+        }
+            break;
+            
+            
+            
+    }
+    
 }
 
 
 -(void)handleSingleTap:(UITapGestureRecognizer*)sender{
     [self crossDissolveHide];
 }
-+ (EventVisibilityBlurView *) loadVisibilityFilter:(UIView *) view {
-    EventVisibilityBlurView *blur = [[[NSBundle mainBundle] loadNibNamed:@"EventVisibilityBlurView" owner:nil options:nil] objectAtIndex:0];
++ (EventInterestFilterBlurView *) loadEventInterestFilter:(UIView *) view {
+    EventInterestFilterBlurView *blur = [[[NSBundle mainBundle] loadNibNamed:@"EventInterestFilterBlurView" owner:nil options:nil] objectAtIndex:0];
     blur.userInteractionEnabled=YES;
     blur.parent = view;
     blur.location = CGPointMake(0, 0);
@@ -155,4 +156,6 @@
     
     
 }
+
+
 @end

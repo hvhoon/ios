@@ -18,7 +18,6 @@
 @interface EventVisibilityBlurView : UIView
 @property(nonatomic,assign)id<EventVisibilityBlurViewDelegate>delegate;
 + (EventVisibilityBlurView *) loadVisibilityFilter:(UIView *) view;
-+ (EventVisibilityBlurView *) loadWithLocation:(CGPoint) point parent:(UIView *) view;
 - (void) unload;
 - (void) crossDissolveShow;
 - (void) crossDissolveHide;

@@ -89,6 +89,8 @@
 		18F2B751191D3AF500245C5A /* EventTimeBlurView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F2B74C191D3AF500245C5A /* EventTimeBlurView.m */; };
 		18F3394F190825A500CCCB18 /* InterestChatClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F3394E190825A500CCCB18 /* InterestChatClass.m */; };
 		18F3CEFD1909774D00AE3C47 /* MessageKeyboardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F3CEFB1909774D00AE3C47 /* MessageKeyboardView.m */; };
+		18F8697E192136DB000C8A37 /* EventInterestFilterBlurView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18F8697B192136DB000C8A37 /* EventInterestFilterBlurView.xib */; };
+		18F8697F192136DB000C8A37 /* EventInterestFilterBlurView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F8697D192136DB000C8A37 /* EventInterestFilterBlurView.m */; };
 		18F8898C1902C15400C80011 /* DetailInterestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F8898B1902C15400C80011 /* DetailInterestViewController.m */; };
 		18F889901902C72400C80011 /* BeaglePlayerScrollMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F8898E1902C72400C80011 /* BeaglePlayerScrollMenu.m */; };
 		18F889941902C7FF00C80011 /* PlayerProfileItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F889921902C7FF00C80011 /* PlayerProfileItem.m */; };
@@ -269,6 +271,9 @@
 		18F3394E190825A500CCCB18 /* InterestChatClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InterestChatClass.m; sourceTree = "<group>"; };
 		18F3CEFB1909774D00AE3C47 /* MessageKeyboardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageKeyboardView.m; sourceTree = "<group>"; };
 		18F3CEFC1909774D00AE3C47 /* MessageKeyboardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageKeyboardView.h; sourceTree = "<group>"; };
+		18F8697B192136DB000C8A37 /* EventInterestFilterBlurView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EventInterestFilterBlurView.xib; sourceTree = "<group>"; };
+		18F8697C192136DB000C8A37 /* EventInterestFilterBlurView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventInterestFilterBlurView.h; sourceTree = "<group>"; };
+		18F8697D192136DB000C8A37 /* EventInterestFilterBlurView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventInterestFilterBlurView.m; sourceTree = "<group>"; };
 		18F8898A1902C15400C80011 /* DetailInterestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailInterestViewController.h; sourceTree = "<group>"; };
 		18F8898B1902C15400C80011 /* DetailInterestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailInterestViewController.m; sourceTree = "<group>"; };
 		18F8898E1902C72400C80011 /* BeaglePlayerScrollMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeaglePlayerScrollMenu.m; sourceTree = "<group>"; };
@@ -456,6 +461,9 @@
 		1805CED418C8D24700AC8556 /* Filter Views */ = {
 			isa = PBXGroup;
 			children = (
+				18F8697C192136DB000C8A37 /* EventInterestFilterBlurView.h */,
+				18F8697D192136DB000C8A37 /* EventInterestFilterBlurView.m */,
+				18F8697B192136DB000C8A37 /* EventInterestFilterBlurView.xib */,
 				18F2B74D191D3AF500245C5A /* EventVisibilityBlurView.h */,
 				18F2B748191D3AF500245C5A /* EventVisibilityBlurView.m */,
 				18F2B749191D3AF500245C5A /* EventVisibilityBlurView.xib */,
@@ -891,6 +899,7 @@
 				18F2B750191D3AF500245C5A /* EventTimeBlurView.xib in Resources */,
 				18F2B74F191D3AF500245C5A /* EventVisibilityBlurView.xib in Resources */,
 				18EC22AB18B5A0B400316B6E /* InfoPlist.strings in Resources */,
+				18F8697E192136DB000C8A37 /* EventInterestFilterBlurView.xib in Resources */,
 				18F889951902C7FF00C80011 /* PlayerProfileItem.xib in Resources */,
 				18EC22B318B5A0B400316B6E /* Images.xcassets in Resources */,
 				1805CED918C8D25800AC8556 /* TimeFilterView.xib in Resources */,
@@ -978,6 +987,7 @@
 				18216B1D18E350A800D9721F /* IconDownloader.m in Sources */,
 				18F8F4DB18DA07C700B26AC6 /* UIViewController+MJPopupViewController.m in Sources */,
 				18EC231818B5A42D00316B6E /* ASIInputStream.m in Sources */,
+				18F8697F192136DB000C8A37 /* EventInterestFilterBlurView.m in Sources */,
 				18EC22AD18B5A0B400316B6E /* main.m in Sources */,
 				180AF0BB18DC801500EE87D6 /* ABTableViewCell.m in Sources */,
 				18FADB9B18B669E500A62287 /* HomeViewController.m in Sources */,

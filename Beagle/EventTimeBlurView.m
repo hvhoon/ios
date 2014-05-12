@@ -163,7 +163,7 @@
 }
 
 - (void) awakeFromNib {
-    self.scrollView.layer.cornerRadius = 6;
+    self.scrollView.layer.cornerRadius = 1;
 }
 
 - (void) unload {

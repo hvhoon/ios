@@ -260,13 +260,13 @@
     [components setHour:00];
     [components setMinute:00];
     [components setSecond:01];
-    NSDate *startOfDay=[gregorian dateFromComponents:components];
+//    NSDate *startOfDay=[gregorian dateFromComponents:components];
     
     [components setHour:23];
     [components setMinute:59];
     [components setSecond:59];
     
-    NSDate *endOfDay=[gregorian dateFromComponents:components];
+//    NSDate *endOfDay=[gregorian dateFromComponents:components];
     
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
