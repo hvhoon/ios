@@ -553,7 +553,6 @@ enum Weeks {
 
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
-
     [self.blrTimeView blurWithColor:[BlurColorComponents darkEffect]];
     [self.blrTimeView crossDissolveShow];
     UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
