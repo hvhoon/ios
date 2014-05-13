@@ -136,18 +136,10 @@ enum Weeks {
 
     [timeFilterButton setTitle:@"Next Weekend" forState:UIControlStateNormal];
     }
-    [timeFilterButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
-    timeFilterButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-
     
-    [visibilityFilterButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
-    visibilityFilterButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     
     NSString *locationFilter=[NSString stringWithFormat:@"%@, %@",[[[BeagleManager SharedInstance]placemark].addressDictionary objectForKey:@"City"],[[BeagleManager SharedInstance]placemark].administrativeArea];
     [locationFilterButton setTitle:locationFilter forState:UIControlStateNormal];
-    //[locationFilterButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
-   //locationFilterButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-    
     
     [countTextLabel setTextAlignment:NSTextAlignmentRight];
     
