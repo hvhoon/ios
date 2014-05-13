@@ -127,14 +127,13 @@ enum Weeks {
         timeIndex=-1;
         visibilityIndex=-1;
     [visibilityFilterButton setTitle:self.bg_activity.visibility forState:UIControlStateNormal];
-
     [timeFilterButton setTitle:[BeagleUtilities activityTime:self.bg_activity.startActivityDate endate:self.bg_activity.endActivityDate] forState:UIControlStateNormal];
-    }else{
-         timeIndex=7;
-        visibilityIndex=1;
-    [visibilityFilterButton setTitle:@"Public" forState:UIControlStateNormal];
-
-    [timeFilterButton setTitle:@"Next Weekend" forState:UIControlStateNormal];
+    }
+    else{
+         timeIndex=6;
+        visibilityIndex=2;
+        [visibilityFilterButton setTitle:@"Friends Only" forState:UIControlStateNormal];
+        [timeFilterButton setTitle:@"This Weekend" forState:UIControlStateNormal];
     }
     
     
