@@ -254,23 +254,27 @@
 }
 +(NSString*)activityTime:(NSString*)startDate endate:(NSString*)endDate{
     
-    NSCalendar *gregorian = [[NSCalendar alloc]        initWithCalendarIdentifier:NSGregorianCalendar];
-
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     NSDateComponents *components = [gregorian components:NSWeekdayCalendarUnit | NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit fromDate:[NSDate date]];
-
     
+    //Set the first day of the week
+    NSInteger dayofweek = [[[NSCalendar currentCalendar] components:NSWeekdayCalendarUnit fromDate:[NSDate date]] weekday];// this will give you current day of week
+    [components setDay:([components day] - ((dayofweek) - 2))];// for beginning of the week.
+    NSDate *beginningOfWeek = [gregorian dateFromComponents:components];
     
-    [components setHour:00];
-    [components setMinute:00];
-    [components setSecond:00];
-//    NSDate *startOfDay=[gregorian dateFromComponents:components];
+    //Set the start of the weekend
+    NSDate *startOfWeekend = [beginningOfWeek dateByAddingTimeInterval:60*60*24*5];
     
+    //Set the end of the weekend
+    [components setDay:([components day] + 6)]; // Advancing by 6 days
     [components setHour:23];
     [components setMinute:59];
     [components setSecond:59];
-    
-//    NSDate *endOfDay=[gregorian dateFromComponents:components];
-    
+    NSDate *endOfWeekend = [gregorian dateFromComponents:components];
+
+    //Set start/end dates for next weekend
+    NSDate *startOfNextWeekend = [startOfWeekend dateByAddingTimeInterval:60*60*24*7];
+    NSDate *endOfNextWeekend = [endOfWeekend dateByAddingTimeInterval:60*60*24*7];
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
@@ -279,91 +283,39 @@
     [dateFormatter setTimeZone:utcTimeZone];
     NSDate *startActivityDate = [dateFormatter dateFromString:startDate];
     NSLog(@"startActivityDate=%@",startActivityDate);
-
-
     NSDate *endActivityDate = [dateFormatter dateFromString:endDate];
     NSLog(@"endActivityDate=%@",endActivityDate);
-    NSDate *currentDate=[NSDate date];
-    NSArray *array = [NSArray arrayWithObjects:startActivityDate,currentDate,endActivityDate, nil];
     
-    array = [array sortedArrayUsingComparator: ^(NSDate *s1, NSDate *s2){
-        
-        return [s1 compare:s2];
-    }];
+    NSTimeInterval Interval=[endActivityDate timeIntervalSinceDate:[NSDate date]];
     
-    NSInteger weekday1 = [[[NSCalendar currentCalendar] components:NSWeekdayCalendarUnit
-                                                          fromDate:startActivityDate] weekday];
+    // When is this activity?
     
-    NSInteger weekday2 = [[[NSCalendar currentCalendar] components:NSWeekdayCalendarUnit
-                                                          fromDate:endActivityDate] weekday];
-
-    NSTimeInterval Interval1=[endActivityDate timeIntervalSinceDate:startActivityDate];
-    NSTimeInterval Interval2=[endActivityDate timeIntervalSinceDate:[NSDate date]];
-    NSLog(@"interval1 in hrs =%f",Interval1/3600.0);
-    NSLog(@"interval2 n hrs =%f",Interval2/3600.0);
-
-    NSUInteger indexOfDay1 = [array indexOfObject:startActivityDate];
-    NSUInteger indexOfDay2 = [array indexOfObject:currentDate];
-    NSUInteger indexOfDay3 = [array indexOfObject:endActivityDate];
-    
-    if (((indexOfDay1 <= indexOfDay2 ) && (indexOfDay2 < indexOfDay3)) ||
-        ((indexOfDay1 >= indexOfDay2 ) && (indexOfDay2 > indexOfDay3))) {
-        NSLog(@"YES");
-        NSDateComponents *nowComponents = [gregorian components:NSYearCalendarUnit | NSWeekCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit fromDate:[NSDate date]];
-        
-        [nowComponents setWeekday:7];
-        
-        [nowComponents setHour:0];
-        [nowComponents setMinute:0];
-        [nowComponents setSecond:0];
-        
-        [nowComponents setWeekday:0];
-        
-        [nowComponents setHour:23];
-        [nowComponents setMinute:59];
-        [nowComponents setSecond:59];
-        
-//        NSDate *sundayEvening=[gregorian dateFromComponents:nowComponents];
-//        NSLog(@"sundayEvening=%@",sundayEvening);
-         if([[NSDate date] timeIntervalSinceDate:startActivityDate]>0 && Interval2>0 && Interval2<=86400.00)
-                 return @"Later Today";
-        else if([[NSDate date] timeIntervalSinceDate:startActivityDate]>0 && Interval2>=86400.00 && Interval2<=172800.00)
-            return @"Tomorrow";
-        else if(Interval1>=172680.000000 && Interval2<=585600.00)
-            return @"Next Week";
-        else{
-            return @"This Month";
-        }
-
-        }
-     else {
-        NSLog(@"NO");
-         
-         if(Interval2>=86400.00 && Interval2<=172800.00)
-             return @"Tomorrow";
-        
-         else  if (weekday1 == 7 && weekday2 ==1 && Interval1>=172680.000000 && Interval2>=521400.00) {
-             
-             return @"Next Weekend";
-         }
-         else if (weekday1 == 7 && weekday2 ==1 && Interval1>=172680.000000) {
-             
-             return @"This Weekend";
-         }else if(weekday1 == 2 && weekday2 ==1 && Interval1>=604680.000000){
-             return @"Next Week";
-         }// Sun = 1, Sat = 7
-         
-         else if(Interval1>=172680.000000 && Interval2<=585600.00){
-             return @"Next Week";
-         }else{
-             return @"This Month";
-         }
+    // Is it today?
+    if([[NSDate date] timeIntervalSinceDate:startActivityDate]>0 && Interval>0 && Interval<=86400.00)
+        return @"Later Today";
+    // Is it tomorrow?
+    else if([[NSDate date] timeIntervalSinceDate:startActivityDate]>0 && Interval>=86400.00 && Interval<=172800.00)
+        return @"Tomorrow";
+    // Is it this week?
+    else if([endOfWeekend timeIntervalSinceDate:endActivityDate]>=0) {
+        // On the weekend?
+        if ([startActivityDate timeIntervalSinceDate:startOfWeekend]>=0)
+            return @"This Weekend";
+        return @"This Week";
     }
+    // Is this next week?
+    else if([endOfNextWeekend timeIntervalSinceDate:endActivityDate]>=0) {
+        // Over next weekend?
+        if ([startActivityDate timeIntervalSinceDate:startOfNextWeekend]>=0)
+            return @"Next Weekend";
+        return @"Next Week";
+    }
+    else if ([[NSDate date] timeIntervalSinceDate:startActivityDate]>=0 && [endActivityDate timeIntervalSinceDate:endOfNextWeekend]>0)
+        return @"This Month";
     
-    
-    
+    return @"Pick a Date";
 
-    return nil;
+
 }
 
 +(UIImage*)imageCircularBySize:(UIImage*)image sqr:(CGFloat)sqr{
