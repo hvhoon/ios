@@ -127,27 +127,18 @@ enum Weeks {
         timeIndex=-1;
         visibilityIndex=-1;
     [visibilityFilterButton setTitle:self.bg_activity.visibility forState:UIControlStateNormal];
-
     [timeFilterButton setTitle:[BeagleUtilities activityTime:self.bg_activity.startActivityDate endate:self.bg_activity.endActivityDate] forState:UIControlStateNormal];
-    }else{
-         timeIndex=7;
-        visibilityIndex=1;
-    [visibilityFilterButton setTitle:@"Public" forState:UIControlStateNormal];
-
-    [timeFilterButton setTitle:@"Next Weekend" forState:UIControlStateNormal];
     }
-    [timeFilterButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
-    timeFilterButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-
+    else{
+         timeIndex=6;
+        visibilityIndex=2;
+        [visibilityFilterButton setTitle:@"Friends Only" forState:UIControlStateNormal];
+        [timeFilterButton setTitle:@"This Weekend" forState:UIControlStateNormal];
+    }
     
-    [visibilityFilterButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
-    visibilityFilterButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     
     NSString *locationFilter=[NSString stringWithFormat:@"%@, %@",[[[BeagleManager SharedInstance]placemark].addressDictionary objectForKey:@"City"],[[BeagleManager SharedInstance]placemark].administrativeArea];
     [locationFilterButton setTitle:locationFilter forState:UIControlStateNormal];
-    //[locationFilterButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
-   //locationFilterButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-    
     
     [countTextLabel setTextAlignment:NSTextAlignmentRight];
     
@@ -252,7 +243,6 @@ enum Weeks {
     
     components = [myCalendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit
                                fromDate:[[NSDate date] dateByAddingTimeInterval:60*60*24]];
-    
     
     [components setHour:00];
     [components setMinute:01];
@@ -553,7 +543,6 @@ enum Weeks {
 
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
-
     [self.blrTimeView blurWithColor:[BlurColorComponents darkEffect]];
     [self.blrTimeView crossDissolveShow];
     UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
