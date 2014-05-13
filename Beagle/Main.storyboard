@@ -349,7 +349,7 @@
         <!--Activity View Controller-->
         <scene sceneID="lkI-4L-ged">
             <objects>
-                <viewController storyboardIdentifier="activityScreen" id="S9M-sC-S9q" customClass="ActivityViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="activityScreen" useStoryboardIdentifierAsRestorationIdentifier="YES" id="S9M-sC-S9q" customClass="ActivityViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="9iY-EO-BXw"/>
                         <viewControllerLayoutGuide type="bottom" id="hMI-Wc-Jow"/>

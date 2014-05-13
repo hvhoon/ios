@@ -244,7 +244,6 @@ enum Weeks {
     components = [myCalendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit
                                fromDate:[[NSDate date] dateByAddingTimeInterval:60*60*24]];
     
-    
     [components setHour:00];
     [components setMinute:01];
     [components setSecond:00];
