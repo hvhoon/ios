@@ -255,7 +255,7 @@ dispatch_source_t CreateDispatchTimer(uint64_t interval, uint64_t leeway, dispat
     self.frame = CGRectMake(self.location.x, -(self.frame.size.height + self.location.y), self.frame.size.width, self.frame.size.height);
     
     
-    [UIView transitionWithView:self duration:0.3 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+    [UIView transitionWithView:self duration:0.2 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
         
         self.alpha =0.0f;
     } completion:^(BOOL finished) {
@@ -277,7 +277,7 @@ dispatch_source_t CreateDispatchTimer(uint64_t interval, uint64_t leeway, dispat
 + (BlurColorComponents *) darkEffect {
     BlurColorComponents *components = [[BlurColorComponents alloc] init];
     
-    components.radius = 12;
+    components.radius = 8;
     components.tintColor = [BeagleUtilities returnBeagleColor:9];
     components.saturationDeltaFactor = 1.8f;
     components.maskImage = nil;
