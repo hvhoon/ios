@@ -262,7 +262,7 @@
     
     [components setHour:00];
     [components setMinute:00];
-    [components setSecond:01];
+    [components setSecond:00];
 //    NSDate *startOfDay=[gregorian dateFromComponents:components];
     
     [components setHour:23];
@@ -315,10 +315,8 @@
         
         [nowComponents setHour:0];
         [nowComponents setMinute:0];
-        [nowComponents setSecond:01];
+        [nowComponents setSecond:0];
         
-//        NSDate *satMorning=[gregorian dateFromComponents:nowComponents];
-//        NSLog(@"satMorning=%@",satMorning);
         [nowComponents setWeekday:0];
         
         [nowComponents setHour:23];

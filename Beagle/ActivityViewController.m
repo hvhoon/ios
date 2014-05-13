@@ -180,175 +180,140 @@ enum Weeks {
     }
     bg_activity.activityDesc=descriptionTextView.text;
     
-    
-    
     NSDate *today = [NSDate date];
     NSLog(@"Today date is %@",today);
     
-    //Week Start Date
-    
+    //Set the first day of the week
     NSCalendar *gregorian = [[NSCalendar alloc]        initWithCalendarIdentifier:NSGregorianCalendar];
-    
     NSDateComponents *components = [gregorian components:NSWeekdayCalendarUnit | NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit fromDate:today];
-    
     NSInteger dayofweek = [[[NSCalendar currentCalendar] components:NSWeekdayCalendarUnit fromDate:today] weekday];// this will give you current day of week
-    
     [components setDay:([components day] - ((dayofweek) - 2))];// for beginning of the week.
-    
     NSDate *beginningOfWeek = [gregorian dateFromComponents:components];
     
-    
-    NSLog(@"%@",beginningOfWeek);
-    
-    
-    
-    
-    //Week End Date
-    
+    //Set the last day of the Week End Date
     NSCalendar *gregorianEnd = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-    
     NSDateComponents *componentsEnd = [gregorianEnd components:NSWeekdayCalendarUnit | NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit fromDate:today];
-    
     NSInteger Enddayofweek = [[[NSCalendar currentCalendar] components:NSWeekdayCalendarUnit fromDate:today] weekday];// this will give you current day of week
-    
-    [componentsEnd setDay:([componentsEnd day]+(7-Enddayofweek)+1)];// for end day of the week
-    
-    NSDate *EndOfWeek = [gregorianEnd dateFromComponents:componentsEnd];
-    NSLog(@"%@",EndOfWeek);
-    
+    [componentsEnd setDay:([componentsEnd day]+(7-Enddayofweek))];// get the last day of the week (before the weekend)
+    NSDate *EndOfWeek = [gregorianEnd dateFromComponents:componentsEnd]; // set the last day of the week (before the weekend)
     NSCalendar* myCalendar = [NSCalendar currentCalendar];
     components = [myCalendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit
                                                  fromDate:EndOfWeek];
-    
-    
+    // Set the start of the weekend
     [components setHour:00];
-    [components setMinute:01];
+    [components setMinute:00];
     [components setSecond:00];
-    NSLog(@"weekdayComponentsStart=%@",[myCalendar dateFromComponents:components]);
     NSDate *startOfThisWeekend=[myCalendar dateFromComponents:components];
+    NSDate *thisSatStart = startOfThisWeekend;
     
-    [components setHour:23];
-    [components setMinute:59];
-    [components setSecond:00];
-
-    NSDate *endOfThisWeekend=[myCalendar dateFromComponents:components];
-    
-    NSDate *nextFridayStart = [startOfThisWeekend dateByAddingTimeInterval:60*60*24*6];
-    NSDate *nextSundayEnd = [endOfThisWeekend dateByAddingTimeInterval:60*60*24*7];
-    NSDate *nextMondayStart = [startOfThisWeekend dateByAddingTimeInterval:60*60*24];
-    NSDate *thisSatStart = [startOfThisWeekend dateByAddingTimeInterval:-60*60*24];
+    // If it so happens that we are already in the weekend
     if([thisSatStart timeIntervalSinceDate:[NSDate date]]<0){
         thisSatStart=[NSDate date];
     }
     
+    // Set the end of the weekend
+    [componentsEnd setHour:23];
+    [componentsEnd setMinute:59];
+    [componentsEnd setSecond:59];
+    [componentsEnd setDay:([componentsEnd day]+1)]; // Advance one day ahead
+    NSDate *endOfThisWeekend=[myCalendar dateFromComponents:componentsEnd];
+    
+    // Set the dates for next week
+    NSDate *nextSatStart = [startOfThisWeekend dateByAddingTimeInterval:60*60*24*7]; // Add 1 weej from the start of this weekend
+    NSDate *nextSundayEnd = [endOfThisWeekend dateByAddingTimeInterval:60*60*24*7]; // Add 1 week from the end of this week
+    NSDate *nextMondayStart = [startOfThisWeekend dateByAddingTimeInterval:60*60*48]; // Add 2 days from the start of this weekend
+    
+    // Set tomorrow start and end
     components = [myCalendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit
                                fromDate:[[NSDate date] dateByAddingTimeInterval:60*60*24]];
-    
     [components setHour:00];
-    [components setMinute:01];
+    [components setMinute:00];
     [components setSecond:00];
     NSDate *tomorrowStart=[myCalendar dateFromComponents:components];
-    NSLog(@"tomorrowStart=%@",tomorrowStart);
     
     [components setHour:23];
     [components setMinute:59];
-    [components setSecond:00];
-    
+    [components setSecond:59];
     NSDate *tomorrowEnd=[myCalendar dateFromComponents:components];
-    NSLog(@"tomorrowEnd=%@",tomorrowEnd);
     
+    // Set later today
     components = [myCalendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit
                                fromDate:[NSDate date]];
-    
-    
     [components setHour:23];
     [components setMinute:59];
-    [components setSecond:00];
-    
+    [components setSecond:59];
     NSDate *laterToday=[myCalendar dateFromComponents:components];
-    NSLog(@"laterToday=%@",laterToday);
     
+    // Set in 1 month start and end dates
     NSDateComponents *monthComponents = [[NSDateComponents alloc] init];
     monthComponents.month = 1;
     NSDate *oneMonthFromNow = [[NSCalendar currentCalendar] dateByAddingComponents:components toDate:[NSDate date] options:0];
-    
-     NSLog(@"oneMonthFromNow=%@",oneMonthFromNow);
-
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-    
     NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
     [dateFormatter setTimeZone:utcTimeZone];
-    
-    
-    
     [components setMonth:[components month]+1];
     [components setDay:0];
     NSDate *endOfMonth = [myCalendar dateFromComponents:components];
 
-    NSLog(@"endOfMonth=%@",endOfMonth);
+    // Verifying all date stuff
+    NSLog(@"Later Today= %@",laterToday);
+    NSLog(@"Tomorrow start = %@",tomorrowStart);
+    NSLog(@"Tomorrow end = %@",tomorrowEnd);
+    NSLog(@"The beginning of this week = %@",beginningOfWeek);
+    NSLog(@"The beginning of this weekend = %@", startOfThisWeekend);
+    NSLog(@"The End of this weekend = %@", endOfThisWeekend);
+    NSLog(@"The beginning of next week = %@", nextMondayStart);
+    NSLog(@"The beginning of next weekend = %@", nextSatStart);
+    NSLog(@"The end of next weekend = %@", nextSundayEnd);
+    NSLog(@"One Month From Now = %@",oneMonthFromNow);
+    NSLog(@"One Month from Now = %@",endOfMonth);
 
     switch (timeIndex) {
-        case 1:
-        {
+        // Setting the start date as NOW and the end date as LATER TODAY
+        case 1: {
             bg_activity.startActivityDate=[dateFormatter stringFromDate:[NSDate date]];//later today start
-            
-             bg_activity.endActivityDate=[dateFormatter stringFromDate:laterToday];//later today end
+            bg_activity.endActivityDate=[dateFormatter stringFromDate:laterToday];//later today end
         }
             break;
-            
-        case 2:
-        {
+        // Setting the start date as NOW and the end date as END OF THIS WEEKEND
+        case 2: {
             bg_activity.startActivityDate=[dateFormatter stringFromDate:[NSDate date]];//this weekStart
-            
             bg_activity.endActivityDate=[dateFormatter stringFromDate:endOfThisWeekend];//this  week end
         }
             break;
-            
-        case 3:
-        {
+        // Setting the start date as NEXT MONDAY and the end date as the END OF NEXT WEEKEND
+        case 3: {
             bg_activity.startActivityDate=[dateFormatter stringFromDate:nextMondayStart];//next week start
             bg_activity.endActivityDate=[dateFormatter stringFromDate:nextSundayEnd];//next weekend end
         }
             break;
-                                         
-       case 4:
-        {
-            //this month
+        // Setting the start date as NOW and the end date as the END OF THE MONTH
+        case 4: {
             bg_activity.startActivityDate=[dateFormatter stringFromDate:[NSDate date]];//month start
             bg_activity.endActivityDate=[dateFormatter stringFromDate:endOfMonth];//month end
         }
-                                       
-        break;
-                                  
-         case 5:
-         {
+            break;
+        // Setting the start date as TOMORROW and the end date as TOMORROW
+        case 5: {
              bg_activity.startActivityDate=[dateFormatter stringFromDate:tomorrowStart];//tomorrow start
-             
              bg_activity.endActivityDate=[dateFormatter stringFromDate:tomorrowEnd];//tomorrow end
+        }
+            break;
+        // Setting the start date as THIS WEEKEND START and the end date as THIS WEEKEND END
+        case 6: {
+            bg_activity.startActivityDate=[dateFormatter stringFromDate:thisSatStart];//this weekend start
+            bg_activity.endActivityDate=[dateFormatter stringFromDate:endOfThisWeekend];//this weekend end
+        }
+            break;
+        // Setting the start date as NEXT SATURDAY START and the end date as NEXT SUNDAY END
+        case 7: {
+            bg_activity.startActivityDate=[dateFormatter stringFromDate:nextSatStart];//next weekend start
+            bg_activity.endActivityDate=[dateFormatter stringFromDate:nextSundayEnd];//next weekend end
          }
-         break;
-                                         
-         case 6:
-         {
-             bg_activity.startActivityDate=[dateFormatter stringFromDate:thisSatStart];//this weekend start
-             
-             bg_activity.endActivityDate=[dateFormatter stringFromDate:endOfThisWeekend];//this weekend end
-         }
-         break;
-
-
-         case 7:
-         {
-             bg_activity.startActivityDate=[dateFormatter stringFromDate:nextFridayStart];//next weekend start
-             
-             bg_activity.endActivityDate=[dateFormatter stringFromDate:nextSundayEnd];//next weekend end
-         }
-         break;
-                                         
-            
+            break;
     }
-    
+
     switch (visibilityIndex) {
         case 1:
         {
