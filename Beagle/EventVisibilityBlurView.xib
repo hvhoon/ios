@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5053" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="13C1021" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
@@ -55,20 +55,20 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Friends Only" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q8r-FZ-ItX">
-                    <rect key="frame" x="133" y="243" width="102" height="21"/>
+                    <rect key="frame" x="133" y="248" width="102" height="21"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="18"/>
                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Custom" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WXS-GB-okY">
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Custom" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WXS-GB-okY">
                     <rect key="frame" x="133" y="321" width="64" height="21"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="18"/>
                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Only people selected" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="15u-5z-EnY">
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Only people selected" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="15u-5z-EnY">
                     <rect key="frame" x="133" y="341" width="132" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
@@ -76,7 +76,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="When visibility is Public Or Friends Only notifications will be sent to your friends residing around the activity's location" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="259" translatesAutoresizingMaskIntoConstraints="NO" id="KXJ-Xs-lV7">
-                    <rect key="frame" x="30" y="493" width="259" height="42"/>
+                    <rect key="frame" x="31" y="492" width="259" height="42"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -85,23 +85,22 @@
             </subviews>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             <constraints>
+                <constraint firstItem="AWA-ip-eOL" firstAttribute="centerY" secondItem="q8r-FZ-ItX" secondAttribute="centerY" constant="0.5" id="6pf-Cb-0zY"/>
                 <constraint firstItem="JEY-WC-9J9" firstAttribute="top" secondItem="0Fv-D3-riT" secondAttribute="top" constant="150" id="8VS-7s-omk"/>
                 <constraint firstItem="Ui9-OY-frL" firstAttribute="leading" secondItem="0Fv-D3-riT" secondAttribute="leading" constant="55" id="8mn-WV-zp0"/>
-                <constraint firstItem="WXS-GB-okY" firstAttribute="top" secondItem="q8r-FZ-ItX" secondAttribute="bottom" constant="57" id="AFU-gr-cme"/>
                 <constraint firstItem="JEY-WC-9J9" firstAttribute="leading" secondItem="0Fv-D3-riT" secondAttribute="leading" constant="55" id="F8h-21-3wn"/>
                 <constraint firstItem="AWA-ip-eOL" firstAttribute="leading" secondItem="0Fv-D3-riT" secondAttribute="leading" constant="55" id="I1d-Ch-aku"/>
-                <constraint firstItem="KXJ-Xs-lV7" firstAttribute="leading" secondItem="0Fv-D3-riT" secondAttribute="leading" constant="30" id="MGE-EH-l4w"/>
+                <constraint firstItem="KXJ-Xs-lV7" firstAttribute="leading" secondItem="0Fv-D3-riT" secondAttribute="leading" constant="31" id="MGE-EH-l4w"/>
                 <constraint firstItem="q8r-FZ-ItX" firstAttribute="leading" secondItem="AWA-ip-eOL" secondAttribute="trailing" constant="16" id="PXR-zw-zN2"/>
                 <constraint firstItem="Gdq-Sn-Y5J" firstAttribute="leading" secondItem="JEY-WC-9J9" secondAttribute="trailing" constant="16" id="Pk9-pK-SDM"/>
                 <constraint firstItem="AWA-ip-eOL" firstAttribute="top" secondItem="JEY-WC-9J9" secondAttribute="bottom" constant="16" id="THZ-aw-JDP"/>
                 <constraint firstItem="15u-5z-EnY" firstAttribute="top" secondItem="WXS-GB-okY" secondAttribute="bottom" constant="-1" id="Z6q-e8-WRl"/>
                 <constraint firstItem="Ui9-OY-frL" firstAttribute="top" secondItem="AWA-ip-eOL" secondAttribute="bottom" constant="16" id="dVM-Cg-9YA"/>
                 <constraint firstItem="WXS-GB-okY" firstAttribute="leading" secondItem="Ui9-OY-frL" secondAttribute="trailing" constant="16" id="eKj-o3-JT6"/>
-                <constraint firstItem="q8r-FZ-ItX" firstAttribute="top" secondItem="Gdq-Sn-Y5J" secondAttribute="bottom" constant="57" id="kRf-24-Kgu"/>
                 <constraint firstItem="Gdq-Sn-Y5J" firstAttribute="top" secondItem="0Fv-D3-riT" secondAttribute="top" constant="165" id="lla-zE-L44"/>
                 <constraint firstItem="Adz-2Y-eJ7" firstAttribute="top" secondItem="Gdq-Sn-Y5J" secondAttribute="bottom" constant="-1" id="mU0-19-lmK"/>
                 <constraint firstItem="Adz-2Y-eJ7" firstAttribute="leading" secondItem="0Fv-D3-riT" secondAttribute="leading" constant="133" id="pkZ-6r-Vlt"/>
-                <constraint firstItem="KXJ-Xs-lV7" firstAttribute="top" secondItem="Ui9-OY-frL" secondAttribute="bottom" constant="125" id="rLh-YO-xCz"/>
+                <constraint firstItem="KXJ-Xs-lV7" firstAttribute="top" secondItem="Ui9-OY-frL" secondAttribute="bottom" constant="124" id="rLh-YO-xCz"/>
                 <constraint firstItem="15u-5z-EnY" firstAttribute="leading" secondItem="0Fv-D3-riT" secondAttribute="leading" constant="133" id="umg-Ug-H5I"/>
             </constraints>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
