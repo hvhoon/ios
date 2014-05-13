@@ -110,6 +110,7 @@
     categoryFilterType=1;
     self.filterBlurView = [EventInterestFilterBlurView loadEventInterestFilter:self.view];
     self.filterBlurView.delegate=self;
+    [self.filterBlurView updateConstraints];
 
     if([[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"]){
         [[BeagleManager SharedInstance]getUserObjectInAutoSignInMode];
@@ -713,7 +714,7 @@
             
         case 3:
         {
-            headerText.text=@"Expressed  Interest";
+            headerText.text=@"Your Interests";
         }
             break;
             

@@ -12,7 +12,10 @@
 @interface EventVisibilityBlurView ()<UIGestureRecognizerDelegate>
 @property(nonatomic, weak)  UIView *parent;
 @property(nonatomic, assign) CGPoint location;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *topSpacingGap;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *topSpacingLabel;
 @property(nonatomic, strong) dispatch_source_t timer;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *gapBetweenLabelAndCustomFilter;
 
 @end
 
@@ -28,10 +31,35 @@
         // make your gesture recognizer priority
         singleTap.numberOfTapsRequired = 1;
         [self addGestureRecognizer:singleTap];
+        
+        _topSpacingGap.constant =
+        [UIScreen mainScreen].bounds.size.height > 480.0f ? 150 : 106;
+        
+        _topSpacingLabel.constant =
+        [UIScreen mainScreen].bounds.size.height > 480.0f ? 165 : 121;
+        
+        _gapBetweenLabelAndCustomFilter.constant =
+        [UIScreen mainScreen].bounds.size.height > 480.0f ? 125 : 81;
+
+
 
     }
     
     return self;
+}
+
+-(void)updateConstraints{
+    [super updateConstraints];
+    
+    _topSpacingGap.constant =
+    [UIScreen mainScreen].bounds.size.height > 480.0f ? 150 : 106;
+    
+    _topSpacingLabel.constant =
+    [UIScreen mainScreen].bounds.size.height > 480.0f ? 165 : 121;
+    
+    _gapBetweenLabelAndCustomFilter.constant =
+    [UIScreen mainScreen].bounds.size.height > 480.0f ? 125 : 81;
+
 }
 - (IBAction)visibilityIndex:(id)sender {
     

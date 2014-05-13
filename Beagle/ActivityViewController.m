@@ -74,6 +74,7 @@ enum Weeks {
     self.blrVisbilityView=[EventVisibilityBlurView loadVisibilityFilter:self.view];
     self.blrVisbilityView.delegate=self;
     self.blrTimeView.delegate=self;
+    [self.blrVisbilityView updateConstraints];
     if(!editState)
         bg_activity=[[BeagleActivityClass alloc]init];
     

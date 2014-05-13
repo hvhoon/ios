@@ -12,8 +12,10 @@
 @interface EventInterestFilterBlurView ()<UIGestureRecognizerDelegate>
 @property(nonatomic, weak)  UIView *parent;
 @property(nonatomic, assign) CGPoint location;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *topSpacingGap;
 @property(nonatomic, strong) dispatch_source_t timer;
 - (IBAction)changeInterestFilterIndex:(id)sender;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *topSpacingFromLabel;
 @end
 
 @implementation EventInterestFilterBlurView
@@ -33,6 +35,19 @@
     
     return self;
 }
+
+-(void)updateConstraints{
+    [super updateConstraints];
+    
+    _topSpacingGap.constant =
+    [UIScreen mainScreen].bounds.size.height > 480.0f ? 136 : 117;
+    
+    _topSpacingFromLabel.constant =
+    [UIScreen mainScreen].bounds.size.height > 480.0f ? 160 : 141;
+   
+    
+}
+
 - (IBAction)changeInterestFilterIndex:(id)sender {
     
     UIButton *button=(UIButton*)sender;
