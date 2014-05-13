@@ -10,52 +10,105 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <button opaque="NO" tag="1" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OX2-4c-CJq">
-                    <rect key="frame" x="56" y="113" width="62" height="62"/>
+                <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OX2-4c-CJq">
+                    <rect key="frame" x="32" y="136" width="62" height="62"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <state key="normal" backgroundImage="Invite-your-friends">
+                    <state key="normal" backgroundImage="Happening-Around-You">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
                         <action selector="changeInterestFilterIndex:" destination="5cL-RR-F5D" eventType="touchUpInside" id="zSA-bc-L0p"/>
                     </connections>
                 </button>
-                <button opaque="NO" tag="4" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sj3-83-sQV">
-                    <rect key="frame" x="59" y="350" width="62" height="62"/>
+                <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sj3-83-sQV">
+                    <rect key="frame" x="32" y="370" width="62" height="62"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <state key="normal" backgroundImage="Invite-your-friends">
+                    <state key="normal" backgroundImage="Created-By-You">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
                         <action selector="changeInterestFilterIndex:" destination="5cL-RR-F5D" eventType="touchUpInside" id="DSP-C5-cTm"/>
                     </connections>
                 </button>
-                <button opaque="NO" tag="2" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vtS-gs-o19">
-                    <rect key="frame" x="57" y="188" width="62" height="62"/>
+                <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vtS-gs-o19">
+                    <rect key="frame" x="32" y="214" width="62" height="62"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <state key="normal" backgroundImage="Invite-your-friends">
+                    <state key="normal" backgroundImage="Friends-Only">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
                         <action selector="changeInterestFilterIndex:" destination="5cL-RR-F5D" eventType="touchUpInside" id="99a-Md-f0L"/>
                     </connections>
                 </button>
-                <button opaque="NO" tag="3" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iMn-3Z-iLz">
-                    <rect key="frame" x="59" y="268" width="62" height="62"/>
+                <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iMn-3Z-iLz">
+                    <rect key="frame" x="32" y="292" width="62" height="62"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <state key="normal" backgroundImage="Invite-your-friends">
+                    <state key="normal" backgroundImage="Your-Interests">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
                         <action selector="changeInterestFilterIndex:" destination="5cL-RR-F5D" eventType="touchUpInside" id="G1N-9c-eTK"/>
                     </connections>
                 </button>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Happening Around You" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UBZ-iD-I9q">
+                    <rect key="frame" x="110" y="160" width="187" height="21"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="18"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Friends Around You" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zCV-24-G7O">
+                    <rect key="frame" x="110" y="235" width="159" height="21"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="18"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Your Interests" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F6X-mL-HH4">
+                    <rect key="frame" x="110" y="316" width="111" height="21"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="18"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Created By You" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mH9-tD-CBP">
+                    <rect key="frame" x="110" y="394" width="126" height="21"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="18"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
-            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="sj3-83-sQV" firstAttribute="leading" secondItem="5cL-RR-F5D" secondAttribute="leading" constant="32" id="15Z-Ky-bN9"/>
+                <constraint firstItem="zCV-24-G7O" firstAttribute="top" secondItem="UBZ-iD-I9q" secondAttribute="bottom" constant="54" id="1gr-0s-0dO"/>
+                <constraint firstItem="F6X-mL-HH4" firstAttribute="leading" secondItem="iMn-3Z-iLz" secondAttribute="trailing" constant="16" id="5LJ-5J-f0a"/>
+                <constraint firstItem="iMn-3Z-iLz" firstAttribute="leading" secondItem="5cL-RR-F5D" secondAttribute="leading" constant="32" id="5UR-xP-78k"/>
+                <constraint firstItem="vtS-gs-o19" firstAttribute="leading" secondItem="5cL-RR-F5D" secondAttribute="leading" constant="32" id="84a-Tu-Wp6"/>
+                <constraint firstItem="OX2-4c-CJq" firstAttribute="leading" secondItem="5cL-RR-F5D" secondAttribute="leading" constant="32" id="AX8-Pc-iZx"/>
+                <constraint firstItem="zCV-24-G7O" firstAttribute="leading" secondItem="vtS-gs-o19" secondAttribute="trailing" constant="16" id="CTK-3c-33z"/>
+                <constraint firstItem="UBZ-iD-I9q" firstAttribute="top" secondItem="5cL-RR-F5D" secondAttribute="top" constant="160" id="Jmz-yn-kpy"/>
+                <constraint firstItem="sj3-83-sQV" firstAttribute="top" secondItem="iMn-3Z-iLz" secondAttribute="bottom" constant="16" id="PQU-0D-1KJ"/>
+                <constraint firstItem="mH9-tD-CBP" firstAttribute="top" secondItem="F6X-mL-HH4" secondAttribute="bottom" constant="57" id="RsI-zj-d4T"/>
+                <constraint firstItem="mH9-tD-CBP" firstAttribute="leading" secondItem="sj3-83-sQV" secondAttribute="trailing" constant="16" id="gZq-Ow-aHq"/>
+                <constraint firstItem="vtS-gs-o19" firstAttribute="top" secondItem="OX2-4c-CJq" secondAttribute="bottom" constant="16" id="jBC-Xr-JDd"/>
+                <constraint firstItem="iMn-3Z-iLz" firstAttribute="top" secondItem="vtS-gs-o19" secondAttribute="bottom" constant="16" id="k9v-f9-un8"/>
+                <constraint firstItem="F6X-mL-HH4" firstAttribute="top" secondItem="zCV-24-G7O" secondAttribute="bottom" constant="60" id="omx-Jo-zyY"/>
+                <constraint firstItem="OX2-4c-CJq" firstAttribute="top" secondItem="5cL-RR-F5D" secondAttribute="top" constant="136" id="wAK-Vn-Ybl"/>
+                <constraint firstItem="UBZ-iD-I9q" firstAttribute="leading" secondItem="OX2-4c-CJq" secondAttribute="trailing" constant="16" id="xhI-In-V9n"/>
+            </constraints>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+            <connections>
+                <outlet property="topSpacingFromLabel" destination="Jmz-yn-kpy" id="YGL-Qv-cdw"/>
+                <outlet property="topSpacingGap" destination="wAK-Vn-Ybl" id="O2M-4F-kIG"/>
+            </connections>
         </view>
     </objects>
     <resources>
-        <image name="Invite-your-friends" width="62" height="62"/>
+        <image name="Created-By-You" width="62" height="62"/>
+        <image name="Friends-Only" width="62" height="62"/>
+        <image name="Happening-Around-You" width="62" height="62"/>
+        <image name="Your-Interests" width="62" height="62"/>
     </resources>
 </document>

@@ -110,6 +110,7 @@
     categoryFilterType=1;
     self.filterBlurView = [EventInterestFilterBlurView loadEventInterestFilter:self.view];
     self.filterBlurView.delegate=self;
+    [self.filterBlurView updateConstraints];
 
     if([[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"]){
         [[BeagleManager SharedInstance]getUserObjectInAutoSignInMode];
@@ -712,7 +713,7 @@
             
         case 3:
         {
-            headerText.text=@"Expressed  Interest";
+            headerText.text=@"Your Interests";
         }
             break;
             
@@ -725,9 +726,6 @@
             
     }
     [self filterByCategoryType:index];
-    
-    [self.tableView reloadData];
-
 }
 - (void)dismissEventFilter{
     
@@ -906,30 +904,6 @@
         if(isPushAuto){
             isPushAuto=FALSE;
         }
-        if([self.tableData count]!=0){
-
-
-            [self.tableView setHidden:NO];
-            
-            BlankHomePageView *blankHomePageView=(BlankHomePageView*)[self.view  viewWithTag:1245];
-            [blankHomePageView setHidden:YES];
-            if([self.tableData count]>3){
-                footerActivated=NO;
-            }
-            [self.tableView reloadData];
-        }
-        else{
-            [self.tableView setHidden:YES];
-
-            NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"BlankHomePageView" owner:self options:nil];
-            BlankHomePageView *blankHomePageView=[nib objectAtIndex:0];
-            blankHomePageView.frame=CGRectMake(0, 167, 320, 401);
-            blankHomePageView.delegate=self;
-            [blankHomePageView updateViewConstraints];
-            blankHomePageView.userInteractionEnabled=YES;
-            blankHomePageView.tag=1245;
-            [self.view addSubview:blankHomePageView];
-        }
     }
     else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
             _interestUpdateManager.delegate = nil;
@@ -1044,7 +1018,28 @@
         }
             break;
     }
-    
+    if([self.tableData count]!=0){
+        
+        
+        [self.tableView setHidden:NO];
+        
+        BlankHomePageView *blankHomePageView=(BlankHomePageView*)[self.view  viewWithTag:1245];
+        [blankHomePageView removeFromSuperview];
+        [self.tableView reloadData];
+    }
+    else{
+        [self.tableView setHidden:YES];
+        
+        NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"BlankHomePageView" owner:self options:nil];
+        BlankHomePageView *blankHomePageView=[nib objectAtIndex:0];
+        blankHomePageView.frame=CGRectMake(0, 167, 320, 401);
+        blankHomePageView.delegate=self;
+        [blankHomePageView updateViewConstraints];
+        blankHomePageView.userInteractionEnabled=YES;
+        blankHomePageView.tag=1245;
+        [self.view addSubview:blankHomePageView];
+    }
+
     
 }
 #pragma mark - filter  option calls
@@ -1057,7 +1052,9 @@
             break;
         case 1:
         {
-            
+            [self.filterBlurView blurWithColor];
+            [self.filterBlurView crossDissolveShow];
+            [self.view addSubview:self.filterBlurView];
         }
             break;
         case 2:
