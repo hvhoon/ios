@@ -26,6 +26,7 @@
     self = [super initWithCoder:aDecoder];
     
     if (self) {
+#if 1
         UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
         // make your gesture recognizer priority
         singleTap.numberOfTapsRequired = 1;
@@ -95,7 +96,7 @@
             [self addSubview:_scrollView];
             
            self.userInteractionEnabled=YES;
-
+#endif
     }
     
     return self;

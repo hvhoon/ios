@@ -7,16 +7,14 @@
 //
 
 #import "LocationTableViewController.h"
-#import "Location.h"
+#import "GooglePlacesAutocompleteQuery.h"
+#import "GooglePlacesAutocompletePlace.h"
 
 @interface LocationTableViewController ()
 
 @end
 
 @implementation LocationTableViewController
-@synthesize locationArray;
-@synthesize filteredLocationArray;
-@synthesize candySearchBar;
 @synthesize delegate;
 - (UIStatusBarStyle)preferredStatusBarStyle{
     return UIStatusBarStyleDefault;
@@ -28,6 +26,14 @@
 //    [[UIApplication sharedApplication] setStatusBarHidden:YES];
 }
 
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+    }
+    return self;
+}
+
+
 // Add this method
 - (BOOL)prefersStatusBarHidden {
     return YES;
@@ -35,53 +41,19 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-//    [self.navigationController setNavigationBarHidden:NO];
+    searchQuery = [[GooglePlacesAutocompleteQuery alloc] init];
+    searchQuery.radius = 100.0;
+    shouldBeginEditing = YES;
+    self.navigationController.navigationBar.alpha=0.0;
     
-    // Don't show the scope bar or cancel button until editing begins
-    [candySearchBar setShowsScopeBar:NO];
-    [candySearchBar sizeToFit];
-    
-//    if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)])
-//    {
-//        [self prefersStatusBarHidden];
-//        [self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
-//    }
-
-     [[UIApplication sharedApplication] setStatusBarHidden:YES];
-    // Hide the search bar until user scrolls up
-//    CGRect newBounds = [[self tableView] bounds];
-//    newBounds.origin.y = newBounds.origin.y + candySearchBar.bounds.size.height;
-//    [[self tableView] setBounds:newBounds];
-
-
-    
-    self.locationArray = [NSArray arrayWithObjects:
-                  [Location locationCategory:@"location" name:@"Alabama,AL"],
-                  [Location locationCategory:@"location" name:@"Alaska,AK"],
-                  [Location locationCategory:@"location" name:@"Arkansas,AR"],
-                  [Location locationCategory:@"location" name:@"Washington,WA"],
-                  [Location locationCategory:@"location" name:@"Texas,TX"],
-                  [Location locationCategory:@"location" name:@"Virginia,VA"],
-                  [Location locationCategory:@"location" name:@"Pennsylvania,PA"],
-                  [Location locationCategory:@"location" name:@"Tennessee,TN"],
-                  [Location locationCategory:@"location" name:@"Vermont,VT"],
-                  [Location locationCategory:@"location" name:@"Wyoming,WY"],
-
-                  [Location locationCategory:@"other" name:@"Arizona,AZ"], nil];
-    
-    // Initialize the filteredCandyArray with a capacity equal to the candyArray's capacity
-    self.filteredLocationArray = [NSMutableArray arrayWithCapacity:[self.locationArray count]];
-    
-    // Reload the table
-    [[self tableView] reloadData];
-    
-//        UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
-//        // make your gesture recognizer priority
-//        singleTap.numberOfTapsRequired = 1;
-//        [[self tableView ]addGestureRecognizer:singleTap];
-
-    //[candySearchBar becomeFirstResponder];
-    
+    self.searchDisplayController.searchResultsTableView.delegate=self;
+    self.searchDisplayController.searchResultsTableView.dataSource=self;
+//    [self.navigationController.navigationBar setBarTintColor:[UIColor clearColor]];
+//
+//    [self.navigationController.navigationBar setTintColor:[UIColor clearColor]];
+//    [self.navigationController setNavigationBarHidden:YES];
+    self.searchDisplayController.searchBar.placeholder = @"Search city name";
+     //[[UIApplication sharedApplication] setStatusBarHidden:YES];
     [self.searchDisplayController setActive:YES animated:YES];
     [self.searchDisplayController.searchBar becomeFirstResponder];
     self.searchDisplayController.searchResultsTableView.backgroundColor=[UIColor lightGrayColor];
@@ -96,16 +68,38 @@
     
 }
 - (void) searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller{
-    [candySearchBar resignFirstResponder];
+    [self dismissSearchControllerWhileStayingActive];
     [delegate dismissLocationTable:self];
     
 }
--(void)handleSingleTap:(UITapGestureRecognizer*)sender{
-    
+#pragma mark -
+#pragma mark UISearchBar Delegate
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    if (![searchBar isFirstResponder]) {
+        // User tapped the 'clear' button.
+        shouldBeginEditing = NO;
+        [self.searchDisplayController setActive:NO];
+    }
+}
+
+- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
+    if (shouldBeginEditing) {
+        // Animate in the table view.
+        NSTimeInterval animationDuration = 0.3;
+        [UIView beginAnimations:nil context:NULL];
+        [UIView setAnimationDuration:animationDuration];
+        //eself.searchDisplayController.searchResultsTableView.alpha = 1.0;
+        [UIView commitAnimations];
+        
+        [self.searchDisplayController.searchBar setShowsCancelButton:YES animated:YES];
+    }
+    BOOL boolToReturn = shouldBeginEditing;
+    shouldBeginEditing = YES;
+    return boolToReturn;
 }
 - (void)searchBarCancelButtonClicked:(UISearchBar *)aSearchBar
 {
-    [candySearchBar resignFirstResponder];
     [delegate dismissLocationTable:self];
 
     
@@ -129,19 +123,15 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Check to see whether the normal table or search results table is being displayed and return the count from the appropriate array
-    if (tableView == self.searchDisplayController.searchResultsTableView)
-	{
-        return [self.filteredLocationArray count];
-    }
-	else
-	{
-        return [self.locationArray count];
-    }
+        return [searchResultPlaces count];
 }
 
 - (void)searchDisplayController:(UISearchDisplayController *)controller didLoadSearchResultsTableView:(UITableView *)tableView
 {
     //tableView.rowHeight = 64;
+}
+- (GooglePlacesAutocompletePlace *)placeAtIndexPath:(NSIndexPath *)indexPath {
+    return [searchResultPlaces objectAtIndex:indexPath.row];
 }
 
 
@@ -153,20 +143,11 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
-    Location *location = nil;
     cell.backgroundColor=[UIColor clearColor];
-    // Check to see whether the normal table or search results table is being displayed and set the Candy object from the appropriate array
-    if (tableView == self.searchDisplayController.searchResultsTableView)
-	{
-        location = [self.filteredLocationArray objectAtIndex:[indexPath row]];
-    }
-	else
-	{
-        location = [self.locationArray objectAtIndex:[indexPath row]];
-    }
     
-    // Configure the cell
-    [[cell textLabel] setText:[location name]];
+    [[cell textLabel]setTextColor:[UIColor whiteColor]];
+    [[cell textLabel]setFont:[UIFont fontWithName:@"HelveticaNeue" size:18.0]];
+    [[cell textLabel] setText:[self placeAtIndexPath:indexPath].name];
     [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
     
     return cell;
@@ -176,51 +157,50 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
+    [self dismissSearchControllerWhileStayingActive];
     [delegate dismissLocationTable:self];
+}
+
+
+- (void)dismissSearchControllerWhileStayingActive {
+    // Animate out the table view.
+    NSTimeInterval animationDuration = 0.3;
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:animationDuration];
+    self.searchDisplayController.searchResultsTableView.alpha = 0.0;
+    [UIView commitAnimations];
+    
+    [self.searchDisplayController.searchBar setShowsCancelButton:NO animated:YES];
+    [self.searchDisplayController.searchBar resignFirstResponder];
 }
 
 
 #pragma mark Content Filtering
 
-- (void)filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope
-{
-	// Update the filtered array based on the search text and scope.
-	
-    // Remove all objects from the filtered search array
-	[self.filteredLocationArray removeAllObjects];
-    
-	// Filter the array using NSPredicate
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.name contains[c] %@",searchText];
-    NSArray *tempArray = [self.locationArray filteredArrayUsingPredicate:predicate];
-    
-    
-    self.filteredLocationArray = [NSMutableArray arrayWithArray:tempArray];
+- (void)handleSearchForSearchString:(NSString *)searchString {
+    searchQuery.location = [[BeagleManager SharedInstance]currentLocation].coordinate;
+    searchQuery.input = searchString;
+    [searchQuery fetchPlaces:^(NSArray *places, NSError *error) {
+        if (error) {
+            PresentAlertViewWithErrorAndTitle(error, @"Could not fetch Places");
+        } else {
+            searchResultPlaces = [NSArray arrayWithArray:places];
+            [self.searchDisplayController.searchResultsTableView reloadData];
+        }
+    }];
 }
-
 
 #pragma mark - UISearchDisplayController Delegate Methods
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
 {
     // Tells the table data source to reload when text changes
-    [self filterContentForSearchText:searchString scope:
-     [[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:[self.searchDisplayController.searchBar selectedScopeButtonIndex]]];
-    
+    [self handleSearchForSearchString:searchString];
     // Return YES to cause the search result table view to be reloaded.
     return YES;
 }
 
 
-- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption
-{
-    // Tells the table data source to reload when scope bar selection changes
-    [self filterContentForSearchText:[self.searchDisplayController.searchBar text] scope:
-     [[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:searchOption]];
-    
-    // Return YES to cause the search result table view to be reloaded.
-    return YES;
-}
 
 - (void)searchDisplayController:(UISearchDisplayController *)controller willHideSearchResultsTableView:(UITableView *)tableView{
     

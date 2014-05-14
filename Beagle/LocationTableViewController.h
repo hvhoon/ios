@@ -7,14 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+@class GooglePlacesAutocompleteQuery;
 @protocol LocationTableViewDelegate;
-@interface LocationTableViewController : UIViewController <UISearchBarDelegate, UISearchDisplayDelegate,UITableViewDataSource,UITableViewDelegate>
-@property (strong,nonatomic)IBOutlet UITableView *tableView;
-@property (assign, nonatomic) id <LocationTableViewDelegate>delegate;
-@property (strong,nonatomic) NSArray *locationArray;
-@property (strong,nonatomic) NSMutableArray *filteredLocationArray;
-@property IBOutlet UISearchBar *candySearchBar;
 
+@interface LocationTableViewController : UIViewController <UISearchBarDelegate, UISearchDisplayDelegate,UITableViewDataSource,UITableViewDelegate>{
+    NSArray *searchResultPlaces;
+    GooglePlacesAutocompleteQuery *searchQuery;
+    BOOL shouldBeginEditing;
+}
+@property (assign, nonatomic) id <LocationTableViewDelegate>delegate;
 @end
 
 @protocol LocationTableViewDelegate<NSObject>

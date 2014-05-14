@@ -11,11 +11,10 @@
 #import "ActivityViewController.h"
 #import "TimeFilterView.h"
 #import "LocationTableViewController.h"
-#import "UIViewController+MJPopupViewController.h"
 #import "BeagleActivityClass.h"
-#import "ActivityTimeViewController.h"
 #import "EventTimeBlurView.h"
 #import "EventVisibilityBlurView.h"
+#import "LocationBlurView.h"
 enum Weeks {
     SUNDAY = 1,
     MONDAY,
@@ -25,7 +24,7 @@ enum Weeks {
     FRIDAY,
     SATURDAY
 };
-@interface ActivityViewController ()<UITextViewDelegate,LocationTableViewDelegate,ServerManagerDelegate,ActivityTimeViewControllerDelegate,EventTimeBlurViewDelegate,EventVisibilityBlurViewDelegate>{
+@interface ActivityViewController ()<UITextViewDelegate,LocationTableViewDelegate,ServerManagerDelegate,EventTimeBlurViewDelegate,EventVisibilityBlurViewDelegate,LocationBlurViewDelegate>{
     IBOutlet UIImageView *profileImageView;
     IBOutlet UITextView *descriptionTextView;
     UILabel *placeholderLabel;
@@ -44,6 +43,7 @@ enum Weeks {
 @property (nonatomic, strong) NSMutableIndexSet *optionIndices;
 @property(nonatomic, strong) EventTimeBlurView *blrTimeView;
 @property(nonatomic, strong) EventVisibilityBlurView *blrVisbilityView;
+@property(nonatomic, strong) LocationBlurView *blrLocationView;
 @property(nonatomic,strong)ServerManager *activityServerManager;
 @property(nonatomic,strong)ServerManager *deleteActivityManager;
 @end
@@ -64,7 +64,8 @@ enum Weeks {
 -(void)viewWillAppear:(BOOL)animated{
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
-    
+    [self.navigationController setNavigationBarHidden:NO];
+
 }
 - (void)viewDidLoad
 {
@@ -75,6 +76,9 @@ enum Weeks {
     self.blrVisbilityView.delegate=self;
     self.blrTimeView.delegate=self;
     [self.blrVisbilityView updateConstraints];
+    
+    self.blrLocationView=[LocationBlurView loadLocationFilter:self.view];
+    self.blrLocationView.delegate=self;
     if(!editState)
         bg_activity=[[BeagleActivityClass alloc]init];
     
@@ -481,7 +485,7 @@ enum Weeks {
 			int j = [Temp intValue];
             
 			j = j-1 ;
-			countTextLabel.text= [[NSString alloc] initWithFormat:@"%u",141-[textView.text length]];
+			countTextLabel.text= [[NSString alloc] initWithFormat:@"%ld",(long)(141-[textView.text length])];
             
 			return YES;
 		}
@@ -497,7 +501,7 @@ enum Weeks {
 	}
 	if(flag == NO)
 	{
-		countTextLabel.text= [[NSString alloc] initWithFormat:@"%u",140-[descriptionTextView.text length]-1];
+		countTextLabel.text= [[NSString alloc] initWithFormat:@"%ld",(long)(140-[descriptionTextView.text length]-1)];
 		
 		
 	}
@@ -533,10 +537,19 @@ enum Weeks {
 - (IBAction)locationFilter:(id)sender{
     
     [descriptionTextView resignFirstResponder];
+
     
-    LocationTableViewController *viewController = [self.storyboard instantiateViewControllerWithIdentifier:@"locationScreen"];
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    LocationTableViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"locationScreen"];
     viewController.delegate=self;
-    [self presentPopupViewController:viewController animationType:MJPopupViewAnimationSlideLeftLeft];
+    //viewController.view.backgroundColor=[UIColor clearColor];
+    [self addChildViewController:viewController];
+    [self.blrLocationView addSubview:viewController.view];
+    [self.blrLocationView blurWithColor];
+    [self.blrLocationView crossDissolveShow];
+    [self.view addSubview:self.blrLocationView];
+
+    
 }
 
 
@@ -550,17 +563,14 @@ enum Weeks {
     
     [keyboard addSubview:self.blrTimeView];
         
-//    ActivityTimeViewController *viewController = [self.storyboard instantiateViewControllerWithIdentifier:@"activityTimeScreen"];
-//    viewController.delegate=self;
-//    [self presentPopupViewController:viewController animationType:MJPopupViewAnimationFade];
-
 }
 
 - (void)dismissLocationTable:(LocationTableViewController*)viewController{
     
-    [self dismissPopupViewControllerWithanimationType:MJPopupViewAnimationSlideLeftLeft];
     [descriptionTextView becomeFirstResponder];
+    [self.blrLocationView crossDissolveHide];
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+    self.navigationController.navigationBar.alpha=1.0;
 }
 
 
