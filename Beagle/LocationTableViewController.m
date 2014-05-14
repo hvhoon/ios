@@ -89,7 +89,7 @@
         NSTimeInterval animationDuration = 0.3;
         [UIView beginAnimations:nil context:NULL];
         [UIView setAnimationDuration:animationDuration];
-        //eself.searchDisplayController.searchResultsTableView.alpha = 1.0;
+        self.searchDisplayController.searchResultsTableView.alpha = 1.0;
         [UIView commitAnimations];
         
         [self.searchDisplayController.searchBar setShowsCancelButton:YES animated:YES];
@@ -122,7 +122,6 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    // Check to see whether the normal table or search results table is being displayed and return the count from the appropriate array
         return [searchResultPlaces count];
 }
 

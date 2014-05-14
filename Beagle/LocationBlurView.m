@@ -70,7 +70,7 @@
     __block UIImage *snapshot=[UIScreen screenshot];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        snapshot=[snapshot applyBlurWithRadius:5 tintColor:[UIColor colorWithRed:162.0/255.0 green:162.0/255.0 blue:162.0/255.0 alpha:0.69] saturationDeltaFactor:1.8 maskImage:nil];
+        snapshot=[snapshot applyBlurWithRadius:8 tintColor:[BeagleUtilities returnBeagleColor:9] saturationDeltaFactor:1.8 maskImage:nil];
         
         dispatch_sync(dispatch_get_main_queue(), ^{
             self.backgroundColor=[UIColor colorWithPatternImage:snapshot];
@@ -87,7 +87,7 @@
     self.frame = CGRectMake(self.location.x, self.location.y, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
     self.alpha =  0.0f;
     
-    [UIView transitionWithView:self duration:0.2 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+    [UIView transitionWithView:self duration:0.3 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
         
         self.alpha = 1.0f;
     } completion:^(BOOL finished) {
