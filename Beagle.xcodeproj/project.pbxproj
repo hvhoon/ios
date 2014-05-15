@@ -102,7 +102,6 @@
 		18F889941902C7FF00C80011 /* PlayerProfileItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F889921902C7FF00C80011 /* PlayerProfileItem.m */; };
 		18F889951902C7FF00C80011 /* PlayerProfileItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18F889931902C7FF00C80011 /* PlayerProfileItem.xib */; };
 		18F8F4DD18DA07F800B26AC6 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18F8F4DC18DA07F800B26AC6 /* Accelerate.framework */; };
-		18F8F4E318DA088500B26AC6 /* LocationTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F8F4E118DA088500B26AC6 /* LocationTableViewController.m */; };
 		18F9FE6118DB40E4004BFE4E /* BeagleManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F9FE6018DB40E4004BFE4E /* BeagleManager.m */; };
 		18F9FE6618DB410D004BFE4E /* BeagleActivityClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F9FE6518DB410D004BFE4E /* BeagleActivityClass.m */; };
 		18FADB8D18B662A000A62287 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FADB8C18B662A000A62287 /* LoginViewController.m */; };
@@ -296,8 +295,6 @@
 		18F889921902C7FF00C80011 /* PlayerProfileItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerProfileItem.m; sourceTree = "<group>"; };
 		18F889931902C7FF00C80011 /* PlayerProfileItem.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlayerProfileItem.xib; sourceTree = "<group>"; };
 		18F8F4DC18DA07F800B26AC6 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
-		18F8F4E018DA088500B26AC6 /* LocationTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationTableViewController.h; sourceTree = "<group>"; };
-		18F8F4E118DA088500B26AC6 /* LocationTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationTableViewController.m; sourceTree = "<group>"; };
 		18F9FE5F18DB40E4004BFE4E /* BeagleManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeagleManager.h; sourceTree = "<group>"; };
 		18F9FE6018DB40E4004BFE4E /* BeagleManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeagleManager.m; sourceTree = "<group>"; };
 		18F9FE6418DB410D004BFE4E /* BeagleActivityClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeagleActivityClass.h; sourceTree = "<group>"; };
@@ -482,8 +479,6 @@
 				180AF0B118DC7FB200EE87D6 /* BlankHomePageView.h */,
 				180AF0B218DC7FB200EE87D6 /* BlankHomePageView.m */,
 				180AF0B018DC7FB200EE87D6 /* BlankHomePageView.xib */,
-				18F8F4E018DA088500B26AC6 /* LocationTableViewController.h */,
-				18F8F4E118DA088500B26AC6 /* LocationTableViewController.m */,
 				18EBCFD418CE350600FDC624 /* CustomPickerView.h */,
 				18EBCFD518CE350600FDC624 /* CustomPickerView.m */,
 				18EBCFD618CE350600FDC624 /* CustomPickerView.xib */,
@@ -987,7 +982,6 @@
 				18EC232518B5A42D00316B6E /* SBJSON.m in Sources */,
 				18EC231218B5A42D00316B6E /* ASIAuthenticationDialog.m in Sources */,
 				18EC231D18B5A42D00316B6E /* ASICloudFilesContainerXMLParserDelegate.m in Sources */,
-				18F8F4E318DA088500B26AC6 /* LocationTableViewController.m in Sources */,
 				18007EF018C6508200230C23 /* NSData+LFHTTPFormExtensions.m in Sources */,
 				18EC231618B5A42D00316B6E /* ASIFormDataRequest.m in Sources */,
 				18007EF718C6511000230C23 /* BeagleUtilities.m in Sources */,

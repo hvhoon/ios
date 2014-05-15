@@ -10,7 +10,6 @@
 
 #import "ActivityViewController.h"
 #import "TimeFilterView.h"
-#import "LocationTableViewController.h"
 #import "BeagleActivityClass.h"
 #import "EventTimeBlurView.h"
 #import "EventVisibilityBlurView.h"
@@ -24,7 +23,7 @@ enum Weeks {
     FRIDAY,
     SATURDAY
 };
-@interface ActivityViewController ()<UITextViewDelegate,LocationTableViewDelegate,ServerManagerDelegate,EventTimeBlurViewDelegate,EventVisibilityBlurViewDelegate,LocationBlurViewDelegate>{
+@interface ActivityViewController ()<UITextViewDelegate,ServerManagerDelegate,EventTimeBlurViewDelegate,EventVisibilityBlurViewDelegate,LocationBlurViewDelegate>{
     IBOutlet UIImageView *profileImageView;
     IBOutlet UITextView *descriptionTextView;
     UILabel *placeholderLabel;
@@ -79,9 +78,17 @@ enum Weeks {
     
     self.blrLocationView=[LocationBlurView loadLocationFilter:self.view];
     self.blrLocationView.delegate=self;
-    if(!editState)
+    if(!editState){
         bg_activity=[[BeagleActivityClass alloc]init];
     
+    
+    bg_activity.state=[[BeagleManager SharedInstance]placemark].administrativeArea;
+    bg_activity.city=[[[BeagleManager SharedInstance]placemark].addressDictionary objectForKey:@"City"];
+    
+    bg_activity.latitude=[[BeagleManager SharedInstance]currentLocation].coordinate.latitude;
+    bg_activity.longitude=[[BeagleManager SharedInstance]currentLocation].coordinate.longitude;
+
+    }
     self.optionIndices = [NSMutableIndexSet indexSetWithIndex:1];
     
     
@@ -342,10 +349,6 @@ enum Weeks {
         }
             break;
 }
-    bg_activity.state=[[BeagleManager SharedInstance]placemark].administrativeArea;
-    bg_activity.city=[[[BeagleManager SharedInstance]placemark].addressDictionary objectForKey:@"City"];
-    bg_activity.latitude=[[BeagleManager SharedInstance]currentLocation].coordinate.latitude;
-    bg_activity.longitude=[[BeagleManager SharedInstance]currentLocation].coordinate.longitude;
 
     bg_activity.ownerid=[[BeagleManager SharedInstance]beaglePlayer].beagleUserId;
     
@@ -502,14 +505,9 @@ enum Weeks {
 - (IBAction)locationFilter:(id)sender{
     
     [descriptionTextView resignFirstResponder];
-
+    self.navigationController.navigationBar.alpha=0.0;
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
     
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    LocationTableViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"locationScreen"];
-    viewController.delegate=self;
-    //viewController.view.backgroundColor=[UIColor clearColor];
-    [self addChildViewController:viewController];
-    [self.blrLocationView addSubview:viewController.view];
     [self.blrLocationView blurWithColor];
     [self.blrLocationView crossDissolveShow];
     [self.view addSubview:self.blrLocationView];
@@ -530,14 +528,20 @@ enum Weeks {
         
 }
 
-- (void)dismissLocationTable:(LocationTableViewController*)viewController{
+-(void)interestLocationSelected:(CLPlacemark*)placemark{
     
-    [descriptionTextView becomeFirstResponder];
-    [self.blrLocationView crossDissolveHide];
-    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
-    self.navigationController.navigationBar.alpha=1.0;
-}
+    
+    bg_activity.state=placemark.administrativeArea;
+    bg_activity.city=[placemark.addressDictionary objectForKey:@"City"];
+    self.bg_activity.latitude=placemark.location.coordinate.latitude;
+    self.bg_activity.longitude=placemark.location.coordinate.longitude;
+    
+    
+    NSString *locationFilter=[NSString stringWithFormat:@"%@, %@",[placemark.addressDictionary objectForKey:@"City"],placemark.administrativeArea];
+    [locationFilterButton setTitle:locationFilter forState:UIControlStateNormal];
+    
 
+}
 
 #pragma mark -
 #pragma mark Event Blur Delegate Method
@@ -607,7 +611,8 @@ enum Weeks {
 }
 
 - (void)dismissEventFilter{
-    
+    [descriptionTextView becomeFirstResponder];
+    self.navigationController.navigationBar.alpha=1.0;
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
 
 }
