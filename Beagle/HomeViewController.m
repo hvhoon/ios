@@ -250,16 +250,17 @@
         [self LocationAcquired];
         
     }
-   else if(![BeagleUtilities hasBeenMoreThanSixtyMinutes] && ![BeagleUtilities LastDistanceFromLocationExceeds_50M]){
-    if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
-        isPushAuto=TRUE;
-        [self LocationAcquired];
-        
-    }
-    else{
-        [self startStandardUpdates];
-    }
-    }
+    
+//   else if(!isSixty && !isMoreThan50_M){
+//    if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
+//        isPushAuto=TRUE;
+//        [self LocationAcquired];
+//        
+//    }
+//    else{
+//        [self startStandardUpdates];
+//    }
+//    }
 
 }
 
@@ -418,7 +419,7 @@
         bottomNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockBottomImage2];
         
 #else
-        
+        [[NSUserDefaults standardUserDefaults] setValue:[NSDate date] forKey:@"HourlyUpdate"];
         UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
         stockImageView.image=photo;
         [stockImageView setContentMode:UIViewContentModeScaleAspectFit];
