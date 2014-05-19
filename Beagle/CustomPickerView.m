@@ -90,7 +90,7 @@
     NSCalendar* calendar = [NSCalendar currentCalendar];
     NSDateComponents* components = [calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:currentDate]; // Get necessary date components
     
-    
+    pickerView.transform = CGAffineTransformMakeScale(0.9f, 0.9f);
     [pickerView addTarget:self
                    action:@selector(dateChange:)
          forControlEvents:UIControlEventValueChanged];
