@@ -61,16 +61,24 @@ enum Weeks {
     return self;
 }
 -(void)viewWillAppear:(BOOL)animated{
+    
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
     [self.navigationController setNavigationBarHidden:NO];
 
 }
+
+- (void)viewWillLayoutSubviews {
+    
+    if (![descriptionTextView isFirstResponder]) {
+        [descriptionTextView becomeFirstResponder];
+    }
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    self.blrTimeView = [EventTimeBlurView loadTimeFilter:self.view];
+    self.blrTimeView=[[EventTimeBlurView alloc]initWithFrame:self.view.frame parentView:self.view];
+//    self.blrTimeView = [EventTimeBlurView loadTimeFilter:self.view];
     self.blrVisbilityView=[EventVisibilityBlurView loadVisibilityFilter:self.view];
     self.blrVisbilityView.delegate=self;
     self.blrTimeView.delegate=self;
@@ -127,12 +135,12 @@ enum Weeks {
         self.navigationItem.rightBarButtonItem.enabled=NO;
         
     }
-    
+    #if 1
     if(editState){
         descriptionTextView.text=self.bg_activity.activityDesc;
     }
     countTextLabel.text= [[NSString alloc] initWithFormat:@"%lu",(unsigned long)140-[descriptionTextView.text length]];
-    [descriptionTextView becomeFirstResponder];
+
 
     
     if(editState){
@@ -161,6 +169,8 @@ enum Weeks {
         visibilityImageView.hidden=YES;
     }
 	// Do any additional setup after loading the view.
+    
+#endif
 }
 
 

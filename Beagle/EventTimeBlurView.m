@@ -22,6 +22,99 @@
 
 @implementation EventTimeBlurView
 @synthesize delegate;
+
+-(id)initWithFrame:(CGRect)frame parentView:(UIView*)view{
+    
+    self = [super initWithFrame:frame];
+    
+    if (self) {
+
+//    EventTimeBlurView *blur = [[[NSBundle mainBundle] loadNibNamed:@"EventTimeBlurView" owner:nil options:nil] objectAtIndex:0];
+//    blur.frame=frame;
+//    self=blur;
+//    blur.userInteractionEnabled=YES;
+    self.parent = view;
+    self.location = CGPointMake(0, 0);
+    self.frame = CGRectMake(0, -view.frame.size.height, view.frame.size.width, view.frame.size.height);
+        
+        {
+#if 1
+            UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
+            // make your gesture recognizer priority
+            singleTap.numberOfTapsRequired = 1;
+            [self addGestureRecognizer:singleTap];
+            
+            
+            
+            
+            _scrollView = [[UIScrollView alloc] init];
+            _scrollView.frame=CGRectMake(0, 0,frame.size.width,frame.size.height);
+            _scrollView.alwaysBounceHorizontal = NO;
+            _scrollView.alwaysBounceVertical = YES;
+            _scrollView.showsHorizontalScrollIndicator = NO;
+            _scrollView.showsVerticalScrollIndicator = NO;
+            
+            
+            for (int i = 0; i < 2; i++) {
+                
+                switch (i) {
+                    case 0:
+                    {
+                        TimeFilterView *filterView = [[TimeFilterView alloc]initWithFrame:CGRectMake(0, 0,frame.size.width,frame.size.height)];
+                        filterView.delegate=self;
+                        filterView.userInteractionEnabled=YES;
+                        [filterView setBackgroundColor:[UIColor clearColor]];
+                        [_scrollView addSubview:filterView];
+                        
+                    }
+                        
+                        
+                        
+                        break;
+                    case 1:
+                    {
+                        
+                        
+                        UIView *customPickerView = [[UIView alloc]initWithFrame:CGRectMake(0, frame.size.height, frame.size.width,frame.size.height)];
+                        [customPickerView setBackgroundColor:[UIColor clearColor]];
+                        
+                        NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"CustomPickerView" owner:self options:nil];
+                        CustomPickerView *view=[nib objectAtIndex:0];
+                        view.frame=CGRectMake(0, 0,frame.size.width,frame.size.height);
+                        view.userInteractionEnabled=YES;
+                        
+                        customPickerView.userInteractionEnabled=YES;
+                        [_scrollView addSubview:customPickerView];
+                        [customPickerView addSubview:view];
+                        [view buildTheLogic];
+                        view.delegate=self;
+                        
+                    }
+                        break;
+                        
+                        
+                    default:
+                        break;
+                }
+                
+                
+            }
+            _scrollView.pagingEnabled = YES;
+            _scrollView.bounces=NO;
+            _scrollView.userInteractionEnabled=YES;
+            _scrollView.clipsToBounds=YES;
+            _scrollView.contentSize = CGSizeMake(320,2*frame.size.height);
+            
+            [self addSubview:_scrollView];
+            
+            self.userInteractionEnabled=YES;
+#endif
+        }
+        //[self addSubview:blur];
+    }
+    return self;
+
+}
 - (id) initWithCoder:(NSCoder *) aDecoder {
     self = [super initWithCoder:aDecoder];
     

@@ -26,7 +26,7 @@
 - (void) crossDissolveHide;
 - (void) blurWithColor:(BlurColorComponents *) components;
 - (void) blurWithColor:(BlurColorComponents *) components updateInterval:(float) interval;
-
+-(id)initWithFrame:(CGRect)frame parentView:(UIView*)view;
 @end
 
 @interface BlurColorComponents : NSObject

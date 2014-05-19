@@ -346,7 +346,7 @@
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     ActivityViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"activityScreen"];
     UINavigationController *activityNavigationController=[[UINavigationController alloc]initWithRootViewController:viewController];
-    [self.navigationController presentViewController:activityNavigationController animated:YES completion:nil];
+    [self presentViewController:activityNavigationController animated:YES completion:nil];
     
 }
 - (void) retrieveLocationAndUpdateBackgroundPhoto {
