@@ -111,6 +111,13 @@
 		18FADB9B18B669E500A62287 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FADB9A18B669E500A62287 /* HomeViewController.m */; };
 		18FADB9E18B66A4C00A62287 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FADB9D18B66A4C00A62287 /* SettingsViewController.m */; };
 		18FADBA318B66A8D00A62287 /* NotificationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FADBA218B66A8D00A62287 /* NotificationsViewController.m */; };
+		68EDF869192AC578008ED9C1 /* Instabug.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 68EDF867192AC578008ED9C1 /* Instabug.bundle */; };
+		68EDF86A192AC578008ED9C1 /* Instabug.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68EDF868192AC578008ED9C1 /* Instabug.framework */; };
+		68EDF86C192AC760008ED9C1 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68EDF86B192AC760008ED9C1 /* CoreFoundation.framework */; };
+		68EDF86E192AC76D008ED9C1 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68EDF86D192AC76D008ED9C1 /* OpenGLES.framework */; };
+		68EDF870192AC775008ED9C1 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68EDF86F192AC775008ED9C1 /* GLKit.framework */; };
+		68EDF872192AC78D008ED9C1 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68EDF871192AC78D008ED9C1 /* AVFoundation.framework */; };
+		68EDF874192AC7A0008ED9C1 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68EDF873192AC7A0008ED9C1 /* CoreTelephony.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -315,6 +322,13 @@
 		18FADBA218B66A8D00A62287 /* NotificationsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsViewController.m; sourceTree = "<group>"; };
 		18FC279B18CF721B00F33576 /* SideTransitionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SideTransitionController.h; sourceTree = "<group>"; };
 		18FC279C18CF721B00F33576 /* SideTransitionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SideTransitionController.m; sourceTree = "<group>"; };
+		68EDF867192AC578008ED9C1 /* Instabug.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Instabug.bundle; sourceTree = "<group>"; };
+		68EDF868192AC578008ED9C1 /* Instabug.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Instabug.framework; sourceTree = "<group>"; };
+		68EDF86B192AC760008ED9C1 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		68EDF86D192AC76D008ED9C1 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		68EDF86F192AC775008ED9C1 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
+		68EDF871192AC78D008ED9C1 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		68EDF873192AC7A0008ED9C1 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -322,6 +336,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				68EDF874192AC7A0008ED9C1 /* CoreTelephony.framework in Frameworks */,
+				18EC232B18B5A65C00316B6E /* AudioToolbox.framework in Frameworks */,
+				68EDF872192AC78D008ED9C1 /* AVFoundation.framework in Frameworks */,
+				68EDF870192AC775008ED9C1 /* GLKit.framework in Frameworks */,
+				68EDF86E192AC76D008ED9C1 /* OpenGLES.framework in Frameworks */,
+				68EDF86C192AC760008ED9C1 /* CoreFoundation.framework in Frameworks */,
 				18F8F4DD18DA07F800B26AC6 /* Accelerate.framework in Frameworks */,
 				18EC233F18B5A6BD00316B6E /* Social.framework in Frameworks */,
 				1806EA4218B9E32B00A47BF1 /* Crashlytics.framework in Frameworks */,
@@ -330,11 +350,11 @@
 				18EC233918B5A6A000316B6E /* CoreLocation.framework in Frameworks */,
 				18EC233718B5A69900316B6E /* QuartzCore.framework in Frameworks */,
 				18EC233518B5A68C00316B6E /* SystemConfiguration.framework in Frameworks */,
+				68EDF86A192AC578008ED9C1 /* Instabug.framework in Frameworks */,
 				18EC233318B5A68200316B6E /* CFNetwork.framework in Frameworks */,
 				18EC233118B5A67800316B6E /* libxml2.dylib in Frameworks */,
 				18EC232F18B5A66E00316B6E /* libz.dylib in Frameworks */,
 				18EC232D18B5A66500316B6E /* StoreKit.framework in Frameworks */,
-				18EC232B18B5A65C00316B6E /* AudioToolbox.framework in Frameworks */,
 				18EC22A318B5A0B400316B6E /* CoreGraphics.framework in Frameworks */,
 				18EC22A518B5A0B400316B6E /* UIKit.framework in Frameworks */,
 				18EC22A118B5A0B400316B6E /* Foundation.framework in Frameworks */,
@@ -559,6 +579,13 @@
 		18EC229F18B5A0B400316B6E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				68EDF873192AC7A0008ED9C1 /* CoreTelephony.framework */,
+				68EDF871192AC78D008ED9C1 /* AVFoundation.framework */,
+				68EDF86F192AC775008ED9C1 /* GLKit.framework */,
+				68EDF86D192AC76D008ED9C1 /* OpenGLES.framework */,
+				68EDF86B192AC760008ED9C1 /* CoreFoundation.framework */,
+				68EDF867192AC578008ED9C1 /* Instabug.bundle */,
+				68EDF868192AC578008ED9C1 /* Instabug.framework */,
 				18F8F4DC18DA07F800B26AC6 /* Accelerate.framework */,
 				1806EA4118B9E32B00A47BF1 /* Crashlytics.framework */,
 				18EC233E18B5A6BD00316B6E /* Social.framework */,
@@ -921,6 +948,7 @@
 				1805CED918C8D25800AC8556 /* TimeFilterView.xib in Resources */,
 				180AF0B318DC7FB200EE87D6 /* BlankHomePageView.xib in Resources */,
 				180F604D1923D1D800B3807F /* LocationBlurView.xib in Resources */,
+				68EDF869192AC578008ED9C1 /* Instabug.bundle in Resources */,
 				180AF0C018DC809E00EE87D6 /* User.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1148,6 +1176,8 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
+					/Users/Harish/Downloads/Instabug,
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Beagle/Beagle-Prefix.pch";
@@ -1168,6 +1198,8 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
+					/Users/Harish/Downloads/Instabug,
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Beagle/Beagle-Prefix.pch";
