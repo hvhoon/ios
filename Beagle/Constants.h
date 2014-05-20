@@ -33,3 +33,4 @@
 
 #define kParticipantInActivity 12
 #define kInterestChat 13
+#define kNotificationRecord 14

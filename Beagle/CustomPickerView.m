@@ -18,6 +18,13 @@
     NSInteger year;
     NSInteger month;
 }
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *topDistanceContainerView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *topDistanceFromBackButton;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *topDistanceFromForwardButton;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *topDistanceForMonthLabel;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *distancePickerViewFromTop;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *gridSpacingFromTop;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *pickDateSpacingFromTop;
 @end
 
 @implementation CustomPickerView
@@ -26,36 +33,13 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        // Initialization code
-        
-//        NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"CustomPickerView" owner:self options:nil];
-//        
-//        UIView *view=[nib objectAtIndex:0];
-//        view.frame=CGRectMake(0, 0, 320, 568);
-        
-//        CGSize pickerSize = [pickerView sizeThatFits:CGSizeZero];
-//        
-//        UIView *pickerTransformView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, pickerSize.width, pickerSize.height)];
-//        pickerTransformView.transform = CGAffineTransformMakeScale(0.75f, 0.75f);
-//        
-//        [pickerTransformView addSubview:pickerView];
-//        [self addSubview:pickerTransformView];
-        
-//        [self addSubview:view];
-
-        
-//        UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
-//        // make your gesture recognizer priority
-//        singleTap.numberOfTapsRequired = 1;
-//        [self addGestureRecognizer:singleTap];
-
-       
-
-    }
+ }
     return self;
 }
 -(void)handleSingleTap:(UITapGestureRecognizer*)sender{
-    [_delegate filterIndex:0];
+    
+        if (self.delegate && [self.delegate respondsToSelector:@selector(filterIndex:)])
+                [_delegate filterIndex:0];
     
 }
 
@@ -69,7 +53,34 @@
 //    
 //    [pickerTransformView addSubview:pickerView];
 //    [self addSubview:pickerTransformView];
-//    
+//
+    
+    _topDistanceContainerView.constant =
+    [UIScreen mainScreen].bounds.size.height > 480.0f ? 144 : 100;
+    
+    _topDistanceFromBackButton.constant =
+    [UIScreen mainScreen].bounds.size.height > 480.0f ? 154 : 110;
+
+    
+    _topDistanceFromForwardButton.constant =
+    [UIScreen mainScreen].bounds.size.height > 480.0f ? 154 : 110;
+
+    
+    _topDistanceForMonthLabel.constant =
+    [UIScreen mainScreen].bounds.size.height > 480.0f ? 154 : 110;
+    
+    _distancePickerViewFromTop.constant =
+    [UIScreen mainScreen].bounds.size.height > 480.0f ? 203 : 159;
+    
+    _gridSpacingFromTop.constant =
+    [UIScreen mainScreen].bounds.size.height > 480.0f ? 390 : 346;
+
+    _pickDateSpacingFromTop.constant =
+    [UIScreen mainScreen].bounds.size.height > 480.0f ? 385 : 341;
+
+    
+
+
     UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
     // make your gesture recognizer priority
     singleTap.numberOfTapsRequired = 1;
@@ -182,12 +193,10 @@
     yearNow =[components year]; // gives you year
     
     monthYearLabel.text=[NSString stringWithFormat:@"%@ %li",[monthArray objectAtIndex:monthNow-1],(long)yearNow];
-    
-
-
-
-
-
+}
+-(IBAction)pickDateSelected:(id)sender{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(datePicked:)])
+            [_delegate datePicked:pickerView.date];
 }
 /*
 // Only override drawRect: if you perform custom drawing.

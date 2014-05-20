@@ -313,7 +313,8 @@
     else if ([[NSDate date] timeIntervalSinceDate:startActivityDate]>=0 && [endActivityDate timeIntervalSinceDate:endOfNextWeekend]>0)
         return @"This Month";
     
-    return @"Pick a Date";
+    dateFormatter.dateFormat=@"EEE, MMM d";
+    return [dateFormatter stringFromDate:endActivityDate];
 
 
 }

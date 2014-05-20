@@ -13,7 +13,7 @@
 @end
 
 
-@protocol TimeFilterDelegate
+@protocol TimeFilterDelegate<NSObject>
 @optional
 -(void) filterIndex:(NSInteger) index;
 

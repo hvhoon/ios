@@ -626,9 +626,43 @@ enum Weeks {
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
 
 }
+-(void)pickDate:(NSDate*)eventDate{
+    timeIndex=8;
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+    [dateFormatter setTimeZone:utcTimeZone];
+    NSCalendar* myCalendar = [NSCalendar currentCalendar];
+    NSDateComponents*components = [myCalendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit
+                                                fromDate:eventDate];
 
+    if([eventDate timeIntervalSinceDate:[NSDate date]]<0){
+        self.bg_activity.startActivityDate=[dateFormatter stringFromDate:[NSDate date]];
+        [timeFilterButton setTitle:@"Later Today" forState:UIControlStateNormal];
+
+        //user has picked today
+    }else{
+        [components setHour: 00];
+        [components setMinute:00];
+        [components setSecond:00];
+        self.bg_activity.startActivityDate=[dateFormatter stringFromDate:[myCalendar dateFromComponents:components]];
+        
+        [dateFormatter setDateFormat:@"EEE, MMM d"];
+        NSString *formattedDateString = [dateFormatter stringFromDate:eventDate];
+        [timeFilterButton setTitle:formattedDateString forState:UIControlStateNormal];
+
+    }
+    [components setHour: 23];
+    [components setMinute:59];
+    [components setSecond:59];
+    self.bg_activity.endActivityDate=[dateFormatter stringFromDate:[myCalendar dateFromComponents:components]];
+    
+    
+
+}
 
 -(void)changeVisibilityFilter:(NSInteger)index{
+    visibilityIndex=index;
     
     switch (index) {
         case 1:
@@ -670,8 +704,6 @@ enum Weeks {
             
             id status=[response objectForKey:@"status"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
-                BeagleManager *BG=[BeagleManager SharedInstance];
-                BG.activityCreated=TRUE;
                 [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
 
             }

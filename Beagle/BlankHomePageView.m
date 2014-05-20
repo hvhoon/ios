@@ -52,16 +52,20 @@
     _verticalSpacingForLabel_3_4.constant=[UIScreen mainScreen].bounds.size.height > 480.0f ? 58 : 53;
 }
 -(IBAction)NothingTryAgainClicked:(id)sender{
+        if (self.delegate && [self.delegate respondsToSelector:@selector(filterOptionClicked:)])
     [_delegate filterOptionClicked:0];
 }
 -(IBAction)changeYourFilterClicked:(id)sender{
+        if (self.delegate && [self.delegate respondsToSelector:@selector(filterOptionClicked:)])
     [_delegate filterOptionClicked:1];
 }
 -(IBAction)inviteYourFriendsClicked:(id)sender{
+        if (self.delegate && [self.delegate respondsToSelector:@selector(filterOptionClicked:)])
     [_delegate filterOptionClicked:2];
 }
 
 -(IBAction)createAInterestClicked:(id)sender{
+        if (self.delegate && [self.delegate respondsToSelector:@selector(filterOptionClicked:)])
     [_delegate filterOptionClicked:3];
 }
 

@@ -260,12 +260,15 @@ static UIFont *forthTextFont = nil;
     
     if(CGRectContainsPoint(interestedRect,startPoint)){
         if(self.bg_activity.dosRelation!=0){
-
+            if (self.delegate && [self.delegate respondsToSelector:@selector(updateInterestedStatus:)])
             [delegate updateInterestedStatus:cellIndex];
         }
     }
-    else
-      [self.delegate detailedInterestScreenRedirect:cellIndex];
+    else{
+        if (self.delegate && [self.delegate respondsToSelector:@selector(detailedInterestScreenRedirect:)])
+            [self.delegate detailedInterestScreenRedirect:cellIndex];
+
+    }
     [super touchesEnded:touches withEvent:event];
 }
 @end

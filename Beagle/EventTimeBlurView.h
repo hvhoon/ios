@@ -14,6 +14,7 @@
 @optional
 -(void)changeTimeFilter:(NSInteger)index;
 - (void)dismissEventFilter;
+-(void)pickDate:(NSDate*)eventDate;
 @end
 
 @interface EventTimeBlurView : UIView

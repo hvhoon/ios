@@ -232,6 +232,13 @@
     }
     
 }
+
+-(void) datePicked:(NSDate*)dateSelected{
+    
+    [self crossDissolveHide];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(pickDate:)])
+           [self.delegate pickDate:dateSelected];
+}
 -(void)handleSingleTap:(UITapGestureRecognizer*)sender{
     [self crossDissolveHide];
 }
