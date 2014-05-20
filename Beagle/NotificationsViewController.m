@@ -55,7 +55,7 @@
 {
     [super viewDidLoad];
     self.peekLeftAmount = 50.0f;
-    _notificationTableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 64, 270, 568-64)];
+    _notificationTableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 64, 270, self.view.frame.size.height-64)];
     _notificationTableView.delegate=self;
     _notificationTableView.dataSource=self;
     [self.view addSubview:_notificationTableView];
@@ -173,7 +173,7 @@
     // Add line seperator
     if(indexPath.row!=[self.listArray count]) {
         
-        UIView *seperatorLineView=[[UIView alloc]initWithFrame:CGRectMake(16, fromTheTop+60.0f, 288, 0.5)];
+        UIView *seperatorLineView=[[UIView alloc]initWithFrame:CGRectMake(16, fromTheTop+65.0f, 288, 0.5)];
         seperatorLineView.alpha=0.15;
         [seperatorLineView setBackgroundColor:[UIColor grayColor]];
         [cell.contentView addSubview:seperatorLineView];
