@@ -509,15 +509,19 @@
 			name = "Filter Views";
 			sourceTree = "<group>";
 		};
-		180AF0B518DC7FC200EE87D6 /* Home Table View Cell */ = {
+		180AF0B518DC7FC200EE87D6 /* Table View Cell */ = {
 			isa = PBXGroup;
 			children = (
+				18FDA34E192BDD9A00D13667 /* TTTAttributedLabel.h */,
+				18FDA34B192BDD9A00D13667 /* TTTAttributedLabel.m */,
+				18FDA34D192BDD9A00D13667 /* AttributedTableViewCell.h */,
+				18FDA34C192BDD9A00D13667 /* AttributedTableViewCell.m */,
 				180AF0B918DC801500EE87D6 /* ABTableViewCell.h */,
 				180AF0BA18DC801500EE87D6 /* ABTableViewCell.m */,
 				180AF0B618DC7FE500EE87D6 /* HomeTableViewCell.h */,
 				180AF0B718DC7FE500EE87D6 /* HomeTableViewCell.m */,
 			);
-			name = "Home Table View Cell";
+			name = "Table View Cell";
 			sourceTree = "<group>";
 		};
 		180F604E1923D37800B3807F /* Google Auto Complete */ = {
@@ -547,6 +551,8 @@
 		18E7AF0A18BBAA5000EBBDE2 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				18FDA347192BCD8E00D13667 /* BeagleNotificationClass.h */,
+				18FDA348192BCD8E00D13667 /* BeagleNotificationClass.m */,
 				18F3394D190825A500CCCB18 /* InterestChatClass.h */,
 				18F3394E190825A500CCCB18 /* InterestChatClass.m */,
 				18F9FE6418DB410D004BFE4E /* BeagleActivityClass.h */,
@@ -612,7 +618,7 @@
 			children = (
 				180F604E1923D37800B3807F /* Google Auto Complete */,
 				18F889891902C14000C80011 /* Detailed Interest */,
-				180AF0B518DC7FC200EE87D6 /* Home Table View Cell */,
+				180AF0B518DC7FC200EE87D6 /* Table View Cell */,
 				18F9FE5E18DB40D2004BFE4E /* Beagle Manager */,
 				1805CED418C8D24700AC8556 /* Filter Views */,
 				1805CED018C8D22600AC8556 /* Side Transition */,
@@ -1015,6 +1021,7 @@
 				18007EF718C6511000230C23 /* BeagleUtilities.m in Sources */,
 				180F604C1923D1D800B3807F /* LocationBlurView.m in Sources */,
 				18007EFA18C653C000230C23 /* UIImage+Resize.m in Sources */,
+				18FDA350192BDD9A00D13667 /* AttributedTableViewCell.m in Sources */,
 				18EC231F18B5A42D00316B6E /* ASICloudFilesObjectRequest.m in Sources */,
 				18F9FE6118DB40E4004BFE4E /* BeagleManager.m in Sources */,
 				180F604B1923D1D800B3807F /* GooglePlacesAutocompleteUtilities.m in Sources */,
@@ -1024,6 +1031,7 @@
 				18EC232018B5A42D00316B6E /* ASICloudFilesRequest.m in Sources */,
 				18EC231C18B5A42D00316B6E /* ASICloudFilesContainerRequest.m in Sources */,
 				18EC22B118B5A0B400316B6E /* AppDelegate.m in Sources */,
+				18FDA349192BCD8E00D13667 /* BeagleNotificationClass.m in Sources */,
 				18007F0218C6541200230C23 /* UIImage+ImageEffects.m in Sources */,
 				180F60481923D1D700B3807F /* GooglePlacesAutocompletePlace.m in Sources */,
 				1805CECF18C8D22000AC8556 /* ActivityViewController.m in Sources */,
@@ -1055,6 +1063,7 @@
 				18F3CEFD1909774D00AE3C47 /* MessageKeyboardView.m in Sources */,
 				18EC231518B5A42D00316B6E /* ASIDownloadCache.m in Sources */,
 				18007EEE18C6508200230C23 /* LFHTTPRequest.m in Sources */,
+				18FDA34F192BDD9A00D13667 /* TTTAttributedLabel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

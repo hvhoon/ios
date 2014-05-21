@@ -9,18 +9,21 @@
 
 @class BeagleActivityClass;
 @class InterestChatClass;
+@class BeagleNotificationClass;
 @protocol IconDownloaderDelegate;
 
 @interface IconDownloader : NSObject
 {
     BeagleActivityClass *appRecord;
     InterestChatClass *chatRecord;
+    BeagleNotificationClass *notificationRecord;
     NSIndexPath *indexPathInTableView;
     NSMutableData *activeDownload;
     NSURLConnection *imageConnection;
     NSInteger tagkey;
     
 }
+@property (nonatomic, strong) BeagleNotificationClass *notificationRecord;
 @property (nonatomic, strong) InterestChatClass *chatRecord;
 @property (nonatomic, strong) BeagleActivityClass *appRecord;
 @property (nonatomic, strong) NSIndexPath *indexPathInTableView;

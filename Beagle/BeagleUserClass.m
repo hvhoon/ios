@@ -9,7 +9,7 @@
 #import "BeagleUserClass.h"
 
 @implementation BeagleUserClass
-@synthesize userName,fullName,email,password,profileImageUrl,first_name,last_name,fbuid,access_token,location,fb_ticker,beagleUserId,profileData;
+@synthesize userName,fullName,email,password,profileImageUrl,first_name,last_name,fbuid,access_token,location,fb_ticker,beagleUserId,profileData,badge;
 
 -(id) initWithDictionary:(NSDictionary *)dictionary
 {

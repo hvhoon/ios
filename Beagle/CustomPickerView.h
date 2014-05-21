@@ -12,9 +12,9 @@
 @property (nonatomic, assign) id<CustomPickerViewDelegate> delegate;
 -(void)buildTheLogic;
 @end
-@protocol CustomPickerViewDelegate
+@protocol CustomPickerViewDelegate<NSObject>
 @optional
 -(void) filterIndex:(NSInteger) index;
-
+-(void) datePicked:(NSDate*)dateSelected;
 
 @end

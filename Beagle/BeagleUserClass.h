@@ -21,6 +21,7 @@
 @property(nonatomic,strong)NSString *location;
 @property(nonatomic,assign)BOOL fb_ticker;
 @property(nonatomic,assign)NSInteger beagleUserId;
+@property(nonatomic,assign)NSInteger badge;
 @property(nonatomic,strong)NSData*profileData;
 -(id) initWithDictionary:(NSDictionary *)dictionary;
 @end

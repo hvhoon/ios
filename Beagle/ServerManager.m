@@ -13,7 +13,7 @@
 #import "SBJSON.h"
 #import "JSON.h"
 #import "BeagleActivityClass.h"
-#define localHost @"http://192.168.0.101:3000/"
+#define localHost @"http://192.168.0.102:3000/"
 #define localHost1 @"http://localhost:3000/"
 #define herokuHost @"http://infinite-spire-6520.herokuapp.com/"
 @interface ServerManager()
@@ -293,7 +293,7 @@
         NSData *postData = [[updateStatus JSONRepresentation] dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
         
         
-        [self callServerWithUrl:[NSString stringWithFormat:@"%@/players/%ld.json", _serverUrl,[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]]
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@/players/%ld.json", _serverUrl,(long)[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]]
                          method:@"PUT"
                          params:nil data:postData];
         
@@ -302,6 +302,23 @@
     {
         [self internetNotAvailable];
     }
+}
+
+-(void)getNotifications{
+    _serverCallType=kServerCallGetNotifications;
+    
+        if([self isInternetAvailable])
+        {
+            [self callServerWithUrl:[NSString stringWithFormat:@"%@mynotifications.json", _serverUrl]
+                             method:@"GET"
+                             params:[NSDictionary dictionaryWithObjectsAndKeys:
+                                     [[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],@"logged_in_user_id",
+                                     nil] data:nil];
+        }
+        else
+        {
+            [self internetNotAvailable];
+        }
 }
 -(void)populateErrorCodes
 {

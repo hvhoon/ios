@@ -58,67 +58,15 @@
     return self;
 }
 -(void)handleSingleTap:(UITapGestureRecognizer*)sender{
-    [_delegate filterIndex:0];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(filterIndex:)])
+        [_delegate filterIndex:0];
     
 }
 -(IBAction)timeFilterSelected:(UIButton*)sender{
     
-    switch (sender.tag) {
-        case 1:
-        {
-            [_delegate filterIndex:sender.tag];
-        }
-            break;
-            
-        case 2:
-        {
-            [_delegate filterIndex:sender.tag];
-        }
-            break;
+ if (self.delegate && [self.delegate respondsToSelector:@selector(filterIndex:)])
+        [_delegate filterIndex:sender.tag];
 
-            
-        case 3:
-        {
-            [_delegate filterIndex:sender.tag];
-        }
-            break;
-
-            
-        case 4:
-        {
-            [_delegate filterIndex:sender.tag];
-        }
-            break;
-
-            
-        case 5:
-        {
-            [_delegate filterIndex:sender.tag];
-        }
-            break;
-
-            
-        case 6:
-        {
-            [_delegate filterIndex:sender.tag];
-        }
-            break;
-
-            
-        case 7:
-        {
-            [_delegate filterIndex:sender.tag];
-        }
-            break;
-
-        case 8:
-        {
-            [_delegate filterIndex:sender.tag];
-        }
-            break;
-
-            
-    }
     
 }
 /*

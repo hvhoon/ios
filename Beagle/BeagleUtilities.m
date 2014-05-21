@@ -91,6 +91,9 @@
         // Translucent blurred overlay color
         case 9:
             return [UIColor colorWithRed:112.0/255.0 green:112.0/255.0 blue:112.0/255.0 alpha:0.75];
+            
+        case 10:
+            return [UIColor colorWithRed:100.0/255.0 green:100.0/255.0 blue:100.0/255.0 alpha:1.0];
         default:
             return [UIColor whiteColor];
     }
@@ -294,7 +297,7 @@
     if([[NSDate date] timeIntervalSinceDate:startActivityDate]>0 && Interval>0 && Interval<=86400.00)
         return @"Later Today";
     // Is it tomorrow?
-    else if([[NSDate date] timeIntervalSinceDate:startActivityDate]>0 && Interval>=86400.00 && Interval<=172800.00)
+    else if([[NSDate date] timeIntervalSinceDate:startActivityDate]<0 && Interval>=86400.00 && Interval<=172800.00)
         return @"Tomorrow";
     // Is it this week?
     else if([endOfWeekend timeIntervalSinceDate:endActivityDate]>=0) {
@@ -313,7 +316,8 @@
     else if ([[NSDate date] timeIntervalSinceDate:startActivityDate]>=0 && [endActivityDate timeIntervalSinceDate:endOfNextWeekend]>0)
         return @"This Month";
     
-    return @"Pick a Date";
+    dateFormatter.dateFormat=@"EEE, MMM d";
+    return [dateFormatter stringFromDate:endActivityDate];
 
 
 }
@@ -454,7 +458,6 @@
         [[NSUserDefaults standardUserDefaults] setDouble:[[BeagleManager SharedInstance]currentLocation].coordinate.longitude forKey:@"LastLocationLong"];
         
         [[NSUserDefaults standardUserDefaults] setValue:[NSDate date] forKey:@"HourlyUpdate"];
-        
         
         return YES;
         
