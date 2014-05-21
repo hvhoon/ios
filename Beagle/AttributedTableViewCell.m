@@ -16,8 +16,6 @@ static inline NSRegularExpression * NameRegularExpression() {
     return __nameRegularExpression;
 }
 
-
-
 @implementation AttributedTableViewCell
 @synthesize summaryText = _summaryText;
 @synthesize summaryLabel = _summaryLabel;
