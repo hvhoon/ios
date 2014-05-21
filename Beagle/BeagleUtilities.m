@@ -459,7 +459,6 @@
         
         [[NSUserDefaults standardUserDefaults] setValue:[NSDate date] forKey:@"HourlyUpdate"];
         
-        
         return YES;
         
     }

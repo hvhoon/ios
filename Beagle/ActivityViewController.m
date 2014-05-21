@@ -632,30 +632,42 @@ enum Weeks {
     dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
     [dateFormatter setTimeZone:utcTimeZone];
-    NSCalendar* myCalendar = [NSCalendar currentCalendar];
-    NSDateComponents*components = [myCalendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit
+    NSCalendar* calendar = [NSCalendar currentCalendar];
+    
+    NSInteger differenceInDays =
+    [calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSEraCalendarUnit forDate:eventDate]-
+    [calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSEraCalendarUnit forDate:[NSDate date]];
+
+    NSDateComponents*components = [calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit
                                                 fromDate:eventDate];
 
-    if([eventDate timeIntervalSinceDate:[NSDate date]]<0){
+    if([eventDate timeIntervalSinceDate:[NSDate date]]<0 && differenceInDays==0){
         self.bg_activity.startActivityDate=[dateFormatter stringFromDate:[NSDate date]];
         [timeFilterButton setTitle:@"Later Today" forState:UIControlStateNormal];
 
         //user has picked today
-    }else{
+    }else if(differenceInDays==1){
         [components setHour: 00];
         [components setMinute:00];
         [components setSecond:00];
-        self.bg_activity.startActivityDate=[dateFormatter stringFromDate:[myCalendar dateFromComponents:components]];
+        self.bg_activity.startActivityDate=[dateFormatter stringFromDate:[calendar dateFromComponents:components]];
+        [timeFilterButton setTitle:@"Tommorow" forState:UIControlStateNormal];
+    }
+    else{
+        [components setHour: 00];
+        [components setMinute:00];
+        [components setSecond:00];
+        self.bg_activity.startActivityDate=[dateFormatter stringFromDate:[calendar dateFromComponents:components]];
         
         [dateFormatter setDateFormat:@"EEE, MMM d"];
         NSString *formattedDateString = [dateFormatter stringFromDate:eventDate];
         [timeFilterButton setTitle:formattedDateString forState:UIControlStateNormal];
-
+        
     }
     [components setHour: 23];
     [components setMinute:59];
     [components setSecond:59];
-    self.bg_activity.endActivityDate=[dateFormatter stringFromDate:[myCalendar dateFromComponents:components]];
+    self.bg_activity.endActivityDate=[dateFormatter stringFromDate:[calendar dateFromComponents:components]];
     
     
 

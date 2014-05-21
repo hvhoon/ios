@@ -312,7 +312,7 @@
             [self callServerWithUrl:[NSString stringWithFormat:@"%@mynotifications.json", _serverUrl]
                              method:@"GET"
                              params:[NSDictionary dictionaryWithObjectsAndKeys:
-                                     [[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],@"logged_in_user_id",
+                                     @"3",@"logged_in_user_id",
                                      nil] data:nil];
         }
         else
