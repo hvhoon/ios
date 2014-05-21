@@ -297,7 +297,7 @@
     if([[NSDate date] timeIntervalSinceDate:startActivityDate]>0 && Interval>0 && Interval<=86400.00)
         return @"Later Today";
     // Is it tomorrow?
-    else if([[NSDate date] timeIntervalSinceDate:startActivityDate]>0 && Interval>=86400.00 && Interval<=172800.00)
+    else if([[NSDate date] timeIntervalSinceDate:startActivityDate]<0 && Interval>=86400.00 && Interval<=172800.00)
         return @"Tomorrow";
     // Is it this week?
     else if([endOfWeekend timeIntervalSinceDate:endActivityDate]>=0) {

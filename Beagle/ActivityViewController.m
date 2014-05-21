@@ -716,6 +716,10 @@ enum Weeks {
             
             id status=[response objectForKey:@"status"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
+                if(serverRequest==kServerCallCreateActivity){
+                    BeagleManager *BG=[BeagleManager SharedInstance];
+                    BG.activityCreated=TRUE;
+                }
                 [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
 
             }
