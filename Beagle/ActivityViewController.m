@@ -658,12 +658,14 @@ enum Weeks {
         [components setMinute:00];
         [components setSecond:00];
         self.bg_activity.startActivityDate=[dateFormatter stringFromDate:[calendar dateFromComponents:components]];
-        
-        [dateFormatter setDateFormat:@"EEE, MMM d"];
-        NSString *formattedDateString = [dateFormatter stringFromDate:eventDate];
+        NSDateFormatter *localDateFormatter = [[NSDateFormatter alloc] init];
+        [localDateFormatter setDateFormat:@"EEE, MMM d"];
+        [localDateFormatter setTimeZone:[NSTimeZone systemTimeZone]];
+        NSString *formattedDateString = [localDateFormatter stringFromDate:eventDate];
         [timeFilterButton setTitle:formattedDateString forState:UIControlStateNormal];
         
     }
+    
     [components setHour: 23];
     [components setMinute:59];
     [components setSecond:59];
