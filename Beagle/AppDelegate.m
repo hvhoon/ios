@@ -8,6 +8,8 @@
 
 #import "AppDelegate.h"
 #import <Crashlytics/Crashlytics.h>
+#import <Instabug/Instabug.h>
+
 @implementation AppDelegate
 @synthesize progressIndicator=_progressIndicator;
 @synthesize listViewController;
@@ -37,6 +39,11 @@ void uncaughtExceptionHandler(NSException *exception) {
     [self.window makeKeyAndVisible];
     [self registerForNotifications];
     
+    // Instabug integration
+    [Instabug KickOffWithToken:@"0fe55a803d01c2d223d89b450dcae674" CaptureSource:InstabugCaptureSourceUIKit FeedbackEvent:InstabugFeedbackEventShake IsTrackingLocation:YES];
+    [Instabug setShowEmail:NO];
+    [Instabug setShowStartAlert:NO];
+    
     if([[NSUserDefaults standardUserDefaults]valueForKey:@"HourlyUpdate"]==nil){
         [[NSUserDefaults standardUserDefaults]setValue:[NSDate date] forKey:@"HourlyUpdate"];
         [[NSUserDefaults standardUserDefaults] synchronize];
@@ -60,11 +67,6 @@ void uncaughtExceptionHandler(NSException *exception) {
         [[NSUserDefaults standardUserDefaults] synchronize];
         
     }
-
-
-
-    
-    
     return YES;
 }
 
