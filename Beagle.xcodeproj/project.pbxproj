@@ -111,6 +111,10 @@
 		18FADB9B18B669E500A62287 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FADB9A18B669E500A62287 /* HomeViewController.m */; };
 		18FADB9E18B66A4C00A62287 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FADB9D18B66A4C00A62287 /* SettingsViewController.m */; };
 		18FADBA318B66A8D00A62287 /* NotificationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FADBA218B66A8D00A62287 /* NotificationsViewController.m */; };
+		18FDA349192BCD8E00D13667 /* BeagleNotificationClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FDA348192BCD8E00D13667 /* BeagleNotificationClass.m */; };
+		18FDA34F192BDD9A00D13667 /* TTTAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FDA34B192BDD9A00D13667 /* TTTAttributedLabel.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		18FDA350192BDD9A00D13667 /* AttributedTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FDA34C192BDD9A00D13667 /* AttributedTableViewCell.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		18FDA352192BDDE000D13667 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18FDA351192BDDE000D13667 /* CoreText.framework */; };
 		68EDF869192AC578008ED9C1 /* Instabug.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 68EDF867192AC578008ED9C1 /* Instabug.bundle */; };
 		68EDF86A192AC578008ED9C1 /* Instabug.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68EDF868192AC578008ED9C1 /* Instabug.framework */; };
 		68EDF86C192AC760008ED9C1 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68EDF86B192AC760008ED9C1 /* CoreFoundation.framework */; };
@@ -322,6 +326,13 @@
 		18FADBA218B66A8D00A62287 /* NotificationsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsViewController.m; sourceTree = "<group>"; };
 		18FC279B18CF721B00F33576 /* SideTransitionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SideTransitionController.h; sourceTree = "<group>"; };
 		18FC279C18CF721B00F33576 /* SideTransitionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SideTransitionController.m; sourceTree = "<group>"; };
+		18FDA347192BCD8E00D13667 /* BeagleNotificationClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeagleNotificationClass.h; sourceTree = "<group>"; };
+		18FDA348192BCD8E00D13667 /* BeagleNotificationClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeagleNotificationClass.m; sourceTree = "<group>"; };
+		18FDA34B192BDD9A00D13667 /* TTTAttributedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTAttributedLabel.m; sourceTree = "<group>"; };
+		18FDA34C192BDD9A00D13667 /* AttributedTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AttributedTableViewCell.m; sourceTree = "<group>"; };
+		18FDA34D192BDD9A00D13667 /* AttributedTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AttributedTableViewCell.h; sourceTree = "<group>"; };
+		18FDA34E192BDD9A00D13667 /* TTTAttributedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTAttributedLabel.h; sourceTree = "<group>"; };
+		18FDA351192BDDE000D13667 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		68EDF867192AC578008ED9C1 /* Instabug.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Instabug.bundle; sourceTree = "<group>"; };
 		68EDF868192AC578008ED9C1 /* Instabug.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Instabug.framework; sourceTree = "<group>"; };
 		68EDF86B192AC760008ED9C1 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
@@ -336,6 +347,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18FDA352192BDDE000D13667 /* CoreText.framework in Frameworks */,
 				68EDF874192AC7A0008ED9C1 /* CoreTelephony.framework in Frameworks */,
 				18EC232B18B5A65C00316B6E /* AudioToolbox.framework in Frameworks */,
 				68EDF872192AC78D008ED9C1 /* AVFoundation.framework in Frameworks */,
@@ -585,6 +597,7 @@
 		18EC229F18B5A0B400316B6E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				18FDA351192BDDE000D13667 /* CoreText.framework */,
 				68EDF873192AC7A0008ED9C1 /* CoreTelephony.framework */,
 				68EDF871192AC78D008ED9C1 /* AVFoundation.framework */,
 				68EDF86F192AC775008ED9C1 /* GLKit.framework */,
