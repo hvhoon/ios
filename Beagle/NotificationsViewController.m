@@ -12,11 +12,15 @@
 #import "AttributedTableViewCell.h"
 #import "TTTAttributedLabel.h"
 #import "DetailInterestViewController.h"
-@interface NotificationsViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,IconDownloaderDelegate,TTTAttributedLabelDelegate>
+
+@interface NotificationsViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,IconDownloaderDelegate,TTTAttributedLabelDelegate,ServerManagerDelegate>{
+        NSInteger interestIndex;
+}
 @property(nonatomic,strong)ServerManager*notificationsManager;
 @property(nonatomic,strong)NSArray *listArray;
 @property(nonatomic,weak)IBOutlet UIImageView*notification_BlankImageView;
 @property(nonatomic,strong)UITableView*notificationTableView;
+@property(nonatomic,strong)ServerManager*interestUpdateManager;
 @property(nonatomic,strong)NSMutableDictionary *imageDownloadsInProgress;
 @property(nonatomic,weak)IBOutlet UIView*unreadUpdateView;
 @property(nonatomic,weak)IBOutlet UILabel*unreadCountLabel;
@@ -29,6 +33,7 @@
 @synthesize notificationsManager=_notificationsManager;
 @synthesize listArray=_listArray;
 @synthesize imageDownloadsInProgress;
+@synthesize interestUpdateManager=_interestUpdateManager;
 @synthesize notificationTableView=_notificationTableView;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -185,15 +190,17 @@
         whatLabel.numberOfLines=0;
         [cell.contentView addSubview:whatLabel];
 
-        UIImageView *actionImageView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Action"]];
-        actionImageView.frame=CGRectMake(16, play.rowHeight-8-25, 102, 25);
-        [cell.contentView addSubview:actionImageView];
+        UIButton *interestButton=[UIButton buttonWithType:UIButtonTypeCustom];
+        interestButton.frame=CGRectMake(16, play.rowHeight-8-25, 102, 25);
+        [interestButton setBackgroundImage:[UIImage imageNamed:@"Action"] forState:UIControlStateNormal];
+        [interestButton addTarget:self action:@selector(interestButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+        [cell.contentView addSubview:interestButton];
     }
     
 // Add line seperator
     if(indexPath.row!=[self.listArray count]) {
         
-        UIView *seperatorLineView=[[UIView alloc]initWithFrame:CGRectMake(16, play.rowHeight-0.5, 238, 0.5)];
+        UIView *seperatorLineView=[[UIView alloc]initWithFrame:CGRectMake(0, play.rowHeight-0.5, 270, 0.5)];
         seperatorLineView.alpha=1.0;
         [seperatorLineView setBackgroundColor:[BeagleUtilities returnBeagleColor:10]];
         [cell.contentView addSubview:seperatorLineView];
@@ -203,7 +210,22 @@
 
     return cell;
 }
+-(void)interestButtonClicked:(id)sender{
+    UIButton *button=(UIButton*)sender;
+    BeagleNotificationClass *play = (BeagleNotificationClass *)[self.listArray objectAtIndex:button.tag];
+    interestIndex=button.tag;
+    if(_interestUpdateManager!=nil){
+        _interestUpdateManager.delegate = nil;
+        [_interestUpdateManager releaseServerManager];
+        _interestUpdateManager = nil;
+    }
+    
+    _interestUpdateManager=[[ServerManager alloc]init];
+    _interestUpdateManager.delegate=self;
+    [_interestUpdateManager participateMembership:play.activityId];
 
+
+}
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [self.slidingViewController show];
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -349,6 +371,26 @@
         }
         
     }
+    else if(serverRequest==kServerCallParticipateInterest){
+        _interestUpdateManager.delegate = nil;
+        [_interestUpdateManager releaseServerManager];
+        _interestUpdateManager = nil;
+        
+        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
+            
+            id status=[response objectForKey:@"status"];
+            id message=[response objectForKey:@"message"];
+            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
+                if([message isEqualToString:@"Joined"]){
+                    [self tableView:_notificationTableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+                    
+                }else{
+                }
+            }
+        }
+        
+    }
+
 }
 
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
@@ -360,7 +402,12 @@
         [_notificationsManager releaseServerManager];
         _notificationsManager = nil;
     }
-    
+    else if(serverRequest==kServerCallParticipateInterest){
+        _interestUpdateManager.delegate = nil;
+        [_interestUpdateManager releaseServerManager];
+        _interestUpdateManager = nil;
+    }
+
     NSString *message = NSLocalizedString (@"Unable to initiate request.",
                                            @"NSURLConnection initialization method failed.");
     BeagleAlertWithMessage(message);
@@ -375,7 +422,12 @@
         [_notificationsManager releaseServerManager];
         _notificationsManager = nil;
     }
-    
+    else if(serverRequest==kServerCallParticipateInterest){
+        _interestUpdateManager.delegate = nil;
+        [_interestUpdateManager releaseServerManager];
+        _interestUpdateManager = nil;
+    }
+
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
     [alert show];
 }
