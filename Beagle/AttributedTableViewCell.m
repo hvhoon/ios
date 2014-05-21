@@ -6,9 +6,6 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
-static CGFloat const kEspressoDescriptionTextFontSize = 14;
-static CGFloat const kAttributedTableViewCellVerticalMargin = 17.0f;
-
 static NSRegularExpression *__nameRegularExpression;
 static inline NSRegularExpression * NameRegularExpression() {
     if (!__nameRegularExpression) {
@@ -19,19 +16,12 @@ static inline NSRegularExpression * NameRegularExpression() {
     return __nameRegularExpression;
 }
 
-static NSRegularExpression *__parenthesisRegularExpression;
-static inline NSRegularExpression * ParenthesisRegularExpression() {
-    if (!__parenthesisRegularExpression) {
-        __parenthesisRegularExpression = [[NSRegularExpression alloc] initWithPattern:@"\\([^\\(\\)]+\\)" options:NSRegularExpressionCaseInsensitive error:nil];
-    }
-    
-    return __parenthesisRegularExpression;
-}
+
 
 @implementation AttributedTableViewCell
 @synthesize summaryText = _summaryText;
 @synthesize summaryLabel = _summaryLabel;
-@synthesize lbltime,timeText,notificationType;
+@synthesize lbltime,timeText,notificationType,isANewNotification;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
@@ -45,6 +35,7 @@ static inline NSRegularExpression * ParenthesisRegularExpression() {
     self.summaryLabel = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
     self.summaryLabel.textColor= [BeagleUtilities returnBeagleColor:2];
     self.summaryLabel.numberOfLines = 0;
+    self.summaryLabel.lineBreakMode = UILineBreakModeWordWrap;
     self.summaryLabel.font=[UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f];
     self.summaryLabel.highlightedTextColor = [UIColor whiteColor];
     self.summaryLabel.verticalAlignment = TTTAttributedLabelVerticalAlignmentTop;
@@ -85,7 +76,7 @@ static inline NSRegularExpression * ParenthesisRegularExpression() {
                 CFRelease(boldFont);
                 
                 [mutableAttributedString removeAttribute:(NSString *)kCTForegroundColorAttributeName range:result.range];
-                [mutableAttributedString addAttribute:(NSString*)kCTForegroundColorAttributeName value:(id)[[UIColor darkGrayColor] CGColor] range:result.range];
+                [mutableAttributedString addAttribute:(NSString*)kCTForegroundColorAttributeName value:(id)[[UIColor whiteColor] CGColor] range:result.range];
             }
             
             
@@ -110,12 +101,15 @@ static inline NSRegularExpression * ParenthesisRegularExpression() {
 }
 
 + (CGFloat)heightForCellWithText:(NSString *)text {
-    CGFloat height = 10.0f;
-    height += ceilf([text sizeWithFont:[UIFont systemFontOfSize:kEspressoDescriptionTextFontSize] constrainedToSize:CGSizeMake(238.0f, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height);
-    height += kAttributedTableViewCellVerticalMargin;
+    CGFloat height = 0.0f;
+    height += ceilf([text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f] constrainedToSize:CGSizeMake(179, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height);
     return height;
 }
-
++(CGFloat)heightForCellWithNewInterest:(NSString*)text what:(NSString*)what{
+    CGFloat height = 92.0f;
+    height += ceilf([what sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f] constrainedToSize:CGSizeMake(238.0f, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height);
+    return height;
+}
 #pragma mark - UIView
 
 - (void)layoutSubviews {
@@ -123,13 +117,21 @@ static inline NSRegularExpression * ParenthesisRegularExpression() {
     self.textLabel.hidden = YES;
     self.detailTextLabel.hidden = YES;
     
-    CGRect rect1=CGRectMake(0, 10, 335, [AttributedTableViewCell heightForCellWithText:self.summaryText]-10);
-    self.summaryLabel.frame =  CGRectOffset(CGRectInset(rect1, 60, 5), 0.0f, 0.0f);
+    if(self.notificationType!=11){
+        self.summaryLabel.frame=CGRectMake(59, 16, ceilf([self.summaryText sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f] constrainedToSize:CGSizeMake(179, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].width), [AttributedTableViewCell heightForCellWithText:self.summaryText]+2);
+        
+    }
+    else{
+        self.summaryLabel.frame=CGRectMake(59, 16, ceilf([self.summaryText sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f] constrainedToSize:CGSizeMake(179, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].width), [AttributedTableViewCell heightForCellWithText:self.summaryText]);
 
-    CGRect rect2=CGRectMake(0, self.summaryLabel.frame.size.height+5, 335, 35);
-    
-    self.lbltime.frame=CGRectOffset(CGRectInset(rect2, 60, 5), 0.0f, 0.0f);
-    
+    }
+    self.lbltime.frame=CGRectMake(59, 16+self.summaryLabel.frame.size.height+1, ceilf([self.lbltime.text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:11.0f] constrainedToSize:CGSizeMake(179, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].width), 15);
+    if(self.isANewNotification){
+    UIImageView *actionImageView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"New-Notification"]];
+    actionImageView.frame=CGRectMake(self.lbltime.frame.size.width+59+5, 16+self.summaryLabel.frame.size.height+4, 9, 9);
+    [self addSubview:actionImageView];
+
+    }
 }
 
 @end

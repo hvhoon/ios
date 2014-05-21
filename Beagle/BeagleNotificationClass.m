@@ -11,7 +11,7 @@
 @implementation BeagleNotificationClass
 @synthesize notificationString,type,profileImage,date,count,notificationId,userId;
 @synthesize activityId,expirationDate,photoUrl,latitude,longitude,notificationType,isRead;
-@synthesize rowHeight,timeOfNotification,referredId,backgroundTap,playerId;
+@synthesize rowHeight,timeOfNotification,referredId,backgroundTap,playerId,activityWhat;
 -(id) initWithDictionary:(NSDictionary *)dictionary
 {
     self = [super init];
@@ -21,7 +21,7 @@
         NSNumber * n = [dictionary objectForKey:@"id"];
         self.notificationId= [n intValue];
         self.userId = [dictionary objectForKey:@"user_id"];
-        self.notificationType = [dictionary objectForKey:@"notification_type"];
+        self.notificationType = [[dictionary objectForKey:@"notification_type"]integerValue];
         self.notificationString = [dictionary objectForKey:@"notification"];
         self.latitude = [dictionary objectForKey:@"lat"];
         self.longitude = [dictionary objectForKey:@"lng"];
@@ -35,7 +35,7 @@
         if(referredTo !=nil && [referredTo class]!=[NSNull class])
             self.referredId= [referredTo intValue];
         self.photoUrl=[dictionary objectForKey:@"photo_url"];
-
+        self.activityWhat=[NSString stringWithFormat:@"\"%@\"",[dictionary objectForKey:@"what"]];
     }
     return self;
 }

@@ -359,7 +359,7 @@ NSString *const ECSlidingViewTopDidReset             = @"ECSlidingViewTopDidRese
     //    CGRect statusBarContainerRect = CGRectZero;
     //    statusBarContainerRect.origin.y = -statusBarHeight;
     //    statusBarContainerRect.size = CGSizeMake(CGRectGetWidth(statusBarFrame), statusBarHeight);
-    
+    [self.statusBarContainer removeFromSuperview];
     UIView *screenshot = [[UIScreen mainScreen] snapshotViewAfterScreenUpdates:NO];
     self.statusBarContainer = [UIView new];
     self.statusBarContainer.frame = CGRectMake(0, 0, 320, 20);
@@ -405,6 +405,13 @@ NSString *const ECSlidingViewTopDidReset             = @"ECSlidingViewTopDidRese
     [self setStatusBarHidden:NO];
     
     self.statusBarFaked = NO;
+}
+
+-(void)show{
+    [self hideFakeStatusBar];
+}
+-(void)hide{
+    [self showFakeStatusBar];
 }
 - (void)anchorTopViewOffScreenTo:(ECSide)side
 {

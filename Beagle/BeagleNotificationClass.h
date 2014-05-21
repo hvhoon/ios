@@ -21,12 +21,13 @@
 @property (nonatomic,strong)NSString*photoUrl;
 @property(nonatomic,strong)NSString *latitude;
 @property(nonatomic,strong)NSString *longitude;
-@property(nonatomic,strong)NSString *notificationType;
+@property(nonatomic,assign)NSInteger notificationType;
 @property (nonatomic,assign)BOOL isRead;
 @property(nonatomic,assign)CGFloat rowHeight;
 @property(nonatomic,strong)NSString*timeOfNotification;
 @property(nonatomic,assign)NSInteger referredId;
 @property (nonatomic,assign)BOOL backgroundTap;
 @property(nonatomic,assign)NSInteger playerId;
+@property(nonatomic,strong)NSString*activityWhat;
 -(id) initWithDictionary:(NSDictionary *)dictionary;
 @end

@@ -91,6 +91,9 @@
         // Translucent blurred overlay color
         case 9:
             return [UIColor colorWithRed:112.0/255.0 green:112.0/255.0 blue:112.0/255.0 alpha:0.75];
+            
+        case 10:
+            return [UIColor colorWithRed:100.0/255.0 green:100.0/255.0 blue:100.0/255.0 alpha:1.0];
         default:
             return [UIColor whiteColor];
     }

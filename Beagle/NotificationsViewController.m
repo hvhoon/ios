@@ -11,6 +11,7 @@
 #import "IconDownloader.h"
 #import "AttributedTableViewCell.h"
 #import "TTTAttributedLabel.h"
+#import "DetailInterestViewController.h"
 @interface NotificationsViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,IconDownloaderDelegate,TTTAttributedLabelDelegate>
 @property(nonatomic,strong)ServerManager*notificationsManager;
 @property(nonatomic,strong)NSArray *listArray;
@@ -48,7 +49,8 @@
     _notificationsManager=[[ServerManager alloc]init];
     _notificationsManager.delegate=self;
     [_notificationsManager getNotifications];
-
+    
+    [self.slidingViewController hide];
 }
 
 - (void)viewDidLoad
@@ -71,8 +73,8 @@
     [self.view addSubview:seperatorLineView];
     _unreadUpdateView.hidden=YES;
 	// Do any additional setup after loading the view.
+    
 }
-
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -95,19 +97,25 @@
     CGFloat height=0.0f;
     
     BeagleNotificationClass *notif=[self.listArray objectAtIndex:indexPath.row];
-    switch ([notif.notificationType integerValue]) {
-        case 6:
-        case 12:
+    switch (notif.notificationType) {
+        default:
         {
-            notif.rowHeight=[AttributedTableViewCell heightForCellWithText:notif.notificationString]+50.0f;
+            if([AttributedTableViewCell heightForCellWithText:notif.notificationString]>27.0f){
+                notif.rowHeight=[AttributedTableViewCell heightForCellWithText:notif.notificationString]+36.0f;
+                
+            }
+            else{
+                notif.rowHeight=35.0f+32.0f;
+
+            }
             height=notif.rowHeight;
             
         }
             break;
             
-        default:
+        case 11:
         {
-            notif.rowHeight=[AttributedTableViewCell heightForCellWithText:notif.notificationString]+20.0f;
+            notif.rowHeight=[AttributedTableViewCell heightForCellWithNewInterest:notif.notificationString what:notif.activityWhat];
             height=notif.rowHeight;
         }
             break;
@@ -117,29 +125,18 @@
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *CellIdentifier = @"MediaTableCell";
-    CGFloat fromTheTop=0.0f;
     
-    
-    
-    CGFloat rowheight=0.0f;
     BeagleNotificationClass *play = (BeagleNotificationClass *)[self.listArray objectAtIndex:indexPath.row];
 
-    if(play.notificationString != nil && [play.notificationString class] != [NSNull class]){
-        rowheight=play.rowHeight;
-        
-    }
-    else
-        rowheight=60.0f;
     
     AttributedTableViewCell *cell = (AttributedTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     //if (cell == nil) {
     cell = [[AttributedTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     //}
-    
-    
+    cell.isANewNotification=!play.isRead;
+    cell.selectionStyle=UITableViewCellSelectionStyleNone;
     cell.notificationType=play.notificationType;
     cell.backgroundColor=[UIColor clearColor];
-    
     cell.summaryText =play.notificationString;
     cell.summaryLabel.delegate = self;
     cell.summaryLabel.userInteractionEnabled = YES;
@@ -149,8 +146,7 @@
     cell.lbltime.userInteractionEnabled = YES;
     cell.lbltime.backgroundColor=[UIColor clearColor];
 
-    fromTheTop=8.0f;
-    UIImageView *cellImageView=[[UIImageView alloc]initWithFrame:CGRectMake(16, fromTheTop, 35, 35)];
+    UIImageView *cellImageView=[[UIImageView alloc]initWithFrame:CGRectMake(16, 8, 35, 35)];
     
     if (!play.profileImage)
     {
@@ -170,18 +166,56 @@
     cellImageView.tag=[[NSString stringWithFormat:@"111%li",(long)indexPath.row]integerValue];
     [cell.contentView addSubview:cellImageView];
     
-    // Add line seperator
+    if(play.notificationType==11){
+        
+        NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+        [style setAlignment:NSTextAlignmentLeft];
+
+        NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+                 [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f], NSFontAttributeName,
+                 [BeagleUtilities returnBeagleColor:2],NSForegroundColorAttributeName,
+                 style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
+        
+        CGSize maximumLabelSize = CGSizeMake(238,999);
+        
+        CGRect whatTextRect = [play.activityWhat boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
+        
+        UILabel *whatLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, 51.0f, whatTextRect.size.width, whatTextRect.size.height)];
+        whatLabel.attributedText = [[NSAttributedString alloc] initWithString:play.activityWhat attributes:attrs];
+        whatLabel.numberOfLines=0;
+        [cell.contentView addSubview:whatLabel];
+
+        UIImageView *actionImageView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Action"]];
+        actionImageView.frame=CGRectMake(16, play.rowHeight-8-25, 102, 25);
+        [cell.contentView addSubview:actionImageView];
+    }
+    
+// Add line seperator
     if(indexPath.row!=[self.listArray count]) {
         
-        UIView *seperatorLineView=[[UIView alloc]initWithFrame:CGRectMake(16, fromTheTop+65.0f, 288, 0.5)];
-        seperatorLineView.alpha=0.15;
-        [seperatorLineView setBackgroundColor:[UIColor grayColor]];
+        UIView *seperatorLineView=[[UIView alloc]initWithFrame:CGRectMake(16, play.rowHeight-0.5, 238, 0.5)];
+        seperatorLineView.alpha=1.0;
+        [seperatorLineView setBackgroundColor:[BeagleUtilities returnBeagleColor:10]];
         [cell.contentView addSubview:seperatorLineView];
     }
 
     [cell setNeedsDisplay];
 
     return cell;
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    [self.slidingViewController show];
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
+    [self.navigationController pushViewController:viewController animated:YES];
+    
+    
+
+//        self.slidingViewController.topViewController = viewController;
+//        [self.slidingViewController anchorTopViewTo:ECLeft];
+//        [self.slidingViewController resetTopView];
+
 }
 - (void)startIconDownload:(BeagleNotificationClass*)appRecord forIndexPath:(NSIndexPath *)indexPath{
     IconDownloader *iconDownloader = [imageDownloadsInProgress objectForKey:indexPath];
@@ -280,10 +314,23 @@
                     NSMutableArray *notificationsArray=[[NSMutableArray alloc]init];
                     for(id el in notifications){
                         BeagleNotificationClass *actclass=[[BeagleNotificationClass alloc]initWithDictionary:el];
-                        [notificationsArray addObject:actclass];
+                            [notificationsArray addObject:actclass];
                     }
 
                     if([notificationsArray count]!=0){
+                        int newCount=0;
+                        for(BeagleNotificationClass *obj in notificationsArray){
+                            if(!obj.isRead){
+                                newCount++;
+                            }
+                        }
+                        if(newCount!=0){
+                            _unreadUpdateView.hidden=NO;
+                            _unreadCountLabel.text=[NSString stringWithFormat:@"%ld NEW",(long)newCount];
+                        }
+                        else{
+                           _unreadUpdateView.hidden=YES;
+                        }
                         _notification_BlankImageView.hidden=YES;
                         _notificationTableView.hidden=NO;
                         _listArray=[NSArray arrayWithArray:notificationsArray];
