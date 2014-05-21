@@ -67,7 +67,7 @@ static inline NSRegularExpression * NameRegularExpression() {
         
         [regexp enumerateMatchesInString:[mutableAttributedString string] options:0 range:stringRange usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
             
-            UIFont *boldSystemFont =[UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f];
+            UIFont *boldSystemFont =[UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0f];
             CTFontRef boldFont = CTFontCreateWithName(( CFStringRef)boldSystemFont.fontName, boldSystemFont.pointSize, NULL);
             
             if (boldFont) {
