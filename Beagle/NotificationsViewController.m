@@ -154,7 +154,7 @@
     UIImageView *cellImageView=[[UIImageView alloc]initWithFrame:CGRectMake(16, 8, 35, 35)];
     
     UIImage*checkImage= [BeagleUtilities loadImage:play.referredId];
-    if(checkImage==nil){
+    if(checkImage==nil|| play.referredId==0){
     if (!play.profileImage)
     {
         if (tableView.dragging == NO && tableView.decelerating == NO)
@@ -171,6 +171,7 @@
 
     }
     }else{
+        play.profileImage=checkImage;
         cellImageView.image = [BeagleUtilities imageCircularBySize:checkImage sqr:70.0f];
     }
     cellImageView.tag=[[NSString stringWithFormat:@"111%li",(long)indexPath.row]integerValue];
@@ -291,7 +292,8 @@
         UIImageView *cellImageView=(UIImageView*)[cell viewWithTag:[[NSString stringWithFormat:@"111%ld",(long)indexPath.row]integerValue]];
         // Display the newly loaded image
         cellImageView.image =play.profileImage=[BeagleUtilities imageCircularBySize:iconDownloader.notificationRecord.profileImage sqr:70.0f] ;
-        [BeagleUtilities saveImage:iconDownloader.notificationRecord.profileImage withFileName:play.playerId];
+        if(play.referredId!=0)
+            [BeagleUtilities saveImage:iconDownloader.notificationRecord.profileImage withFileName:play.referredId];
 
     }
     
