@@ -49,12 +49,6 @@ void uncaughtExceptionHandler(NSException *exception) {
         [[NSUserDefaults standardUserDefaults] synchronize];
         
     }
-    
-    if([[NSUserDefaults standardUserDefaults]valueForKey:@"HourlyUpdate"]==nil){
-        [[NSUserDefaults standardUserDefaults]setValue:[NSDate date] forKey:@"HourlyUpdate"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        
-    }
 
     
     if([[NSUserDefaults standardUserDefaults]valueForKey:@"LastLocationLat"]==nil){
