@@ -218,8 +218,6 @@
 
 - (void) crossDissolveShow {
     
-    [_citySearchBar becomeFirstResponder];
-     [_citySearchBar setShowsCancelButton:YES animated:YES];
     self.frame = CGRectMake(self.location.x, self.location.y, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
     self.alpha =  0.0f;
     
@@ -227,6 +225,8 @@
         
         self.alpha = 1.0f;
     } completion:^(BOOL finished) {
+        [_citySearchBar becomeFirstResponder];
+        [_citySearchBar setShowsCancelButton:YES animated:YES];
         
     }];
     

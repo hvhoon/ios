@@ -21,4 +21,6 @@
 +(UIColor*)returnBeagleColor:(NSInteger)colorID;
 +(BOOL)hasBeenMoreThanSixtyMinutes;
 +(BOOL)LastDistanceFromLocationExceeds_50M;
++(void) saveImage:(UIImage *)image withFileName:(NSInteger)imageName;
++(UIImage *) loadImage:(NSInteger )fileName;
 @end

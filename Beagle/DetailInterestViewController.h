@@ -11,4 +11,5 @@
 @interface DetailInterestViewController : UIViewController<ServerManagerDelegate>
 @property(nonatomic,strong)BeagleActivityClass*interestActivity;
 @property(nonatomic,strong)ServerManager*interestServerManager;
+@property(nonatomic,assign)BOOL isRedirectedFromNotif;
 @end

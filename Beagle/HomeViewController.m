@@ -526,6 +526,9 @@
     NSLog(@"result=%@",[BeagleUtilities activityTime:play.startActivityDate endate:play.endActivityDate]);
     cell.bg_activity = play;
     
+    UIImage*checkImge= [BeagleUtilities loadImage:play.ownerid];
+    if(checkImge==nil){
+    
     if (!play.profilePhotoImage)
     {
         if (tableView.dragging == NO && tableView.decelerating == NO)
@@ -539,6 +542,9 @@
     else
     {
         cell.photoImage = play.profilePhotoImage;
+    }
+    }else{
+        cell.photoImage = play.profilePhotoImage=checkImge;
     }
 
     [cell setNeedsDisplay];
@@ -583,8 +589,11 @@
     if (iconDownloader != nil)
     {
         HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:iconDownloader.indexPathInTableView];
+        BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexPath.row];
+
         // Display the newly loaded image
-        cell.photoImage = iconDownloader.appRecord.profilePhotoImage ;
+        cell.photoImage =play.profilePhotoImage=iconDownloader.appRecord.profilePhotoImage ;
+        [BeagleUtilities saveImage:iconDownloader.appRecord.profilePhotoImage withFileName:play.ownerid];
     }
     
     [self.tableView reloadData];

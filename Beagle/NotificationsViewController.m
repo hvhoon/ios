@@ -153,6 +153,8 @@
 
     UIImageView *cellImageView=[[UIImageView alloc]initWithFrame:CGRectMake(16, 8, 35, 35)];
     
+    UIImage*checkImage= [BeagleUtilities loadImage:play.referredId];
+    if(checkImage==nil){
     if (!play.profileImage)
     {
         if (tableView.dragging == NO && tableView.decelerating == NO)
@@ -167,6 +169,9 @@
     {
         cellImageView.image = [BeagleUtilities imageCircularBySize:play.profileImage sqr:70.0f];
 
+    }
+    }else{
+        cellImageView.image = [BeagleUtilities imageCircularBySize:checkImage sqr:70.0f];
     }
     cellImageView.tag=[[NSString stringWithFormat:@"111%li",(long)indexPath.row]integerValue];
     [cell.contentView addSubview:cellImageView];
@@ -227,17 +232,19 @@
 
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    [self.slidingViewController show];
+    BeagleNotificationClass *play = (BeagleNotificationClass *)[self.listArray objectAtIndex:indexPath.row];
+    if(play.activityId!=0){
+        [self.slidingViewController show];
+
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
+    viewController.interestServerManager=[[ServerManager alloc]init];
+    viewController.interestServerManager.delegate=viewController;
+    viewController.isRedirectedFromNotif=TRUE;
+    [viewController.interestServerManager getDetailedInterest:play.activityId];
     [self.navigationController pushViewController:viewController animated:YES];
-    
-    
 
-//        self.slidingViewController.topViewController = viewController;
-//        [self.slidingViewController anchorTopViewTo:ECLeft];
-//        [self.slidingViewController resetTopView];
-
+    }
 }
 - (void)startIconDownload:(BeagleNotificationClass*)appRecord forIndexPath:(NSIndexPath *)indexPath{
     IconDownloader *iconDownloader = [imageDownloadsInProgress objectForKey:indexPath];
@@ -279,10 +286,12 @@
     {
         
         AttributedTableViewCell *cell = (AttributedTableViewCell*)[_notificationTableView cellForRowAtIndexPath:iconDownloader.indexPathInTableView];
+        BeagleNotificationClass *play = (BeagleNotificationClass *)[self.listArray objectAtIndex:indexPath.row];
 
         UIImageView *cellImageView=(UIImageView*)[cell viewWithTag:[[NSString stringWithFormat:@"111%ld",(long)indexPath.row]integerValue]];
         // Display the newly loaded image
-        cellImageView.image = [BeagleUtilities imageCircularBySize:iconDownloader.notificationRecord.profileImage sqr:70.0f] ;
+        cellImageView.image =play.profileImage=[BeagleUtilities imageCircularBySize:iconDownloader.notificationRecord.profileImage sqr:70.0f] ;
+        [BeagleUtilities saveImage:iconDownloader.notificationRecord.profileImage withFileName:play.playerId];
 
     }
     

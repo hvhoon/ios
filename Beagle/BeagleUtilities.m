@@ -465,5 +465,22 @@
     
     return NO;
 }
++(void) saveImage:(UIImage *)image withFileName:(NSInteger)imageName{
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
 
+
+        NSString *savedImagePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%ld.png", imageName]];
+        NSData *data=UIImagePNGRepresentation(image);
+        [ data writeToFile:savedImagePath atomically:YES];
+}
+
++(UIImage *) loadImage:(NSInteger)fileName{
+    NSString * directoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+
+    UIImage * result = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/%ld.png", directoryPath, fileName]];
+    
+    return result;
+}
 @end

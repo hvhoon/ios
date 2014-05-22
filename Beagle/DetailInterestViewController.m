@@ -37,6 +37,7 @@ static NSString * const CellIdentifier = @"cell";
 @synthesize profileImageView=_profileImageView;
 @synthesize chatPostManager=_chatPostManager;
 @synthesize chatPostsArray;
+@synthesize isRedirectedFromNotif;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -76,17 +77,23 @@ static NSString * const CellIdentifier = @"cell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    if(self.interestActivity.dosRelation==0){
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(editButtonClicked:)];
-
-    }
-    
     [self.navigationController.navigationBar setBarTintColor:[BeagleUtilities returnBeagleColor:8]];
     
     
     
     self.navigationController.navigationBar.topItem.title = @"";
+    
+    if(!isRedirectedFromNotif)
+      [self createInterestInitialCard];
+    
+
+}
+
+-(void)createInterestInitialCard{
+    if(self.interestActivity.dosRelation==0){
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(editButtonClicked:)];
+        
+    }
     
     
     // Set the screen title.
@@ -94,26 +101,26 @@ static NSString * const CellIdentifier = @"cell";
     self.navigationItem.title = screenTitle;
     
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [BeagleUtilities returnBeagleColor:4]}];
-
+    
     self.detailedInterestTableView = [[UITableView alloc] initWithFrame:CGRectZero
-                                                  style:UITableViewStylePlain];
+                                                                  style:UITableViewStylePlain];
     self.detailedInterestTableView.dataSource = self;
     self.detailedInterestTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
     self.detailedInterestTableView.delegate = self;
     self.detailedInterestTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth
     |UIViewAutoresizingFlexibleHeight;
     [self.detailedInterestTableView setBackgroundColor:[UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1.0]];
-
-//    [self.detailedInterestTableView registerClass:[UITableViewCell class]
-//                           forCellReuseIdentifier:CellIdentifier];
-
+    
+    //    [self.detailedInterestTableView registerClass:[UITableViewCell class]
+    //                           forCellReuseIdentifier:CellIdentifier];
+    
     self.contentWrapper = [[MessageKeyboardView alloc] initWithScrollView:self.detailedInterestTableView];
     self.contentWrapper.frame = self.view.bounds;
     self.contentWrapper.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
     [self.view addSubview:self.contentWrapper];
     
     [self.contentWrapper.inputView.rightButton addTarget:self action:@selector(postClicked:) forControlEvents:UIControlEventTouchUpInside];
-
+    
     if(!self.interestActivity.isParticipant){
         [self.contentWrapper.inputView setHidden:YES];
         [self.contentWrapper.dummyInputView setHidden:YES];
@@ -237,6 +244,11 @@ static NSString * const CellIdentifier = @"cell";
                 if (interest != nil && [interest class] != [NSNull class]) {
                     
                     
+                    if(isRedirectedFromNotif){
+                        interestActivity=[[BeagleActivityClass alloc]initWithDictionary:interest];
+                        [self createInterestInitialCard];
+
+                    }
                     id participants=[interest objectForKey:@"participants"];
                     if (participants != nil && [participants class] != [NSNull class] && [participants count]!=0) {
                         NSMutableArray *participantsArray=[[NSMutableArray alloc]init];
