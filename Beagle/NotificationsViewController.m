@@ -46,6 +46,7 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    self.imageDownloadsInProgress=[[NSMutableDictionary alloc]init];
     if(_notificationsManager!=nil){
         _notificationsManager.delegate = nil;
         [_notificationsManager releaseServerManager];
@@ -248,14 +249,14 @@
     }
 }
 - (void)startIconDownload:(BeagleNotificationClass*)appRecord forIndexPath:(NSIndexPath *)indexPath{
-    IconDownloader *iconDownloader = [imageDownloadsInProgress objectForKey:indexPath];
+    IconDownloader *iconDownloader = [self.imageDownloadsInProgress objectForKey:indexPath];
     if (iconDownloader == nil)
     {
         iconDownloader = [[IconDownloader alloc] init];
         iconDownloader.notificationRecord = appRecord;
         iconDownloader.indexPathInTableView = indexPath;
         iconDownloader.delegate = self;
-        [imageDownloadsInProgress setObject:iconDownloader forKey:indexPath];
+        [self.imageDownloadsInProgress setObject:iconDownloader forKey:indexPath];
         [iconDownloader startDownload:kNotificationRecord];
     }
 }
@@ -282,7 +283,7 @@
 
 - (void)appImageDidLoad:(NSIndexPath *)indexPath
 {
-    IconDownloader *iconDownloader = [imageDownloadsInProgress objectForKey:indexPath];
+    IconDownloader *iconDownloader = [self.imageDownloadsInProgress objectForKey:indexPath];
     if (iconDownloader != nil)
     {
         
@@ -291,7 +292,8 @@
 
         UIImageView *cellImageView=(UIImageView*)[cell viewWithTag:[[NSString stringWithFormat:@"111%ld",(long)indexPath.row]integerValue]];
         // Display the newly loaded image
-        cellImageView.image =play.profileImage=[BeagleUtilities imageCircularBySize:iconDownloader.notificationRecord.profileImage sqr:70.0f] ;
+        play.profileImage=iconDownloader.notificationRecord.profileImage;
+        cellImageView.image =[BeagleUtilities imageCircularBySize:iconDownloader.notificationRecord.profileImage sqr:70.0f] ;
         if(play.referredId!=0)
             [BeagleUtilities saveImage:iconDownloader.notificationRecord.profileImage withFileName:play.referredId];
 
