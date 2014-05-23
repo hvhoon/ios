@@ -47,6 +47,7 @@ static NSString * const CellIdentifier = @"cell";
     return self;
 }
 -(void)viewWillAppear:(BOOL)animated{
+    [UIApplication sharedApplication].statusBarHidden = NO;
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     
     [self.navigationController setNavigationBarHidden:NO animated:YES];

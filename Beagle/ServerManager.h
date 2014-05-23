@@ -19,7 +19,9 @@ typedef enum {
     kServerCallDeleteActivity,
     kServerCallEditActivity,
     kServerCallUpdateFbTicker,
-    kServerCallGetNotifications
+    kServerCallGetNotifications,
+    kServerCallInAppNotification,
+    kServerCallInAppNotificationForPosts
 } ServerCallType;
 
 @class ServerManager;
@@ -53,4 +55,6 @@ typedef enum {
 -(void)updateActivityOnBeagle:(BeagleActivityClass*)data;
 -(void)updateFacebookTickerStatus:(BOOL)status;
 -(void)getNotifications;
+-(void)requestInAppNotificationForPosts:(NSInteger)chatId;
+-(void)requestInAppNotification:(NSInteger)notificationId;
 @end

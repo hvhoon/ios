@@ -20,12 +20,14 @@
 #import "DetailInterestViewController.h"
 #import "BeagleUtilities.h"
 #import "EventInterestFilterBlurView.h"
+#import "BeagleNotificationClass.h"
+#import "InAppNotificationView.h"
 #define REFRESH_HEADER_HEIGHT 70.0f
 #define stockCroppingCheck 0
 #define kTimerIntervalInSeconds 10
 #define rowHeight 142.0f
 
-@interface HomeViewController ()<UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,HomeTableViewCellDelegate,ServerManagerDelegate,IconDownloaderDelegate,BlankHomePageViewDelegate,EventInterestFilterBlurViewDelegate>{
+@interface HomeViewController ()<UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,HomeTableViewCellDelegate,ServerManagerDelegate,IconDownloaderDelegate,BlankHomePageViewDelegate,EventInterestFilterBlurViewDelegate,InAppNotificationViewDelegate>{
     UIView *topNavigationView;
     UIView*bottomNavigationView;
     BOOL footerActivated;
@@ -79,6 +81,11 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBackgroundInNotification:) name:kRemoteNotificationReceivedNotification object:Nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(postInAppNotification:) name:kNotificationForInterestPost object:Nil];
+
+    
     [self.navigationController setNavigationBarHidden:YES];
     
     if(self.tableView!=nil){
@@ -237,6 +244,50 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (updateEventsInTransitionFromBg_Fg) name:@"AutoRefreshEvents" object:nil];
 
 }
+
+-(void)viewDidDisappear:(BOOL)animated{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kRemoteNotificationReceivedNotification object:nil];
+    
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationForInterestPost object:nil];
+
+    
+}
+
+- (void)didReceiveBackgroundInNotification:(NSNotification*) note{
+    
+    BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
+    InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0,0, 320, 64) appNotification:notifObject];
+    notifView.delegate=self;
+//    [self.view addSubview:notifView];
+    UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
+     [keyboard addSubview:notifView];
+
+    
+}
+
+-(void)postInAppNotification:(NSNotification*)note{
+    BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
+    InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0, 0, 320, 64) appNotification:notifObject];
+    notifView.delegate=self;
+    
+    UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
+    [keyboard addSubview:notifView];
+
+    
+}
+-(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
+    viewController.interestServerManager=[[ServerManager alloc]init];
+    viewController.interestServerManager.delegate=viewController;
+    viewController.isRedirectedFromNotif=TRUE;
+    [viewController.interestServerManager getDetailedInterest:notification.activityId];
+    [self.navigationController pushViewController:viewController animated:YES];
+
+}
+
 -(void)updateEventsInTransitionFromBg_Fg{
     
     BOOL isSixty=[BeagleUtilities hasBeenMoreThanSixtyMinutes];
@@ -767,7 +818,7 @@
                 if (activities != nil && [activities class] != [NSNull class]) {
                     
                     
-                    id happenarndu=[activities objectForKey:@"beagle_happenarndu"];
+                    NSArray *happenarndu=[activities objectForKey:@"beagle_happenarndu"];
                     if (happenarndu != nil && [happenarndu class] != [NSNull class] && [happenarndu count]!=0) {
                         NSMutableArray *activitiesArray=[[NSMutableArray alloc]init];
                         for(id el in happenarndu){
@@ -798,7 +849,7 @@
                         
                     }
                         
-                        id friendsarndu=[activities objectForKey:@"beagle_friendsarndu"];
+                        NSArray * friendsarndu=[activities objectForKey:@"beagle_friendsarndu"];
                         if (friendsarndu != nil && [friendsarndu class] != [NSNull class]&& [friendsarndu count]!=0) {
                             NSMutableArray *friendsAroundYouArray=[[NSMutableArray alloc]init];
                             for(id el in friendsarndu){
@@ -834,7 +885,7 @@
                     
                     
                     
-                    id expressint=[activities objectForKey:@"beagle_expressint"];
+                    NSArray *expressint=[activities objectForKey:@"beagle_expressint"];
                     if (expressint != nil && [expressint class] != [NSNull class]&& [expressint count]!=0) {
                         NSMutableArray *expressInterestArray=[[NSMutableArray alloc]init];
                         for(id el in expressint){
@@ -870,7 +921,7 @@
                     }
 
                     
-                    id crtbyu=[activities objectForKey:@"beagle_crtbyu"];
+                    NSArray * crtbyu=[activities objectForKey:@"beagle_crtbyu"];
                     if (crtbyu != nil && [crtbyu class] != [NSNull class]&& [crtbyu count]!=0) {
                         NSMutableArray *createdByYouArray=[[NSMutableArray alloc]init];
                         for(id el in crtbyu){

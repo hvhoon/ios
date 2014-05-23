@@ -21,6 +21,7 @@
 @property(nonatomic,strong)NSString*photoId;
 @property(nonatomic,assign)BOOL activityDeleted;
 @property(nonatomic,assign)BOOL activityCreated;
+@property(nonatomic,assign)NSInteger badgeCount;
 + (id)SharedInstance;
 -(void)userProfileDataUpdate;
 -(void)getUserObjectInAutoSignInMode;

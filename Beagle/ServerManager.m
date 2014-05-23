@@ -13,9 +13,6 @@
 #import "SBJSON.h"
 #import "JSON.h"
 #import "BeagleActivityClass.h"
-#define localHost @"http://192.168.0.102:3000/"
-#define localHost1 @"http://localhost:3000/"
-#define herokuHost @"http://infinite-spire-6520.herokuapp.com/"
 @interface ServerManager()
 {
     NSMutableDictionary *_errorCodes;
@@ -319,6 +316,37 @@
         {
             [self internetNotAvailable];
         }
+}
+
+-(void)requestInAppNotification:(NSInteger)notificationId{
+    _serverCallType=kServerCallInAppNotification;
+    
+    if([self isInternetAvailable])
+    {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@rsparameter.json", _serverUrl]
+                         method:@"GET"
+                         params:[NSDictionary dictionaryWithObjectsAndKeys:
+                                 [NSNumber numberWithInteger:notificationId],@"id",
+                                 nil] data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+}
+-(void)requestInAppNotificationForPosts:(NSInteger)chatId{
+    _serverCallType=kServerCallInAppNotificationForPosts;
+    if([self isInternetAvailable])
+    {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/%ld/acparameter.json",_serverUrl,chatId]
+                         method:@"GET"
+                         params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+
 }
 -(void)populateErrorCodes
 {

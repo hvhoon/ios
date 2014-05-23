@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
+@class BeagleNotificationClass;
 @interface BeagleUtilities : NSObject
 + (int) getRandomIntBetweenLow:(int) low andHigh:(int) high;
 +(UIImage*) compressImage:(UIImage *)image size:(CGSize)size;
@@ -23,4 +23,6 @@
 +(BOOL)LastDistanceFromLocationExceeds_50M;
 +(void) saveImage:(UIImage *)image withFileName:(NSInteger)imageName;
 +(UIImage *) loadImage:(NSInteger )fileName;
++(BeagleNotificationClass*)getNotificationObject:(NSNotification*)object;
++(BeagleNotificationClass*)getNotificationForInterestPost:(NSNotification*)object;
 @end

@@ -10,9 +10,16 @@
 #import <Crashlytics/Crashlytics.h>
 #import <Instabug/Instabug.h>
 
+@interface AppDelegate ()<ServerManagerDelegate>{
+    ServerManager *notificationServerManager;
+}
+@property(nonatomic,strong)ServerManager *notificationServerManager;
+@end
+
 @implementation AppDelegate
 @synthesize progressIndicator=_progressIndicator;
 @synthesize listViewController;
+@synthesize notificationServerManager=_notificationServerManager;
 void uncaughtExceptionHandler(NSException *exception) {
     NSLog(@"CRASH: %@", exception);
     NSLog(@"Stack Trace: %@", [exception callStackSymbols]);
@@ -93,10 +100,21 @@ void uncaughtExceptionHandler(NSException *exception) {
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo{
     
     
-    if (application.applicationIconBadgeNumber != 0) {
-         application.applicationIconBadgeNumber = 0;
+    if(_notificationServerManager!=nil){
+        _notificationServerManager.delegate = nil;
+        [_notificationServerManager releaseServerManager];
+        _notificationServerManager = nil;
     }
-    
+    _notificationServerManager=[[ServerManager alloc]init];
+    _notificationServerManager.delegate=self;
+        if([[[userInfo valueForKey:@"params"] valueForKey:@"notification_type"]isEqualToString:@"17"]){
+            [_notificationServerManager requestInAppNotificationForPosts:[[[userInfo valueForKey:@"params"] valueForKey:@"chat_id"]integerValue]];
+
+            
+        }else{
+            [_notificationServerManager requestInAppNotification:[[[userInfo valueForKey:@"params"] valueForKey:@"notification_id"]integerValue]];
+            
+        }
     
 }
 
@@ -167,5 +185,107 @@ void uncaughtExceptionHandler(NSException *exception) {
     [_progressIndicator hide:YES];
 }
 
+#pragma mark - server calls
+
+- (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
+    _notificationServerManager.delegate = nil;
+    [_notificationServerManager releaseServerManager];
+    _notificationServerManager = nil;
+    
+    if(serverRequest==kServerCallInAppNotification){
+        
+        
+        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
+            
+            id status=[response objectForKey:@"status"];
+            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
+             
+                NSMutableDictionary *inappnotification=[response objectForKey:@"inappnotification"];
+                NSLog(@"badge Value=%ld",[[inappnotification objectForKey:@"badge"]integerValue]);
+                
+                
+                NSOperationQueue *queue = [NSOperationQueue new];
+                NSInvocationOperation *operation = [[NSInvocationOperation alloc]
+                                                    initWithTarget:self
+                                                    selector:@selector(loadProfileImageData:)
+                                                    object:inappnotification];
+                [queue addOperation:operation];
+
+                [[BeagleManager SharedInstance]setBadgeCount:[[inappnotification objectForKey:@"badge"]integerValue]];
+                
+
+
+            }
+        }
+        
+    }
+    else{
+        
+        
+        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
+            
+            id status=[response objectForKey:@"status"];
+            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
+                
+                NSMutableDictionary *interestPost=[response objectForKey:@"interestPost"];
+                NSLog(@"badge Value=%ld",[[interestPost objectForKey:@"badge"]integerValue]);
+                
+                
+                NSOperationQueue *queue = [NSOperationQueue new];
+                NSInvocationOperation *operation = [[NSInvocationOperation alloc]
+                                                    initWithTarget:self
+                                                    selector:@selector(loadProfileImageDataForAPost:)
+                                                    object:interestPost];
+                [queue addOperation:operation];
+                
+                [[BeagleManager SharedInstance]setBadgeCount:[[interestPost objectForKey:@"badge"]integerValue]];
+                
+                
+                
+            }
+        }
+        
+    }
+}
+
+- (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
+{
+    
+        _notificationServerManager.delegate = nil;
+        [_notificationServerManager releaseServerManager];
+        _notificationServerManager = nil;
+    
+}
+
+- (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
+{
+    
+        _notificationServerManager.delegate = nil;
+        [_notificationServerManager releaseServerManager];
+        _notificationServerManager = nil;
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
+    [alert show];
+}
+- (void)loadProfileImageData:(NSMutableDictionary*)notificationDictionary {
+    NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[notificationDictionary objectForKey:@"photo_url"]]];
+    UIImage* image =[[UIImage alloc] initWithData:imageData];
+    [notificationDictionary setObject:image forKey:@"profileImage"];
+    [self performSelectorOnMainThread:@selector(sendAppNotification:) withObject:notificationDictionary waitUntilDone:NO];
+}
+-(void)sendAppNotification:(NSMutableDictionary*)appNotifDictionary{
+    NSNotification* notification = [NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:nil userInfo:appNotifDictionary];
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
+}
+- (void)loadProfileImageDataForAPost:(NSMutableDictionary*)notificationDictionary {
+    NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[notificationDictionary objectForKey:@"player_photo_url"]]];
+    UIImage* image =[[UIImage alloc] initWithData:imageData];
+    [notificationDictionary setObject:image forKey:@"profileImage"];
+    [self performSelectorOnMainThread:@selector(sendAppNotificationForPost:) withObject:notificationDictionary waitUntilDone:NO];
+}
+-(void)sendAppNotificationForPost:(NSMutableDictionary*)appNotifDictionary{
+    NSNotification* notification = [NSNotification notificationWithName:kNotificationForInterestPost object:nil userInfo:appNotifDictionary];
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
+}
 
 @end

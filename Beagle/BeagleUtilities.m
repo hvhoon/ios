@@ -7,7 +7,7 @@
 //
 
 #import "BeagleUtilities.h"
-
+#import "BeagleNotificationClass.h"
 @implementation BeagleUtilities
 + (int) getRandomIntBetweenLow:(int) low andHigh:(int) high {
 	return ((arc4random() % (high - low + 1)) + low);
@@ -482,5 +482,51 @@
     UIImage * result = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/%ld.png", directoryPath, fileName]];
     
     return result;
+}
+
+
++(BeagleNotificationClass*)getNotificationObject:(NSNotification*)object{
+    
+    BeagleNotificationClass *notification=[[BeagleNotificationClass alloc]init];
+    id obj=[object valueForKey:@"userInfo"];
+    id obj1=[obj valueForKey:@"activity"];
+    NSLog(@"obj1=%@",obj1);
+    notification.notificationId=[[[object valueForKey:@"userInfo"]valueForKey:@"notification_id"]integerValue];
+    if(obj1!=nil && obj1!=[NSNull class] && [[obj1 allKeys]count]!=0){
+        notification.activityId=[[obj1 valueForKey:@"id"]integerValue];
+        notification.backgroundTap=TRUE;
+    }
+    else{
+        notification.backgroundTap=FALSE;
+    }
+    
+    notification.notificationType=[[[object valueForKey:@"userInfo"] valueForKey:@"activity_type"]integerValue];
+    
+    [[BeagleManager SharedInstance]setBadgeCount:[[[object valueForKey:@"userInfo"] valueForKey:@"badge"]intValue]];
+    notification.profileImage=[[object valueForKey:@"userInfo"] valueForKey:@"profileImage"];
+    notification.latitude=[[object valueForKey:@"userInfo"] valueForKey:@"lat"];
+    notification.longitude=[[object valueForKey:@"userInfo"] valueForKey:@"lng"];
+    notification.notificationString=[[object valueForKey:@"userInfo"] valueForKey:@"message"];
+    notification.photoUrl=[[object valueForKey:@"userInfo"] valueForKey:@"photo_url"];
+    notification.timeOfNotification=[[object valueForKey:@"userInfo"] valueForKey:@"timing"];
+    notification.referredId=[[[object valueForKey:@"userInfo"] valueForKey:@"reffered_to"]integerValue];
+    return notification;
+}
++(BeagleNotificationClass*)getNotificationForInterestPost:(NSNotification*)object{
+    BeagleNotificationClass *notification=[[BeagleNotificationClass alloc]init];
+    id obj=[object valueForKey:@"userInfo"];
+    id obj1=[obj valueForKey:@"activity_chat"];
+    NSLog(@"obj1=%@",obj1);
+    notification.notificationString=[obj valueForKey:@"msg"];
+    notification.notificationId=[[obj1 valueForKey:@"id"]integerValue];
+    notification.profileImage=[[object valueForKey:@"userInfo"] valueForKey:@"profileImage"];
+    notification.activityId=[[obj1 valueForKey:@"activity_id"]integerValue];
+    notification.photoUrl=[obj1 valueForKey:@"player_photo_url"];
+    notification.playerId=[[obj1 valueForKey:@"player_id"]integerValue];
+    notification.backgroundTap=TRUE;
+    notification.notificationType=17;
+    return notification;
+    
+    
 }
 @end

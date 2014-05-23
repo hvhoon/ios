@@ -34,3 +34,9 @@
 #define kParticipantInActivity 12
 #define kInterestChat 13
 #define kNotificationRecord 14
+
+#define kRemoteNotificationReceivedNotification @"RemoteNotificationReceivedWhileRunning"
+#define kNotificationForInterestPost @"InAppInterestPostNotification"
+#define localHost @"http://192.168.0.104:3000/"
+#define localHost1 @"http://localhost:3000/"
+#define herokuHost @"http://infinite-spire-6520.herokuapp.com/"

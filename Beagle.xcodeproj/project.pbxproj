@@ -38,6 +38,7 @@
 		180F604C1923D1D800B3807F /* LocationBlurView.m in Sources */ = {isa = PBXBuildFile; fileRef = 180F60451923D1D700B3807F /* LocationBlurView.m */; };
 		180F604D1923D1D800B3807F /* LocationBlurView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 180F60461923D1D700B3807F /* LocationBlurView.xib */; };
 		18216B1D18E350A800D9721F /* IconDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 18216B1C18E350A800D9721F /* IconDownloader.m */; };
+		1849D6B0192FCC540068BEDE /* InAppNotificationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1849D6AF192FCC540068BEDE /* InAppNotificationView.m */; };
 		18E7AF0918BBAA1700EBBDE2 /* FacebookLoginSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E7AF0818BBAA1700EBBDE2 /* FacebookLoginSession.m */; };
 		18E7AF0D18BBAA6600EBBDE2 /* BeagleUserClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E7AF0C18BBAA6600EBBDE2 /* BeagleUserClass.m */; };
 		18EBCFDB18CE350600FDC624 /* CustomPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EBCFD518CE350600FDC624 /* CustomPickerView.m */; };
@@ -196,6 +197,8 @@
 		180F60471923D1D700B3807F /* LocationBlurView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationBlurView.h; sourceTree = "<group>"; };
 		18216B1B18E350A800D9721F /* IconDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IconDownloader.h; sourceTree = "<group>"; };
 		18216B1C18E350A800D9721F /* IconDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IconDownloader.m; sourceTree = "<group>"; };
+		1849D6AE192FCC540068BEDE /* InAppNotificationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InAppNotificationView.h; sourceTree = "<group>"; };
+		1849D6AF192FCC540068BEDE /* InAppNotificationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InAppNotificationView.m; sourceTree = "<group>"; };
 		18E7AF0718BBAA1700EBBDE2 /* FacebookLoginSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookLoginSession.h; sourceTree = "<group>"; };
 		18E7AF0818BBAA1700EBBDE2 /* FacebookLoginSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookLoginSession.m; sourceTree = "<group>"; };
 		18E7AF0B18BBAA6600EBBDE2 /* BeagleUserClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeagleUserClass.h; sourceTree = "<group>"; };
@@ -324,8 +327,6 @@
 		18FADB9D18B66A4C00A62287 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		18FADBA118B66A8D00A62287 /* NotificationsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsViewController.h; sourceTree = "<group>"; };
 		18FADBA218B66A8D00A62287 /* NotificationsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsViewController.m; sourceTree = "<group>"; };
-		18FC279B18CF721B00F33576 /* SideTransitionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SideTransitionController.h; sourceTree = "<group>"; };
-		18FC279C18CF721B00F33576 /* SideTransitionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SideTransitionController.m; sourceTree = "<group>"; };
 		18FDA347192BCD8E00D13667 /* BeagleNotificationClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeagleNotificationClass.h; sourceTree = "<group>"; };
 		18FDA348192BCD8E00D13667 /* BeagleNotificationClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeagleNotificationClass.m; sourceTree = "<group>"; };
 		18FDA34B192BDD9A00D13667 /* TTTAttributedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTAttributedLabel.m; sourceTree = "<group>"; };
@@ -484,15 +485,6 @@
 			name = "Activity Event";
 			sourceTree = "<group>";
 		};
-		1805CED018C8D22600AC8556 /* Side Transition */ = {
-			isa = PBXGroup;
-			children = (
-				18FC279B18CF721B00F33576 /* SideTransitionController.h */,
-				18FC279C18CF721B00F33576 /* SideTransitionController.m */,
-			);
-			name = "Side Transition";
-			sourceTree = "<group>";
-		};
 		1805CED418C8D24700AC8556 /* Filter Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -549,6 +541,15 @@
 				180F60411923D1D700B3807F /* GooglePlacesAutocompleteUtilities.m */,
 			);
 			name = "Google Auto Complete";
+			sourceTree = "<group>";
+		};
+		1849D6AD192FCC1F0068BEDE /* In App Notification */ = {
+			isa = PBXGroup;
+			children = (
+				1849D6AE192FCC540068BEDE /* InAppNotificationView.h */,
+				1849D6AF192FCC540068BEDE /* InAppNotificationView.m */,
+			);
+			name = "In App Notification";
 			sourceTree = "<group>";
 		};
 		18E7AF0618BBAA0400EBBDE2 /* Facebook */ = {
@@ -629,12 +630,12 @@
 		18EC22A618B5A0B400316B6E /* Beagle */ = {
 			isa = PBXGroup;
 			children = (
+				1849D6AD192FCC1F0068BEDE /* In App Notification */,
 				180F604E1923D37800B3807F /* Google Auto Complete */,
 				18F889891902C14000C80011 /* Detailed Interest */,
 				180AF0B518DC7FC200EE87D6 /* Table View Cell */,
 				18F9FE5E18DB40D2004BFE4E /* Beagle Manager */,
 				1805CED418C8D24700AC8556 /* Filter Views */,
-				1805CED018C8D22600AC8556 /* Side Transition */,
 				1805CECC18C8D20E00AC8556 /* Activity Event */,
 				18007F0518C6550800230C23 /* Beagle Alerts */,
 				18007EF418C650F600230C23 /* Utilities */,
@@ -1044,6 +1045,7 @@
 				18EC232018B5A42D00316B6E /* ASICloudFilesRequest.m in Sources */,
 				18EC231C18B5A42D00316B6E /* ASICloudFilesContainerRequest.m in Sources */,
 				18EC22B118B5A0B400316B6E /* AppDelegate.m in Sources */,
+				1849D6B0192FCC540068BEDE /* InAppNotificationView.m in Sources */,
 				18FDA349192BCD8E00D13667 /* BeagleNotificationClass.m in Sources */,
 				18007F0218C6541200230C23 /* UIImage+ImageEffects.m in Sources */,
 				180F60481923D1D700B3807F /* GooglePlacesAutocompletePlace.m in Sources */,
@@ -1195,12 +1197,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)",
-					/Users/Harish/Downloads/Instabug,
-					"$(PROJECT_DIR)",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Beagle/Beagle-Prefix.pch";
 				INFOPLIST_FILE = "Beagle/Beagle-Info.plist";
@@ -1217,12 +1214,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)",
-					/Users/Harish/Downloads/Instabug,
-					"$(PROJECT_DIR)",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Beagle/Beagle-Prefix.pch";
 				INFOPLIST_FILE = "Beagle/Beagle-Info.plist";
