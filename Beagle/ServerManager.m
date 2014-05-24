@@ -37,7 +37,7 @@
         _internetReachability = [Reachability reachabilityForInternetConnection];
 
 
-        _serverUrl =localHost;
+        _serverUrl =herokuHost;
 
         [self populateErrorCodes];
     }
