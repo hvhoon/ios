@@ -418,7 +418,7 @@
         // Pull weather information
         NSString *jsonString = [request responseString];
         
-        NSLog(@"Request=%@", jsonString);
+//        NSLog(@"Request=%@", jsonString);
         
         NSDictionary* weatherDictionary = [NSJSONSerialization JSONObjectWithData:[jsonString dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:&error];
         NSDictionary *current_observation=[weatherDictionary objectForKey:@"weather"];

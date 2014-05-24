@@ -514,10 +514,9 @@
 }
 +(BeagleNotificationClass*)getNotificationForInterestPost:(NSNotification*)object{
     BeagleNotificationClass *notification=[[BeagleNotificationClass alloc]init];
-    id obj=[object valueForKey:@"userInfo"];
-    id obj1=[obj valueForKey:@"activity_chat"];
+    id obj1=[object valueForKey:@"userInfo"];
     NSLog(@"obj1=%@",obj1);
-    notification.notificationString=[obj valueForKey:@"msg"];
+    notification.notificationString=[obj1 valueForKey:@"msg"];
     notification.notificationId=[[obj1 valueForKey:@"id"]integerValue];
     notification.profileImage=[[object valueForKey:@"userInfo"] valueForKey:@"profileImage"];
     notification.activityId=[[obj1 valueForKey:@"activity_id"]integerValue];

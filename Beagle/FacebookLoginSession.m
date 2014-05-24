@@ -71,13 +71,13 @@
         {
             list =[NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
             
-            NSLog(@"Dictionary contains: %@", list );
+            //NSLog(@"Dictionary contains: %@", list );
             if([list objectForKey:@"error"]!=nil)
             {
                 [self attemptRenewCredentials];
             }
             dispatch_async(dispatch_get_main_queue(),^{
-                NSLog(@"name=%@",[list objectForKey:@"name"]);
+               // NSLog(@"name=%@",[list objectForKey:@"name"]);
                 BeagleManager *BGM=[BeagleManager SharedInstance];
                 BeagleUserClass *userObject=nil;
                 if([[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"]){
@@ -139,7 +139,7 @@
                 
                 
                 userObject.access_token = self.facebookAccount.credential.oauthToken;
-                NSLog(@"accessToken=%@", userObject.access_token);
+                //NSLog(@"accessToken=%@", userObject.access_token);
                 
                // userObject.profileImage=[UIImage imageWithData:facebookData];
                 

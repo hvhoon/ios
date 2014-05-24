@@ -14,6 +14,9 @@
 #import "EventTimeBlurView.h"
 #import "EventVisibilityBlurView.h"
 #import "LocationBlurView.h"
+#import "DetailInterestViewController.h"
+#import "InAppNotificationView.h"
+#import "BeagleNotificationClass.h"
 enum Weeks {
     SUNDAY = 1,
     MONDAY,
@@ -23,7 +26,7 @@ enum Weeks {
     FRIDAY,
     SATURDAY
 };
-@interface ActivityViewController ()<UITextViewDelegate,ServerManagerDelegate,EventTimeBlurViewDelegate,EventVisibilityBlurViewDelegate,LocationBlurViewDelegate>{
+@interface ActivityViewController ()<UITextViewDelegate,ServerManagerDelegate,EventTimeBlurViewDelegate,EventVisibilityBlurViewDelegate,LocationBlurViewDelegate,InAppNotificationViewDelegate>{
     IBOutlet UIImageView *profileImageView;
     IBOutlet UITextView *descriptionTextView;
     UILabel *placeholderLabel;
@@ -62,6 +65,10 @@ enum Weeks {
 }
 -(void)viewWillAppear:(BOOL)animated{
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBackgroundInNotification:) name:kRemoteNotificationReceivedNotification object:Nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(postInAppNotification:) name:kNotificationForInterestPost object:Nil];
+
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
     [self.navigationController setNavigationBarHidden:NO];
@@ -172,7 +179,48 @@ enum Weeks {
     
 #endif
 }
+-(void)viewDidDisappear:(BOOL)animated{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kRemoteNotificationReceivedNotification object:nil];
+    
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationForInterestPost object:nil];
+    
+    
+}
 
+- (void)didReceiveBackgroundInNotification:(NSNotification*) note{
+    
+    BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
+    InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0,0, 320, 64) appNotification:notifObject];
+    notifView.delegate=self;
+    //    [self.view addSubview:notifView];
+    UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
+    [keyboard addSubview:notifView];
+    
+    
+}
+
+-(void)postInAppNotification:(NSNotification*)note{
+    BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
+    InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0, 0, 320, 64) appNotification:notifObject];
+    notifView.delegate=self;
+    
+    UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
+    [keyboard addSubview:notifView];
+    
+    
+}
+-(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
+    viewController.interestServerManager=[[ServerManager alloc]init];
+    viewController.interestServerManager.delegate=viewController;
+    viewController.isRedirectedFromNotif=TRUE;
+    [viewController.interestServerManager getDetailedInterest:notification.activityId];
+    [self.navigationController presentViewController:viewController animated:YES completion:nil];
+    
+}
 
 - (void)loadProfileImage:(NSString*)url {
     BeagleManager *BG=[BeagleManager SharedInstance];
