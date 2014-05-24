@@ -246,7 +246,7 @@ static NSString * const CellIdentifier = @"cell";
                     
                     
                     if(isRedirectedFromNotif){
-                        interestActivity=[[BeagleActivityClass alloc]initWithDictionary:interest];
+                        self.interestActivity=[[BeagleActivityClass alloc]initWithDictionary:interest];
                         [self createInterestInitialCard];
 
                     }
@@ -852,6 +852,8 @@ static NSString * const CellIdentifier = @"cell";
         // Profile picture
         UIImageView *cellImageView=[[UIImageView alloc]initWithFrame:CGRectMake(16, cellTop, 35, 35)];
         
+        UIImage*checkImage= [BeagleUtilities loadImage:chatCell.player_id];
+        if(checkImage==nil){
         if (!chatCell.playerImage)
         {
             if (tableView.dragging == NO && tableView.decelerating == NO)
@@ -863,6 +865,11 @@ static NSString * const CellIdentifier = @"cell";
         }
         else
             cellImageView.image = [BeagleUtilities imageCircularBySize:chatCell.playerImage sqr:70.0f];
+        }else{
+            chatCell.playerImage=checkImage;
+            cellImageView.image = [BeagleUtilities imageCircularBySize:checkImage sqr:70.0f];
+
+        }
         
         cellImageView.tag=[[NSString stringWithFormat:@"111%li",(long)indexPath.row]integerValue];
         [cell.contentView addSubview:cellImageView];
@@ -978,10 +985,16 @@ static NSString * const CellIdentifier = @"cell";
     IconDownloader *iconDownloader = [imageDownloadsInProgress objectForKey:indexPath];
     if (iconDownloader != nil)
     {
+        InterestChatClass *appRecord = (InterestChatClass *)[self.chatPostsArray objectAtIndex:indexPath.row-1];
+
         UITableViewCell *cell = (UITableViewCell*)[self.detailedInterestTableView cellForRowAtIndexPath:iconDownloader.indexPathInTableView];
         UIImageView *cellImageView=(UIImageView*)[cell viewWithTag:[[NSString stringWithFormat:@"111%ld",(long)indexPath.row]integerValue]];
         // Display the newly loaded image
+        appRecord.playerImage=iconDownloader.chatRecord.playerImage;
         cellImageView.image = [BeagleUtilities imageCircularBySize:iconDownloader.chatRecord.playerImage sqr:70.0f] ;
+        
+        [BeagleUtilities saveImage:iconDownloader.chatRecord.playerImage withFileName:appRecord.player_id];
+
     }
     
     [self.detailedInterestTableView reloadData];

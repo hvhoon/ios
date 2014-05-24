@@ -44,8 +44,27 @@
     return self;
 }
 
+
+-(void)viewDidDisappear:(BOOL)animated{
+    
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kUpdateNotificationStack object:nil];
+    
+    
+    
+    
+}
+
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getUserNotifications) name:kUpdateNotificationStack object:Nil];
+
+    [self getUserNotifications];
+    [self.slidingViewController hide];
+}
+
+-(void)getUserNotifications{
     self.imageDownloadsInProgress=[[NSMutableDictionary alloc]init];
     if(_notificationsManager!=nil){
         _notificationsManager.delegate = nil;
@@ -55,8 +74,7 @@
     _notificationsManager=[[ServerManager alloc]init];
     _notificationsManager.delegate=self;
     [_notificationsManager getNotifications];
-    
-    [self.slidingViewController hide];
+
 }
 
 - (void)viewDidLoad

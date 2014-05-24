@@ -70,11 +70,16 @@
 - (void)setMenu {
 	int i = 0;
 	for (PlayerProfileItem *menuItem in _menuArray) {
-        
-        if([playerItemsDictionary valueForKey:[NSString stringWithFormat:@"%li",(long)menuItem.playerId]])
-        {
-            menuItem.iconImage.image = [playerItemsDictionary valueForKey:[NSString stringWithFormat:@"%li",(long)menuItem.playerId]];
+        UIImage *image=[BeagleUtilities loadImage:menuItem.playerId];
+        if(image){
+         menuItem.iconImage.image = [BeagleUtilities imageCircularBySize:image sqr:70.0f];
+
         }
+        
+//        if([playerItemsDictionary valueForKey:[NSString stringWithFormat:@"%li",(long)menuItem.playerId]])
+//        {
+//            menuItem.iconImage.image = [playerItemsDictionary valueForKey:[NSString stringWithFormat:@"%li",(long)menuItem.playerId]];
+//        }
         else
         {
              menuItem.iconImage.image  = [BeagleUtilities imageCircularBySize:[UIImage imageNamed:@"picbox"] sqr:70.0f];
@@ -95,7 +100,6 @@
         }
 
 		menuItem.tag = 1000 + i;
-//		menuItem.center = CGPointMake((menuItem.frame.size.width * i)/2, self.frame.size.height / 2);
         menuItem.frame=CGRectMake(66*i, 0, 66, 53);
             
 		menuItem.delegate = self;
@@ -200,11 +204,12 @@
 -(void)downloadProfileImage:(PlayerProfileItem *)itemPath
 {
     UIImage *image = [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:itemPath.profileImageUrl]]];
-    image=[BeagleUtilities imageCircularBySize:image sqr:70.0f];
     
     if(image)
     {
-        [playerItemsDictionary setObject:image forKey:[NSString stringWithFormat:@"%li",(long)itemPath.playerId]];
+//        [playerItemsDictionary setObject:image forKey:[NSString stringWithFormat:@"%li",(long)itemPath.playerId]];
+        [BeagleUtilities saveImage:image withFileName:itemPath.playerId];
+
     }
     [self performSelectorOnMainThread:@selector(setMenu) withObject:nil waitUntilDone:NO];
 }

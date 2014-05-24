@@ -35,6 +35,7 @@
 #define kInterestChat 13
 #define kNotificationRecord 14
 
+#define kUpdateNotificationStack @"UpdateNotificationStack"
 #define kRemoteNotificationReceivedNotification @"RemoteNotificationReceivedWhileRunning"
 #define kNotificationForInterestPost @"InAppInterestPostNotification"
 #define localHost @"http://192.168.0.104:3000/"
