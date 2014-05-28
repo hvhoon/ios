@@ -179,41 +179,14 @@
 #else
     [self.view addSubview:eventButton];
 #endif
-    
-    UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [settingsButton addTarget:self action:@selector(revealMenu:)forControlEvents:UIControlEventTouchUpInside];
-    [settingsButton setBackgroundImage:[UIImage imageNamed:@"Settings"] forState:UIControlStateNormal];
 
-    
-#if stockCroppingCheck
-    settingsButton.frame = CGRectMake(0, 38, 65, 65);
-    [bottomNavigationView addSubview:eventButton];
-#else
-    settingsButton.frame = CGRectMake(0, 102, 65, 65);
-    [self.view addSubview:settingsButton];
-#endif
-
-    
-    UIButton *notificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [notificationsButton addTarget:self action:@selector(revealUnderRight:)forControlEvents:UIControlEventTouchUpInside];
-    [notificationsButton setBackgroundImage:[UIImage imageNamed:@"Bell-(No-Notications)"] forState:UIControlStateNormal];
-
-    
-#if stockCroppingCheck
-    notificationsButton.frame = CGRectMake(255, 38, 65, 65);
-    [bottomNavigationView addSubview:notificationsButton];
-#else
-    notificationsButton.frame = CGRectMake(255, 102, 65, 65);
-    [self.view addSubview:notificationsButton];
-#endif
-    
-    
+    // Setting up the filter pane
 #if stockCroppingCheck
     UIView *filterView=[[UIView alloc]initWithFrame:CGRectMake(0, 103, 320, 44)];
     [filterView addSubview:[self renderFilterHeaderView]];
     [bottomNavigationView addSubview:filterView];
 #else
-    UIView *filterView=[[UIView alloc]initWithFrame:CGRectMake(0, 167, 320, 44)];
+    UIView *filterView=[[UIView alloc]initWithFrame:CGRectMake(0, 123, 320, 44)]; // Distance from the top used to be 167
     [filterView addSubview:[self renderFilterHeaderView]];
     [self.view addSubview:filterView];
 #endif
@@ -483,7 +456,7 @@
 
 -(UIView*)renderFilterHeaderView{
     UIView *headerView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 44)];
-    headerView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
+    headerView.backgroundColor=[BeagleUtilities returnBeagleColor:11];
     
     UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleFilterHeaderTap:)];
     // make your gesture recognizer priority
@@ -497,14 +470,15 @@
     CGRect textRect = [filterText
                        boundingRectWithSize:size
                        options:NSStringDrawingUsesLineFragmentOrigin
-                       attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0]}
+                       attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue" size:15.0]}
                        context:nil];
     
     UILabel *activityFilterLabel = [[UILabel alloc]initWithFrame:CGRectMake(16, 0, textRect.size.width, 44)];
     activityFilterLabel.tag=3737;
     activityFilterLabel.text = @"Happening Around You";
-    activityFilterLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0];
+    activityFilterLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:15.0];
     activityFilterLabel.backgroundColor = [UIColor clearColor];
+    activityFilterLabel.textColor = [UIColor whiteColor];
     activityFilterLabel.textAlignment = NSTextAlignmentLeft;
 
     [headerView addSubview:activityFilterLabel];
@@ -513,12 +487,27 @@
     filterImageView.frame=CGRectMake(16+10+textRect.size.width, 19, 15, 8);
     [headerView addSubview:filterImageView];
     
+    /*
+     
+    UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [settingsButton addTarget:self action:@selector(revealMenu:)forControlEvents:UIControlEventTouchUpInside];
+    [settingsButton setBackgroundImage:[UIImage imageNamed:@"Settings"] forState:UIControlStateNormal];
+    settingsButton.frame = CGRectMake(0, 102, 65, 65);
+    [self.view addSubview:settingsButton];
+    
+    UIButton *notificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [notificationsButton addTarget:self action:@selector(revealUnderRight:)forControlEvents:UIControlEventTouchUpInside];
+    [notificationsButton setBackgroundImage:[UIImage imageNamed:@"Bell-(No-Notications)"] forState:UIControlStateNormal];
+    notificationsButton.frame = CGRectMake(255, 102, 65, 65);
+    [self.view addSubview:notificationsButton];
+     
     UIButton *searchButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [searchButton addTarget:self action:@selector(searchIconClicked:)forControlEvents:UIControlEventTouchUpInside];
     [searchButton setBackgroundImage:[UIImage imageNamed:@"Search"] forState:UIControlStateNormal];
     searchButton.frame = CGRectMake(285, 12, 19, 19);
     [headerView addSubview:searchButton];
 
+     */
     return headerView;
 }
 -(void)handleFilterHeaderTap:(UITapGestureRecognizer*)sender{

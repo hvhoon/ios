@@ -94,6 +94,9 @@
             
         case 10:
             return [UIColor colorWithRed:100.0/255.0 green:100.0/255.0 blue:100.0/255.0 alpha:1.0];
+        // Filter panel background
+        case 11:
+            return [UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:0.55];
         default:
             return [UIColor whiteColor];
     }
