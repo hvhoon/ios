@@ -484,30 +484,23 @@
     [headerView addSubview:activityFilterLabel];
     
     UIImageView *filterImageView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Filter"]];
-    filterImageView.frame=CGRectMake(16+10+textRect.size.width, 19, 15, 8);
+    filterImageView.frame=CGRectMake(16+8+textRect.size.width, 19, 15, 8);
     [headerView addSubview:filterImageView];
-    
-    /*
-     
-    UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [settingsButton addTarget:self action:@selector(revealMenu:)forControlEvents:UIControlEventTouchUpInside];
-    [settingsButton setBackgroundImage:[UIImage imageNamed:@"Settings"] forState:UIControlStateNormal];
-    settingsButton.frame = CGRectMake(0, 102, 65, 65);
-    [self.view addSubview:settingsButton];
     
     UIButton *notificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [notificationsButton addTarget:self action:@selector(revealUnderRight:)forControlEvents:UIControlEventTouchUpInside];
     [notificationsButton setBackgroundImage:[UIImage imageNamed:@"Bell-(No-Notications)"] forState:UIControlStateNormal];
-    notificationsButton.frame = CGRectMake(255, 102, 65, 65);
-    [self.view addSubview:notificationsButton];
+    notificationsButton.frame = CGRectMake(272, 0, 44, 44);
+    notificationsButton.alpha = 0.6;
+    [headerView addSubview:notificationsButton];
      
-    UIButton *searchButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [searchButton addTarget:self action:@selector(searchIconClicked:)forControlEvents:UIControlEventTouchUpInside];
-    [searchButton setBackgroundImage:[UIImage imageNamed:@"Search"] forState:UIControlStateNormal];
-    searchButton.frame = CGRectMake(285, 12, 19, 19);
-    [headerView addSubview:searchButton];
-
-     */
+    UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [settingsButton addTarget:self action:@selector(revealMenu:)forControlEvents:UIControlEventTouchUpInside];
+    [settingsButton setBackgroundImage:[UIImage imageNamed:@"Settings"] forState:UIControlStateNormal];
+    settingsButton.frame = CGRectMake(228, 0, 44, 44);
+    settingsButton.alpha = 0.6;
+    [headerView addSubview:settingsButton];
+    
     return headerView;
 }
 -(void)handleFilterHeaderTap:(UITapGestureRecognizer*)sender{
