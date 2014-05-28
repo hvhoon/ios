@@ -1075,7 +1075,7 @@
         
         NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"BlankHomePageView" owner:self options:nil];
         BlankHomePageView *blankHomePageView=[nib objectAtIndex:0];
-        blankHomePageView.frame=CGRectMake(0, 167, 320, 401);
+        blankHomePageView.frame=CGRectMake(0, 200, 320, 400);
         blankHomePageView.delegate=self;
         [blankHomePageView updateViewConstraints];
         blankHomePageView.userInteractionEnabled=YES;
