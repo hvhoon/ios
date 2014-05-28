@@ -160,11 +160,11 @@ static BGFlickrManager *sharedManager = nil;
                 self.flickrRequestInfo.photo=[UIImage imageWithCGImage:[self.flickrRequestInfo.photo CGImage] scale:2.0 orientation:UIImageOrientationUp];
                     
                 // You've got the image of the right dimensions
-                if (self.flickrRequestInfo.photo.size.width == 320 && self.flickrRequestInfo.photo.size.width > self.flickrRequestInfo.photo.size.height) {
+                if (self.flickrRequestInfo.photo.size.width == 320 && self.flickrRequestInfo.photo.size.height >= 200 && self.flickrRequestInfo.photo.size.width > self.flickrRequestInfo.photo.size.height) {
                     self.found = true;
-                    float height=self.flickrRequestInfo.photo.size.height-167.0;
+                    float height=self.flickrRequestInfo.photo.size.height-200.0;
                     if(height>0) {
-                        UIImage *locationImage=[BeagleUtilities imageByCropping:self.flickrRequestInfo.photo toRect:CGRectMake(0, height/2, 320, 167) withOrientation:UIImageOrientationDownMirrored];
+                        UIImage *locationImage=[BeagleUtilities imageByCropping:self.flickrRequestInfo.photo toRect:CGRectMake(0, height/2, 320, 200) withOrientation:UIImageOrientationDownMirrored];
                         self.flickrRequestInfo.photo=locationImage;
                     }
                 }

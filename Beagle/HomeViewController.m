@@ -155,7 +155,7 @@
     [self.view addSubview:bottomNavigationView];
 
 #else
-    UIImageView *stockImageView= [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 320, 167)];
+    UIImageView *stockImageView= [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 320, 200)];
     stockImageView.backgroundColor = [UIColor grayColor];
     stockImageView.tag=3456;
     [self.view addSubview:stockImageView];
@@ -186,7 +186,7 @@
     [filterView addSubview:[self renderFilterHeaderView]];
     [bottomNavigationView addSubview:filterView];
 #else
-    UIView *filterView=[[UIView alloc]initWithFrame:CGRectMake(0, 123, 320, 44)]; // Distance from the top used to be 167
+    UIView *filterView=[[UIView alloc]initWithFrame:CGRectMake(0, 156, 320, 44)]; // Distance from the top used to be 167
     [filterView addSubview:[self renderFilterHeaderView]];
     [self.view addSubview:filterView];
 #endif
