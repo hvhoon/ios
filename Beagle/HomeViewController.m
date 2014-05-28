@@ -540,7 +540,7 @@
     // If there are no participants, reduce the size of the card
     if (play.participantsCount==0) return rowHeight+textRect.size.height;
     
-    return rowHeight+17+18+textRect.size.height;
+    return rowHeight+16+18+textRect.size.height;
     
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
