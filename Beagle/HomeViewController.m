@@ -155,7 +155,7 @@
     [self.view addSubview:bottomNavigationView];
 
 #else
-    UIImageView *stockImageView= [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 320, 167)];
+    UIImageView *stockImageView= [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 320, 200)];
     stockImageView.backgroundColor = [UIColor grayColor];
     stockImageView.tag=3456;
     [self.view addSubview:stockImageView];
@@ -179,41 +179,14 @@
 #else
     [self.view addSubview:eventButton];
 #endif
-    
-    UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [settingsButton addTarget:self action:@selector(revealMenu:)forControlEvents:UIControlEventTouchUpInside];
-    [settingsButton setBackgroundImage:[UIImage imageNamed:@"Settings"] forState:UIControlStateNormal];
 
-    
-#if stockCroppingCheck
-    settingsButton.frame = CGRectMake(0, 38, 65, 65);
-    [bottomNavigationView addSubview:eventButton];
-#else
-    settingsButton.frame = CGRectMake(0, 102, 65, 65);
-    [self.view addSubview:settingsButton];
-#endif
-
-    
-    UIButton *notificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [notificationsButton addTarget:self action:@selector(revealUnderRight:)forControlEvents:UIControlEventTouchUpInside];
-    [notificationsButton setBackgroundImage:[UIImage imageNamed:@"Bell-(No-Notications)"] forState:UIControlStateNormal];
-
-    
-#if stockCroppingCheck
-    notificationsButton.frame = CGRectMake(255, 38, 65, 65);
-    [bottomNavigationView addSubview:notificationsButton];
-#else
-    notificationsButton.frame = CGRectMake(255, 102, 65, 65);
-    [self.view addSubview:notificationsButton];
-#endif
-    
-    
+    // Setting up the filter pane
 #if stockCroppingCheck
     UIView *filterView=[[UIView alloc]initWithFrame:CGRectMake(0, 103, 320, 44)];
     [filterView addSubview:[self renderFilterHeaderView]];
     [bottomNavigationView addSubview:filterView];
 #else
-    UIView *filterView=[[UIView alloc]initWithFrame:CGRectMake(0, 167, 320, 44)];
+    UIView *filterView=[[UIView alloc]initWithFrame:CGRectMake(0, 156, 320, 44)];
     [filterView addSubview:[self renderFilterHeaderView]];
     [self.view addSubview:filterView];
 #endif
@@ -483,12 +456,7 @@
 
 -(UIView*)renderFilterHeaderView{
     UIView *headerView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 44)];
-    headerView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
-    
-    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleFilterHeaderTap:)];
-    // make your gesture recognizer priority
-    singleTap.numberOfTapsRequired = 1;
-    [headerView addGestureRecognizer:singleTap];
+    headerView.backgroundColor=[BeagleUtilities returnBeagleColor:11];
 
     CGSize size = CGSizeMake(220,999);
     
@@ -497,28 +465,44 @@
     CGRect textRect = [filterText
                        boundingRectWithSize:size
                        options:NSStringDrawingUsesLineFragmentOrigin
-                       attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0]}
+                       attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue" size:15.0]}
                        context:nil];
     
-    UILabel *activityFilterLabel = [[UILabel alloc]initWithFrame:CGRectMake(16, 0, textRect.size.width, 44)];
-    activityFilterLabel.tag=3737;
-    activityFilterLabel.text = @"Happening Around You";
-    activityFilterLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0];
-    activityFilterLabel.backgroundColor = [UIColor clearColor];
-    activityFilterLabel.textAlignment = NSTextAlignmentLeft;
-
-    [headerView addSubview:activityFilterLabel];
+    UIButton *filterButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    filterButton.frame = CGRectMake(0, 0, 16+textRect.size.width+8+15, 44.0);
+    filterButton.userInteractionEnabled = YES;
+    filterButton.backgroundColor = [UIColor clearColor];
+    filterButton.tag=3737;
     
-    UIImageView *filterImageView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Filter"]];
-    filterImageView.frame=CGRectMake(16+10+textRect.size.width, 19, 15, 8);
-    [headerView addSubview:filterImageView];
+    // Setting up the title
+    [filterButton setTitle:filterText forState:UIControlStateNormal];
+    filterButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:15.0];
+    [filterButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [filterButton setTitleColor:[UIColor grayColor] forState:UIControlStateHighlighted];
+    [filterButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
+    filterButton.titleEdgeInsets = UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f);
     
-    UIButton *searchButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [searchButton addTarget:self action:@selector(searchIconClicked:)forControlEvents:UIControlEventTouchUpInside];
-    [searchButton setBackgroundImage:[UIImage imageNamed:@"Search"] forState:UIControlStateNormal];
-    searchButton.frame = CGRectMake(285, 12, 19, 19);
-    [headerView addSubview:searchButton];
-
+    // Setting up the filter icon
+    [filterButton setImage:[UIImage imageNamed:@"Filter"] forState:UIControlStateNormal];
+    filterButton.imageEdgeInsets = UIEdgeInsetsMake(2.0f, textRect.size.width+16+8, 0.0f, 0.0f);
+    
+    [filterButton addTarget:self action:@selector(handleFilterHeaderTap:)forControlEvents:UIControlEventTouchUpInside];
+    [headerView addSubview:filterButton];
+    
+    UIButton *notificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [notificationsButton addTarget:self action:@selector(revealUnderRight:)forControlEvents:UIControlEventTouchUpInside];
+    [notificationsButton setBackgroundImage:[UIImage imageNamed:@"Bell-(No-Notications)"] forState:UIControlStateNormal];
+    notificationsButton.frame = CGRectMake(272, 0, 44, 44);
+    notificationsButton.alpha = 0.6;
+    [headerView addSubview:notificationsButton];
+     
+    UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [settingsButton addTarget:self action:@selector(revealMenu:)forControlEvents:UIControlEventTouchUpInside];
+    [settingsButton setBackgroundImage:[UIImage imageNamed:@"Settings"] forState:UIControlStateNormal];
+    settingsButton.frame = CGRectMake(228, 0, 44, 44);
+    settingsButton.alpha = 0.6;
+    [headerView addSubview:settingsButton];
+    
     return headerView;
 }
 -(void)handleFilterHeaderTap:(UITapGestureRecognizer*)sender{
@@ -558,7 +542,7 @@
     // If there are no participants, reduce the size of the card
     if (play.participantsCount==0) return rowHeight+textRect.size.height;
     
-    return rowHeight+17+18+textRect.size.height;
+    return rowHeight+16+18+textRect.size.height;
     
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -756,35 +740,64 @@
 #pragma mark - EventInterestFilterBlurView delegate calls
 
 -(void)changeInterestFilter:(NSInteger)index{
-    UILabel *headerText=(UILabel*)[self.view viewWithTag:3737];
+    UIButton *headerText=(UIButton*)[self.view viewWithTag:3737];
     categoryFilterType=index;
+    NSString* filterText = nil;
+    CGSize size = CGSizeMake(220,999);
+    
     switch (index) {
-        case 1:
-        {
-            headerText.text=@"Happening Around You";
+        case 1:{
+            filterText = @"Happening Around You";
+            CGRect textRect = [filterText
+                               boundingRectWithSize:size
+                               options:NSStringDrawingUsesLineFragmentOrigin
+                               attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue" size:15.0]}
+                               context:nil];
+            
+            headerText.frame = CGRectMake(0, 0, 16+textRect.size.width+8+15, 44.0);
+            [headerText setTitle:filterText forState:UIControlStateNormal];
+            headerText.imageEdgeInsets = UIEdgeInsetsMake(2.0f, textRect.size.width+16+8, 0.0f, 0.0f);
         }
             break;
+        case 2:{
+            filterText = @"Friends Around You";
+            CGRect textRect = [filterText
+                               boundingRectWithSize:size
+                               options:NSStringDrawingUsesLineFragmentOrigin
+                               attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue" size:15.0]}
+                               context:nil];
             
-        case 2:
-        {
-            headerText.text=@"Friends Around You";
+            headerText.frame = CGRectMake(0, 0, 16+textRect.size.width+8+15, 44.0);
+            [headerText setTitle:filterText forState:UIControlStateNormal];
+            headerText.imageEdgeInsets = UIEdgeInsetsMake(2.0f, textRect.size.width+16+8, 0.0f, 0.0f);
         }
             break;
+        case 3:{
+            filterText = @"Your Interests";
+            CGRect textRect = [filterText
+                               boundingRectWithSize:size
+                               options:NSStringDrawingUsesLineFragmentOrigin
+                               attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue" size:15.0]}
+                               context:nil];
             
-            
-        case 3:
-        {
-            headerText.text=@"Your Interests";
+            headerText.frame = CGRectMake(0, 0, 16+textRect.size.width+8+15, 44.0);
+            [headerText setTitle:filterText forState:UIControlStateNormal];
+            headerText.imageEdgeInsets = UIEdgeInsetsMake(2.0f, textRect.size.width+16+8, 0.0f, 0.0f);
         }
             break;
+        case 4:{
+            filterText = @"Created by You";
+            CGRect textRect = [filterText
+                               boundingRectWithSize:size
+                               options:NSStringDrawingUsesLineFragmentOrigin
+                               attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue" size:15.0]}
+                               context:nil];
             
-        case 4:
-        {
-            headerText.text=@"Created By You";
+            headerText.frame = CGRectMake(0, 0, 16+textRect.size.width+8+15, 44.0);
+            [headerText setTitle:filterText forState:UIControlStateNormal];
+            headerText.imageEdgeInsets = UIEdgeInsetsMake(2.0f, textRect.size.width+16+8, 0.0f, 0.0f);
         }
             break;
-
-            
     }
     [self filterByCategoryType:index];
 }
@@ -1093,7 +1106,7 @@
         
         NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"BlankHomePageView" owner:self options:nil];
         BlankHomePageView *blankHomePageView=[nib objectAtIndex:0];
-        blankHomePageView.frame=CGRectMake(0, 167, 320, 401);
+        blankHomePageView.frame=CGRectMake(0, 200, 320, 400);
         blankHomePageView.delegate=self;
         [blankHomePageView updateViewConstraints];
         blankHomePageView.userInteractionEnabled=YES;
