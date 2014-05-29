@@ -186,7 +186,7 @@
     [filterView addSubview:[self renderFilterHeaderView]];
     [bottomNavigationView addSubview:filterView];
 #else
-    UIView *filterView=[[UIView alloc]initWithFrame:CGRectMake(0, 156, 320, 44)]; // Distance from the top used to be 167
+    UIView *filterView=[[UIView alloc]initWithFrame:CGRectMake(0, 156, 320, 44)];
     [filterView addSubview:[self renderFilterHeaderView]];
     [self.view addSubview:filterView];
 #endif
@@ -457,11 +457,6 @@
 -(UIView*)renderFilterHeaderView{
     UIView *headerView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 44)];
     headerView.backgroundColor=[BeagleUtilities returnBeagleColor:11];
-    
-    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleFilterHeaderTap:)];
-    // make your gesture recognizer priority
-    singleTap.numberOfTapsRequired = 1;
-    [headerView addGestureRecognizer:singleTap];
 
     CGSize size = CGSizeMake(220,999);
     
@@ -473,19 +468,26 @@
                        attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue" size:15.0]}
                        context:nil];
     
-    UILabel *activityFilterLabel = [[UILabel alloc]initWithFrame:CGRectMake(16, 0, textRect.size.width, 44)];
-    activityFilterLabel.tag=3737;
-    activityFilterLabel.text = @"Happening Around You";
-    activityFilterLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:15.0];
-    activityFilterLabel.backgroundColor = [UIColor clearColor];
-    activityFilterLabel.textColor = [UIColor whiteColor];
-    activityFilterLabel.textAlignment = NSTextAlignmentLeft;
-
-    [headerView addSubview:activityFilterLabel];
+    UIButton *filterButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    filterButton.frame = CGRectMake(0, 0, 16+textRect.size.width+8+15, 44.0);
+    filterButton.userInteractionEnabled = YES;
+    filterButton.backgroundColor = [UIColor clearColor];
+    filterButton.tag=3737;
     
-    UIImageView *filterImageView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Filter"]];
-    filterImageView.frame=CGRectMake(16+8+textRect.size.width, 19, 15, 8);
-    [headerView addSubview:filterImageView];
+    // Setting up the title
+    [filterButton setTitle:filterText forState:UIControlStateNormal];
+    filterButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:15.0];
+    [filterButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [filterButton setTitleColor:[UIColor grayColor] forState:UIControlStateHighlighted];
+    [filterButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
+    filterButton.titleEdgeInsets = UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f);
+    
+    // Setting up the filter icon
+    [filterButton setImage:[UIImage imageNamed:@"Filter"] forState:UIControlStateNormal];
+    filterButton.imageEdgeInsets = UIEdgeInsetsMake(2.0f, textRect.size.width+16+8, 0.0f, 0.0f);
+    
+    [filterButton addTarget:self action:@selector(handleFilterHeaderTap:)forControlEvents:UIControlEventTouchUpInside];
+    [headerView addSubview:filterButton];
     
     UIButton *notificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [notificationsButton addTarget:self action:@selector(revealUnderRight:)forControlEvents:UIControlEventTouchUpInside];
@@ -738,35 +740,64 @@
 #pragma mark - EventInterestFilterBlurView delegate calls
 
 -(void)changeInterestFilter:(NSInteger)index{
-    UILabel *headerText=(UILabel*)[self.view viewWithTag:3737];
+    UIButton *headerText=(UIButton*)[self.view viewWithTag:3737];
     categoryFilterType=index;
+    NSString* filterText = nil;
+    CGSize size = CGSizeMake(220,999);
+    
     switch (index) {
-        case 1:
-        {
-            headerText.text=@"Happening Around You";
+        case 1:{
+            filterText = @"Happening Around You";
+            CGRect textRect = [filterText
+                               boundingRectWithSize:size
+                               options:NSStringDrawingUsesLineFragmentOrigin
+                               attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue" size:15.0]}
+                               context:nil];
+            
+            headerText.frame = CGRectMake(0, 0, 16+textRect.size.width+8+15, 44.0);
+            [headerText setTitle:filterText forState:UIControlStateNormal];
+            headerText.imageEdgeInsets = UIEdgeInsetsMake(2.0f, textRect.size.width+16+8, 0.0f, 0.0f);
         }
             break;
+        case 2:{
+            filterText = @"Friends Around You";
+            CGRect textRect = [filterText
+                               boundingRectWithSize:size
+                               options:NSStringDrawingUsesLineFragmentOrigin
+                               attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue" size:15.0]}
+                               context:nil];
             
-        case 2:
-        {
-            headerText.text=@"Friends Around You";
+            headerText.frame = CGRectMake(0, 0, 16+textRect.size.width+8+15, 44.0);
+            [headerText setTitle:filterText forState:UIControlStateNormal];
+            headerText.imageEdgeInsets = UIEdgeInsetsMake(2.0f, textRect.size.width+16+8, 0.0f, 0.0f);
         }
             break;
+        case 3:{
+            filterText = @"Your Interests";
+            CGRect textRect = [filterText
+                               boundingRectWithSize:size
+                               options:NSStringDrawingUsesLineFragmentOrigin
+                               attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue" size:15.0]}
+                               context:nil];
             
-            
-        case 3:
-        {
-            headerText.text=@"Your Interests";
+            headerText.frame = CGRectMake(0, 0, 16+textRect.size.width+8+15, 44.0);
+            [headerText setTitle:filterText forState:UIControlStateNormal];
+            headerText.imageEdgeInsets = UIEdgeInsetsMake(2.0f, textRect.size.width+16+8, 0.0f, 0.0f);
         }
             break;
+        case 4:{
+            filterText = @"Created by You";
+            CGRect textRect = [filterText
+                               boundingRectWithSize:size
+                               options:NSStringDrawingUsesLineFragmentOrigin
+                               attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue" size:15.0]}
+                               context:nil];
             
-        case 4:
-        {
-            headerText.text=@"Created By You";
+            headerText.frame = CGRectMake(0, 0, 16+textRect.size.width+8+15, 44.0);
+            [headerText setTitle:filterText forState:UIControlStateNormal];
+            headerText.imageEdgeInsets = UIEdgeInsetsMake(2.0f, textRect.size.width+16+8, 0.0f, 0.0f);
         }
             break;
-
-            
     }
     [self filterByCategoryType:index];
 }
