@@ -382,6 +382,7 @@
             <objects>
                 <navigationController storyboardIdentifier="loginNavScreen" definesPresentationContext="YES" id="Tvt-5e-zCq" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="kdv-uD-jLY">
+                        <rect key="frame" x="0.0" y="0.0" width="0.0" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
@@ -556,6 +557,7 @@
             <objects>
                 <navigationController storyboardIdentifier="initialNavBeagle" definesPresentationContext="YES" id="LQI-Ks-Z64" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="gZd-MJ-XOi">
+                        <rect key="frame" x="0.0" y="0.0" width="0.0" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
