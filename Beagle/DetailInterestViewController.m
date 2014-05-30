@@ -86,7 +86,6 @@ static NSString * const CellIdentifier = @"cell";
     
     if(!isRedirectedFromNotif)
       [self createInterestInitialCard];
-    
 
 }
 
@@ -111,7 +110,7 @@ static NSString * const CellIdentifier = @"cell";
     self.detailedInterestTableView.delegate = self;
     self.detailedInterestTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth
     |UIViewAutoresizingFlexibleHeight;
-    [self.detailedInterestTableView setBackgroundColor:[UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1.0]];
+    [self.detailedInterestTableView setBackgroundColor:[BeagleUtilities returnBeagleColor:2]];
     
     self.contentWrapper = [[MessageKeyboardView alloc] initWithScrollView:self.detailedInterestTableView];
     self.contentWrapper.frame = self.view.bounds;
@@ -163,7 +162,6 @@ static NSString * const CellIdentifier = @"cell";
     
     [self.contentWrapper.dummyInputView.textView setText:nil];
     [self.contentWrapper textViewDidChange:self.contentWrapper.dummyInputView.textView];
-    
     
     UIEdgeInsets contentInset = self.detailedInterestTableView.contentInset;
     contentInset.bottom = 0;
@@ -490,13 +488,9 @@ static NSString * const CellIdentifier = @"cell";
         CGRect textRect = [self.interestActivity.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
         
         if(self.interestActivity.participantsCount==0)
-            cardHeight=104.0+textRect.size.height;
+            cardHeight=113.0+textRect.size.height;
         else
-            cardHeight=209.0+textRect.size.height;
-        
-        if(self.interestActivity.postCount>0){
-            cardHeight=cardHeight+9.0f;
-        }
+            cardHeight=218.0+textRect.size.height;
         
         return cardHeight;
     }
@@ -843,6 +837,7 @@ static NSString * const CellIdentifier = @"cell";
         UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
         cell  =[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         cell.backgroundColor=[BeagleUtilities returnBeagleColor:5];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
         InterestChatClass *chatCell=[self.chatPostsArray objectAtIndex:indexPath.row-1];
         
@@ -914,9 +909,9 @@ static NSString * const CellIdentifier = @"cell";
         
         // Comment text
         attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                 [UIFont systemFontOfSize:15.0f], NSFontAttributeName,
+                 [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0f], NSFontAttributeName,
                  [UIColor blackColor],NSForegroundColorAttributeName,
-                 style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
+                 style, NSParagraphStyleAttributeName, NSLineBreakByWordWrapping, nil];
         
         CGSize maximumLabelSize = CGSizeMake(245,999);
         
