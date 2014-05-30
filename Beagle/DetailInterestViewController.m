@@ -881,13 +881,13 @@ static NSString * const CellIdentifier = @"cell";
                                color,NSForegroundColorAttributeName,
                                style, NSParagraphStyleAttributeName, nil];
 
-        CGSize organizerNameSize=[chatCell.player_name boundingRectWithSize:CGSizeMake(245, 999)
+        CGSize organizerNameSize=[[[chatCell.player_name componentsSeparatedByString:@" "] objectAtIndex:0] boundingRectWithSize:CGSizeMake(245, 999)
                                                                          options:NSStringDrawingUsesLineFragmentOrigin
                                                                       attributes:attrs
                                                                          context:nil].size;
-
+        
         UILabel *organizerNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(59, cellTop, organizerNameSize.width, organizerNameSize.height)];
-        organizerNameLabel.attributedText = [[NSAttributedString alloc] initWithString:chatCell.player_name attributes:attrs];
+        organizerNameLabel.attributedText = [[NSAttributedString alloc] initWithString:[[chatCell.player_name componentsSeparatedByString:@" "] objectAtIndex:0] attributes:attrs];
         [cell.contentView addSubview:organizerNameLabel];
         
         // Time stamp
@@ -904,7 +904,7 @@ static NSString * const CellIdentifier = @"cell";
                                                         attributes:attrs
                                                            context:nil].size;
         
-        UILabel *timeStampLabel = [[UILabel alloc] initWithFrame:CGRectMake(59+organizerNameSize.width+8,cellTop+2, dateTextSize.width, dateTextSize.height)];
+        UILabel *timeStampLabel = [[UILabel alloc] initWithFrame:CGRectMake(59+organizerNameSize.width+5,cellTop+2, dateTextSize.width, dateTextSize.height)];
         
         timeStampLabel.attributedText = [[NSAttributedString alloc] initWithString:timestamp attributes:attrs];
         [cell.contentView  addSubview:timeStampLabel];
