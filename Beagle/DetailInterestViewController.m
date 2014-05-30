@@ -78,10 +78,6 @@ static NSString * const CellIdentifier = @"cell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self.navigationController.navigationBar setBarTintColor:[BeagleUtilities returnBeagleColor:8]];
-    
-    
-    
     self.navigationController.navigationBar.topItem.title = @"";
     
     if(!isRedirectedFromNotif)
@@ -166,7 +162,6 @@ static NSString * const CellIdentifier = @"cell";
     [self.contentWrapper.dummyInputView.textView setText:nil];
     [self.contentWrapper textViewDidChange:self.contentWrapper.dummyInputView.textView];
     
-
     
     UIEdgeInsets contentInset = self.detailedInterestTableView.contentInset;
     contentInset.bottom = 0;
@@ -494,9 +489,9 @@ static NSString * const CellIdentifier = @"cell";
         CGRect textRect = [self.interestActivity.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
         
         if(self.interestActivity.participantsCount==0)
-            cardHeight=118.0+textRect.size.height;
+            cardHeight=105.0+textRect.size.height;
         else
-            cardHeight=221.0+textRect.size.height;
+            cardHeight=210.0+textRect.size.height;
         
         if(self.interestActivity.postCount>0){
             cardHeight=cardHeight+10.0;
@@ -529,8 +524,7 @@ static NSString * const CellIdentifier = @"cell";
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    
-    
+    // For the INFO part of the card
     if(indexPath.row==0){
         // Let's begin spacing from the top
 
@@ -538,20 +532,14 @@ static NSString * const CellIdentifier = @"cell";
 
         static NSString *CellIdentifier = @"MediaTableCell";
         
-        
         UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-//        if (cell == nil) {
-            cell =[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-            cell.selectionStyle=UITableViewCellSelectionStyleNone;
-//        }
-
-//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier
-//                                                            forIndexPath:indexPath];
+        cell =[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        cell.selectionStyle=UITableViewCellSelectionStyleNone;
         
         NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
         [style setAlignment:NSTextAlignmentCenter];
         
-        cell.backgroundColor = [BeagleUtilities returnBeagleColor:2];
+        cell.backgroundColor = [UIColor whiteColor];
         NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                                [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f], NSFontAttributeName,
                                [UIColor colorWithRed:75.0/255.0 green:75.0/255.0 blue:75.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
@@ -817,9 +805,10 @@ static NSString * const CellIdentifier = @"cell";
             
             postCountLabel.attributedText = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld",(long)self.interestActivity.postCount] attributes:attrs];
             
-            UIImageView *triangle = [[UIImageView alloc] initWithFrame:CGRectMake(304-19, fromTheTop+21+3, 17, 10)];
+            UIImageView *triangle = [[UIImageView alloc] initWithFrame:CGRectMake(304-19, fromTheTop+21, 17, 10)];
             triangle.image   = [UIImage imageNamed:@"Triangle"];
             [_backgroundView addSubview:triangle];
+            //[triangle setHidden:YES];
             [_backgroundView addSubview:postCountLabel];
             
             fromTheTop = fromTheTop + 10.0f;
@@ -828,13 +817,15 @@ static NSString * const CellIdentifier = @"cell";
         else
             commentImageView.image=[UIImage imageNamed:@"Add-Comment"];
         
-        fromTheTop = fromTheTop + 21.0f+3.0f;
+        fromTheTop = fromTheTop + 21.0f;
         
-        _backgroundView.frame=CGRectMake(0, 8, 320, fromTheTop);
+        _backgroundView.frame=CGRectMake(0, 0, 320, fromTheTop);
         [cell.contentView addSubview:_backgroundView];
         
         return cell;
     }
+    
+    // For the COMMENTS part of the card
     else {
         
         CGFloat cellTop = 8.0f;
@@ -932,15 +923,6 @@ static NSString * const CellIdentifier = @"cell";
         
         cellTop = cellTop + commentTextRect.size.height;
         cellTop = cellTop + 16.0f;
-
-        // Add line seperator
-        if(indexPath.row!=[self.chatPostsArray count]) {
-            
-            UIView *seperatorLineView=[[UIView alloc]initWithFrame:CGRectMake(16, cellTop, 288, 0.5)];
-            seperatorLineView.alpha=0.15;
-            [seperatorLineView setBackgroundColor:[UIColor grayColor]];
-            [cell.contentView addSubview:seperatorLineView];
-        }
         
         return cell;
     }
