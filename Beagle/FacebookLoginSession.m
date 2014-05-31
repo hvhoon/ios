@@ -39,7 +39,7 @@
              NSArray *accounts = [self.accountStore accountsWithAccountType:FBaccountType];
              //it will always be the last object with single sign on
              self.facebookAccount = [accounts lastObject];
-             NSLog(@"facebook account =%@",self.facebookAccount);
+            // NSLog(@"facebook account =%@",self.facebookAccount);
              [self get];
          } else {
              //Fail gracefully...
