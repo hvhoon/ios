@@ -22,6 +22,7 @@ static NSString * const CellIdentifier = @"cell";
 @property(nonatomic,strong)NSMutableDictionary*imageDownloadsInProgress;
 @property (strong, nonatomic) UIView *backgroundView1;
 @property (strong, nonatomic) UIImageView *profileImageView;
+@property (strong, nonatomic) UIImageView *triangle;
 @property (strong,nonatomic)BeaglePlayerScrollMenu *scrollMenu;
 @property(nonatomic,strong)ServerManager*interestUpdateManager;
 @property(nonatomic,strong)NSMutableArray *chatPostsArray;
@@ -78,15 +79,13 @@ static NSString * const CellIdentifier = @"cell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self.navigationController.navigationBar setBarTintColor:[BeagleUtilities returnBeagleColor:8]];
-    
-    
-    
     self.navigationController.navigationBar.topItem.title = @"";
+    
+    _triangle = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Triangle"]];
+    _triangle.hidden = YES;
     
     if(!isRedirectedFromNotif)
       [self createInterestInitialCard];
-    
 
 }
 
@@ -107,13 +106,11 @@ static NSString * const CellIdentifier = @"cell";
                                                                   style:UITableViewStylePlain];
     self.detailedInterestTableView.dataSource = self;
     self.detailedInterestTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
+    self.detailedInterestTableView.separatorInset = UIEdgeInsetsZero;
     self.detailedInterestTableView.delegate = self;
     self.detailedInterestTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth
     |UIViewAutoresizingFlexibleHeight;
-    [self.detailedInterestTableView setBackgroundColor:[UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1.0]];
-    
-    //    [self.detailedInterestTableView registerClass:[UITableViewCell class]
-    //                           forCellReuseIdentifier:CellIdentifier];
+    [self.detailedInterestTableView setBackgroundColor:[BeagleUtilities returnBeagleColor:2]];
     
     self.contentWrapper = [[MessageKeyboardView alloc] initWithScrollView:self.detailedInterestTableView];
     self.contentWrapper.frame = self.view.bounds;
@@ -165,8 +162,6 @@ static NSString * const CellIdentifier = @"cell";
     
     [self.contentWrapper.dummyInputView.textView setText:nil];
     [self.contentWrapper textViewDidChange:self.contentWrapper.dummyInputView.textView];
-    
-
     
     UIEdgeInsets contentInset = self.detailedInterestTableView.contentInset;
     contentInset.bottom = 0;
@@ -273,7 +268,6 @@ static NSString * const CellIdentifier = @"cell";
                         if([chatsArray count]!=0){
                             self.chatPostsArray=[NSMutableArray arrayWithArray:chatsArray];
                         }
-                        
                     }
                     
                 }
@@ -494,13 +488,9 @@ static NSString * const CellIdentifier = @"cell";
         CGRect textRect = [self.interestActivity.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
         
         if(self.interestActivity.participantsCount==0)
-            cardHeight=118.0+textRect.size.height;
+            cardHeight=113.0+textRect.size.height;
         else
-            cardHeight=221.0+textRect.size.height;
-        
-        if(self.interestActivity.postCount>0){
-            cardHeight=cardHeight+10.0;
-        }
+            cardHeight=218.0+textRect.size.height;
         
         return cardHeight;
     }
@@ -512,25 +502,26 @@ static NSString * const CellIdentifier = @"cell";
             [style setAlignment:NSTextAlignmentLeft];
             
             NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                                   [UIFont fontWithName:@"HelveticaNeue" size:14.0f], NSFontAttributeName,
+                                   [UIFont systemFontOfSize:15.0f], NSFontAttributeName,
                                    [UIColor blackColor],NSForegroundColorAttributeName,
                                    style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
             
-            
-            CGSize maximumLabelSize = CGSizeMake(288,999);
+            CGSize maximumLabelSize = CGSizeMake(245,999);
             
             CGRect textRect = [chatCell.text boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
                                                                             attributes:attrs
                                                                                context:nil];
             
-            return 67.0f+textRect.size.height;
+            if(indexPath.row==1)
+                return 45.0f+8.0f+textRect.size.height;
+            
+            return 45.0f+textRect.size.height;
         }
     }
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    
-    
+    // For the INFO part of the card
     if(indexPath.row==0){
         // Let's begin spacing from the top
 
@@ -538,20 +529,15 @@ static NSString * const CellIdentifier = @"cell";
 
         static NSString *CellIdentifier = @"MediaTableCell";
         
-        
         UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-//        if (cell == nil) {
-            cell =[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-            cell.selectionStyle=UITableViewCellSelectionStyleNone;
-//        }
-
-//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier
-//                                                            forIndexPath:indexPath];
+        cell =[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        cell.selectionStyle=UITableViewCellSelectionStyleNone;
+        cell.separatorInset = UIEdgeInsetsZero;
         
         NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
         [style setAlignment:NSTextAlignmentCenter];
         
-        cell.backgroundColor = [BeagleUtilities returnBeagleColor:2];
+        cell.backgroundColor = [UIColor whiteColor];
         NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                                [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f], NSFontAttributeName,
                                [UIColor colorWithRed:75.0/255.0 green:75.0/255.0 blue:75.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
@@ -817,35 +803,41 @@ static NSString * const CellIdentifier = @"cell";
             
             postCountLabel.attributedText = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld",(long)self.interestActivity.postCount] attributes:attrs];
             
-            UIImageView *triangle = [[UIImageView alloc] initWithFrame:CGRectMake(304-19, fromTheTop+21+3, 17, 10)];
-            triangle.image   = [UIImage imageNamed:@"Triangle"];
-            [_backgroundView addSubview:triangle];
+            _triangle.frame = CGRectMake(304-19, fromTheTop+21, 17, 9);
+            [_backgroundView addSubview:_triangle];
             [_backgroundView addSubview:postCountLabel];
             
-            fromTheTop = fromTheTop + 10.0f;
+            fromTheTop = fromTheTop + 9.0f;
         }
         // If no comments have been added yet
         else
             commentImageView.image=[UIImage imageNamed:@"Add-Comment"];
         
-        fromTheTop = fromTheTop + 21.0f+3.0f;
+        fromTheTop = fromTheTop + 21.0f;
         
-        _backgroundView.frame=CGRectMake(0, 8, 320, fromTheTop);
+        _backgroundView.frame=CGRectMake(0, 0, 320, fromTheTop);
         [cell.contentView addSubview:_backgroundView];
         
         return cell;
     }
+    
+    // For the COMMENTS part of the card
     else {
         
-        CGFloat cellTop = 8.0f;
+        CGFloat cellTop = 0.0f;
+        
+        if(indexPath.row==1)
+            cellTop = 16.0f;
+        else
+            cellTop = 8.0f;
+        
+        [_triangle setHidden:NO];
         
         static NSString *CellIdentifier = @"MediaTableCell2";
-        
         UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-        
-         cell  =[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-        cell.selectionStyle=UITableViewCellSelectionStyleNone;
+        cell  =[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         cell.backgroundColor=[BeagleUtilities returnBeagleColor:5];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
         InterestChatClass *chatCell=[self.chatPostsArray objectAtIndex:indexPath.row-1];
         
@@ -878,69 +870,60 @@ static NSString * const CellIdentifier = @"cell";
         // Organizer name
         NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
         [style setAlignment:NSTextAlignmentLeft];
-        UIColor *color=[BeagleUtilities returnBeagleColor:4];
+        UIColor *color=[UIColor blackColor];
         NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                               [UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0f], NSFontAttributeName,
+                               [UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0f], NSFontAttributeName,
                                color,NSForegroundColorAttributeName,
                                style, NSParagraphStyleAttributeName, nil];
 
-        CGSize organizerNameSize=[chatCell.player_name boundingRectWithSize:CGSizeMake(300, 999)
+        CGSize organizerNameSize=[[[chatCell.player_name componentsSeparatedByString:@" "] objectAtIndex:0] boundingRectWithSize:CGSizeMake(245, 999)
                                                                          options:NSStringDrawingUsesLineFragmentOrigin
                                                                       attributes:attrs
                                                                          context:nil].size;
-
-        UILabel *organizerNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(59, cellTop+8, organizerNameSize.width, organizerNameSize.height)];
         
-        organizerNameLabel.attributedText = [[NSAttributedString alloc] initWithString:chatCell.player_name attributes:attrs];
+        UILabel *organizerNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(59, cellTop, organizerNameSize.width, organizerNameSize.height)];
+        organizerNameLabel.attributedText = [[NSAttributedString alloc] initWithString:[[chatCell.player_name componentsSeparatedByString:@" "] objectAtIndex:0] attributes:attrs];
         [cell.contentView addSubview:organizerNameLabel];
         
         // Time stamp
+        color=[BeagleUtilities returnBeagleColor:3];
         attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                 [UIFont fontWithName:@"HelveticaNeue-Light" size:11.0f], NSFontAttributeName,
+                 [UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f], NSFontAttributeName,
                  color,NSForegroundColorAttributeName,
                  style, NSParagraphStyleAttributeName, nil];
         
         NSString *timestamp=[BeagleUtilities calculateChatTimestamp:chatCell.timestamp];
         
-        CGSize dateTextSize = [timestamp boundingRectWithSize:CGSizeMake(300,999)
+        CGSize dateTextSize = [timestamp boundingRectWithSize:CGSizeMake(125,999)
                                                            options:NSStringDrawingUsesLineFragmentOrigin
                                                         attributes:attrs
                                                            context:nil].size;
         
-        UILabel *timeStampLabel = [[UILabel alloc] initWithFrame:CGRectMake(59,cellTop+8+organizerNameSize.height+1, dateTextSize.width, dateTextSize.height)];
+        UILabel *timeStampLabel = [[UILabel alloc] initWithFrame:CGRectMake(59+organizerNameSize.width+5,cellTop+2, dateTextSize.width, dateTextSize.height)];
         
         timeStampLabel.attributedText = [[NSAttributedString alloc] initWithString:timestamp attributes:attrs];
         [cell.contentView  addSubview:timeStampLabel];
         
-        cellTop = cellTop + 35.0f; // size of the profile picture
-        cellTop = cellTop + 8.0f; // buffer below profile section
+        cellTop = cellTop + organizerNameSize.height; // size of the profile picture
+        cellTop = cellTop + 2.0f; // buffer below profile section
         
         // Comment text
         attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                 [UIFont fontWithName:@"HelveticaNeue" size:14.0f], NSFontAttributeName,
+                 [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0f], NSFontAttributeName,
                  [UIColor blackColor],NSForegroundColorAttributeName,
-                 style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
+                 style, NSParagraphStyleAttributeName, NSLineBreakByWordWrapping, nil];
         
-        CGSize maximumLabelSize = CGSizeMake(288,999);
+        CGSize maximumLabelSize = CGSizeMake(245,999);
         
         CGRect commentTextRect = [chatCell.text boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
         
-        UILabel *chatDescLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, cellTop, commentTextRect.size.width, commentTextRect.size.height)];
+        UILabel *chatDescLabel = [[UILabel alloc] initWithFrame:CGRectMake(59, cellTop, commentTextRect.size.width, commentTextRect.size.height)];
         chatDescLabel.attributedText = [[NSAttributedString alloc] initWithString:chatCell.text attributes:attrs];
-        chatDescLabel.numberOfLines=0;
+        chatDescLabel.numberOfLines = 0;
         [cell.contentView addSubview:chatDescLabel];
         
         cellTop = cellTop + commentTextRect.size.height;
         cellTop = cellTop + 16.0f;
-
-        // Add line seperator
-        if(indexPath.row!=[self.chatPostsArray count]) {
-            
-            UIView *seperatorLineView=[[UIView alloc]initWithFrame:CGRectMake(16, cellTop, 288, 0.5)];
-            seperatorLineView.alpha=0.15;
-            [seperatorLineView setBackgroundColor:[UIColor grayColor]];
-            [cell.contentView addSubview:seperatorLineView];
-        }
         
         return cell;
     }

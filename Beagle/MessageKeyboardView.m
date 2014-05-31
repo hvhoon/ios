@@ -169,7 +169,7 @@ static inline UIViewAnimationOptions RDRAnimationOptionsForCurve(UIViewAnimation
     
     _textView = [UITextView new];
     self.textView.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:17.0f];
-    self.textView.textColor=[UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0];
+    self.textView.textColor=[UIColor blackColor];
     return self.textView;
 }
 
@@ -407,7 +407,8 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
     self.dummyInputView.textView.inputAccessoryView = self.inputView;
     self.dummyInputView.textView.tintColor = [UIColor clearColor];
     self.dummyInputView.textView.delegate = self;
-    self.dummyInputView.textView.text=@"Write a comment...";
+    self.dummyInputView.textView.text=@"Join the conversation";
+    self.dummyInputView.textView.textColor = [BeagleUtilities returnBeagleColor:3];
     [self addSubview:self.dummyInputView];
 }
 

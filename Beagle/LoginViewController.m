@@ -96,9 +96,6 @@
     
     InitialSlidingViewController *initialViewController = [storyboard instantiateViewControllerWithIdentifier:@"initialBeagle"];
     [self.navigationController pushViewController:initialViewController animated:YES];
-    
-    
-    
 
 }
 
