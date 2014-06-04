@@ -137,7 +137,7 @@ static inline NSRegularExpression * NameRegularExpression() {
     // show the lil yellow dot if this is a new notification!
     if(self.isANewNotification){
         UIImageView *actionImageView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"New-Notification"]];
-        actionImageView.frame=CGRectMake(self.lbltime.frame.size.width+58+5, 12+self.summaryLabel.frame.size.height+4, 9, 9);
+        actionImageView.frame=CGRectMake(self.lbltime.frame.size.width+58+5, 12+self.summaryLabel.frame.size.height+6, 9, 9);
         [self addSubview:actionImageView];
 
     }

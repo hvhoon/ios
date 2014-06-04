@@ -94,6 +94,8 @@
     UIView *seperatorLineView=[[UIView alloc]initWithFrame:CGRectMake(0, 64, 270, 0.5)];
     [seperatorLineView setBackgroundColor:[BeagleUtilities returnBeagleColor:10]];
     [self.view addSubview:seperatorLineView];
+    _unreadUpdateView.layer.cornerRadius = 2.0f;
+    _unreadUpdateView.layer.masksToBounds = YES;
     _unreadUpdateView.hidden=YES;
 	// Do any additional setup after loading the view.
     
