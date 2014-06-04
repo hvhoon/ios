@@ -11,6 +11,8 @@
 @property (nonatomic, retain) UILabel *lbltime;
 @property (nonatomic, assign) NSInteger notificationType;
 @property (nonatomic, assign) NSInteger isANewNotification;
-+ (CGFloat)heightForCellWithText:(NSString *)text;
-+(CGFloat)heightForCellWithNewInterest:(NSString*)text what:(NSString*)what;
++(CGFloat)heightForNotificationText:(NSString *)text;
++(CGFloat)heightForNewInterestText:(NSString*)what;
++(CGFloat)heightForTimeStampText:(NSString*)when;
+
 @end
