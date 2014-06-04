@@ -34,13 +34,13 @@ static inline NSRegularExpression * NameRegularExpression() {
     self.summaryLabel.textColor= [BeagleUtilities returnBeagleColor:2];
     self.summaryLabel.numberOfLines = 0;
     self.summaryLabel.lineBreakMode = UILineBreakModeWordWrap;
-    self.summaryLabel.font=[UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f];
+    self.summaryLabel.font=[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
     self.summaryLabel.highlightedTextColor = [UIColor whiteColor];
     self.summaryLabel.verticalAlignment = TTTAttributedLabelVerticalAlignmentTop;
     
     self.lbltime=[[UILabel alloc] init];
     self.lbltime.textColor=[BeagleUtilities returnBeagleColor:6];
-    self.lbltime.font =[UIFont fontWithName:@"HelveticaNeue-Light" size:11.0f];
+    self.lbltime.font =[UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f];
     self.lbltime.lineBreakMode = UILineBreakModeWordWrap;
     self.lbltime.numberOfLines = 0;
     self.lbltime.highlightedTextColor = [BeagleUtilities returnBeagleColor:6];
@@ -65,7 +65,7 @@ static inline NSRegularExpression * NameRegularExpression() {
         
         [regexp enumerateMatchesInString:[mutableAttributedString string] options:0 range:stringRange usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
             
-            UIFont *boldSystemFont =[UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0f];
+            UIFont *boldSystemFont =[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0f];
             CTFontRef boldFont = CTFontCreateWithName(( CFStringRef)boldSystemFont.fontName, boldSystemFont.pointSize, NULL);
             
             if (boldFont) {
@@ -98,16 +98,31 @@ static inline NSRegularExpression * NameRegularExpression() {
     self.lbltime.text=text;
 }
 
-+ (CGFloat)heightForCellWithText:(NSString *)text {
++ (CGFloat)heightForNotificationText:(NSString *)text {
     CGFloat height = 0.0f;
-    height += ceilf([text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f] constrainedToSize:CGSizeMake(179, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height);
+    
+    // What's the height of the notification text
+    height += ceilf([text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f] constrainedToSize:CGSizeMake(195, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height);
+    
     return height;
 }
-+(CGFloat)heightForCellWithNewInterest:(NSString*)text what:(NSString*)what{
-    CGFloat height = 92.0f;
-    height += ceilf([what sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f] constrainedToSize:CGSizeMake(238.0f, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height);
++(CGFloat)heightForNewInterestText:(NSString*)what {
+    CGFloat height = 0.0f; // Everything else on the screen that takes up height other than the notification text and new interest text
+    
+    // What's the height of the new interest text
+    height += ceilf([what sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:15.0f] constrainedToSize:CGSizeMake(238.0f, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height);
+    
     return height;
 }
++ (CGFloat)heightForTimeStampText:(NSString *)when {
+    CGFloat height = 0.0f;
+    
+    // What's the height of the time stamp text
+    height += ceilf([when sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f] constrainedToSize:CGSizeMake(195, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height);
+    
+    return height;
+}
+
 #pragma mark - UIView
 
 - (void)layoutSubviews {
@@ -115,19 +130,15 @@ static inline NSRegularExpression * NameRegularExpression() {
     self.textLabel.hidden = YES;
     self.detailTextLabel.hidden = YES;
     
-    if(self.notificationType!=11){
-        self.summaryLabel.frame=CGRectMake(59, 16, ceilf([self.summaryText sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f] constrainedToSize:CGSizeMake(179, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].width), [AttributedTableViewCell heightForCellWithText:self.summaryText]+2);
+    self.summaryLabel.frame=CGRectMake(58, 12, ceilf([self.summaryText sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f] constrainedToSize:CGSizeMake(195, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].width), [AttributedTableViewCell heightForNotificationText:self.summaryText]);
         
-    }
-    else{
-        self.summaryLabel.frame=CGRectMake(59, 16, ceilf([self.summaryText sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f] constrainedToSize:CGSizeMake(179, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].width), [AttributedTableViewCell heightForCellWithText:self.summaryText]);
-
-    }
-    self.lbltime.frame=CGRectMake(59, 16+self.summaryLabel.frame.size.height+1, ceilf([self.lbltime.text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:11.0f] constrainedToSize:CGSizeMake(179, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].width), 15);
+    self.lbltime.frame=CGRectMake(58, 12+self.summaryLabel.frame.size.height+2, ceilf([self.lbltime.text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f] constrainedToSize:CGSizeMake(195, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].width), 15);
+    
+    // show the lil yellow dot if this is a new notification!
     if(self.isANewNotification){
-    UIImageView *actionImageView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"New-Notification"]];
-    actionImageView.frame=CGRectMake(self.lbltime.frame.size.width+59+5, 16+self.summaryLabel.frame.size.height+4, 9, 9);
-    [self addSubview:actionImageView];
+        UIImageView *actionImageView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"New-Notification"]];
+        actionImageView.frame=CGRectMake(self.lbltime.frame.size.width+58+5, 12+self.summaryLabel.frame.size.height+6, 9, 9);
+        [self addSubview:actionImageView];
 
     }
 }

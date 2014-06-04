@@ -91,10 +91,11 @@
     _notificationTableView.backgroundColor=[UIColor clearColor];
     _topSpacingForBlankImage.constant =
     [UIScreen mainScreen].bounds.size.height > 480.0f ? 242 : 198;
-    UIView *seperatorLineView=[[UIView alloc]initWithFrame:CGRectMake(0, 63.5, 270, 0.5)];
-    seperatorLineView.alpha=0.5;
-    [seperatorLineView setBackgroundColor:[UIColor grayColor]];
+    UIView *seperatorLineView=[[UIView alloc]initWithFrame:CGRectMake(0, 64, 270, 0.5)];
+    [seperatorLineView setBackgroundColor:[BeagleUtilities returnBeagleColor:10]];
     [self.view addSubview:seperatorLineView];
+    _unreadUpdateView.layer.cornerRadius = 2.0f;
+    _unreadUpdateView.layer.masksToBounds = YES;
     _unreadUpdateView.hidden=YES;
 	// Do any additional setup after loading the view.
     
@@ -124,22 +125,21 @@
     switch (notif.notificationType) {
         default:
         {
-            if([AttributedTableViewCell heightForCellWithText:notif.notificationString]>27.0f){
-                notif.rowHeight=[AttributedTableViewCell heightForCellWithText:notif.notificationString]+36.0f;
-                
-            }
-            else{
-                notif.rowHeight=35.0f+32.0f;
+            notif.rowHeight = [AttributedTableViewCell heightForNotificationText:notif.notificationString];
+            notif.rowHeight += [AttributedTableViewCell heightForTimeStampText:[BeagleUtilities calculateChatTimestamp:notif.timeOfNotification]];
+            notif.rowHeight += 26.5; // all other buffers between object;
 
-            }
             height=notif.rowHeight;
             
         }
             break;
             
-        case 11:
-        {
-            notif.rowHeight=[AttributedTableViewCell heightForCellWithNewInterest:notif.notificationString what:notif.activityWhat];
+        case 11: {
+            notif.rowHeight = [AttributedTableViewCell heightForNewInterestText:notif.notificationString];
+            notif.rowHeight += [AttributedTableViewCell heightForTimeStampText:[BeagleUtilities calculateChatTimestamp:notif.timeOfNotification]];
+            notif.rowHeight += [AttributedTableViewCell heightForNewInterestText:notif.activityWhat];
+            notif.rowHeight += 25; // this is the 'Are you in' button;
+            notif.rowHeight += 42.5; // all other buffers between object;
             height=notif.rowHeight;
         }
             break;
@@ -150,8 +150,10 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *CellIdentifier = @"MediaTableCell";
     
+    float fromTheTop = 0.0f; // height from the top of the cell
+    fromTheTop += 12.5;
+    
     BeagleNotificationClass *play = (BeagleNotificationClass *)[self.listArray objectAtIndex:indexPath.row];
-
     
     AttributedTableViewCell *cell = (AttributedTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     //if (cell == nil) {
@@ -170,7 +172,7 @@
     cell.lbltime.userInteractionEnabled = YES;
     cell.lbltime.backgroundColor=[UIColor clearColor];
 
-    UIImageView *cellImageView=[[UIImageView alloc]initWithFrame:CGRectMake(16, 8, 35, 35)];
+    UIImageView *cellImageView=[[UIImageView alloc]initWithFrame:CGRectMake(fromTheTop, 12, 35, 35)];
     
     UIImage*checkImage= [BeagleUtilities loadImage:play.referredId];
     if(checkImage==nil|| play.referredId==0){
@@ -196,13 +198,21 @@
     cellImageView.tag=[[NSString stringWithFormat:@"111%li",(long)indexPath.row]integerValue];
     [cell.contentView addSubview:cellImageView];
     
+
+    fromTheTop += [AttributedTableViewCell heightForNotificationText:play.notificationString];
+    fromTheTop += 2; // adding buffer below the notification text
+    
+    fromTheTop += [AttributedTableViewCell heightForTimeStampText:[BeagleUtilities calculateChatTimestamp:play.timeOfNotification]];
+    
     if(play.notificationType==11){
+        
+        fromTheTop += 8; // adding buffer above the interest text
         
         NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
         [style setAlignment:NSTextAlignmentLeft];
 
         NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                 [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f], NSFontAttributeName,
+                 [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0f], NSFontAttributeName,
                  [BeagleUtilities returnBeagleColor:2],NSForegroundColorAttributeName,
                  style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
         
@@ -210,22 +220,30 @@
         
         CGRect whatTextRect = [play.activityWhat boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
         
-        UILabel *whatLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, 51.0f, whatTextRect.size.width, whatTextRect.size.height)];
+        UILabel *whatLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, fromTheTop, whatTextRect.size.width, whatTextRect.size.height)];
         whatLabel.attributedText = [[NSAttributedString alloc] initWithString:play.activityWhat attributes:attrs];
         whatLabel.numberOfLines=0;
+        whatLabel.backgroundColor = [UIColor clearColor];
         [cell.contentView addSubview:whatLabel];
+        
+        fromTheTop += whatTextRect.size.height;
+        fromTheTop += 8; // buffer below interest text
 
         UIButton *interestButton=[UIButton buttonWithType:UIButtonTypeCustom];
-        interestButton.frame=CGRectMake(16, play.rowHeight-8-25, 102, 25);
+        interestButton.frame=CGRectMake(16, fromTheTop, 102, 25);
         [interestButton setBackgroundImage:[UIImage imageNamed:@"Action"] forState:UIControlStateNormal];
         [interestButton addTarget:self action:@selector(interestButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
         [cell.contentView addSubview:interestButton];
+        
+        fromTheTop += interestButton.frame.size.height;
     }
     
-// Add line seperator
+    fromTheTop += 12; // buffer below the items on top
+    
+    // Add line seperator
     if(indexPath.row!=[self.listArray count]) {
         
-        UIView *seperatorLineView=[[UIView alloc]initWithFrame:CGRectMake(0, play.rowHeight-0.5, 270, 0.5)];
+        UIView *seperatorLineView=[[UIView alloc]initWithFrame:CGRectMake(0, fromTheTop, 270, 0.5)];
         seperatorLineView.alpha=1.0;
         [seperatorLineView setBackgroundColor:[BeagleUtilities returnBeagleColor:10]];
         [cell.contentView addSubview:seperatorLineView];
