@@ -336,6 +336,7 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
 
 @interface MessageKeyboardView () <UITextViewDelegate> {
     UIInterfaceOrientation _currentOrientation;
+    CGRect keyboardFrameUp;
 }
 
 
@@ -479,6 +480,7 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
 {
     NSDictionary *userInfo = notification.userInfo;
     CGRect endFrame = [userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    keyboardFrameUp=endFrame;
     CGRect beginFrame = [userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue];
     CGFloat duration = [userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
     UIViewAnimationCurve curve = [userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
@@ -535,7 +537,7 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
     CGRect beginFrame = [userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue];
     CGFloat duration = [userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
     UIViewAnimationCurve curve = [userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
-    
+    keyboardFrameUp=beginFrame;
     // When the user has lifted his or her finger, the
     // size of the end frame equals the size of the input view.
     CGRect inputViewBounds = self.inputView.bounds;
@@ -573,7 +575,7 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
     CGRect beginFrame = [userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue];
     CGFloat duration = [userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
     UIViewAnimationCurve curve = [userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
-    
+    keyboardFrameUp=beginFrame;
     // Disregard false notification
     // This works around a bug in iOS
     CGRect inputViewBounds = self.inputView.bounds;
@@ -607,6 +609,7 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
 
 - (void)_scrollViewAdaptInsetsToKeyboardFrame:(CGRect)keyboardFrame
 {
+    keyboardFrameUp=keyboardFrame;
     // Convert keyboard frame to view coordinates
     UIWindow *window = [[UIApplication sharedApplication] keyWindow];
     UIView *view = window.rootViewController.view;
@@ -649,6 +652,9 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
 - (void)_updateInputViewFrameWithKeyboardFrame:(CGRect)keyboardFrame
                                    forceReload:(BOOL)reload
 {
+    
+    keyboardFrameUp=keyboardFrame;
+
 #ifdef DEBUG
     NSCAssert(!(CGRectEqualToRect(keyboardFrame, CGRectZero) &&
                 self.inputView.superview == nil), nil);
@@ -710,6 +716,20 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
     }
 }
 
+-(void)resize:(CGRect)frame{
+    
+    [self _updateInputViewFrameWithKeyboardFrame:CGRectZero forceReload:YES];
+    
+    [self _scrollViewAdaptInsetsToKeyboardFrame:keyboardFrameUp];
+
+//    [self _scrollViewAdaptInsetsToKeyboardFrame:keyboardFrameUp];
+//    
+//    [self.scrollView rdr_scrollToBottomWithOptions:RDRAnimationOptionsForCurve(7)
+//                                          duration:0.34
+//                                   completionBlock:nil];
+
+    
+}
 #pragma mark - UITextViewDelegate
 
 - (BOOL)textViewShouldEndEditing:(UITextView *)textView

@@ -460,6 +460,9 @@
                 if([message isEqualToString:@"Joined"]){
                     [self tableView:_notificationTableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
                     
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"HomeViewRefresh" object:self userInfo:nil];
+
+                    
                 }else{
                 }
             }

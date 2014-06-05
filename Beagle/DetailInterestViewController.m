@@ -15,6 +15,7 @@
 #import "MessageKeyboardView.h"
 #import "IconDownloader.h"
 #import "ActivityViewController.h"
+#import "PostSoundEffect.h"
 static NSString * const CellIdentifier = @"cell";
 @interface DetailInterestViewController ()<BeaglePlayerScrollMenuDelegate,ServerManagerDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,IconDownloaderDelegate>{
     BOOL scrollViewResize;
@@ -145,9 +146,9 @@ static NSString * const CellIdentifier = @"cell";
 -(void)postClicked:(id)sender{
     if([[self.contentWrapper.inputView.textView text]length]!=0){
         
-    [self.contentWrapper.inputView.textView resignFirstResponder];
+    //[self.contentWrapper.inputView.textView resignFirstResponder];
     // For dummyInputView.textView
-    [self.view endEditing:YES];
+//    [self.view endEditing:YES];
     
     if(_chatPostManager!=nil){
         _chatPostManager.delegate = nil;
@@ -163,24 +164,24 @@ static NSString * const CellIdentifier = @"cell";
     NSLog(@"text1=%@",[self.contentWrapper.inputView.textView text]);
     NSLog(@"text2=%@",[self.contentWrapper.dummyInputView.textView text]);
     [self.contentWrapper.inputView.textView setText:nil];
-    [self.contentWrapper textViewDidChange:self.contentWrapper.inputView.textView];
+//    [self.contentWrapper textViewDidChange:self.contentWrapper.inputView.textView];
     
     [self.contentWrapper.dummyInputView.textView setText:nil];
-    [self.contentWrapper textViewDidChange:self.contentWrapper.dummyInputView.textView];
+//    [self.contentWrapper textViewDidChange:self.contentWrapper.dummyInputView.textView];
     
-    UIEdgeInsets contentInset = self.detailedInterestTableView.contentInset;
-    contentInset.bottom = 0;
-    self.detailedInterestTableView.contentInset = contentInset;
-    
-    UIEdgeInsets scrollIndicatorInsets = self.detailedInterestTableView.scrollIndicatorInsets;
-    
-    scrollIndicatorInsets.bottom = 0;
-    self.detailedInterestTableView.scrollIndicatorInsets = scrollIndicatorInsets;
+//    UIEdgeInsets contentInset = self.detailedInterestTableView.contentInset;
+//    contentInset.bottom = 0;
+//    self.detailedInterestTableView.contentInset = contentInset;
+//    
+//    UIEdgeInsets scrollIndicatorInsets = self.detailedInterestTableView.scrollIndicatorInsets;
+//    
+//    scrollIndicatorInsets.bottom = 0;
+//    self.detailedInterestTableView.scrollIndicatorInsets = scrollIndicatorInsets;
 
-    [self.detailedInterestTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
-                                          atScrollPosition:UITableViewScrollPositionTop
-                                                  animated:YES];
-    [self.detailedInterestTableView reloadData];
+//    [self.detailedInterestTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
+//                                          atScrollPosition:UITableViewScrollPositionTop
+//                                                  animated:YES];
+//    [self.detailedInterestTableView reloadData];
 
     }
 
@@ -385,6 +386,28 @@ static NSString * const CellIdentifier = @"cell";
                     [self.chatPostsArray addObject:chatClass];
                     
                      self.interestActivity.postCount++;
+                    
+                     [PostSoundEffect playMessageSentSound];
+                    [self.contentWrapper reloadInputAccessoryView];
+                   // [self.contentWrapper resize:CGRectZero];
+                    //[self.contentWrapper.inputView.textView setText:nil];
+                    //[self.contentWrapper textViewDidChange:self.contentWrapper.inputView.textView];
+                    if([self.chatPostsArray count]!=0){
+                        [self.detailedInterestTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[self.chatPostsArray count]-1 inSection:0]
+                                                              atScrollPosition:UITableViewScrollPositionTop
+                                                                      animated:YES];
+
+                    }
+
+//                    [self.contentWrapper.inputView.textView resignFirstResponder];
+//                     For dummyInputView.textView
+//                        [self.view endEditing:YES];
+
+//                    [self.contentWrapper.inputView.textView becomeFirstResponder];
+//                     For dummyInputView.textView
+//                        [self.view becomeFirstResponder];
+
+                    
 
                         }
                 
@@ -397,12 +420,6 @@ static NSString * const CellIdentifier = @"cell";
         
     }
     [self.detailedInterestTableView reloadData];
-//    if([self.chatPostsArray count]!=0){
-//        [self.detailedInterestTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[self.chatPostsArray count]-1 inSection:0]
-//                                              atScrollPosition:UITableViewScrollPositionTop
-//                                                      animated:YES];
-//
-//    }
 }
 
 
