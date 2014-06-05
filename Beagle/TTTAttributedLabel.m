@@ -61,7 +61,7 @@ static inline NSDictionary * NSAttributedStringAttributesFromLabel(TTTAttributed
     
     NSString *lstrfontname=@"HelveticaNeue-Light";
     
-    CTFontRef font =CTFontCreateWithName((CFStringRef)lstrfontname,12,NULL);
+    CTFontRef font =CTFontCreateWithName((CFStringRef)lstrfontname,14,NULL);
     
     [mutableAttributes setObject:(__bridge  id)font forKey:(NSString *)kCTFontAttributeName];
     CFRelease(font);
