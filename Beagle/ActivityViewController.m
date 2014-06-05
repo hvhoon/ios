@@ -196,6 +196,9 @@ enum Weeks {
     //    [self.view addSubview:notifView];
     UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
     [keyboard addSubview:notifView];
+    BeagleManager *BG=[BeagleManager SharedInstance];
+    BG.activityCreated=TRUE;
+
     
     
 }
@@ -207,7 +210,9 @@ enum Weeks {
     
     UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
     [keyboard addSubview:notifView];
-    
+    BeagleManager *BG=[BeagleManager SharedInstance];
+    BG.activityCreated=TRUE;
+
     
 }
 -(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
