@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface InterestChatClass : NSObject
+@property(nonatomic,assign)NSInteger chat_id;
 @property(nonatomic,assign)NSInteger ownnerid;
 @property(nonatomic,assign)NSInteger player_id;
 @property(nonatomic,strong)NSString *player_name;

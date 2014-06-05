@@ -35,6 +35,7 @@
 #define kInterestChat 13
 #define kNotificationRecord 14
 
+#define kUpdatePostsOnInterest @"PostUpdateOnDetailedInterest"
 #define kUpdateNotificationStack @"UpdateNotificationStack"
 #define kRemoteNotificationReceivedNotification @"RemoteNotificationReceivedWhileRunning"
 #define kNotificationForInterestPost @"InAppInterestPostNotification"

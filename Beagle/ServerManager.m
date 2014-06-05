@@ -13,6 +13,7 @@
 #import "SBJSON.h"
 #import "JSON.h"
 #import "BeagleActivityClass.h"
+#import "InterestChatClass.h"
 @interface ServerManager()
 {
     NSMutableDictionary *_errorCodes;
@@ -37,7 +38,7 @@
         _internetReachability = [Reachability reachabilityForInternetConnection];
 
 
-        _serverUrl =herokuHost;
+        _serverUrl =localHost1;
 
         [self populateErrorCodes];
     }
@@ -340,6 +341,42 @@
     if([self isInternetAvailable])
     {
         [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/%ld/acparameter.json",_serverUrl,chatId]
+                         method:@"GET"
+                         params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+
+}
+
+-(void)getMoreBackgroundPostsForAnInterest:(InterestChatClass*)lastChatPost{
+    _serverCallType=kServerCallGetBackgroundChats;
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+    [dateFormatter setTimeZone:utcTimeZone];
+
+    if([self isInternetAvailable])
+    {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/backgroundchat.json?pid=%@&aid=%ld&start_time=%@&end_time=%@",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],lastChatPost.chat_id,[dateFormatter dateFromString:lastChatPost.timestamp],[dateFormatter stringFromDate:[NSDate date]]]
+                         method:@"GET"
+                         params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+    
+}
+
+-(void)getNewBackgroundPostsForAnInterest:(NSInteger)activityId{
+        _serverCallType=kServerCallGetBackgroundChats;
+    if([self isInternetAvailable])
+    {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/newbackgroundchat.json?pid=%@&aid=%ld",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],activityId]
                          method:@"GET"
                          params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
     }

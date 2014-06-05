@@ -9,13 +9,14 @@
 #import "InterestChatClass.h"
 
 @implementation InterestChatClass
-@synthesize ownnerid,player_id,player_name,player_photo_url,playerImage,text,timestamp;
+@synthesize ownnerid,player_id,player_name,player_photo_url,playerImage,text,timestamp,chat_id;
 
 -(id) initWithDictionary:(NSDictionary *)dictionary
 {
     self = [super init];
     if (self)
     {
+        self.chat_id = [[dictionary valueForKey:@"chat_id"]integerValue];
         self.ownnerid = [[dictionary valueForKey:@"ownnerid"]integerValue];
         self.player_id = [[dictionary valueForKey:@"player_id"]integerValue];
         self.player_name = [dictionary valueForKey:@"player_name"];

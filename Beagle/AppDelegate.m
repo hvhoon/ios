@@ -138,7 +138,9 @@ void uncaughtExceptionHandler(NSException *exception) {
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateNotificationStack object:self userInfo:nil];
 
+    [[NSNotificationCenter defaultCenter] postNotificationName:kUpdatePostsOnInterest object:self userInfo:nil];
 
+    
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application

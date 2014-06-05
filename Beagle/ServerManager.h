@@ -21,12 +21,14 @@ typedef enum {
     kServerCallUpdateFbTicker,
     kServerCallGetNotifications,
     kServerCallInAppNotification,
-    kServerCallInAppNotificationForPosts
+    kServerCallInAppNotificationForPosts,
+    kServerCallGetBackgroundChats
 } ServerCallType;
 
 @class ServerManager;
 @class BeagleUserClass;
 @class BeagleActivityClass;
+@class InterestChatClass;
 @protocol ServerManagerDelegate <NSObject>
 
 @optional
@@ -57,4 +59,6 @@ typedef enum {
 -(void)getNotifications;
 -(void)requestInAppNotificationForPosts:(NSInteger)chatId;
 -(void)requestInAppNotification:(NSInteger)notificationId;
+-(void)getMoreBackgroundPostsForAnInterest:(InterestChatClass*)lastChatPost;
+-(void)getNewBackgroundPostsForAnInterest:(NSInteger)activityId;
 @end

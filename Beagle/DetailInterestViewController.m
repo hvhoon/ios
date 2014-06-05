@@ -16,8 +16,9 @@
 #import "IconDownloader.h"
 #import "ActivityViewController.h"
 #import "PostSoundEffect.h"
+#import "InAppNotificationView.h"
 static NSString * const CellIdentifier = @"cell";
-@interface DetailInterestViewController ()<BeaglePlayerScrollMenuDelegate,ServerManagerDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,IconDownloaderDelegate>{
+@interface DetailInterestViewController ()<BeaglePlayerScrollMenuDelegate,ServerManagerDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,IconDownloaderDelegate,InAppNotificationViewDelegate>{
     BOOL scrollViewResize;
 }
 
@@ -51,6 +52,15 @@ static NSString * const CellIdentifier = @"cell";
     return self;
 }
 -(void)viewWillAppear:(BOOL)animated{
+    
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBackgroundInNotification:) name:kRemoteNotificationReceivedNotification object:Nil];
+    
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(postInAppNotification:) name:kNotificationForInterestPost object:Nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (getPostsUpdateInBackground) name:kUpdatePostsOnInterest object:nil];
+
+
     [UIApplication sharedApplication].statusBarHidden = NO;
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     
@@ -75,9 +85,51 @@ static NSString * const CellIdentifier = @"cell";
     
 }
 -(void)viewDidDisappear:(BOOL)animated{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kRemoteNotificationReceivedNotification object:nil];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationForInterestPost object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kUpdatePostsOnInterest object:nil];
+
+
     [super viewDidDisappear:animated];
     [self.contentWrapper _unregisterForNotifications];
 }
+-(void)getPostsUpdateInBackground{
+    if(_chatPostManager!=nil){
+        _chatPostManager.delegate = nil;
+        [_chatPostManager releaseServerManager];
+        _chatPostManager = nil;
+    }
+    
+    _chatPostManager=[[ServerManager alloc]init];
+    _chatPostManager.delegate=self;
+    if([self.chatPostsArray count]!=0){
+    [_chatPostManager getMoreBackgroundPostsForAnInterest:[self.chatPostsArray lastObject]];
+        
+    }else{
+        [_chatPostManager getNewBackgroundPostsForAnInterest:self.interestActivity.activityId];
+    }
+
+}
+
+- (void)didReceiveBackgroundInNotification:(NSNotification*) note{
+    
+    //have to ask harish about the same
+
+#if 0
+    BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
+    InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0,0, 320, 64) appNotification:notifObject];
+    notifView.delegate=self;
+    UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
+    [keyboard addSubview:notifView];
+    BeagleManager *BG=[BeagleManager SharedInstance];
+    BG.activityCreated=TRUE;
+#endif
+    
+    
+}
+
 
 - (void)viewDidLoad
 {
@@ -376,15 +428,15 @@ static NSString * const CellIdentifier = @"cell";
                 
                 
                 
-                id activity_chat=[response objectForKey:@"activity_chat"];
-                if (activity_chat != nil && [activity_chat class] != [NSNull class]) {
+                id activity_chats=[response objectForKey:@"activity_chats"];
+                if (activity_chats != nil && [activity_chats class] != [NSNull class]) {
                     if(self.chatPostsArray==nil){
                         self.chatPostsArray=[NSMutableArray new];
                     }
-                    
-                    InterestChatClass *chatClass=[[InterestChatClass alloc]initWithDictionary:activity_chat];
+                    for(id chatPost in activity_chats){
+                    InterestChatClass *chatClass=[[InterestChatClass alloc]initWithDictionary:chatPost];
                     [self.chatPostsArray addObject:chatClass];
-                    
+                    }
                      self.interestActivity.postCount++;
                     
                      [PostSoundEffect playMessageSentSound];
