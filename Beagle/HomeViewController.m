@@ -249,16 +249,18 @@
 }
 
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
+
     if(!hideInAppNotification){
         
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
     InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0,0, 320, 64) appNotification:notifObject];
     notifView.delegate=self;
-//    [self.view addSubview:notifView];
     UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
      [keyboard addSubview:notifView];
 
     }
+    [self refresh];
+
 }
 
 -(void)postInAppNotification:(NSNotification*)note{
@@ -271,6 +273,8 @@
     [keyboard addSubview:notifView];
 
         }
+    [self refresh];
+
 }
 -(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
     

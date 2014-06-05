@@ -385,6 +385,12 @@ static NSString * const CellIdentifier = @"cell";
         
     }
     [self.detailedInterestTableView reloadData];
+    if([self.chatPostsArray count]!=0){
+        [self.detailedInterestTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[self.chatPostsArray count]-1 inSection:0]
+                                              atScrollPosition:UITableViewScrollPositionTop
+                                                      animated:YES];
+
+    }
 }
 
 
