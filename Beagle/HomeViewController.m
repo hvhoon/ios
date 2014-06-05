@@ -38,6 +38,7 @@
     NSInteger interestIndex;
     NSInteger categoryFilterType;
     NSMutableDictionary *filterActivitiesOnHomeScreen;
+    BOOL hideInAppNotification;
 }
 @property(nonatomic,strong)EventInterestFilterBlurView*filterBlurView;
 @property(nonatomic, weak) NSTimer *timer;
@@ -88,6 +89,12 @@
     
     [self.navigationController setNavigationBarHidden:YES];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(disableInAppNotification) name:@"ECSlidingViewTopDidAnchorLeft" object:Nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableInAppNotification) name:@"ECSlidingViewTopDidAnchorRight" object:Nil];
+
+
+    
     if(self.tableView!=nil){
         [self.tableView reloadData];
     }
@@ -109,7 +116,12 @@
     }
 }
 
-
+-(void)disableInAppNotification{
+    hideInAppNotification=TRUE;
+}
+-(void)enableInAppNotification{
+    hideInAppNotification=FALSE;
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -223,12 +235,22 @@
     
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationForInterestPost object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationForInterestPost object:nil];
+
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ECSlidingViewTopDidAnchorLeft" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ECSlidingViewTopDidAnchorRight" object:nil];
+
+
 
     
 }
 
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
-    
+    if(!hideInAppNotification){
+        
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
     InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0,0, 320, 64) appNotification:notifObject];
     notifView.delegate=self;
@@ -236,10 +258,11 @@
     UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
      [keyboard addSubview:notifView];
 
-    
+    }
 }
 
 -(void)postInAppNotification:(NSNotification*)note{
+        if(!hideInAppNotification){
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
     InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0, 0, 320, 64) appNotification:notifObject];
     notifView.delegate=self;
@@ -247,7 +270,7 @@
     UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
     [keyboard addSubview:notifView];
 
-    
+        }
 }
 -(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
     

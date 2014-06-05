@@ -50,15 +50,34 @@
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kUpdateNotificationStack object:nil];
     
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kRemoteNotificationReceivedNotification object:nil];
+
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationForInterestPost object:nil];
+
     
     
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ECSlidingViewTopDidAnchorLeft" object:nil];
+
+    
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"ECSlidingViewTopDidAnchorRight" object:self userInfo:nil];
+
     
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBackgroundInNotification:) name:kRemoteNotificationReceivedNotification object:Nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(postInAppNotification:) name:kNotificationForInterestPost object:Nil];
+
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getUserNotifications) name:kUpdateNotificationStack object:Nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getUserNotifications) name:@"ECSlidingViewTopDidAnchorLeft" object:Nil];
+
 
     [self getUserNotifications];
     [self.slidingViewController hide];
@@ -75,6 +94,14 @@
     _notificationsManager.delegate=self;
     [_notificationsManager getNotifications];
 
+}
+
+- (void)didReceiveBackgroundInNotification:(NSNotification*) note{
+    [self getUserNotifications];
+}
+
+-(void)postInAppNotification:(NSNotification*)note{
+        [self getUserNotifications];
 }
 
 - (void)viewDidLoad
