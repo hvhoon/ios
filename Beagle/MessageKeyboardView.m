@@ -343,7 +343,7 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
 @end
 
 @implementation MessageKeyboardView
-@synthesize dummyInputView;
+@synthesize dummyInputView,interested;
 #pragma mark - Lifecycle
 
 - (instancetype)initWithScrollView:(UIScrollView *)scrollView
@@ -417,7 +417,14 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
     CGRect scrollViewFrame = CGRectZero;
     scrollViewFrame.origin.y=64;
     scrollViewFrame.size.width = self.frame.size.width;
+    if(interested){
+
     scrollViewFrame.size.height = self.frame.size.height - self.inputView.frame.size.height-64;
+    }
+    else{
+        scrollViewFrame.size.height = self.frame.size.height-64;
+
+    }
     self.scrollView.frame = scrollViewFrame;
     
     CGRect inputViewFrame = self.inputView.frame;

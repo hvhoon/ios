@@ -16,7 +16,9 @@
 #import "IconDownloader.h"
 #import "ActivityViewController.h"
 static NSString * const CellIdentifier = @"cell";
-@interface DetailInterestViewController ()<BeaglePlayerScrollMenuDelegate,ServerManagerDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,IconDownloaderDelegate>
+@interface DetailInterestViewController ()<BeaglePlayerScrollMenuDelegate,ServerManagerDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,IconDownloaderDelegate>{
+    BOOL scrollViewResize;
+}
 
 @property(nonatomic,strong)ServerManager*chatPostManager;
 @property(nonatomic,strong)NSMutableDictionary*imageDownloadsInProgress;
@@ -113,6 +115,9 @@ static NSString * const CellIdentifier = @"cell";
     [self.detailedInterestTableView setBackgroundColor:[BeagleUtilities returnBeagleColor:2]];
     
     self.contentWrapper = [[MessageKeyboardView alloc] initWithScrollView:self.detailedInterestTableView];
+    self.contentWrapper.interested=YES;
+     if(!self.interestActivity.isParticipant)
+         self.contentWrapper.interested=NO;
     self.contentWrapper.frame = self.view.bounds;
     self.contentWrapper.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
     [self.view addSubview:self.contentWrapper];
@@ -285,9 +290,10 @@ static NSString * const CellIdentifier = @"cell";
         _interestUpdateManager.delegate = nil;
         [_interestUpdateManager releaseServerManager];
         _interestUpdateManager = nil;
-        
+        scrollViewResize=TRUE;
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
+
             id status=[response objectForKey:@"status"];
             id message=[response objectForKey:@"message"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
@@ -311,8 +317,13 @@ static NSString * const CellIdentifier = @"cell";
                 if(self.interestActivity.isParticipant){
                     self.interestActivity.isParticipant=FALSE;
                     starImageView.image=[UIImage imageNamed:@"Star-Unfilled"];
+                    self.contentWrapper.interested=NO;
+                    [self.contentWrapper _setInitialFrames];
+
                     [self.contentWrapper.inputView setHidden:YES];
                     [self.contentWrapper.dummyInputView setHidden:YES];
+                    
+
                     NSMutableArray *testArray=[NSMutableArray new];
                     for(BeagleUserClass *data in self.interestActivity.participantsArray){
                         if(data.beagleUserId!=[[[BeagleManager SharedInstance]beaglePlayer]beagleUserId]){
@@ -326,8 +337,6 @@ static NSString * const CellIdentifier = @"cell";
                 else{
                     self.interestActivity.isParticipant=TRUE;
                     starImageView.image=[UIImage imageNamed:@"Star"];
-                        [self.contentWrapper.inputView setHidden:NO];
-                        [self.contentWrapper.dummyInputView setHidden:NO];
                         NSMutableArray*interestArray=[NSMutableArray new];
                     
                     if([self.interestActivity.participantsArray count]!=0){
@@ -338,7 +347,10 @@ static NSString * const CellIdentifier = @"cell";
                         [interestArray addObject:[[BeagleManager SharedInstance]beaglePlayer]];
                         self.interestActivity.participantsArray=interestArray;
                     }
+                    self.contentWrapper.interested=YES;
                     [self.contentWrapper _setInitialFrames];
+                    [self.contentWrapper.inputView setHidden:NO];
+                    [self.contentWrapper.dummyInputView setHidden:NO];
 
                 }
                 
@@ -385,12 +397,12 @@ static NSString * const CellIdentifier = @"cell";
         
     }
     [self.detailedInterestTableView reloadData];
-    if([self.chatPostsArray count]!=0){
-        [self.detailedInterestTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[self.chatPostsArray count]-1 inSection:0]
-                                              atScrollPosition:UITableViewScrollPositionTop
-                                                      animated:YES];
-
-    }
+//    if([self.chatPostsArray count]!=0){
+//        [self.detailedInterestTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[self.chatPostsArray count]-1 inSection:0]
+//                                              atScrollPosition:UITableViewScrollPositionTop
+//                                                      animated:YES];
+//
+//    }
 }
 
 
@@ -712,8 +724,10 @@ static NSString * const CellIdentifier = @"cell";
             if(self.interestActivity.ownerid==[[[BeagleManager SharedInstance]beaglePlayer]beagleUserId]){
             //owner
                 if(self.interestActivity.participantsCount>0){
-                    if(_scrollMenu==nil)
+                    if(_scrollMenu==nil||scrollViewResize){
                         _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, fromTheTop, 268, 55)];
+                        scrollViewResize=FALSE;
+                    }
                     [_backgroundView addSubview:_scrollMenu];
                     [self setUpPlayerScroll:self.interestActivity.participantsArray];
                 }
@@ -721,8 +735,10 @@ static NSString * const CellIdentifier = @"cell";
             else {
             //not a owner but a participant
                 if(self.interestActivity.participantsCount>0){
-                    if(_scrollMenu==nil)
+                    if(_scrollMenu==nil||scrollViewResize){
                         _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, fromTheTop, 268, 55)];
+                        scrollViewResize=FALSE;
+                    }
                     [_backgroundView addSubview:_scrollMenu];
                     [self setUpPlayerScroll:self.interestActivity.participantsArray];
                 }

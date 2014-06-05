@@ -64,7 +64,8 @@
         [playerRegisteration setObject:data.profileImageUrl forKey:@"image_url"];
         [playerRegisteration setObject:[NSNumber numberWithInteger:data.fbuid] forKey:@"fbuid"];
         [playerRegisteration setObject:data.access_token forKey:@"access_token"];
-        [playerRegisteration setObject:data.location forKey:@"location"];
+            if([data.location length]!=0)
+            [playerRegisteration setObject:data.location forKey:@"location"];
         if([[[NSUserDefaults standardUserDefaults]valueForKey:@"device_token"]length]!=0)
             [playerRegisteration setObject:[[NSUserDefaults standardUserDefaults]valueForKey:@"device_token"] forKey:@"device_token"];
         [playerRegisteration setObject:[NSNumber numberWithBool:data.fb_ticker] forKey:@"fb_ticker"];
