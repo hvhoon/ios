@@ -351,7 +351,7 @@
 
 }
 
--(void)getMoreBackgroundPostsForAnInterest:(InterestChatClass*)lastChatPost{
+-(void)getMoreBackgroundPostsForAnInterest:(InterestChatClass*)lastChatPost activId:(NSInteger)activId{
     _serverCallType=kServerCallGetBackgroundChats;
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -361,7 +361,7 @@
 
     if([self isInternetAvailable])
     {
-        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/backgroundchat.json?pid=%@&aid=%ld&start_time=%@&end_time=%@",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],lastChatPost.chat_id,[dateFormatter dateFromString:lastChatPost.timestamp],[dateFormatter stringFromDate:[NSDate date]]]
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/backgroundchat.json?pid=%@&aid=%ld&chatid=%ld&start_time=%@&end_time=%@",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],activId,lastChatPost.chat_id,lastChatPost.timestamp,[dateFormatter stringFromDate:[NSDate date]]]
                          method:@"GET"
                          params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
     }
@@ -374,9 +374,14 @@
 
 -(void)getNewBackgroundPostsForAnInterest:(NSInteger)activityId{
         _serverCallType=kServerCallGetBackgroundChats;
-    if([self isInternetAvailable])
-    {
-        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/newbackgroundchat.json?pid=%@&aid=%ld",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],activityId]
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+    [dateFormatter setTimeZone:utcTimeZone];
+
+    if([self isInternetAvailable]) {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/backgroundchat.json?pid=%@&aid=%ld&chatid=0&start_time=%@&end_time=%@",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],activityId,[dateFormatter stringFromDate:[NSDate date]],[dateFormatter stringFromDate:[NSDate date]]]
                          method:@"GET"
                          params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
     }

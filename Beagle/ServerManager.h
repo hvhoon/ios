@@ -59,6 +59,6 @@ typedef enum {
 -(void)getNotifications;
 -(void)requestInAppNotificationForPosts:(NSInteger)chatId;
 -(void)requestInAppNotification:(NSInteger)notificationId;
--(void)getMoreBackgroundPostsForAnInterest:(InterestChatClass*)lastChatPost;
+-(void)getMoreBackgroundPostsForAnInterest:(InterestChatClass*)lastChatPost activId:(NSInteger)activId;
 -(void)getNewBackgroundPostsForAnInterest:(NSInteger)activityId;
 @end

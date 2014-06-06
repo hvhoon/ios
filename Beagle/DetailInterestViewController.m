@@ -105,7 +105,7 @@ static NSString * const CellIdentifier = @"cell";
     _chatPostManager=[[ServerManager alloc]init];
     _chatPostManager.delegate=self;
     if([self.chatPostsArray count]!=0){
-    [_chatPostManager getMoreBackgroundPostsForAnInterest:[self.chatPostsArray lastObject]];
+        [_chatPostManager getMoreBackgroundPostsForAnInterest:[self.chatPostsArray lastObject] activId:self.interestActivity.activityId];
         
     }else{
         [_chatPostManager getNewBackgroundPostsForAnInterest:self.interestActivity.activityId];
@@ -413,7 +413,7 @@ static NSString * const CellIdentifier = @"cell";
         }
         
     }
-    else if (serverRequest==kServerCallPostComment){
+    else if (serverRequest==kServerCallPostComment||serverRequest==kServerCallGetBackgroundChats){
         
         
         _chatPostManager.delegate = nil;
@@ -429,7 +429,7 @@ static NSString * const CellIdentifier = @"cell";
                 
                 
                 id activity_chats=[response objectForKey:@"activity_chats"];
-                if (activity_chats != nil && [activity_chats class] != [NSNull class]) {
+                if (activity_chats != nil && [activity_chats class] != [NSNull class] && [activity_chats count]!=0) {
                     if(self.chatPostsArray==nil){
                         self.chatPostsArray=[NSMutableArray new];
                     }
@@ -440,7 +440,11 @@ static NSString * const CellIdentifier = @"cell";
                      self.interestActivity.postCount++;
                     
                      [PostSoundEffect playMessageSentSound];
-                    [self.contentWrapper reloadInputAccessoryView];
+//                    [self.contentWrapper reloadInputAccessoryView];
+                    
+                    
+                    
+                    
                    // [self.contentWrapper resize:CGRectZero];
                     //[self.contentWrapper.inputView.textView setText:nil];
                     //[self.contentWrapper textViewDidChange:self.contentWrapper.inputView.textView];
