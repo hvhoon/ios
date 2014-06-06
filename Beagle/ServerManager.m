@@ -391,6 +391,21 @@
     }
 
 }
+
+-(void)getPostDetail:(NSInteger)chatId{
+    _serverCallType=kServerCallInAppNotificationForPosts;
+    if([self isInternetAvailable])
+    {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/%ld/chat_detail.json",_serverUrl,chatId]
+                         method:@"GET"
+                         params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+    
+}
 -(void)populateErrorCodes
 {
     _errorCodes = [[NSMutableDictionary alloc]init];

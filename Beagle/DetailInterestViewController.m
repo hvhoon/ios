@@ -143,15 +143,17 @@ static NSString * const CellIdentifier = @"cell";
     
     if(notifObject.activityId==self.interestActivity.activityId){
         
-        InterestChatClass *chatClass=[[InterestChatClass alloc]initWithNotificationObject:notifObject];
         
-        [self.chatPostsArray addObject:chatClass];
-        self.interestActivity.postCount++;
+        if(_chatPostManager!=nil){
+            _chatPostManager.delegate = nil;
+            [_chatPostManager releaseServerManager];
+            _chatPostManager = nil;
+        }
         
-        [PostSoundEffect playMessageSentSound];
-        [self.detailedInterestTableView reloadData];
-
-    }
+        _chatPostManager=[[ServerManager alloc]init];
+        _chatPostManager.delegate=self;
+        [_chatPostManager getPostDetail:notifObject.postChatId];
+   }
 
 else{
     InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0, 0, 320, 64) appNotification:notifObject];
@@ -1033,7 +1035,7 @@ else{
         }
         
     }
-    else if (serverRequest==kServerCallPostComment||serverRequest==kServerCallGetBackgroundChats){
+    else if (serverRequest==kServerCallPostComment||serverRequest==kServerCallGetBackgroundChats||serverRequest==kServerInAppChatDetail){
         
         
         _chatPostManager.delegate = nil;
