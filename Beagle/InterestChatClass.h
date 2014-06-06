@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
+@class BeagleNotificationClass;
 @interface InterestChatClass : NSObject
 @property(nonatomic,assign)NSInteger chat_id;
 @property(nonatomic,assign)NSInteger ownnerid;
@@ -18,4 +18,5 @@
 @property(nonatomic,strong)UIImage *playerImage;
 @property(nonatomic,strong)NSString *text;
 -(id) initWithDictionary:(NSDictionary *)dictionary;
+-(id)initWithNotificationObject:(BeagleNotificationClass*)notifClass;
 @end

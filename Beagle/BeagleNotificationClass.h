@@ -29,5 +29,11 @@
 @property (nonatomic,assign)BOOL backgroundTap;
 @property(nonatomic,assign)NSInteger playerId;
 @property(nonatomic,strong)NSString*activityWhat;
+@property(nonatomic,strong)NSString*activityStartTime;
+@property(nonatomic,strong)NSString*activityEndTime;
+@property(nonatomic,strong)NSString*postDesc;
+@property(nonatomic,strong)NSString*playerName;
+@property(nonatomic,assign)NSInteger postChatId;
+@property(nonatomic,assign)NSInteger activityOwnerId;
 -(id) initWithDictionary:(NSDictionary *)dictionary;
 @end

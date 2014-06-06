@@ -7,7 +7,7 @@
 //
 
 #import "InterestChatClass.h"
-
+#import "BeagleNotificationClass.h"
 @implementation InterestChatClass
 @synthesize ownnerid,player_id,player_name,player_photo_url,playerImage,text,timestamp,chat_id;
 
@@ -23,6 +23,22 @@
         self.player_photo_url = [dictionary valueForKey:@"player_photo_url"];
         self.text = [dictionary valueForKey:@"text"];
         self.timestamp = [dictionary valueForKey:@"timestamp"];
+    }
+    return self;
+}
+
+-(id)initWithNotificationObject:(BeagleNotificationClass*)notifClass
+{
+    self = [super init];
+    if (self)
+    {
+        self.chat_id = notifClass.postChatId;
+        self.ownnerid = notifClass.activityOwnerId;
+        self.player_id = notifClass.playerId;
+        self.player_name = notifClass.playerName;
+        self.player_photo_url = notifClass.photoUrl;
+        self.text =notifClass.postDesc;
+        self.timestamp = notifClass.timeOfNotification;
     }
     return self;
 }
