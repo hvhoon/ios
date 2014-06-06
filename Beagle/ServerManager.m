@@ -366,7 +366,7 @@
     [dateFormatter setTimeZone:utcTimeZone];
     
     NSDate *lastDate = [dateFormatter dateFromString:lastChatPost.timestamp];
-    NSDate *updatedDate=[lastDate dateByAddingTimeInterval:1];
+    NSDate *updatedDate=[lastDate dateByAddingTimeInterval:5];
     NSLog(@"updatedDate=%@",updatedDate);
 
     if([self isInternetAvailable])
@@ -391,7 +391,7 @@
     [dateFormatter setTimeZone:utcTimeZone];
 
     if([self isInternetAvailable]) {
-        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/backgroundchat.json?pid=%@&aid=%ld&chatid=0&start_time=%@&end_time=%@",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],activityId,[dateFormatter stringFromDate:[NSDate date]],[dateFormatter stringFromDate:[NSDate date]]]
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/testbackgroundchat.json?pid=%@&aid=%ld",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],activityId]
                          method:@"GET"
                          params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
     }

@@ -34,6 +34,10 @@
 #define kParticipantInActivity 12
 #define kInterestChat 13
 #define kNotificationRecord 14
+#define CANCEL_ACTIVITY_TYPE 9
+#define CHAT_TYPE 17
+#define WHAT_CHANGE_TYPE 1
+#define DATE_CHANGE_TYPE 2
 
 #define kUpdatePostsOnInterest @"PostUpdateOnDetailedInterest"
 #define kUpdateNotificationStack @"UpdateNotificationStack"

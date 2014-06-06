@@ -113,7 +113,7 @@ static NSString * const CellIdentifier = @"cell";
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
     
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
-    if(notifObject.activityId==self.interestActivity.activityId){
+    if(notifObject.activityId==self.interestActivity.activityId && (notifObject.notificationType==WHAT_CHANGE_TYPE || notifObject.notificationType==DATE_CHANGE_TYPE)){
         //do the description and text update
         self.interestActivity.startActivityDate=notifObject.activityStartTime;
         self.interestActivity.endActivityDate=notifObject.activityEndTime;
@@ -140,7 +140,7 @@ static NSString * const CellIdentifier = @"cell";
 -(void)postInAppNotification:(NSNotification*)note{
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
     
-    if(notifObject.activityId==self.interestActivity.activityId){
+    if(notifObject.activityId==self.interestActivity.activityId && notifObject.notificationType==CHAT_TYPE){
         
         
         if(_chatPostManager!=nil){
