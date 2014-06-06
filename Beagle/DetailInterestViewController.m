@@ -112,7 +112,6 @@ static NSString * const CellIdentifier = @"cell";
 
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
     
-    //have to ask harish about the same
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
     if(notifObject.activityId==self.interestActivity.activityId){
         //do the description and text update
@@ -1062,7 +1061,7 @@ else{
                     self.interestActivity.postCount++;
                     
                     [PostSoundEffect playMessageSentSound];
-                    [self.contentWrapper reloadInputAccessoryView];
+                   // [self.contentWrapper reloadInputAccessoryView];
                     
                     
                     
@@ -1070,12 +1069,6 @@ else{
                     // [self.contentWrapper resize:CGRectZero];
                     //[self.contentWrapper.inputView.textView setText:nil];
                     //[self.contentWrapper textViewDidChange:self.contentWrapper.inputView.textView];
-                    if([self.chatPostsArray count]!=0){
-                        [self.detailedInterestTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[self.chatPostsArray count]-1 inSection:0]
-                                                              atScrollPosition:UITableViewScrollPositionTop
-                                                                      animated:YES];
-                        
-                    }
                     
                     //                    [self.contentWrapper.inputView.textView resignFirstResponder];
                     //                     For dummyInputView.textView
@@ -1114,7 +1107,7 @@ else{
         [_interestUpdateManager releaseServerManager];
         _interestUpdateManager = nil;
     }
-    else if(serverRequest==kServerCallPostComment)
+    else if(serverRequest==kServerCallPostComment||serverRequest==kServerCallGetBackgroundChats||serverRequest==kServerInAppChatDetail)
     {
         _chatPostManager.delegate = nil;
         [_chatPostManager releaseServerManager];
@@ -1139,7 +1132,7 @@ else{
         [_interestUpdateManager releaseServerManager];
         _interestUpdateManager = nil;
     }
-    else if(serverRequest==kServerCallPostComment)
+    else if(serverRequest==kServerCallPostComment||serverRequest==kServerCallGetBackgroundChats||serverRequest==kServerInAppChatDetail)
     {
         _chatPostManager.delegate = nil;
         [_chatPostManager releaseServerManager];

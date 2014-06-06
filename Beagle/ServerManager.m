@@ -36,9 +36,15 @@
     if (self) {
         
         _internetReachability = [Reachability reachabilityForInternetConnection];
-
-
+#ifdef __i386__
+        NSLog(@"Running in the simulator");
         _serverUrl =herokuHost;
+#else
+        NSLog(@"Running on a device");
+        _serverUrl =herokuHost;
+#endif
+
+        
 
         [self populateErrorCodes];
     }
@@ -393,10 +399,11 @@
 }
 
 -(void)getPostDetail:(NSInteger)chatId{
-    _serverCallType=kServerCallInAppNotificationForPosts;
+    _serverCallType=kServerInAppChatDetail;
+    
     if([self isInternetAvailable])
     {
-        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/%ld/chat_detail.json",_serverUrl,chatId]
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/%ld/chat_detail.json?pid=%@",_serverUrl,chatId,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]]
                          method:@"GET"
                          params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
     }
