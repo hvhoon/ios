@@ -174,7 +174,7 @@ else{
     viewController.interestServerManager.delegate=viewController;
     viewController.isRedirectedFromNotif=TRUE;
     [viewController.interestServerManager getDetailedInterest:notification.activityId];
-    [self.navigationController presentViewController:viewController animated:YES completion:nil];
+    [self.navigationController pushViewController:viewController animated:YES];
     
 }
 - (void)viewDidLoad
