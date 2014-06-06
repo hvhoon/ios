@@ -463,7 +463,13 @@
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"HomeViewRefresh" object:self userInfo:nil];
 
                     
-                }else{
+                }else if([message isEqualToString:@"Already Joined"]){
+                    
+                    NSString *message = NSLocalizedString (@"You have already joined.",
+                                                           @"Already Joined");
+                    BeagleAlertWithMessage(message);
+                    return;
+                    
                 }
             }
         }

@@ -130,11 +130,11 @@ static NSString * const CellIdentifier = @"cell";
         notifView.delegate=self;
         UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
         [keyboard addSubview:notifView];
-        BeagleManager *BG=[BeagleManager SharedInstance];
-        BG.activityCreated=TRUE;
         
     }
     
+    BeagleManager *BG=[BeagleManager SharedInstance];
+    BG.activityCreated=TRUE;
     
     
 }
@@ -161,9 +161,9 @@ else{
     
     UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
     [keyboard addSubview:notifView];
+    }
     BeagleManager *BG=[BeagleManager SharedInstance];
     BG.activityCreated=TRUE;
-    }
     
 }
 -(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
@@ -970,7 +970,15 @@ else{
                 if([message isEqualToString:@"Joined"]){
                     self.interestActivity.participantsCount++;
                     
-                }else{
+                }else if([message isEqualToString:@"Already Joined"]){
+
+                    NSString *message = NSLocalizedString (@"You have already joined.",
+                                                           @"Already Joined");
+                    BeagleAlertWithMessage(message);
+                    return;
+
+                }
+                else {
                     self.interestActivity.participantsCount--;
                     
                 }

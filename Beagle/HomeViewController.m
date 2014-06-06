@@ -1020,9 +1020,20 @@
             id message=[response objectForKey:@"message"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                  BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:interestIndex];
+                
+
                 if([message isEqualToString:@"Joined"]){
                     play.participantsCount++;
-                }else{
+                }
+                else if([message isEqualToString:@"Already Joined"]){
+                    
+                    NSString *message = NSLocalizedString (@"You have already joined.",
+                                                           @"Already Joined");
+                    BeagleAlertWithMessage(message);
+                    return;
+                    
+                }
+                else{
                     play.participantsCount--;
                 }
                     if(play.isParticipant){
