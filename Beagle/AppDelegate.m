@@ -206,6 +206,8 @@ void uncaughtExceptionHandler(NSException *exception) {
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
              
                 NSMutableDictionary *inappnotification=[response objectForKey:@"inappnotification"];
+                if (inappnotification != nil && [inappnotification class] != [NSNull class]) {
+
                 NSLog(@"badge Value=%ld",[[inappnotification objectForKey:@"badge"]integerValue]);
                 
                 
@@ -218,7 +220,7 @@ void uncaughtExceptionHandler(NSException *exception) {
 
                 [[BeagleManager SharedInstance]setBadgeCount:[[inappnotification objectForKey:@"badge"]integerValue]];
                 
-
+                }
 
             }
         }
@@ -233,6 +235,7 @@ void uncaughtExceptionHandler(NSException *exception) {
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 
                 NSMutableDictionary *interestPost=[response objectForKey:@"interestPost"];
+                if (interestPost != nil && [interestPost class] != [NSNull class]) {
                 NSLog(@"badge Value=%ld",[[interestPost objectForKey:@"badge"]integerValue]);
                 
                 
@@ -246,7 +249,7 @@ void uncaughtExceptionHandler(NSException *exception) {
                 [[BeagleManager SharedInstance]setBadgeCount:[[interestPost objectForKey:@"badge"]integerValue]];
                 
                 
-                
+                }
             }
         }
         

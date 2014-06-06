@@ -73,13 +73,9 @@ static NSString * const CellIdentifier = @"cell";
         [self.navigationController popViewControllerAnimated:YES];
         return;
     }
+    NSString* screenTitle = [BeagleUtilities activityTime:self.interestActivity.startActivityDate endate:self.interestActivity.endActivityDate];
+    self.navigationItem.title = screenTitle;
     
-    if(self.interestActivity.dosRelation==0){
-        
-        NSString* screenTitle = [BeagleUtilities activityTime:self.interestActivity.startActivityDate endate:self.interestActivity.endActivityDate];
-        self.navigationItem.title = screenTitle;
-        [self.detailedInterestTableView reloadData];
-    }
 }
 -(void)viewDidAppear:(BOOL)animated{
     [self.contentWrapper _registerForNotifications];
@@ -120,6 +116,8 @@ static NSString * const CellIdentifier = @"cell";
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
     if(notifObject.activityId==self.interestActivity.activityId){
         //do the description and text update
+        self.interestActivity.startActivityDate=notifObject.activityStartTime;
+        self.interestActivity.endActivityDate=notifObject.activityEndTime;
         NSString* screenTitle = [BeagleUtilities activityTime:notifObject.activityStartTime endate:notifObject.activityEndTime];
         self.navigationItem.title = screenTitle;
         self.interestActivity.activityDesc=notifObject.activityWhat;
@@ -550,8 +548,7 @@ else{
                    [UIColor blackColor],NSForegroundColorAttributeName,
                    style, NSParagraphStyleAttributeName, nil];
             CGSize participantsCountTextSize;
-            UILabel *participantsCountTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(16,fromTheTop,
-                                                                                            participantsCountTextSize.width, participantsCountTextSize.height)];
+            UILabel *participantsCountTextLabel = [[UILabel alloc] init];
             
             participantsCountTextLabel.backgroundColor = [UIColor clearColor];
             participantsCountTextLabel.textColor = [UIColor blackColor];
