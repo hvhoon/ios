@@ -75,6 +75,7 @@ static NSString * const CellIdentifier = @"cell";
     }
     NSString* screenTitle = [BeagleUtilities activityTime:self.interestActivity.startActivityDate endate:self.interestActivity.endActivityDate];
     self.navigationItem.title = screenTitle;
+    [self.detailedInterestTableView reloadData];
     
 }
 -(void)viewDidAppear:(BOOL)animated{

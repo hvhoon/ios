@@ -320,7 +320,7 @@
             [style setAlignment:NSTextAlignmentCenter];
             
             NSDictionary *attrs=[NSDictionary dictionaryWithObjectsAndKeys:
-                                 [UIFont fontWithName:@"HelveticaNeue-Medium" size:24.0f], NSFontAttributeName,
+                                 [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f], NSFontAttributeName,
                                  [UIColor whiteColor],NSForegroundColorAttributeName,
                                  style, NSParagraphStyleAttributeName, nil];
             
@@ -334,18 +334,18 @@
             UIButton *updateNotificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];
             [updateNotificationsButton addTarget:self action:@selector(revealUnderRight:)forControlEvents:UIControlEventTouchUpInside];
             if(badgeCountSize.width>32.0f){
-                updateNotificationsButton.frame = CGRectMake(272, 0, 44, 44);
+                updateNotificationsButton.frame = CGRectMake(272, 12, 28, 20);
                 
             }
             else{
-                updateNotificationsButton.frame = CGRectMake(272, 0, 44, 44);
+                updateNotificationsButton.frame = CGRectMake(272, 12, 28, 20);
                 
             }
             
             updateNotificationsButton.alpha = 0.6;
             [updateNotificationsButton setTitle:[NSString stringWithFormat:@"%ld",BG.badgeCount] forState:UIControlStateNormal];
             [updateNotificationsButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-            updateNotificationsButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
+            updateNotificationsButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f];
             updateNotificationsButton.tag=5346;
             updateNotificationsButton.titleLabel.textAlignment = NSTextAlignmentCenter;
             
