@@ -1058,10 +1058,20 @@ else{
                     for(id chatPost in activity_chats){
                         InterestChatClass *chatClass=[[InterestChatClass alloc]initWithDictionary:chatPost];
                         [self.chatPostsArray addObject:chatClass];
+                        self.interestActivity.postCount=[self.chatPostsArray count];
                     }
-                    self.interestActivity.postCount++;
+                    
                     
                     [PostSoundEffect playMessageSentSound];
+                    id badge=[response objectForKey:@"badge"];
+                    if (badge != nil && [badge class] != [NSNull class]){
+                        
+                        [[BeagleManager SharedInstance]setBadgeCount:[badge integerValue]];
+                        [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[badge integerValue]];
+                        
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
+
+                    }
                    // [self.contentWrapper reloadInputAccessoryView];
                     
                     
