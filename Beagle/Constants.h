@@ -39,6 +39,7 @@
 #define WHAT_CHANGE_TYPE 1
 #define DATE_CHANGE_TYPE 2
 
+#define kBeagleBadgeCount @"BeagleBadgeCount"
 #define kUpdatePostsOnInterest @"PostUpdateOnDetailedInterest"
 #define kUpdateNotificationStack @"UpdateNotificationStack"
 #define kRemoteNotificationReceivedNotification @"RemoteNotificationReceivedWhileRunning"

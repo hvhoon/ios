@@ -87,13 +87,16 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(postInAppNotification:) name:kNotificationForInterestPost object:Nil];
 
     
-    [self.navigationController setNavigationBarHidden:YES];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(disableInAppNotification) name:@"ECSlidingViewTopDidAnchorLeft" object:Nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableInAppNotification) name:@"ECSlidingViewTopDidAnchorRight" object:Nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh) name:@"HomeViewRefresh" object:Nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (UpdateBadgeCount) name:kBeagleBadgeCount object:nil];
+
+    [self.navigationController setNavigationBarHidden:YES];
 
     
     
@@ -247,6 +250,7 @@
 
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"HomeViewRefresh" object:nil];
 
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:kBeagleBadgeCount object:nil];
 
     
 }
@@ -290,7 +294,69 @@
     [self.navigationController pushViewController:viewController animated:YES];
 
 }
+-(void)UpdateBadgeCount{
+    BeagleManager *BG=[BeagleManager SharedInstance];
+    UIButton *notificationsButton=(UIButton*)[self.view viewWithTag:5346];
+    if(notificationsButton!=nil){
+        [notificationsButton removeFromSuperview];
+    }
 
+    UIView*headerView=(UIView*)[self.view viewWithTag:43567];
+
+    if(BG.badgeCount==0){
+        
+            UIButton *notificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            [notificationsButton addTarget:self action:@selector(revealUnderRight:)forControlEvents:UIControlEventTouchUpInside];
+            [notificationsButton setBackgroundImage:[UIImage imageNamed:@"Bell-(No-Notications)"] forState:UIControlStateNormal];
+            notificationsButton.frame = CGRectMake(272, 0, 44, 44);
+            notificationsButton.alpha = 0.6;
+            notificationsButton.tag=5346;
+            [headerView addSubview:notificationsButton];
+
+    }
+        else{
+            
+            NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+            [style setAlignment:NSTextAlignmentCenter];
+            
+            NSDictionary *attrs=[NSDictionary dictionaryWithObjectsAndKeys:
+                                 [UIFont fontWithName:@"HelveticaNeue-Medium" size:24.0f], NSFontAttributeName,
+                                 [UIColor whiteColor],NSForegroundColorAttributeName,
+                                 style, NSParagraphStyleAttributeName, nil];
+            
+            CGSize badgeCountSize=[[NSString stringWithFormat:@"%ld",BG.badgeCount] boundingRectWithSize:CGSizeMake(44, 999)
+                                                                                                 options:NSStringDrawingUsesLineFragmentOrigin
+                                                                                              attributes:attrs
+                                                                                                 context:nil].size;
+            
+            
+            
+            UIButton *updateNotificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            [updateNotificationsButton addTarget:self action:@selector(revealUnderRight:)forControlEvents:UIControlEventTouchUpInside];
+            if(badgeCountSize.width>32.0f){
+                updateNotificationsButton.frame = CGRectMake(272, 0, 44, 44);
+                
+            }
+            else{
+                updateNotificationsButton.frame = CGRectMake(272, 0, 44, 44);
+                
+            }
+            
+            updateNotificationsButton.alpha = 0.6;
+            [updateNotificationsButton setTitle:[NSString stringWithFormat:@"%ld",BG.badgeCount] forState:UIControlStateNormal];
+            [updateNotificationsButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+            updateNotificationsButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
+            updateNotificationsButton.tag=5346;
+            updateNotificationsButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+            
+            updateNotificationsButton.backgroundColor=[UIColor colorWithRed:122.0f/255.0f green:122.0f/255.0f blue:122.0f/255.0f alpha:1.0f];
+            
+            [headerView addSubview:updateNotificationsButton];
+            
+            
+        }
+
+}
 -(void)updateEventsInTransitionFromBg_Fg{
     
     BOOL isSixty=[BeagleUtilities hasBeenMoreThanSixtyMinutes];
@@ -519,20 +585,67 @@
     [filterButton addTarget:self action:@selector(handleFilterHeaderTap:)forControlEvents:UIControlEventTouchUpInside];
     [headerView addSubview:filterButton];
     
-    UIButton *notificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [notificationsButton addTarget:self action:@selector(revealUnderRight:)forControlEvents:UIControlEventTouchUpInside];
-    [notificationsButton setBackgroundImage:[UIImage imageNamed:@"Bell-(No-Notications)"] forState:UIControlStateNormal];
-    notificationsButton.frame = CGRectMake(272, 0, 44, 44);
-    notificationsButton.alpha = 0.6;
-    [headerView addSubview:notificationsButton];
-     
+    BeagleManager *BG=[BeagleManager SharedInstance];
+    if(BG.badgeCount==0){
+        
+        UIButton *notificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [notificationsButton addTarget:self action:@selector(revealUnderRight:)forControlEvents:UIControlEventTouchUpInside];
+        [notificationsButton setBackgroundImage:[UIImage imageNamed:@"Bell-(No-Notications)"] forState:UIControlStateNormal];
+        notificationsButton.frame = CGRectMake(272, 0, 44, 44);
+        notificationsButton.alpha = 0.6;
+        notificationsButton.tag=5346;
+        [headerView addSubview:notificationsButton];
+        
+    }else{
+        
+        NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+        [style setAlignment:NSTextAlignmentCenter];
+        
+        NSDictionary *attrs=[NSDictionary dictionaryWithObjectsAndKeys:
+                             [UIFont fontWithName:@"HelveticaNeue-Medium" size:24.0f], NSFontAttributeName,
+                             [UIColor whiteColor],NSForegroundColorAttributeName,
+                             style, NSParagraphStyleAttributeName, nil];
+        
+        CGSize badgeCountSize=[[NSString stringWithFormat:@"%ld",BG.badgeCount] boundingRectWithSize:CGSizeMake(44, 999)
+                                                                                             options:NSStringDrawingUsesLineFragmentOrigin
+                                                                                          attributes:attrs
+                                                                                             context:nil].size;
+        
+        
+        
+        UIButton *updateNotificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [updateNotificationsButton addTarget:self action:@selector(revealUnderRight:)forControlEvents:UIControlEventTouchUpInside];
+        if(badgeCountSize.width>32.0f){
+            updateNotificationsButton.frame = CGRectMake(272, 0, 44, 44);
+            
+        }
+        else{
+            updateNotificationsButton.frame = CGRectMake(272, 0, 44, 44);
+            
+        }
+        
+        updateNotificationsButton.alpha = 0.6;
+        [updateNotificationsButton setTitle:[NSString stringWithFormat:@"%ld",BG.badgeCount] forState:UIControlStateNormal];
+        [updateNotificationsButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        updateNotificationsButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
+        updateNotificationsButton.tag=5346;
+        updateNotificationsButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+        
+        updateNotificationsButton.backgroundColor=[UIColor colorWithRed:122.0f/255.0f green:122.0f/255.0f blue:122.0f/255.0f alpha:1.0f];
+        
+        [headerView addSubview:updateNotificationsButton];
+        
+        
+    }
+
+    
     UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [settingsButton addTarget:self action:@selector(revealMenu:)forControlEvents:UIControlEventTouchUpInside];
     [settingsButton setBackgroundImage:[UIImage imageNamed:@"Settings"] forState:UIControlStateNormal];
     settingsButton.frame = CGRectMake(228, 0, 44, 44);
     settingsButton.alpha = 0.6;
     [headerView addSubview:settingsButton];
-    
+    headerView.tag=43567;
     return headerView;
 }
 -(void)handleFilterHeaderTap:(UITapGestureRecognizer*)sender{
@@ -588,7 +701,7 @@
     
     cell.delegate=self;
     cell.cellIndex=indexPath.row;
-    NSLog(@"result=%@",[BeagleUtilities activityTime:play.startActivityDate endate:play.endActivityDate]);
+//    NSLog(@"result=%@",[BeagleUtilities activityTime:play.startActivityDate endate:play.endActivityDate]);
     cell.bg_activity = play;
     
     UIImage*checkImge= [BeagleUtilities loadImage:play.ownerid];

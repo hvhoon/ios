@@ -63,7 +63,11 @@
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"ECSlidingViewTopDidAnchorRight" object:self userInfo:nil];
 
+    [[BeagleManager SharedInstance]setBadgeCount:0];
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
+
 }
 
 -(void)viewWillAppear:(BOOL)animated{
