@@ -26,7 +26,7 @@
 @property(nonatomic,assign)NSInteger dosRelation;
 @property(nonatomic,assign)NSInteger participantsCount;
 @property(nonatomic,strong)UIImage*profilePhotoImage;
-@property(nonatomic,assign)NSInteger dos2Count;
+@property(nonatomic,assign)NSInteger dos1count;
 @property(nonatomic,assign) BOOL isParticipant;
 @property(nonatomic,assign)NSInteger postCount;
 @property(nonatomic,strong)NSArray*participantsArray;

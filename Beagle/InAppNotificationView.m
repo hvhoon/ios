@@ -9,7 +9,6 @@
 #import "InAppNotificationView.h"
 #import "TTTAttributedLabel.h"
 #import "BeagleNotificationClass.h"
-#import "JSON.h"
 static NSRegularExpression *__nameRegularExpression;
 static inline NSRegularExpression * NameRegularExpression() {
     if (!__nameRegularExpression) {
@@ -149,26 +148,9 @@ static inline NSRegularExpression * NameRegularExpression() {
 }
 
 -(void)backgroundtap:(UIButton*)sender{
-#if 1
     
-    NSURL *url=[NSURL URLWithString:[[NSString stringWithFormat:@"%@received_notification.json?id=%ld",herokuHost,inAppNotif.notificationId] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    [BeagleUtilities updateBadgeInfoOnTheServer:inAppNotif.notificationId];
     
-    NSLog(@"url=%@",url);
-    
-	NSURLRequest *request = [[NSURLRequest alloc] initWithURL: url];
-    NSHTTPURLResponse *response = NULL;
-	NSError *error = nil;
-    NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-    
-    NSDictionary* resultsd = [[[NSString alloc] initWithData:returnData
-                                                    encoding:NSUTF8StringEncoding] JSONValue];
-    
-    [[BeagleManager SharedInstance]setBadgeCount:[[resultsd objectForKey:@"badge"]integerValue]];
-    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[BeagleManager SharedInstance]badgeCount]];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
-
-#endif
     if (inAppNotif.backgroundTap) {
         
         [self HideNotification];

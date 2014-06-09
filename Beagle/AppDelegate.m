@@ -99,7 +99,6 @@ void uncaughtExceptionHandler(NSException *exception) {
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo{
     
-    
     if(_notificationServerManager!=nil){
         _notificationServerManager.delegate = nil;
         [_notificationServerManager releaseServerManager];
@@ -107,12 +106,17 @@ void uncaughtExceptionHandler(NSException *exception) {
     }
     _notificationServerManager=[[ServerManager alloc]init];
     _notificationServerManager.delegate=self;
+
+    
+    if ( application.applicationState == UIApplicationStateActive ){
+    
+        // app was already in the foreground
     
     
 
 
         if([[[userInfo valueForKey:@"params"] valueForKey:@"notification_type"]isEqualToString:@"17"]){
-            [_notificationServerManager requestInAppNotificationForPosts:[[[userInfo valueForKey:@"params"] valueForKey:@"chat_id"]integerValue]];
+            [_notificationServerManager requestInAppNotificationForPosts:[[[userInfo valueForKey:@"params"] valueForKey:@"chat_id"]integerValue] isOffline:NO];
             [[BeagleManager SharedInstance]setBadgeCount:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
             [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
 
@@ -120,9 +124,28 @@ void uncaughtExceptionHandler(NSException *exception) {
 
             
         }else{
-            [_notificationServerManager requestInAppNotification:[[[userInfo valueForKey:@"params"] valueForKey:@"notification_id"]integerValue]];
+            [_notificationServerManager requestInAppNotification:[[[userInfo valueForKey:@"params"] valueForKey:@"notification_id"]integerValue] isOffline:NO];
             
         }
+    }
+    else{
+        // app was just brought from background to foreground
+        NSLog(@"userInfo=%@",userInfo);
+        
+        if([[[userInfo valueForKey:@"params"] valueForKey:@"notification_type"]isEqualToString:@"17"]){
+            [_notificationServerManager requestInAppNotificationForPosts:[[[userInfo valueForKey:@"params"] valueForKey:@"chat_id"]integerValue]isOffline:YES];
+            [[BeagleManager SharedInstance]setBadgeCount:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
+            [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
+            
+            NSLog(@"badge Value=%ld",[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]);
+            
+            
+        }else
+            [_notificationServerManager requestInAppNotification:[[[userInfo valueForKey:@"params"] valueForKey:@"notification_id"]integerValue] isOffline:YES];
+
+        // create a service which will return data and update the view badge count automatically
+
+    }
     
 }
 
@@ -242,7 +265,7 @@ void uncaughtExceptionHandler(NSException *exception) {
         }
         
     }
-    else{
+    else if(serverRequest==kServerCallInAppNotificationForPosts){
         
         
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
@@ -264,6 +287,60 @@ void uncaughtExceptionHandler(NSException *exception) {
 
                 
                 
+                }
+            }
+        }
+        
+    }else if (serverRequest==kServerCallRequestForOfflineNotification){
+        
+        
+        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
+            
+            id status=[response objectForKey:@"status"];
+            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
+                
+                NSMutableDictionary *offlinePost=[response objectForKey:@"inappnotification"];
+                
+                id badge=[offlinePost objectForKey:@"badge"];
+                if (badge != nil && [status class] != [NSNull class]){
+                [[BeagleManager SharedInstance]setBadgeCount:[badge integerValue]];
+                [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[badge integerValue]];
+                
+                }
+                if (offlinePost != nil && [offlinePost class] != [NSNull class]) {
+                    
+                    [offlinePost setObject:[NSNumber numberWithBool:YES] forKey:@"isOffline"];
+                    
+                    NSNotification* notification = [NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:nil userInfo:offlinePost];
+                    [[NSNotificationCenter defaultCenter] postNotification:notification];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
+
+                    
+                }
+            }
+        }
+        
+    }else if (serverRequest==kServerCallInAppForOfflinePost){
+        
+        
+        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
+            
+            id status=[response objectForKey:@"status"];
+            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
+                
+                NSMutableDictionary *interestPost=[response objectForKey:@"interestPost"];
+                if (interestPost != nil && [interestPost class] != [NSNull class]) {
+                    
+                    
+                    [interestPost setObject:[NSNumber numberWithBool:YES] forKey:@"isOffline"];
+
+                    NSNotification* notification = [NSNotification notificationWithName:kNotificationForInterestPost object:nil userInfo:interestPost];
+                    [[NSNotificationCenter defaultCenter] postNotification:notification];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
+
+                    
+                    
+                    
                 }
             }
         }
@@ -296,6 +373,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[notificationDictionary objectForKey:@"photo_url"]]];
     UIImage* image =[[UIImage alloc] initWithData:imageData];
     [notificationDictionary setObject:image forKey:@"profileImage"];
+    [notificationDictionary setObject:[NSNumber numberWithBool:NO] forKey:@"isOffline"];
     [self performSelectorOnMainThread:@selector(sendAppNotification:) withObject:notificationDictionary waitUntilDone:NO];
 }
 -(void)sendAppNotification:(NSMutableDictionary*)appNotifDictionary{
@@ -309,6 +387,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[notificationDictionary objectForKey:@"player_photo_url"]]];
     UIImage* image =[[UIImage alloc] initWithData:imageData];
     [notificationDictionary setObject:image forKey:@"profileImage"];
+    [notificationDictionary setObject:[NSNumber numberWithBool:NO] forKey:@"isOffline"];
     [self performSelectorOnMainThread:@selector(sendAppNotificationForPost:) withObject:notificationDictionary waitUntilDone:NO];
 }
 -(void)sendAppNotificationForPost:(NSMutableDictionary*)appNotifDictionary{

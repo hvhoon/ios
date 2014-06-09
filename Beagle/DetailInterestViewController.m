@@ -43,7 +43,7 @@ static NSString * const CellIdentifier = @"cell";
 @synthesize profileImageView=_profileImageView;
 @synthesize chatPostManager=_chatPostManager;
 @synthesize chatPostsArray;
-@synthesize isRedirectedFromNotif;
+@synthesize isRedirected,toLastPost;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -88,8 +88,6 @@ static NSString * const CellIdentifier = @"cell";
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationForInterestPost object:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kUpdatePostsOnInterest object:nil];
-
-
     [super viewDidDisappear:animated];
     [self.contentWrapper _unregisterForNotifications];
 }
@@ -116,6 +114,7 @@ static NSString * const CellIdentifier = @"cell";
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
     if(notifObject.activityId==self.interestActivity.activityId && (notifObject.notificationType==WHAT_CHANGE_TYPE || notifObject.notificationType==DATE_CHANGE_TYPE)){
         //do the description and text update
+        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
         self.interestActivity.startActivityDate=notifObject.activityStartTime;
         self.interestActivity.endActivityDate=notifObject.activityEndTime;
         NSString* screenTitle = [BeagleUtilities activityTime:notifObject.activityStartTime endate:notifObject.activityEndTime];
@@ -123,7 +122,69 @@ static NSString * const CellIdentifier = @"cell";
         self.interestActivity.activityDesc=notifObject.activityWhat;
         [self.detailedInterestTableView reloadData];
 
-    }else{
+    }else if(notifObject.activityId==self.interestActivity.activityId && self.interestActivity.ownerid ==[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]){
+    if(notifObject.notificationType==LEAVED_ACTIVITY_TYPE){
+        
+    [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+        BeagleUserClass *userObject=[[BeagleUserClass alloc]init];
+        userObject.profileImageUrl=notifObject.photoUrl;
+        userObject.first_name=notifObject.playerName;
+        userObject.beagleUserId=notifObject.referredId;
+        
+        self.interestActivity.participantsCount--;
+        if(notifObject.dos1_relation==1){
+            self.interestActivity.dos1count--;
+            UILabel *participantsCountTextLabel=(UILabel*)[self.view viewWithTag:347];
+            participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested -  %ld Friends",(long)self.interestActivity.participantsCount,(long)self.interestActivity.dos1count];
+        }
+        
+        NSMutableArray *testArray=[NSMutableArray new];
+        for(BeagleUserClass *data in self.interestActivity.participantsArray){
+            if(data.beagleUserId!=userObject.beagleUserId){
+                
+                [testArray addObject:data];
+            }
+        }
+        self.interestActivity.participantsArray=testArray;
+        scrollViewResize=YES;
+        [self.detailedInterestTableView reloadData];
+
+
+        
+    }
+    else if(notifObject.notificationType==GOING_TYPE){
+        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+        BeagleUserClass *userObject=[[BeagleUserClass alloc]init];
+        userObject.profileImageUrl=notifObject.photoUrl;
+        userObject.first_name=notifObject.playerName;
+        userObject.beagleUserId=notifObject.referredId;
+        
+        self.interestActivity.participantsCount++;
+        if(notifObject.dos1_relation==1){
+            self.interestActivity.dos1count++;
+            UILabel *participantsCountTextLabel=(UILabel*)[self.view viewWithTag:347];
+            participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested -  %ld Friends",(long)self.interestActivity.participantsCount,(long)self.interestActivity.dos1count];
+        }
+            NSMutableArray*interestArray=[NSMutableArray new];
+            
+            if([self.interestActivity.participantsArray count]!=0){
+                [interestArray addObject:userObject];
+                [interestArray addObjectsFromArray:self.interestActivity.participantsArray];
+                self.interestActivity.participantsArray=interestArray;
+            }else{
+                [interestArray addObject:userObject];
+                self.interestActivity.participantsArray=interestArray;
+            }
+        scrollViewResize=YES;
+        [self.detailedInterestTableView reloadData];
+        
+    }
+
+    
+    }
+    else if(!notifObject.isOffline){
+        
+    
         InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0,0, 320, 64) appNotification:notifObject];
         notifView.delegate=self;
         UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
@@ -155,7 +216,7 @@ static NSString * const CellIdentifier = @"cell";
         [_chatPostManager getPostDetail:notifObject.postChatId];
    }
 
-else{
+else if(!notifObject.isOffline){
     InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0, 0, 320, 64) appNotification:notifObject];
     notifView.delegate=self;
     
@@ -172,7 +233,10 @@ else{
     DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
     viewController.interestServerManager=[[ServerManager alloc]init];
     viewController.interestServerManager.delegate=viewController;
-    viewController.isRedirectedFromNotif=TRUE;
+    viewController.isRedirected=TRUE;
+    if(notification.notificationType==CHAT_TYPE)
+        viewController.toLastPost=TRUE;
+
     [viewController.interestServerManager getDetailedInterest:notification.activityId];
     [self.navigationController pushViewController:viewController animated:YES];
     
@@ -185,7 +249,7 @@ else{
     _triangle = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Triangle"]];
     _triangle.hidden = YES;
     
-    if(!isRedirectedFromNotif)
+    if(!isRedirected)
       [self createInterestInitialCard];
 
 }
@@ -265,6 +329,9 @@ else{
 //    [self.contentWrapper textViewDidChange:self.contentWrapper.inputView.textView];
     
     [self.contentWrapper.dummyInputView.textView setText:nil];
+        
+        
+     [self.contentWrapper reloadInputAccessoryView];
 //    [self.contentWrapper textViewDidChange:self.contentWrapper.dummyInputView.textView];
     
 //    UIEdgeInsets contentInset = self.detailedInterestTableView.contentInset;
@@ -298,10 +365,10 @@ else{
         _interestUpdateManager.delegate=self;
         
         if (self.interestActivity.isParticipant) {
-            [_interestUpdateManager removeMembership:self.interestActivity.activityId];
+            [_interestUpdateManager removeMembership:self.interestActivity.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
         }
         else{
-            [_interestUpdateManager participateMembership:self.interestActivity.activityId];
+            [_interestUpdateManager participateMembership:self.interestActivity.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
         }
         
     }
@@ -559,12 +626,12 @@ else{
             participantsCountTextLabel.tag=347;
             
             // Are any of your friends participants?
-            if (self.interestActivity.dos2Count>0) {
-                participantsCountTextSize = [[NSString stringWithFormat:@"%ld Interested -  %ld Friends",(long)self.interestActivity.participantsCount,(long)self.interestActivity.dos2Count]  boundingRectWithSize:CGSizeMake(288, 999) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
+            if (self.interestActivity.dos1count>0) {
+                participantsCountTextSize = [[NSString stringWithFormat:@"%ld Interested -  %ld Friends",(long)self.interestActivity.participantsCount,(long)self.interestActivity.dos1count]  boundingRectWithSize:CGSizeMake(288, 999) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
                 
                 participantsCountTextLabel.frame=CGRectMake(16, fromTheTop, participantsCountTextSize.width, participantsCountTextSize.height);
                 
-                participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested -  %ld Friends",(long)self.interestActivity.participantsCount,(long)self.interestActivity.dos2Count];
+                participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested -  %ld Friends",(long)self.interestActivity.participantsCount,(long)self.interestActivity.dos1count];
                 
                 [_backgroundView addSubview:participantsCountTextLabel];
             }
@@ -912,7 +979,7 @@ else{
                 if (interest != nil && [interest class] != [NSNull class]) {
                     
                     
-                    if(isRedirectedFromNotif){
+                    if(isRedirected){
                         self.interestActivity=[[BeagleActivityClass alloc]initWithDictionary:interest];
                         [self createInterestInitialCard];
                         
@@ -940,6 +1007,14 @@ else{
                         if([chatsArray count]!=0){
                             self.chatPostsArray=[NSMutableArray arrayWithArray:chatsArray];
                         }
+                    }
+                    
+                    if(toLastPost){
+                        
+            [self.detailedInterestTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow: [self.chatPostsArray count] - 1 inSection:0]
+                                                    atScrollPosition:UITableViewScrollPositionTop
+                                                            animated:YES];
+                        
                     }
                     
                 }
@@ -981,9 +1056,9 @@ else{
                     self.interestActivity.participantsCount--;
                     
                 }
-                if(self.interestActivity.participantsCount>0 && self.interestActivity.dos2Count>0){
+                if(self.interestActivity.participantsCount>0 && self.interestActivity.dos1count>0){
                     
-                    participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested -  %ld Friends",(long)self.interestActivity.participantsCount,(long)self.interestActivity.dos2Count];
+                    participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested -  %ld Friends",(long)self.interestActivity.participantsCount,(long)self.interestActivity.dos1count];
                 }else{
                     participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested",(long)self.interestActivity.participantsCount];
                 }
@@ -1058,11 +1133,21 @@ else{
                     for(id chatPost in activity_chats){
                         InterestChatClass *chatClass=[[InterestChatClass alloc]initWithDictionary:chatPost];
                         [self.chatPostsArray addObject:chatClass];
+                        self.interestActivity.postCount=[self.chatPostsArray count];
                     }
-                    self.interestActivity.postCount++;
+                    
                     
                     [PostSoundEffect playMessageSentSound];
-                   // [self.contentWrapper reloadInputAccessoryView];
+                    id badge=[response objectForKey:@"badge"];
+                    if (badge != nil && [badge class] != [NSNull class]){
+                        
+                        [[BeagleManager SharedInstance]setBadgeCount:[badge integerValue]];
+                        [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[badge integerValue]];
+                        
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
+
+                    }
+                   
                     
                     
                     
