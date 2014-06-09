@@ -114,6 +114,7 @@ static NSString * const CellIdentifier = @"cell";
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
     if(notifObject.activityId==self.interestActivity.activityId && (notifObject.notificationType==WHAT_CHANGE_TYPE || notifObject.notificationType==DATE_CHANGE_TYPE)){
         //do the description and text update
+        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
         self.interestActivity.startActivityDate=notifObject.activityStartTime;
         self.interestActivity.endActivityDate=notifObject.activityEndTime;
         NSString* screenTitle = [BeagleUtilities activityTime:notifObject.activityStartTime endate:notifObject.activityEndTime];
@@ -124,6 +125,7 @@ static NSString * const CellIdentifier = @"cell";
     }else if(notifObject.activityId==self.interestActivity.activityId && self.interestActivity.ownerid ==[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]){
     if(notifObject.notificationType==LEAVED_ACTIVITY_TYPE){
         
+    [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
         BeagleUserClass *userObject=[[BeagleUserClass alloc]init];
         userObject.profileImageUrl=notifObject.photoUrl;
         userObject.first_name=notifObject.playerName;
@@ -151,6 +153,7 @@ static NSString * const CellIdentifier = @"cell";
         
     }
     else if(notifObject.notificationType==GOING_TYPE){
+        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
         BeagleUserClass *userObject=[[BeagleUserClass alloc]init];
         userObject.profileImageUrl=notifObject.photoUrl;
         userObject.first_name=notifObject.playerName;

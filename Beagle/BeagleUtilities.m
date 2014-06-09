@@ -8,6 +8,7 @@
 
 #import "BeagleUtilities.h"
 #import "BeagleNotificationClass.h"
+#import "JSON.h"
 @implementation BeagleUtilities
 + (int) getRandomIntBetweenLow:(int) low andHigh:(int) high {
 	return ((arc4random() % (high - low + 1)) + low);
@@ -540,6 +541,24 @@
     notification.notificationType=17;
     return notification;
     
+    
+}
+
++(void)updateBadgeInfoOnTheServer:(NSInteger)notificationId{
+    NSURL *url=[NSURL URLWithString:[[NSString stringWithFormat:@"%@received_notification.json?id=%ld",herokuHost,notificationId] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    
+    NSURLRequest *notificationRequest = [[NSURLRequest alloc] initWithURL: url];
+    NSHTTPURLResponse *response = NULL;
+	NSError *error = nil;
+    NSData *returnData = [NSURLConnection sendSynchronousRequest:notificationRequest returningResponse:&response error:&error];
+    
+    NSDictionary* resultsd = [[[NSString alloc] initWithData:returnData
+                                                    encoding:NSUTF8StringEncoding] JSONValue];
+    
+    [[BeagleManager SharedInstance]setBadgeCount:[[resultsd objectForKey:@"badge"]integerValue]];
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[BeagleManager SharedInstance]badgeCount]];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
     
 }
 @end

@@ -25,4 +25,6 @@
 +(UIImage *) loadImage:(NSInteger )fileName;
 +(BeagleNotificationClass*)getNotificationObject:(NSNotification*)object;
 +(BeagleNotificationClass*)getNotificationForInterestPost:(NSNotification*)object;
++(void)updateBadgeInfoOnTheServer:(NSInteger)notificationId;
+
 @end
