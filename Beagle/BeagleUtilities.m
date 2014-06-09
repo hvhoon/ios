@@ -29,8 +29,7 @@
     }
     else
     {
-        // if portrait
-        y = (image.size.height - image.size.width)/2;
+        // if portrait use the top portion of the image
         dimensions.height = image.size.width;
         dimensions.width = image.size.width;
         

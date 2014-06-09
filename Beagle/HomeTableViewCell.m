@@ -50,12 +50,9 @@ static UIFont *forthTextFont = nil;
     CGContextFillRect(context, r);
     
     UIImage * originalImage =self.photoImage;
-    CGFloat oImageWidth = originalImage.size.width;
-    CGFloat oImageHeight = originalImage.size.height;
     
     // Draw the original image at the origin
-    CGRect newRect = CGRectMake(0, 0, oImageWidth, oImageHeight);
-    UIImage *newImage = [BeagleUtilities circularScaleNCrop:originalImage rect:newRect];
+    UIImage *newImage = [BeagleUtilities imageCircularBySize:originalImage sqr:100.0f];
     
     fromTheTop = 8; // top spacing
     
