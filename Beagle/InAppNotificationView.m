@@ -149,11 +149,9 @@ static inline NSRegularExpression * NameRegularExpression() {
 }
 
 -(void)backgroundtap:(UIButton*)sender{
-#if 0
-    if(inAppNotif.notificationType!=17){
-        
-    }
-    NSURL *url=[NSURL URLWithString:[[NSString stringWithFormat:@"%@received_notification.json?id=%ld",localHost,inAppNotif.notificationId] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+#if 1
+    
+    NSURL *url=[NSURL URLWithString:[[NSString stringWithFormat:@"%@received_notification.json?id=%ld",herokuHost,inAppNotif.notificationId] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     
     NSLog(@"url=%@",url);
     
@@ -167,6 +165,9 @@ static inline NSRegularExpression * NameRegularExpression() {
     
     [[BeagleManager SharedInstance]setBadgeCount:[[resultsd objectForKey:@"badge"]integerValue]];
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[BeagleManager SharedInstance]badgeCount]];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
+
 #endif
     if (inAppNotif.backgroundTap) {
         

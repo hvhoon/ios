@@ -107,8 +107,16 @@ void uncaughtExceptionHandler(NSException *exception) {
     }
     _notificationServerManager=[[ServerManager alloc]init];
     _notificationServerManager.delegate=self;
+    
+    
+
+
         if([[[userInfo valueForKey:@"params"] valueForKey:@"notification_type"]isEqualToString:@"17"]){
             [_notificationServerManager requestInAppNotificationForPosts:[[[userInfo valueForKey:@"params"] valueForKey:@"chat_id"]integerValue]];
+            [[BeagleManager SharedInstance]setBadgeCount:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
+            [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
+
+            NSLog(@"badge Value=%ld",[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]);
 
             
         }else{
@@ -133,6 +141,10 @@ void uncaughtExceptionHandler(NSException *exception) {
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    
+    [[BeagleManager SharedInstance]setBadgeCount:[[UIApplication sharedApplication]applicationIconBadgeNumber]];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"AutoRefreshEvents" object:self userInfo:nil];
     
@@ -206,6 +218,8 @@ void uncaughtExceptionHandler(NSException *exception) {
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
              
                 NSMutableDictionary *inappnotification=[response objectForKey:@"inappnotification"];
+                if (inappnotification != nil && [inappnotification class] != [NSNull class]) {
+
                 NSLog(@"badge Value=%ld",[[inappnotification objectForKey:@"badge"]integerValue]);
                 
                 
@@ -217,8 +231,12 @@ void uncaughtExceptionHandler(NSException *exception) {
                 [queue addOperation:operation];
 
                 [[BeagleManager SharedInstance]setBadgeCount:[[inappnotification objectForKey:@"badge"]integerValue]];
-                
+                    
+                    
+                [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[inappnotification objectForKey:@"badge"]integerValue]];
 
+                
+                }
 
             }
         }
@@ -233,7 +251,7 @@ void uncaughtExceptionHandler(NSException *exception) {
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 
                 NSMutableDictionary *interestPost=[response objectForKey:@"interestPost"];
-                NSLog(@"badge Value=%ld",[[interestPost objectForKey:@"badge"]integerValue]);
+                if (interestPost != nil && [interestPost class] != [NSNull class]) {
                 
                 
                 NSOperationQueue *queue = [NSOperationQueue new];
@@ -243,14 +261,16 @@ void uncaughtExceptionHandler(NSException *exception) {
                                                     object:interestPost];
                 [queue addOperation:operation];
                 
-                [[BeagleManager SharedInstance]setBadgeCount:[[interestPost objectForKey:@"badge"]integerValue]];
+
                 
                 
-                
+                }
             }
         }
         
     }
+    
+    
 }
 
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
@@ -281,6 +301,9 @@ void uncaughtExceptionHandler(NSException *exception) {
 -(void)sendAppNotification:(NSMutableDictionary*)appNotifDictionary{
     NSNotification* notification = [NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:nil userInfo:appNotifDictionary];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
+    
+
 }
 - (void)loadProfileImageDataForAPost:(NSMutableDictionary*)notificationDictionary {
     NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[notificationDictionary objectForKey:@"player_photo_url"]]];
@@ -291,6 +314,9 @@ void uncaughtExceptionHandler(NSException *exception) {
 -(void)sendAppNotificationForPost:(NSMutableDictionary*)appNotifDictionary{
     NSNotification* notification = [NSNotification notificationWithName:kNotificationForInterestPost object:nil userInfo:appNotifDictionary];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
+    
+
 }
 
 @end

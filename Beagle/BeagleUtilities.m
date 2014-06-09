@@ -499,6 +499,9 @@
     notification.notificationId=[[[object valueForKey:@"userInfo"]valueForKey:@"notification_id"]integerValue];
     if(obj1!=nil && obj1!=[NSNull class] && [[obj1 allKeys]count]!=0){
         notification.activityId=[[obj1 valueForKey:@"id"]integerValue];
+        notification.activityStartTime=[obj1 valueForKey:@"start_when"];
+        notification.activityEndTime=[obj1 valueForKey:@"stop_when"];
+        notification.activityWhat=[obj1 valueForKey:@"what"];
         notification.backgroundTap=TRUE;
     }
     else{
@@ -522,7 +525,11 @@
     id obj1=[object valueForKey:@"userInfo"];
     NSLog(@"obj1=%@",obj1);
     notification.notificationString=[obj1 valueForKey:@"msg"];
+    notification.playerName=[obj1 valueForKey:@"player_name"];
     notification.notificationId=[[obj1 valueForKey:@"id"]integerValue];
+    notification.postChatId=[[obj1 valueForKey:@"chatid"]integerValue];
+    notification.activityOwnerId=[[obj1 valueForKey:@"ownerid"]integerValue];
+    notification.postDesc=[obj1 valueForKey:@"post"];
     notification.profileImage=[[object valueForKey:@"userInfo"] valueForKey:@"profileImage"];
     notification.activityId=[[obj1 valueForKey:@"activity_id"]integerValue];
     notification.photoUrl=[obj1 valueForKey:@"player_photo_url"];

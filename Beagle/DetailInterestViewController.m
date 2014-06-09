@@ -17,6 +17,7 @@
 #import "ActivityViewController.h"
 #import "PostSoundEffect.h"
 #import "InAppNotificationView.h"
+#import "BeagleNotificationClass.h"
 static NSString * const CellIdentifier = @"cell";
 @interface DetailInterestViewController ()<BeaglePlayerScrollMenuDelegate,ServerManagerDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,IconDownloaderDelegate,InAppNotificationViewDelegate>{
     BOOL scrollViewResize;
@@ -56,7 +57,7 @@ static NSString * const CellIdentifier = @"cell";
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBackgroundInNotification:) name:kRemoteNotificationReceivedNotification object:Nil];
     
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(postInAppNotification:) name:kNotificationForInterestPost object:Nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(postInAppNotification:) name:kNotificationForInterestPost object:Nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (getPostsUpdateInBackground) name:kUpdatePostsOnInterest object:nil];
 
@@ -72,13 +73,10 @@ static NSString * const CellIdentifier = @"cell";
         [self.navigationController popViewControllerAnimated:YES];
         return;
     }
+    NSString* screenTitle = [BeagleUtilities activityTime:self.interestActivity.startActivityDate endate:self.interestActivity.endActivityDate];
+    self.navigationItem.title = screenTitle;
+    [self.detailedInterestTableView reloadData];
     
-    if(self.interestActivity.dosRelation==0){
-        
-        NSString* screenTitle = [BeagleUtilities activityTime:self.interestActivity.startActivityDate endate:self.interestActivity.endActivityDate];
-        self.navigationItem.title = screenTitle;
-        [self.detailedInterestTableView reloadData];
-    }
 }
 -(void)viewDidAppear:(BOOL)animated{
     [self.contentWrapper _registerForNotifications];
@@ -115,22 +113,70 @@ static NSString * const CellIdentifier = @"cell";
 
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
     
-    //have to ask harish about the same
-
-#if 0
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
-    InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0,0, 320, 64) appNotification:notifObject];
-    notifView.delegate=self;
-    UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
-    [keyboard addSubview:notifView];
+    if(notifObject.activityId==self.interestActivity.activityId && (notifObject.notificationType==WHAT_CHANGE_TYPE || notifObject.notificationType==DATE_CHANGE_TYPE)){
+        //do the description and text update
+        self.interestActivity.startActivityDate=notifObject.activityStartTime;
+        self.interestActivity.endActivityDate=notifObject.activityEndTime;
+        NSString* screenTitle = [BeagleUtilities activityTime:notifObject.activityStartTime endate:notifObject.activityEndTime];
+        self.navigationItem.title = screenTitle;
+        self.interestActivity.activityDesc=notifObject.activityWhat;
+        [self.detailedInterestTableView reloadData];
+
+    }else{
+        InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0,0, 320, 64) appNotification:notifObject];
+        notifView.delegate=self;
+        UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
+        [keyboard addSubview:notifView];
+        
+    }
+    
     BeagleManager *BG=[BeagleManager SharedInstance];
     BG.activityCreated=TRUE;
-#endif
     
     
 }
 
 
+-(void)postInAppNotification:(NSNotification*)note{
+    BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
+    
+    if(notifObject.activityId==self.interestActivity.activityId && notifObject.notificationType==CHAT_TYPE){
+        
+        
+        if(_chatPostManager!=nil){
+            _chatPostManager.delegate = nil;
+            [_chatPostManager releaseServerManager];
+            _chatPostManager = nil;
+        }
+        
+        _chatPostManager=[[ServerManager alloc]init];
+        _chatPostManager.delegate=self;
+        [_chatPostManager getPostDetail:notifObject.postChatId];
+   }
+
+else{
+    InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0, 0, 320, 64) appNotification:notifObject];
+    notifView.delegate=self;
+    
+    UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
+    [keyboard addSubview:notifView];
+    }
+    BeagleManager *BG=[BeagleManager SharedInstance];
+    BG.activityCreated=TRUE;
+    
+}
+-(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
+    viewController.interestServerManager=[[ServerManager alloc]init];
+    viewController.interestServerManager.delegate=viewController;
+    viewController.isRedirectedFromNotif=TRUE;
+    [viewController.interestServerManager getDetailedInterest:notification.activityId];
+    [self.navigationController pushViewController:viewController animated:YES];
+    
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -275,256 +321,6 @@ static NSString * const CellIdentifier = @"cell";
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-#pragma mark - server calls
-
-- (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
-    if(serverRequest==kServerCallGetDetailedInterest){
-        
-        
-        _interestServerManager.delegate = nil;
-        [_interestServerManager releaseServerManager];
-        _interestServerManager = nil;
-        
-        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
-            
-            id status=[response objectForKey:@"status"];
-            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
-                
-                
-                
-                
-                id interest=[response objectForKey:@"interest"];
-                if (interest != nil && [interest class] != [NSNull class]) {
-                    
-                    
-                    if(isRedirectedFromNotif){
-                        self.interestActivity=[[BeagleActivityClass alloc]initWithDictionary:interest];
-                        [self createInterestInitialCard];
-
-                    }
-                    id participants=[interest objectForKey:@"participants"];
-                    if (participants != nil && [participants class] != [NSNull class] && [participants count]!=0) {
-                        NSMutableArray *participantsArray=[[NSMutableArray alloc]init];
-                        for(id el in participants){
-                            BeagleUserClass *userClass=[[BeagleUserClass alloc]initWithDictionary:el];
-                            [participantsArray addObject:userClass];
-                        }
-                        self.interestActivity.participantsArray=participantsArray;
-//                        [self setUpPlayerScroll:participantsArray];
-
-                        
-                    }
-                     id chats=[interest objectForKey:@"chats"];
-                     if (chats != nil && [chats class] != [NSNull class] && [chats count]!=0) {
-                        NSMutableArray *chatsArray=[[NSMutableArray alloc]init];
-                        imageDownloadsInProgress=[NSMutableDictionary new];
-                        for(id el in chats){
-                            InterestChatClass *chatClass=[[InterestChatClass alloc]initWithDictionary:el];
-                            [chatsArray addObject:chatClass];
-                        }
-                        if([chatsArray count]!=0){
-                            self.chatPostsArray=[NSMutableArray arrayWithArray:chatsArray];
-                        }
-                    }
-                    
-                }
-                
-                
-
-                
-            }
-        }
-        
-        
-    }
-    
-    else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
-        _interestUpdateManager.delegate = nil;
-        [_interestUpdateManager releaseServerManager];
-        _interestUpdateManager = nil;
-        scrollViewResize=TRUE;
-        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
-            
-
-            id status=[response objectForKey:@"status"];
-            id message=[response objectForKey:@"message"];
-            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
-                
-                UILabel *participantsCountTextLabel=(UILabel*)[self.view viewWithTag:347];
-                if([message isEqualToString:@"Joined"]){
-                    self.interestActivity.participantsCount++;
-                    
-                }else{
-                    self.interestActivity.participantsCount--;
-                    
-                }
-                if(self.interestActivity.participantsCount>0 && self.interestActivity.dos2Count>0){
-                    
-                    participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested -  %ld Friends",(long)self.interestActivity.participantsCount,(long)self.interestActivity.dos2Count];
-                }else{
-                     participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested",(long)self.interestActivity.participantsCount];
-                }
-                UIImageView *starImageView=(UIImageView*)[self.view viewWithTag:345];
-
-                if(self.interestActivity.isParticipant){
-                    self.interestActivity.isParticipant=FALSE;
-                    starImageView.image=[UIImage imageNamed:@"Star-Unfilled"];
-                    self.contentWrapper.interested=NO;
-                    [self.contentWrapper _setInitialFrames];
-
-                    [self.contentWrapper.inputView setHidden:YES];
-                    [self.contentWrapper.dummyInputView setHidden:YES];
-                    
-
-                    NSMutableArray *testArray=[NSMutableArray new];
-                    for(BeagleUserClass *data in self.interestActivity.participantsArray){
-                        if(data.beagleUserId!=[[[BeagleManager SharedInstance]beaglePlayer]beagleUserId]){
-        
-                            [testArray addObject:data];
-                        }
-                    }
-                    self.interestActivity.participantsArray=testArray;
-
-                }
-                else{
-                    self.interestActivity.isParticipant=TRUE;
-                    starImageView.image=[UIImage imageNamed:@"Star"];
-                        NSMutableArray*interestArray=[NSMutableArray new];
-                    
-                    if([self.interestActivity.participantsArray count]!=0){
-                        [interestArray addObject:[[BeagleManager SharedInstance]beaglePlayer]];
-                        [interestArray addObjectsFromArray:self.interestActivity.participantsArray];
-                         self.interestActivity.participantsArray=interestArray;
-                    }else{
-                        [interestArray addObject:[[BeagleManager SharedInstance]beaglePlayer]];
-                        self.interestActivity.participantsArray=interestArray;
-                    }
-                    self.contentWrapper.interested=YES;
-                    [self.contentWrapper _setInitialFrames];
-                    [self.contentWrapper.inputView setHidden:NO];
-                    [self.contentWrapper.dummyInputView setHidden:NO];
-
-                }
-                
-                
-
-            }
-        }
-        
-    }
-    else if (serverRequest==kServerCallPostComment||serverRequest==kServerCallGetBackgroundChats){
-        
-        
-        _chatPostManager.delegate = nil;
-        [_chatPostManager releaseServerManager];
-        _chatPostManager = nil;
-        
-        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
-            
-            id status=[response objectForKey:@"status"];
-            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
-                
-                
-                
-                
-                id activity_chats=[response objectForKey:@"activity_chats"];
-                if (activity_chats != nil && [activity_chats class] != [NSNull class] && [activity_chats count]!=0) {
-                    if(self.chatPostsArray==nil){
-                        self.chatPostsArray=[NSMutableArray new];
-                    }
-                    for(id chatPost in activity_chats){
-                    InterestChatClass *chatClass=[[InterestChatClass alloc]initWithDictionary:chatPost];
-                    [self.chatPostsArray addObject:chatClass];
-                    }
-                     self.interestActivity.postCount++;
-                    
-                     [PostSoundEffect playMessageSentSound];
-//                    [self.contentWrapper reloadInputAccessoryView];
-                    
-                    
-                    
-                    
-                   // [self.contentWrapper resize:CGRectZero];
-                    //[self.contentWrapper.inputView.textView setText:nil];
-                    //[self.contentWrapper textViewDidChange:self.contentWrapper.inputView.textView];
-                    if([self.chatPostsArray count]!=0){
-                        [self.detailedInterestTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[self.chatPostsArray count]-1 inSection:0]
-                                                              atScrollPosition:UITableViewScrollPositionTop
-                                                                      animated:YES];
-
-                    }
-
-//                    [self.contentWrapper.inputView.textView resignFirstResponder];
-//                     For dummyInputView.textView
-//                        [self.view endEditing:YES];
-
-//                    [self.contentWrapper.inputView.textView becomeFirstResponder];
-//                     For dummyInputView.textView
-//                        [self.view becomeFirstResponder];
-
-                    
-
-                        }
-                
-                
-                
-                
-            }
-        }
-        
-        
-    }
-    [self.detailedInterestTableView reloadData];
-}
-
-
-- (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
-{
-    if(serverRequest==kServerCallGetDetailedInterest)
-    {
-        _interestServerManager.delegate = nil;
-        [_interestServerManager releaseServerManager];
-        _interestServerManager = nil;
-    }
-    else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
-        _interestUpdateManager.delegate = nil;
-        [_interestUpdateManager releaseServerManager];
-        _interestUpdateManager = nil;
-    }
-    else if(serverRequest==kServerCallPostComment)
-    {
-        _chatPostManager.delegate = nil;
-        [_chatPostManager releaseServerManager];
-        _chatPostManager = nil;
-    }
-    
-    NSString *message = NSLocalizedString (@"Unable to initiate request.",
-                                           @"NSURLConnection initialization method failed.");
-    BeagleAlertWithMessage(message);
-}
-
-- (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
-{
-    if(serverRequest==kServerCallGetDetailedInterest)
-    {
-        _interestServerManager.delegate = nil;
-        [_interestServerManager releaseServerManager];
-        _interestServerManager = nil;
-    }
-    else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
-        _interestUpdateManager.delegate = nil;
-        [_interestUpdateManager releaseServerManager];
-        _interestUpdateManager = nil;
-    }
-    else if(serverRequest==kServerCallPostComment)
-    {
-        _chatPostManager.delegate = nil;
-        [_chatPostManager releaseServerManager];
-        _chatPostManager = nil;
-    }
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
-    [alert show];
 }
 - (void)setUpPlayerScroll:(NSArray*)elements{
 	NSMutableArray *array = [[NSMutableArray alloc] init];
@@ -754,8 +550,7 @@ static NSString * const CellIdentifier = @"cell";
                    [UIColor blackColor],NSForegroundColorAttributeName,
                    style, NSParagraphStyleAttributeName, nil];
             CGSize participantsCountTextSize;
-            UILabel *participantsCountTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(16,fromTheTop,
-                                                                                            participantsCountTextSize.width, participantsCountTextSize.height)];
+            UILabel *participantsCountTextLabel = [[UILabel alloc] init];
             
             participantsCountTextLabel.backgroundColor = [UIColor clearColor];
             participantsCountTextLabel.textColor = [UIColor blackColor];
@@ -1094,6 +889,258 @@ static NSString * const CellIdentifier = @"cell";
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     
     [self loadImagesForOnscreenRows];
+}
+#pragma mark - server calls
+
+- (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
+    if(serverRequest==kServerCallGetDetailedInterest){
+        
+        
+        _interestServerManager.delegate = nil;
+        [_interestServerManager releaseServerManager];
+        _interestServerManager = nil;
+        
+        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
+            
+            id status=[response objectForKey:@"status"];
+            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
+                
+                
+                
+                
+                id interest=[response objectForKey:@"interest"];
+                if (interest != nil && [interest class] != [NSNull class]) {
+                    
+                    
+                    if(isRedirectedFromNotif){
+                        self.interestActivity=[[BeagleActivityClass alloc]initWithDictionary:interest];
+                        [self createInterestInitialCard];
+                        
+                    }
+                    NSArray *participants=[interest objectForKey:@"participants"];
+                    if (participants != nil && [participants class] != [NSNull class] && [participants count]!=0) {
+                        NSMutableArray *participantsArray=[[NSMutableArray alloc]init];
+                        for(id el in participants){
+                            BeagleUserClass *userClass=[[BeagleUserClass alloc]initWithDictionary:el];
+                            [participantsArray addObject:userClass];
+                        }
+                        self.interestActivity.participantsArray=participantsArray;
+                        //                        [self setUpPlayerScroll:participantsArray];
+                        
+                        
+                    }
+                    NSArray *chats=[interest objectForKey:@"chats"];
+                    if (chats != nil && [chats class] != [NSNull class] && [chats count]!=0) {
+                        NSMutableArray *chatsArray=[[NSMutableArray alloc]init];
+                        imageDownloadsInProgress=[NSMutableDictionary new];
+                        for(id el in chats){
+                            InterestChatClass *chatClass=[[InterestChatClass alloc]initWithDictionary:el];
+                            [chatsArray addObject:chatClass];
+                        }
+                        if([chatsArray count]!=0){
+                            self.chatPostsArray=[NSMutableArray arrayWithArray:chatsArray];
+                        }
+                    }
+                    
+                }
+                
+                
+                
+                
+            }
+        }
+        
+        
+    }
+    
+    else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
+        _interestUpdateManager.delegate = nil;
+        [_interestUpdateManager releaseServerManager];
+        _interestUpdateManager = nil;
+        scrollViewResize=TRUE;
+        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
+            
+            
+            id status=[response objectForKey:@"status"];
+            id message=[response objectForKey:@"message"];
+            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
+                
+                UILabel *participantsCountTextLabel=(UILabel*)[self.view viewWithTag:347];
+                if([message isEqualToString:@"Joined"]){
+                    self.interestActivity.participantsCount++;
+                    
+                }else if([message isEqualToString:@"Already Joined"]){
+
+                    NSString *message = NSLocalizedString (@"You have already joined.",
+                                                           @"Already Joined");
+                    BeagleAlertWithMessage(message);
+                    return;
+
+                }
+                else {
+                    self.interestActivity.participantsCount--;
+                    
+                }
+                if(self.interestActivity.participantsCount>0 && self.interestActivity.dos2Count>0){
+                    
+                    participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested -  %ld Friends",(long)self.interestActivity.participantsCount,(long)self.interestActivity.dos2Count];
+                }else{
+                    participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested",(long)self.interestActivity.participantsCount];
+                }
+                UIImageView *starImageView=(UIImageView*)[self.view viewWithTag:345];
+                
+                if(self.interestActivity.isParticipant){
+                    self.interestActivity.isParticipant=FALSE;
+                    starImageView.image=[UIImage imageNamed:@"Star-Unfilled"];
+                    self.contentWrapper.interested=NO;
+                    [self.contentWrapper _setInitialFrames];
+                    
+                    [self.contentWrapper.inputView setHidden:YES];
+                    [self.contentWrapper.dummyInputView setHidden:YES];
+                    
+                    
+                    NSMutableArray *testArray=[NSMutableArray new];
+                    for(BeagleUserClass *data in self.interestActivity.participantsArray){
+                        if(data.beagleUserId!=[[[BeagleManager SharedInstance]beaglePlayer]beagleUserId]){
+                            
+                            [testArray addObject:data];
+                        }
+                    }
+                    self.interestActivity.participantsArray=testArray;
+                    
+                }
+                else{
+                    self.interestActivity.isParticipant=TRUE;
+                    starImageView.image=[UIImage imageNamed:@"Star"];
+                    NSMutableArray*interestArray=[NSMutableArray new];
+                    
+                    if([self.interestActivity.participantsArray count]!=0){
+                        [interestArray addObject:[[BeagleManager SharedInstance]beaglePlayer]];
+                        [interestArray addObjectsFromArray:self.interestActivity.participantsArray];
+                        self.interestActivity.participantsArray=interestArray;
+                    }else{
+                        [interestArray addObject:[[BeagleManager SharedInstance]beaglePlayer]];
+                        self.interestActivity.participantsArray=interestArray;
+                    }
+                    self.contentWrapper.interested=YES;
+                    [self.contentWrapper _setInitialFrames];
+                    [self.contentWrapper.inputView setHidden:NO];
+                    [self.contentWrapper.dummyInputView setHidden:NO];
+                    
+                }
+                
+                
+                
+            }
+        }
+        
+    }
+    else if (serverRequest==kServerCallPostComment||serverRequest==kServerCallGetBackgroundChats||serverRequest==kServerInAppChatDetail){
+        
+        
+        _chatPostManager.delegate = nil;
+        [_chatPostManager releaseServerManager];
+        _chatPostManager = nil;
+        
+        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
+            
+            id status=[response objectForKey:@"status"];
+            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
+                
+                
+                
+                
+                NSArray* activity_chats=[response objectForKey:@"activity_chats"];
+                if (activity_chats != nil && [activity_chats class] != [NSNull class] && [activity_chats count]!=0) {
+                    if(self.chatPostsArray==nil){
+                        self.chatPostsArray=[NSMutableArray new];
+                    }
+                    for(id chatPost in activity_chats){
+                        InterestChatClass *chatClass=[[InterestChatClass alloc]initWithDictionary:chatPost];
+                        [self.chatPostsArray addObject:chatClass];
+                    }
+                    self.interestActivity.postCount++;
+                    
+                    [PostSoundEffect playMessageSentSound];
+                   // [self.contentWrapper reloadInputAccessoryView];
+                    
+                    
+                    
+                    
+                    // [self.contentWrapper resize:CGRectZero];
+                    //[self.contentWrapper.inputView.textView setText:nil];
+                    //[self.contentWrapper textViewDidChange:self.contentWrapper.inputView.textView];
+                    
+                    //                    [self.contentWrapper.inputView.textView resignFirstResponder];
+                    //                     For dummyInputView.textView
+                    //                        [self.view endEditing:YES];
+                    
+                    //                    [self.contentWrapper.inputView.textView becomeFirstResponder];
+                    //                     For dummyInputView.textView
+                    //                        [self.view becomeFirstResponder];
+                    
+                    
+                    
+                }
+                
+                
+                
+                
+            }
+        }
+        
+        
+    }
+    [self.detailedInterestTableView reloadData];
+}
+
+
+- (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
+{
+    if(serverRequest==kServerCallGetDetailedInterest)
+    {
+        _interestServerManager.delegate = nil;
+        [_interestServerManager releaseServerManager];
+        _interestServerManager = nil;
+    }
+    else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
+        _interestUpdateManager.delegate = nil;
+        [_interestUpdateManager releaseServerManager];
+        _interestUpdateManager = nil;
+    }
+    else if(serverRequest==kServerCallPostComment||serverRequest==kServerCallGetBackgroundChats||serverRequest==kServerInAppChatDetail)
+    {
+        _chatPostManager.delegate = nil;
+        [_chatPostManager releaseServerManager];
+        _chatPostManager = nil;
+    }
+    
+    NSString *message = NSLocalizedString (@"Unable to initiate request.",
+                                           @"NSURLConnection initialization method failed.");
+    BeagleAlertWithMessage(message);
+}
+
+- (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
+{
+    if(serverRequest==kServerCallGetDetailedInterest)
+    {
+        _interestServerManager.delegate = nil;
+        [_interestServerManager releaseServerManager];
+        _interestServerManager = nil;
+    }
+    else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
+        _interestUpdateManager.delegate = nil;
+        [_interestUpdateManager releaseServerManager];
+        _interestUpdateManager = nil;
+    }
+    else if(serverRequest==kServerCallPostComment||serverRequest==kServerCallGetBackgroundChats||serverRequest==kServerInAppChatDetail)
+    {
+        _chatPostManager.delegate = nil;
+        [_chatPostManager releaseServerManager];
+        _chatPostManager = nil;
+    }
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
+    [alert show];
 }
 
 /*

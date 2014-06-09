@@ -34,11 +34,17 @@
 #define kParticipantInActivity 12
 #define kInterestChat 13
 #define kNotificationRecord 14
+#define CANCEL_ACTIVITY_TYPE 9
+#define CHAT_TYPE 17
+#define WHAT_CHANGE_TYPE 1
+#define DATE_CHANGE_TYPE 2
 
+#define kBeagleBadgeCount @"BeagleBadgeCount"
 #define kUpdatePostsOnInterest @"PostUpdateOnDetailedInterest"
 #define kUpdateNotificationStack @"UpdateNotificationStack"
 #define kRemoteNotificationReceivedNotification @"RemoteNotificationReceivedWhileRunning"
 #define kNotificationForInterestPost @"InAppInterestPostNotification"
 #define localHost @"http://10.240.171.125:3000/"
+#define localHost2 @"http://10.240.170.239:3000/"
 #define localHost1 @"http://localhost:3000/"
 #define herokuHost @"http://infinite-spire-6520.herokuapp.com/"

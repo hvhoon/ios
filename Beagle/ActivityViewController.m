@@ -329,7 +329,7 @@ enum Weeks {
     [components setMonth:[components month]+1];
     [components setDay:0];
     NSDate *endOfMonth = [myCalendar dateFromComponents:components];
-
+#if 0
     // Verifying all date stuff
     NSLog(@"Later Today= %@",laterToday);
     NSLog(@"Tomorrow start = %@",tomorrowStart);
@@ -342,7 +342,7 @@ enum Weeks {
     NSLog(@"The end of next weekend = %@", nextSundayEnd);
     NSLog(@"One Month From Now = %@",oneMonthFromNow);
     NSLog(@"One Month from Now = %@",endOfMonth);
-
+#endif
     switch (timeIndex) {
         // Setting the start date as NOW and the end date as LATER TODAY
         case 1: {

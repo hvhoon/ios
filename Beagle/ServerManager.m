@@ -36,9 +36,15 @@
     if (self) {
         
         _internetReachability = [Reachability reachabilityForInternetConnection];
-
-
+#ifdef __i386__
+        NSLog(@"Running in the simulator");
         _serverUrl =herokuHost;
+#else
+        NSLog(@"Running on a device");
+        _serverUrl =herokuHost;
+#endif
+
+        
 
         [self populateErrorCodes];
     }
@@ -358,10 +364,14 @@
     dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
     [dateFormatter setTimeZone:utcTimeZone];
+    
+    NSDate *lastDate = [dateFormatter dateFromString:lastChatPost.timestamp];
+    NSDate *updatedDate=[lastDate dateByAddingTimeInterval:5];
+    NSLog(@"updatedDate=%@",updatedDate);
 
     if([self isInternetAvailable])
     {
-        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/backgroundchat.json?pid=%@&aid=%ld&chatid=%ld&start_time=%@&end_time=%@",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],activId,lastChatPost.chat_id,lastChatPost.timestamp,[dateFormatter stringFromDate:[NSDate date]]]
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/backgroundchat.json?pid=%@&aid=%ld&chatid=%ld&start_time=%@&end_time=%@",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],activId,lastChatPost.chat_id,[dateFormatter stringFromDate:updatedDate],[dateFormatter stringFromDate:[NSDate date]]]
                          method:@"GET"
                          params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
     }
@@ -381,7 +391,7 @@
     [dateFormatter setTimeZone:utcTimeZone];
 
     if([self isInternetAvailable]) {
-        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/backgroundchat.json?pid=%@&aid=%ld&chatid=0&start_time=%@&end_time=%@",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],activityId,[dateFormatter stringFromDate:[NSDate date]],[dateFormatter stringFromDate:[NSDate date]]]
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/testbackgroundchat.json?pid=%@&aid=%ld",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],activityId]
                          method:@"GET"
                          params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
     }
@@ -390,6 +400,22 @@
         [self internetNotAvailable];
     }
 
+}
+
+-(void)getPostDetail:(NSInteger)chatId{
+    _serverCallType=kServerInAppChatDetail;
+    
+    if([self isInternetAvailable])
+    {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/%ld/chat_detail.json?pid=%@",_serverUrl,chatId,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]]
+                         method:@"GET"
+                         params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+    
 }
 -(void)populateErrorCodes
 {

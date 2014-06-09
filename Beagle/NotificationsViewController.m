@@ -63,7 +63,11 @@
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"ECSlidingViewTopDidAnchorRight" object:self userInfo:nil];
 
+    [[BeagleManager SharedInstance]setBadgeCount:0];
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
+
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -463,7 +467,13 @@
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"HomeViewRefresh" object:self userInfo:nil];
 
                     
-                }else{
+                }else if([message isEqualToString:@"Already Joined"]){
+                    
+                    NSString *message = NSLocalizedString (@"You have already joined.",
+                                                           @"Already Joined");
+                    BeagleAlertWithMessage(message);
+                    return;
+                    
                 }
             }
         }
