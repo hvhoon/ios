@@ -534,6 +534,7 @@
     notification.postChatId=[[obj1 valueForKey:@"chatid"]integerValue];
     notification.activityOwnerId=[[obj1 valueForKey:@"ownerid"]integerValue];
     notification.postDesc=[obj1 valueForKey:@"post"];
+    notification.isOffline=[[[object valueForKey:@"userInfo"] valueForKey:@"isOffline"]boolValue];
     notification.profileImage=[[object valueForKey:@"userInfo"] valueForKey:@"profileImage"];
     notification.activityId=[[obj1 valueForKey:@"activity_id"]integerValue];
     notification.photoUrl=[obj1 valueForKey:@"player_photo_url"];

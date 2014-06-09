@@ -317,41 +317,12 @@
         }
 }
 
--(void)requestInAppNotification:(NSInteger)notificationId{
-    _serverCallType=kServerCallInAppNotification;
-    
-    if([self isInternetAvailable])
-    {
-        [self callServerWithUrl:[NSString stringWithFormat:@"%@rsparameter.json", _serverUrl]
-                         method:@"GET"
-                         params:[NSDictionary dictionaryWithObjectsAndKeys:
-                                 [NSNumber numberWithInteger:notificationId],@"id",
-                                 nil] data:nil];
-    }
-    else
-    {
-        [self internetNotAvailable];
-    }
-}
 
--(void)requestDataForOfflineNotification:(NSInteger)notificationId{
-    _serverCallType=kServerCallRequestForOfflineNotification;
-    
-    if([self isInternetAvailable])
-    {
-        [self callServerWithUrl:[NSString stringWithFormat:@"%@rsparameter.json", _serverUrl]
-                         method:@"GET"
-                         params:[NSDictionary dictionaryWithObjectsAndKeys:
-                                 [NSNumber numberWithInteger:notificationId],@"id",
-                                 nil] data:nil];
-    }
-    else
-    {
-        [self internetNotAvailable];
-    }
-}
--(void)requestInAppNotificationForPosts:(NSInteger)chatId{
+-(void)requestInAppNotificationForPosts:(NSInteger)chatId isOffline:(BOOL)isOffline{
     _serverCallType=kServerCallInAppNotificationForPosts;
+    if(isOffline)
+        _serverCallType=kServerCallInAppForOfflinePost;
+    
     if([self isInternetAvailable])
     {
         [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/%ld/acparameter.json",_serverUrl,chatId]
@@ -362,8 +333,32 @@
     {
         [self internetNotAvailable];
     }
-
+    
 }
+-(void)requestInAppNotification:(NSInteger)notificationId isOffline:(BOOL)isOffline{
+
+    _serverCallType=kServerCallInAppNotification;
+
+    if(isOffline)
+        _serverCallType=kServerCallRequestForOfflineNotification;
+
+    
+    if([self isInternetAvailable])
+    {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@rsparameter.json", _serverUrl]
+                         method:@"GET"
+                         params:[NSDictionary dictionaryWithObjectsAndKeys:
+                                 [NSNumber numberWithInteger:notificationId],@"id",
+                                 nil] data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+}
+
+
+
 
 -(void)getMoreBackgroundPostsForAnInterest:(InterestChatClass*)lastChatPost activId:(NSInteger)activId{
     _serverCallType=kServerCallGetBackgroundChats;

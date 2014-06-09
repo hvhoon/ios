@@ -265,7 +265,7 @@
     UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
      [keyboard addSubview:notifView];
 
-    }else if(notifObject.isOffline && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE)){
+    }else if(notifObject.isOffline && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE) && notifObject.activityId!=0){
         [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
@@ -281,8 +281,9 @@
 }
 
 -(void)postInAppNotification:(NSNotification*)note{
-        if(!hideInAppNotification){
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
+
+    if(!hideInAppNotification&& !notifObject.isOffline){
     InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0, 0, 320, 64) appNotification:notifObject];
     notifView.delegate=self;
     
@@ -290,6 +291,18 @@
     [keyboard addSubview:notifView];
 
         }
+    else if(notifObject.isOffline && (notifObject.notificationType==CHAT_TYPE) && notifObject.activityId!=0){
+        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
+        viewController.interestServerManager=[[ServerManager alloc]init];
+        viewController.interestServerManager.delegate=viewController;
+        viewController.isRedirectedFromNotif=TRUE;
+        [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
+        [self.navigationController pushViewController:viewController animated:YES];
+
+        
+    }
     [self refresh];
 
 }

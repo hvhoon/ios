@@ -116,7 +116,7 @@ void uncaughtExceptionHandler(NSException *exception) {
 
 
         if([[[userInfo valueForKey:@"params"] valueForKey:@"notification_type"]isEqualToString:@"17"]){
-            [_notificationServerManager requestInAppNotificationForPosts:[[[userInfo valueForKey:@"params"] valueForKey:@"chat_id"]integerValue]];
+            [_notificationServerManager requestInAppNotificationForPosts:[[[userInfo valueForKey:@"params"] valueForKey:@"chat_id"]integerValue] isOffline:NO];
             [[BeagleManager SharedInstance]setBadgeCount:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
             [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
 
@@ -124,7 +124,7 @@ void uncaughtExceptionHandler(NSException *exception) {
 
             
         }else{
-            [_notificationServerManager requestInAppNotification:[[[userInfo valueForKey:@"params"] valueForKey:@"notification_id"]integerValue]];
+            [_notificationServerManager requestInAppNotification:[[[userInfo valueForKey:@"params"] valueForKey:@"notification_id"]integerValue] isOffline:NO];
             
         }
     }
@@ -133,11 +133,15 @@ void uncaughtExceptionHandler(NSException *exception) {
         NSLog(@"userInfo=%@",userInfo);
         
         if([[[userInfo valueForKey:@"params"] valueForKey:@"notification_type"]isEqualToString:@"17"]){
-        [[BeagleManager SharedInstance]setBadgeCount:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
-        [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
-
+            [_notificationServerManager requestInAppNotificationForPosts:[[[userInfo valueForKey:@"params"] valueForKey:@"chat_id"]integerValue]isOffline:YES];
+            [[BeagleManager SharedInstance]setBadgeCount:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
+            [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
+            
+            NSLog(@"badge Value=%ld",[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]);
+            
+            
         }else
-            [_notificationServerManager requestDataForOfflineNotification:[[[userInfo valueForKey:@"params"] valueForKey:@"notification_id"]integerValue]];
+            [_notificationServerManager requestInAppNotification:[[[userInfo valueForKey:@"params"] valueForKey:@"notification_id"]integerValue] isOffline:YES];
 
         // create a service which will return data and update the view badge count automatically
 
@@ -311,6 +315,31 @@ void uncaughtExceptionHandler(NSException *exception) {
                     [[NSNotificationCenter defaultCenter] postNotification:notification];
                     [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
 
+                    
+                }
+            }
+        }
+        
+    }else if (serverRequest==kServerCallInAppForOfflinePost){
+        
+        
+        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
+            
+            id status=[response objectForKey:@"status"];
+            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
+                
+                NSMutableDictionary *interestPost=[response objectForKey:@"interestPost"];
+                if (interestPost != nil && [interestPost class] != [NSNull class]) {
+                    
+                    
+                    [interestPost setObject:[NSNumber numberWithBool:YES] forKey:@"isOffline"];
+
+                    NSNotification* notification = [NSNotification notificationWithName:kNotificationForInterestPost object:nil userInfo:interestPost];
+                    [[NSNotificationCenter defaultCenter] postNotification:notification];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
+
+                    
+                    
                     
                 }
             }
