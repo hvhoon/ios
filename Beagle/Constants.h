@@ -46,7 +46,5 @@
 #define kUpdateNotificationStack @"UpdateNotificationStack"
 #define kRemoteNotificationReceivedNotification @"RemoteNotificationReceivedWhileRunning"
 #define kNotificationForInterestPost @"InAppInterestPostNotification"
-#define localHost @"http://10.241.22.237:3000/"
-#define localHost2 @"http://10.240.170.239:3000/"
-#define localHost1 @"http://127.0.0.1:3000/"
+#define localHost @"http://localhost:3000/"
 #define herokuHost @"http://infinite-spire-6520.herokuapp.com/"

@@ -256,14 +256,24 @@
 }
 
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
-
-    if(!hideInAppNotification){
-        
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
+
+    if(!hideInAppNotification && !notifObject.isOffline){
+        
     InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0,0, 320, 64) appNotification:notifObject];
     notifView.delegate=self;
     UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
      [keyboard addSubview:notifView];
+
+    }else if(notifObject.isOffline && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE)){
+        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
+        viewController.interestServerManager=[[ServerManager alloc]init];
+        viewController.interestServerManager.delegate=viewController;
+        viewController.isRedirectedFromNotif=TRUE;
+        [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
+        [self.navigationController pushViewController:viewController animated:YES];
 
     }
     [self refresh];
@@ -967,9 +977,16 @@
             id status=[response objectForKey:@"status"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 
+                id badge=[response objectForKey:@"badge"];
+                if (badge != nil && [badge class] != [NSNull class]){
                 
+                NSLog(@"check for badge count in Home Screen=%@",badge);
+                [[BeagleManager SharedInstance]setBadgeCount:[badge integerValue]];
+                [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[BeagleManager SharedInstance]badgeCount]];
                 
-                
+                [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
+
+                }
                 id activities=[response objectForKey:@"activities"];
                 if (activities != nil && [activities class] != [NSNull class]) {
                     

@@ -403,8 +403,8 @@
                 
                 id badge=[response objectForKey:@"badge"];
                 if (badge != nil && [badge class] != [NSNull class]) {
-                    [[[BeagleManager SharedInstance] beaglePlayer]setBadge:[badge integerValue]];
-                    
+//                    [[[BeagleManager SharedInstance] beaglePlayer]setBadge:[badge integerValue]];
+                    NSLog(@"check for badge count in Notification screen=%@",badge);
                 }
                 
                 
@@ -429,6 +429,7 @@
                         if(newCount!=0){
                             _unreadUpdateView.hidden=NO;
                             _unreadCountLabel.text=[NSString stringWithFormat:@"%ld NEW",(long)newCount];
+                            
                         }
                         else{
                            _unreadUpdateView.hidden=YES;
@@ -437,6 +438,13 @@
                         _notificationTableView.hidden=NO;
                         _listArray=[NSArray arrayWithArray:notificationsArray];
                         [_notificationTableView reloadData];
+                        
+                        [[BeagleManager SharedInstance]setBadgeCount:newCount];
+                        [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[BeagleManager SharedInstance]badgeCount]];
+                        
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
+
+                        
                     }
                     
                     

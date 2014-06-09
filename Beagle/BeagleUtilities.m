@@ -289,9 +289,9 @@
     NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
     [dateFormatter setTimeZone:utcTimeZone];
     NSDate *startActivityDate = [dateFormatter dateFromString:startDate];
-    NSLog(@"startActivityDate=%@",startActivityDate);
+//    NSLog(@"startActivityDate=%@",startActivityDate);
     NSDate *endActivityDate = [dateFormatter dateFromString:endDate];
-    NSLog(@"endActivityDate=%@",endActivityDate);
+//    NSLog(@"endActivityDate=%@",endActivityDate);
     
     NSTimeInterval Interval=[endActivityDate timeIntervalSinceDate:[NSDate date]];
     
@@ -513,6 +513,7 @@
     
     [[BeagleManager SharedInstance]setBadgeCount:[[[object valueForKey:@"userInfo"] valueForKey:@"badge"]intValue]];
     notification.profileImage=[[object valueForKey:@"userInfo"] valueForKey:@"profileImage"];
+    notification.isOffline=[[[object valueForKey:@"userInfo"] valueForKey:@"isOffline"]boolValue];
     notification.latitude=[[object valueForKey:@"userInfo"] valueForKey:@"lat"];
     notification.longitude=[[object valueForKey:@"userInfo"] valueForKey:@"lng"];
     notification.notificationString=[[object valueForKey:@"userInfo"] valueForKey:@"message"];

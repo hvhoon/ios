@@ -23,7 +23,8 @@ typedef enum {
     kServerCallInAppNotification,
     kServerCallInAppNotificationForPosts,
     kServerCallGetBackgroundChats,
-    kServerInAppChatDetail
+    kServerInAppChatDetail,
+    kServerCallRequestForOfflineNotification
 } ServerCallType;
 
 @class ServerManager;
@@ -63,4 +64,5 @@ typedef enum {
 -(void)getMoreBackgroundPostsForAnInterest:(InterestChatClass*)lastChatPost activId:(NSInteger)activId;
 -(void)getNewBackgroundPostsForAnInterest:(NSInteger)activityId;
 -(void)getPostDetail:(NSInteger)chatId;
+-(void)requestDataForOfflineNotification:(NSInteger)notificationId;
 @end

@@ -36,16 +36,7 @@
     if (self) {
         
         _internetReachability = [Reachability reachabilityForInternetConnection];
-#ifdef __i386__
-        NSLog(@"Running in the simulator");
         _serverUrl =herokuHost;
-#else
-        NSLog(@"Running on a device");
-        _serverUrl =herokuHost;
-#endif
-
-        
-
         [self populateErrorCodes];
     }
     return self;
@@ -328,6 +319,23 @@
 
 -(void)requestInAppNotification:(NSInteger)notificationId{
     _serverCallType=kServerCallInAppNotification;
+    
+    if([self isInternetAvailable])
+    {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@rsparameter.json", _serverUrl]
+                         method:@"GET"
+                         params:[NSDictionary dictionaryWithObjectsAndKeys:
+                                 [NSNumber numberWithInteger:notificationId],@"id",
+                                 nil] data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+}
+
+-(void)requestDataForOfflineNotification:(NSInteger)notificationId{
+    _serverCallType=kServerCallRequestForOfflineNotification;
     
     if([self isInternetAvailable])
     {
