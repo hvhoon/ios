@@ -1006,8 +1006,8 @@ else{
                     
                     if(toLastPost){
                         
-            [self.detailedInterestTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow: [self.chatPostsArray count] - 1 inSection:0-1]
-                                                    atScrollPosition:UITableViewScrollPositionBottom
+            [self.detailedInterestTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow: [self.chatPostsArray count] - 1 inSection:0]
+                                                    atScrollPosition:UITableViewScrollPositionTop
                                                             animated:YES];
                         
                     }

@@ -150,6 +150,7 @@ static inline NSRegularExpression * NameRegularExpression() {
 -(void)backgroundtap:(UIButton*)sender{
     
     [BeagleUtilities updateBadgeInfoOnTheServer:inAppNotif.notificationId];
+    
     if (inAppNotif.backgroundTap) {
         
         [self HideNotification];

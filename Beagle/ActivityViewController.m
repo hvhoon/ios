@@ -191,10 +191,27 @@ enum Weeks {
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
     
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
+    
+    if(!notifObject.isOffline){
     InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0,0, 320, 64) appNotification:notifObject];
     notifView.delegate=self;
     UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
     [keyboard addSubview:notifView];
+    }
+    else if(notifObject.isOffline && notifObject.activityId!=0 && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE)){
+        
+        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
+        viewController.interestServerManager=[[ServerManager alloc]init];
+        viewController.interestServerManager.delegate=viewController;
+        viewController.isRedirected=TRUE;
+        viewController.toLastPost=TRUE;
+        [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
+        [self.navigationController presentViewController:viewController animated:YES completion:nil];
+        
+        
+    }
     BeagleManager *BG=[BeagleManager SharedInstance];
     BG.activityCreated=TRUE;
 
@@ -204,11 +221,27 @@ enum Weeks {
 
 -(void)postInAppNotification:(NSNotification*)note{
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
+    
+    if(!notifObject.isOffline){
     InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0, 0, 320, 64) appNotification:notifObject];
     notifView.delegate=self;
     
     UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
     [keyboard addSubview:notifView];
+    }else if(notifObject.isOffline && notifObject.activityId!=0 && notifObject.notificationType==CHAT_TYPE){
+        
+        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
+        viewController.interestServerManager=[[ServerManager alloc]init];
+        viewController.interestServerManager.delegate=viewController;
+        viewController.isRedirected=TRUE;
+        viewController.toLastPost=TRUE;
+        [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
+        [self.navigationController presentViewController:viewController animated:YES completion:nil];
+
+        
+    }
     BeagleManager *BG=[BeagleManager SharedInstance];
     BG.activityCreated=TRUE;
 
@@ -221,6 +254,9 @@ enum Weeks {
     viewController.interestServerManager=[[ServerManager alloc]init];
     viewController.interestServerManager.delegate=viewController;
     viewController.isRedirected=TRUE;
+    if(notification.notificationType==CHAT_TYPE)
+        viewController.toLastPost=TRUE;
+
     [viewController.interestServerManager getDetailedInterest:notification.activityId];
     [self.navigationController presentViewController:viewController animated:YES completion:nil];
     
