@@ -903,7 +903,7 @@
         }
             break;
         case 2:{
-            filterText = @"Friends Around You";
+            filterText = @"Created by Friends";
             CGRect textRect = [filterText
                                boundingRectWithSize:size
                                options:NSStringDrawingUsesLineFragmentOrigin
