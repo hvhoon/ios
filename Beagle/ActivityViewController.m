@@ -321,20 +321,15 @@ enum Weeks {
     // Set in 1 month start and end dates
     NSDateComponents *monthComponents = [[NSDateComponents alloc] init];
     monthComponents.month = 1;
-    NSDate *oneMonthFromNow = [[NSCalendar currentCalendar] dateByAddingComponents:components toDate:[NSDate date] options:0];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-    NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
-    [dateFormatter setTimeZone:utcTimeZone];
-    [components setMonth:[components month]+1];
-    [components setDay:0];
-    NSDate *endOfMonth = [myCalendar dateFromComponents:components];
+    NSLog(@"The beginning of this week = %@",beginningOfWeek);
+
 #if 0
+    NSDate *oneMonthFromNow = [[NSCalendar currentCalendar] dateByAddingComponents:components toDate:[NSDate date] options:0];
+
     // Verifying all date stuff
     NSLog(@"Later Today= %@",laterToday);
     NSLog(@"Tomorrow start = %@",tomorrowStart);
     NSLog(@"Tomorrow end = %@",tomorrowEnd);
-    NSLog(@"The beginning of this week = %@",beginningOfWeek);
     NSLog(@"The beginning of this weekend = %@", startOfThisWeekend);
     NSLog(@"The End of this weekend = %@", endOfThisWeekend);
     NSLog(@"The beginning of next week = %@", nextMondayStart);
@@ -343,6 +338,16 @@ enum Weeks {
     NSLog(@"One Month From Now = %@",oneMonthFromNow);
     NSLog(@"One Month from Now = %@",endOfMonth);
 #endif
+    
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+    [dateFormatter setTimeZone:utcTimeZone];
+    [components setMonth:[components month]+1];
+    [components setDay:0];
+    NSDate *endOfMonth = [myCalendar dateFromComponents:components];
+
     switch (timeIndex) {
         // Setting the start date as NOW and the end date as LATER TODAY
         case 1: {

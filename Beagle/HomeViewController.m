@@ -1409,10 +1409,10 @@
     _interestUpdateManager.delegate=self;
     
     if (play.isParticipant) {
-        [_interestUpdateManager removeMembership:play.activityId];
+        [_interestUpdateManager removeMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
     }
     else{
-        [_interestUpdateManager participateMembership:play.activityId];
+        [_interestUpdateManager participateMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
     }
 }
 @end

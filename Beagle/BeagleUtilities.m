@@ -515,9 +515,11 @@
     notification.latitude=[[object valueForKey:@"userInfo"] valueForKey:@"lat"];
     notification.longitude=[[object valueForKey:@"userInfo"] valueForKey:@"lng"];
     notification.notificationString=[[object valueForKey:@"userInfo"] valueForKey:@"message"];
+    notification.playerName=[[object valueForKey:@"userInfo"] valueForKey:@"player_name"];
     notification.photoUrl=[[object valueForKey:@"userInfo"] valueForKey:@"photo_url"];
     notification.timeOfNotification=[[object valueForKey:@"userInfo"] valueForKey:@"timing"];
     notification.referredId=[[[object valueForKey:@"userInfo"] valueForKey:@"reffered_to"]integerValue];
+    notification.dos1_relation=[[[object valueForKey:@"userInfo"] valueForKey:@"dos1_relation"]integerValue];
     return notification;
 }
 +(BeagleNotificationClass*)getNotificationForInterestPost:(NSNotification*)object{

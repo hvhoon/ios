@@ -168,13 +168,13 @@
         [self internetNotAvailable];
     }
 }
--(void)removeMembership:(NSInteger)activityId{
+-(void)removeMembership:(NSInteger)activityId playerid:(NSInteger)playerId{
     _serverCallType = kServerCallLeaveInterest;
     if([self isInternetAvailable])
     {
         
         NSMutableDictionary* updateMembership =[[NSMutableDictionary alloc] init];
-        [updateMembership setObject:[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"] forKey:@"pid"];
+        [updateMembership setObject:[NSNumber numberWithInteger:playerId] forKey:@"pid"];
         [updateMembership setObject:[NSNumber numberWithInteger:activityId] forKey:@"id"];
         [updateMembership setObject:@"true" forKey:@"pstatus"];
         
@@ -191,13 +191,13 @@
         [self internetNotAvailable];
     }
 }
--(void)participateMembership:(NSInteger)activityId{
+-(void)participateMembership:(NSInteger)activityId playerid:(NSInteger)playerId{
     _serverCallType = kServerCallParticipateInterest;
     if([self isInternetAvailable])
     {
         
         NSMutableDictionary* updateMembership =[[NSMutableDictionary alloc] init];
-        [updateMembership setObject:[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"] forKey:@"pid"];
+        [updateMembership setObject:[NSNumber numberWithInteger:playerId] forKey:@"pid"];
         [updateMembership setObject:[NSNumber numberWithInteger:activityId] forKey:@"id"];
         [updateMembership setObject:@"true" forKey:@"pstatus"];
         

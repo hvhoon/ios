@@ -296,7 +296,7 @@
     
     _interestUpdateManager=[[ServerManager alloc]init];
     _interestUpdateManager.delegate=self;
-    [_interestUpdateManager participateMembership:play.activityId];
+    [_interestUpdateManager participateMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
 
 
 }

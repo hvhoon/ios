@@ -51,8 +51,8 @@ typedef enum {
 -(void)createActivityOnBeagle:(BeagleActivityClass*)data;
 -(void)getActivities;
 -(void)getDetailedInterest:(NSInteger)activityId;
--(void)removeMembership:(NSInteger)activityId;
--(void)participateMembership:(NSInteger)activityId;
+-(void)removeMembership:(NSInteger)activityId playerid:(NSInteger)playerId;
+-(void)participateMembership:(NSInteger)activityId playerid:(NSInteger)playerId;
 -(void)postAComment:(NSInteger)activityId desc:(NSString*)desc;
 -(void)deleteAnInterest:(NSInteger)activityId;
 -(void)updateActivityOnBeagle:(BeagleActivityClass*)data;

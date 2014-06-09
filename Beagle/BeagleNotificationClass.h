@@ -35,5 +35,6 @@
 @property(nonatomic,strong)NSString*playerName;
 @property(nonatomic,assign)NSInteger postChatId;
 @property(nonatomic,assign)NSInteger activityOwnerId;
+@property(nonatomic,assign)NSInteger dos1_relation;
 -(id) initWithDictionary:(NSDictionary *)dictionary;
 @end
