@@ -340,46 +340,22 @@
             [headerView addSubview:notificationsButton];
 
     }
-        else{
+    else{
+        NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+        [style setAlignment:NSTextAlignmentCenter];
             
-            NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-            [style setAlignment:NSTextAlignmentCenter];
-            
-            NSDictionary *attrs=[NSDictionary dictionaryWithObjectsAndKeys:
-                                 [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f], NSFontAttributeName,
-                                 [UIColor whiteColor],NSForegroundColorAttributeName,
-                                 style, NSParagraphStyleAttributeName, nil];
-            
-            CGSize badgeCountSize=[[NSString stringWithFormat:@"%ld",BG.badgeCount] boundingRectWithSize:CGSizeMake(44, 999)
-                                                                                                 options:NSStringDrawingUsesLineFragmentOrigin
-                                                                                              attributes:attrs
-                                                                                                 context:nil].size;
-            
-            
-            
-            UIButton *updateNotificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-            [updateNotificationsButton addTarget:self action:@selector(revealUnderRight:)forControlEvents:UIControlEventTouchUpInside];
-            if(badgeCountSize.width>32.0f){
-                updateNotificationsButton.frame = CGRectMake(272, 12, 28, 20);
-                
-            }
-            else{
-                updateNotificationsButton.frame = CGRectMake(272, 12, 28, 20);
-                
-            }
-            
-            updateNotificationsButton.alpha = 0.6;
-            [updateNotificationsButton setTitle:[NSString stringWithFormat:@"%ld",BG.badgeCount] forState:UIControlStateNormal];
-            [updateNotificationsButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-            updateNotificationsButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f];
-            updateNotificationsButton.tag=5346;
-            updateNotificationsButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-            
-            updateNotificationsButton.backgroundColor=[UIColor colorWithRed:122.0f/255.0f green:122.0f/255.0f blue:122.0f/255.0f alpha:1.0f];
-            
-            [headerView addSubview:updateNotificationsButton];
-            
-            
+        UIButton *updateNotificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [updateNotificationsButton addTarget:self action:@selector(revealUnderRight:)forControlEvents:UIControlEventTouchUpInside];
+        updateNotificationsButton.frame = CGRectMake(276, 11, 33, 22);
+        [updateNotificationsButton setTitle:[NSString stringWithFormat:@"%ld",(long)BG.badgeCount] forState:UIControlStateNormal];
+        [updateNotificationsButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        updateNotificationsButton.titleLabel.font = [UIFont boldSystemFontOfSize:14.0f];
+        updateNotificationsButton.tag=5346;
+        updateNotificationsButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+        updateNotificationsButton.backgroundColor=[UIColor colorWithRed:231.0f/255.0f green:60.0f/255.0f blue:48.0f/255.0f alpha:0.85f];
+        updateNotificationsButton.layer.cornerRadius = 2.0f;
+        updateNotificationsButton.layer.masksToBounds = YES;
+        [headerView addSubview:updateNotificationsButton];
         }
 
 }
@@ -929,7 +905,7 @@
         }
             break;
         case 2:{
-            filterText = @"Friends Around You";
+            filterText = @"Created by Friends";
             CGRect textRect = [filterText
                                boundingRectWithSize:size
                                options:NSStringDrawingUsesLineFragmentOrigin
