@@ -182,7 +182,9 @@ static NSString * const CellIdentifier = @"cell";
 
     
     }
-    else{
+    else if(!notifObject.isOffline){
+        
+    
         InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0,0, 320, 64) appNotification:notifObject];
         notifView.delegate=self;
         UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
@@ -214,7 +216,7 @@ static NSString * const CellIdentifier = @"cell";
         [_chatPostManager getPostDetail:notifObject.postChatId];
    }
 
-else{
+else if(!notifObject.isOffline){
     InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0, 0, 320, 64) appNotification:notifObject];
     notifView.delegate=self;
     
@@ -232,6 +234,9 @@ else{
     viewController.interestServerManager=[[ServerManager alloc]init];
     viewController.interestServerManager.delegate=viewController;
     viewController.isRedirected=TRUE;
+    if(notification.notificationType==CHAT_TYPE)
+        viewController.toLastPost=TRUE;
+
     [viewController.interestServerManager getDetailedInterest:notification.activityId];
     [self.navigationController pushViewController:viewController animated:YES];
     
