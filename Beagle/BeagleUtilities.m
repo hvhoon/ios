@@ -103,6 +103,7 @@
     
 }
 
+#pragma mark - Image processing functions
 + (UIImage*) getSubImageFrom: (UIImage*) img rect: (CGRect) rect {
     
     UIGraphicsBeginImageContext(rect.size);
@@ -258,6 +259,61 @@
     
     return newImage;
 }
+
+// Determine the average color in an image!
++(UIColor*)returnAverageColor:(UIImage*)image; {
+    
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    unsigned char rgba[4];
+    CGContextRef context = CGBitmapContextCreate(rgba, 1, 1, 8, 4, colorSpace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+    
+    CGContextDrawImage(context, CGRectMake(0, 0, 1, 1), image.CGImage);
+    CGColorSpaceRelease(colorSpace);
+    CGContextRelease(context);
+    
+    if(rgba[3] > 0) {
+        CGFloat alpha = 1.0;
+        CGFloat multiplier = alpha/255.0;
+        return [UIColor colorWithRed:((CGFloat)rgba[0])*multiplier
+                               green:((CGFloat)rgba[1])*multiplier
+                                blue:((CGFloat)rgba[2])*multiplier
+                               alpha:alpha];
+    }
+    else {
+        return [UIColor colorWithRed:((CGFloat)rgba[0])/255.0
+                               green:((CGFloat)rgba[1])/255.0
+                                blue:((CGFloat)rgba[2])/255.0
+                               alpha:((CGFloat)rgba[3])/255.0];
+    }
+}
+
++(UIImage*)imageCircularBySize:(UIImage*)image sqr:(CGFloat)sqr{
+    
+    if(image.size.height != image.size.width)
+        image = [BeagleUtilities autoCrop:image];
+    
+    
+    if(image.size.height > sqr || image.size.width > sqr)
+        image = [BeagleUtilities compressImage:image size:CGSizeMake(sqr,sqr)];
+    
+    UIGraphicsBeginImageContext(image.size);
+    {
+        CGContextRef ctx = UIGraphicsGetCurrentContext();
+        CGAffineTransform trnsfrm = CGAffineTransformConcat(CGAffineTransformIdentity, CGAffineTransformMakeScale(1.0, -1.0));
+        trnsfrm = CGAffineTransformConcat(trnsfrm, CGAffineTransformMakeTranslation(0.0, image.size.height));
+        CGContextConcatCTM(ctx, trnsfrm);
+        CGContextBeginPath(ctx);
+        CGContextAddEllipseInRect(ctx, CGRectMake(0.0, 0.0, image.size.width, image.size.height));
+        CGContextClip(ctx);
+        CGContextDrawImage(ctx, CGRectMake(0.0, 0.0, image.size.width, image.size.height), image.CGImage);
+        image = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+    }
+    return image;
+    
+}
+#pragma mark -
+
 +(NSString*)activityTime:(NSString*)startDate endate:(NSString*)endDate{
     
     NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
@@ -322,32 +378,6 @@
     dateFormatter.dateFormat=@"EEE, MMM d";
     return [dateFormatter stringFromDate:endActivityDate];
 
-
-}
-
-+(UIImage*)imageCircularBySize:(UIImage*)image sqr:(CGFloat)sqr{
-    
-    if(image.size.height != image.size.width)
-        image = [BeagleUtilities autoCrop:image];
-    
-    
-    if(image.size.height > sqr || image.size.width > sqr)
-        image = [BeagleUtilities compressImage:image size:CGSizeMake(sqr,sqr)];
-    
-    UIGraphicsBeginImageContext(image.size);
-    {
-        CGContextRef ctx = UIGraphicsGetCurrentContext();
-        CGAffineTransform trnsfrm = CGAffineTransformConcat(CGAffineTransformIdentity, CGAffineTransformMakeScale(1.0, -1.0));
-        trnsfrm = CGAffineTransformConcat(trnsfrm, CGAffineTransformMakeTranslation(0.0, image.size.height));
-        CGContextConcatCTM(ctx, trnsfrm);
-        CGContextBeginPath(ctx);
-        CGContextAddEllipseInRect(ctx, CGRectMake(0.0, 0.0, image.size.width, image.size.height));
-        CGContextClip(ctx);
-        CGContextDrawImage(ctx, CGRectMake(0.0, 0.0, image.size.width, image.size.height), image.CGImage);
-        image = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-    }
-    return image;
 
 }
 

@@ -19,6 +19,7 @@
 +(UIImage*)imageCircularBySize:(UIImage*)image sqr:(CGFloat)sqr;
 +(NSString *)calculateChatTimestamp:(NSString *)timeString;
 +(UIColor*)returnBeagleColor:(NSInteger)colorID;
++(UIColor*)returnAverageColor:(UIImage*)image;
 +(BOOL)hasBeenMoreThanSixtyMinutes;
 +(BOOL)LastDistanceFromLocationExceeds_50M;
 +(void) saveImage:(UIImage *)image withFileName:(NSInteger)imageName;

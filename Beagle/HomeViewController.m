@@ -41,6 +41,7 @@
     BOOL hideInAppNotification;
 }
 @property(nonatomic,strong)EventInterestFilterBlurView*filterBlurView;
+@property(nonatomic, strong)UIView *filterView;
 @property(nonatomic, weak) NSTimer *timer;
 @property(nonatomic,strong)  NSMutableDictionary *imageDownloadsInProgress;
 @property(nonatomic,strong)  NSMutableDictionary *filterActivitiesOnHomeScreen;
@@ -196,16 +197,16 @@
 #else
     [self.view addSubview:eventButton];
 #endif
-
+    
     // Setting up the filter pane
 #if stockCroppingCheck
-    UIView *filterView=[[UIView alloc]initWithFrame:CGRectMake(0, 103, 320, 44)];
-    [filterView addSubview:[self renderFilterHeaderView]];
-    [bottomNavigationView addSubview:filterView];
+    _filterView = [[UIView alloc] initWithFrame:CGRectMake(0, 103, 320, 44)];
+    [_filterView addSubview:[self renderFilterHeaderView]];
+    [bottomNavigationView addSubview:_filterView];
 #else
-    UIView *filterView=[[UIView alloc]initWithFrame:CGRectMake(0, 156, 320, 44)];
-    [filterView addSubview:[self renderFilterHeaderView]];
-    [self.view addSubview:filterView];
+    _filterView = [[UIView alloc] initWithFrame:CGRectMake(0, 156, 320, 44)];
+    [_filterView addSubview:[self renderFilterHeaderView]];
+    [self.view addSubview:_filterView];
 #endif
     
     _tableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStylePlain];
@@ -514,6 +515,7 @@
             }
         
         [self addCityName:[BG.placemark.addressDictionary objectForKey:@"City"]];
+        _filterView.backgroundColor = [BeagleUtilities returnAverageColor:flickrRequestInfo.photo];
         }];
     
     }];
@@ -539,21 +541,22 @@
         bottomNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockBottomImage2];
         
 #else
+        
         [[NSUserDefaults standardUserDefaults] setValue:[NSDate date] forKey:@"HourlyUpdate"];
         UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
         stockImageView.image=photo;
         [stockImageView setContentMode:UIViewContentModeScaleAspectFit];
+
         
 #endif
-
          
     } completion:NULL];
 }
 
--(UIView*)renderFilterHeaderView{
+-(UIView*)renderFilterHeaderView {
+
     UIView *headerView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 44)];
     headerView.backgroundColor=[BeagleUtilities returnBeagleColor:11];
-
     CGSize size = CGSizeMake(220,999);
     
     NSString* filterText = @"Happening Around You";
