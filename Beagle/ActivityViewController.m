@@ -220,7 +220,7 @@ enum Weeks {
     DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
     viewController.interestServerManager=[[ServerManager alloc]init];
     viewController.interestServerManager.delegate=viewController;
-    viewController.isRedirectedFromNotif=TRUE;
+    viewController.isRedirected=TRUE;
     [viewController.interestServerManager getDetailedInterest:notification.activityId];
     [self.navigationController presentViewController:viewController animated:YES completion:nil];
     

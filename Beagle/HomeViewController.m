@@ -271,7 +271,7 @@
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
         viewController.interestServerManager=[[ServerManager alloc]init];
         viewController.interestServerManager.delegate=viewController;
-        viewController.isRedirectedFromNotif=TRUE;
+        viewController.isRedirected=TRUE;
         [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
         [self.navigationController pushViewController:viewController animated:YES];
 
@@ -297,7 +297,8 @@
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
         viewController.interestServerManager=[[ServerManager alloc]init];
         viewController.interestServerManager.delegate=viewController;
-        viewController.isRedirectedFromNotif=TRUE;
+        viewController.isRedirected=TRUE;
+        viewController.toLastPost=TRUE;
         [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
         [self.navigationController pushViewController:viewController animated:YES];
 
@@ -312,7 +313,9 @@
     DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
     viewController.interestServerManager=[[ServerManager alloc]init];
     viewController.interestServerManager.delegate=viewController;
-    viewController.isRedirectedFromNotif=TRUE;
+    viewController.isRedirected=TRUE;
+    if(notification.notificationType)
+            viewController.toLastPost=TRUE;
     [viewController.interestServerManager getDetailedInterest:notification.activityId];
     [self.navigationController pushViewController:viewController animated:YES];
 

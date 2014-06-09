@@ -43,7 +43,7 @@ static NSString * const CellIdentifier = @"cell";
 @synthesize profileImageView=_profileImageView;
 @synthesize chatPostManager=_chatPostManager;
 @synthesize chatPostsArray;
-@synthesize isRedirectedFromNotif;
+@synthesize isRedirected,toLastPost;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -231,7 +231,7 @@ else{
     DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
     viewController.interestServerManager=[[ServerManager alloc]init];
     viewController.interestServerManager.delegate=viewController;
-    viewController.isRedirectedFromNotif=TRUE;
+    viewController.isRedirected=TRUE;
     [viewController.interestServerManager getDetailedInterest:notification.activityId];
     [self.navigationController pushViewController:viewController animated:YES];
     
@@ -244,7 +244,7 @@ else{
     _triangle = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Triangle"]];
     _triangle.hidden = YES;
     
-    if(!isRedirectedFromNotif)
+    if(!isRedirected)
       [self createInterestInitialCard];
 
 }
@@ -974,7 +974,7 @@ else{
                 if (interest != nil && [interest class] != [NSNull class]) {
                     
                     
-                    if(isRedirectedFromNotif){
+                    if(isRedirected){
                         self.interestActivity=[[BeagleActivityClass alloc]initWithDictionary:interest];
                         [self createInterestInitialCard];
                         
@@ -1002,6 +1002,14 @@ else{
                         if([chatsArray count]!=0){
                             self.chatPostsArray=[NSMutableArray arrayWithArray:chatsArray];
                         }
+                    }
+                    
+                    if(toLastPost){
+                        
+            [self.detailedInterestTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow: [self.chatPostsArray count] - 1 inSection:0-1]
+                                                    atScrollPosition:UITableViewScrollPositionBottom
+                                                            animated:YES];
+                        
                     }
                     
                 }

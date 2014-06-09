@@ -309,7 +309,7 @@
     DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
     viewController.interestServerManager=[[ServerManager alloc]init];
     viewController.interestServerManager.delegate=viewController;
-    viewController.isRedirectedFromNotif=TRUE;
+    viewController.isRedirected=TRUE;
     [viewController.interestServerManager getDetailedInterest:play.activityId];
     [self.navigationController pushViewController:viewController animated:YES];
 
