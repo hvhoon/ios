@@ -354,7 +354,7 @@
         updateNotificationsButton.tag=5346;
         updateNotificationsButton.titleLabel.textAlignment = NSTextAlignmentCenter;
         updateNotificationsButton.backgroundColor=[UIColor colorWithRed:231.0f/255.0f green:60.0f/255.0f blue:48.0f/255.0f alpha:0.85f];
-        updateNotificationsButton.layer.cornerRadius = 2.0f;
+        updateNotificationsButton.layer.cornerRadius = 4.0f;
         updateNotificationsButton.layer.masksToBounds = YES;
         [headerView addSubview:updateNotificationsButton];
         }
