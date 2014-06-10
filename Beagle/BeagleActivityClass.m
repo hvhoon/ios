@@ -9,7 +9,7 @@
 #import "BeagleActivityClass.h"
 
 @implementation BeagleActivityClass
-@synthesize activityDesc,startActivityDate,endActivityDate,visibility,locationName,city,state,activityId,latitude,longitude,ownerid,activityType,organizerName,photoUrl,dosRelation,participantsCount,profilePhotoImage,dos2Count,isParticipant,postCount,participantsArray;
+@synthesize activityDesc,startActivityDate,endActivityDate,visibility,locationName,city,state,activityId,latitude,longitude,ownerid,activityType,organizerName,photoUrl,dosRelation,participantsCount,profilePhotoImage,dos1count,isParticipant,postCount,participantsArray;
 
 -(id) initWithDictionary:(NSDictionary *)dictionary
 {
@@ -30,7 +30,7 @@
         self.organizerName = [dictionary valueForKey:@"organizer"];
         self.photoUrl = [dictionary valueForKey:@"owner_photo_url"];
         self.dosRelation = [[dictionary valueForKey:@"dosRelation"]integerValue];
-        self.dos2Count = [[dictionary valueForKey:@"dos2Count"]integerValue];
+        self.dos1count = [[dictionary valueForKey:@"dos1count"]integerValue];
         self.participantsCount = [[dictionary valueForKey:@"total_count"]integerValue];
         self.locationName=[NSString stringWithFormat:@"%@, %@",self.city,self.state];
         self.isParticipant=[[dictionary valueForKey:@"isParticipant"]boolValue];

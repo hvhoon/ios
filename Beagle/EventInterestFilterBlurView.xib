@@ -42,7 +42,7 @@
                     <rect key="frame" x="24" y="214" width="280" height="62"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <inset key="titleEdgeInsets" minX="16" minY="0.0" maxX="0.0" maxY="0.0"/>
-                    <state key="normal" title="Friends Around You" image="Friends-Only">
+                    <state key="normal" title="Created by Friends" image="Friends-Only">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <state key="highlighted">

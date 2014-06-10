@@ -23,7 +23,9 @@ typedef enum {
     kServerCallInAppNotification,
     kServerCallInAppNotificationForPosts,
     kServerCallGetBackgroundChats,
-    kServerInAppChatDetail
+    kServerInAppChatDetail,
+    kServerCallRequestForOfflineNotification,
+    kServerCallInAppForOfflinePost
 } ServerCallType;
 
 @class ServerManager;
@@ -51,15 +53,15 @@ typedef enum {
 -(void)createActivityOnBeagle:(BeagleActivityClass*)data;
 -(void)getActivities;
 -(void)getDetailedInterest:(NSInteger)activityId;
--(void)removeMembership:(NSInteger)activityId;
--(void)participateMembership:(NSInteger)activityId;
+-(void)removeMembership:(NSInteger)activityId playerid:(NSInteger)playerId;
+-(void)participateMembership:(NSInteger)activityId playerid:(NSInteger)playerId;
 -(void)postAComment:(NSInteger)activityId desc:(NSString*)desc;
 -(void)deleteAnInterest:(NSInteger)activityId;
 -(void)updateActivityOnBeagle:(BeagleActivityClass*)data;
 -(void)updateFacebookTickerStatus:(BOOL)status;
 -(void)getNotifications;
--(void)requestInAppNotificationForPosts:(NSInteger)chatId;
--(void)requestInAppNotification:(NSInteger)notificationId;
+-(void)requestInAppNotificationForPosts:(NSInteger)chatId isOffline:(BOOL)isOffline;
+-(void)requestInAppNotification:(NSInteger)notificationId isOffline:(BOOL)isOffline;
 -(void)getMoreBackgroundPostsForAnInterest:(InterestChatClass*)lastChatPost activId:(NSInteger)activId;
 -(void)getNewBackgroundPostsForAnInterest:(NSInteger)activityId;
 -(void)getPostDetail:(NSInteger)chatId;

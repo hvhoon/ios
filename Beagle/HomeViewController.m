@@ -257,14 +257,24 @@
 }
 
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
-
-    if(!hideInAppNotification){
-        
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
+
+    if(!hideInAppNotification && !notifObject.isOffline){
+        
     InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0,0, 320, 64) appNotification:notifObject];
     notifView.delegate=self;
     UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
      [keyboard addSubview:notifView];
+
+    }else if(!hideInAppNotification && notifObject.isOffline && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE) && notifObject.activityId!=0){
+        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
+        viewController.interestServerManager=[[ServerManager alloc]init];
+        viewController.interestServerManager.delegate=viewController;
+        viewController.isRedirected=TRUE;
+        [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
+        [self.navigationController pushViewController:viewController animated:YES];
 
     }
     [self refresh];
@@ -272,8 +282,9 @@
 }
 
 -(void)postInAppNotification:(NSNotification*)note{
-        if(!hideInAppNotification){
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
+
+    if(!hideInAppNotification && !notifObject.isOffline){
     InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0, 0, 320, 64) appNotification:notifObject];
     notifView.delegate=self;
     
@@ -281,6 +292,19 @@
     [keyboard addSubview:notifView];
 
         }
+    else if(!hideInAppNotification && notifObject.isOffline && (notifObject.notificationType==CHAT_TYPE) && notifObject.activityId!=0){
+        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
+        viewController.interestServerManager=[[ServerManager alloc]init];
+        viewController.interestServerManager.delegate=viewController;
+        viewController.isRedirected=TRUE;
+        viewController.toLastPost=TRUE;
+        [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
+        [self.navigationController pushViewController:viewController animated:YES];
+
+        
+    }
     [self refresh];
 
 }
@@ -290,7 +314,9 @@
     DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
     viewController.interestServerManager=[[ServerManager alloc]init];
     viewController.interestServerManager.delegate=viewController;
-    viewController.isRedirectedFromNotif=TRUE;
+    viewController.isRedirected=TRUE;
+    if(notification.notificationType==CHAT_TYPE)
+        viewController.toLastPost=TRUE;
     [viewController.interestServerManager getDetailedInterest:notification.activityId];
     [self.navigationController pushViewController:viewController animated:YES];
 
@@ -315,46 +341,22 @@
             [headerView addSubview:notificationsButton];
 
     }
-        else{
+    else{
+        NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+        [style setAlignment:NSTextAlignmentCenter];
             
-            NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-            [style setAlignment:NSTextAlignmentCenter];
-            
-            NSDictionary *attrs=[NSDictionary dictionaryWithObjectsAndKeys:
-                                 [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f], NSFontAttributeName,
-                                 [UIColor whiteColor],NSForegroundColorAttributeName,
-                                 style, NSParagraphStyleAttributeName, nil];
-            
-            CGSize badgeCountSize=[[NSString stringWithFormat:@"%ld",BG.badgeCount] boundingRectWithSize:CGSizeMake(44, 999)
-                                                                                                 options:NSStringDrawingUsesLineFragmentOrigin
-                                                                                              attributes:attrs
-                                                                                                 context:nil].size;
-            
-            
-            
-            UIButton *updateNotificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-            [updateNotificationsButton addTarget:self action:@selector(revealUnderRight:)forControlEvents:UIControlEventTouchUpInside];
-            if(badgeCountSize.width>32.0f){
-                updateNotificationsButton.frame = CGRectMake(272, 12, 28, 20);
-                
-            }
-            else{
-                updateNotificationsButton.frame = CGRectMake(272, 12, 28, 20);
-                
-            }
-            
-            updateNotificationsButton.alpha = 0.6;
-            [updateNotificationsButton setTitle:[NSString stringWithFormat:@"%ld",BG.badgeCount] forState:UIControlStateNormal];
-            [updateNotificationsButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-            updateNotificationsButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f];
-            updateNotificationsButton.tag=5346;
-            updateNotificationsButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-            
-            updateNotificationsButton.backgroundColor=[UIColor colorWithRed:122.0f/255.0f green:122.0f/255.0f blue:122.0f/255.0f alpha:1.0f];
-            
-            [headerView addSubview:updateNotificationsButton];
-            
-            
+        UIButton *updateNotificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [updateNotificationsButton addTarget:self action:@selector(revealUnderRight:)forControlEvents:UIControlEventTouchUpInside];
+        updateNotificationsButton.frame = CGRectMake(276, 11, 33, 22);
+        [updateNotificationsButton setTitle:[NSString stringWithFormat:@"%ld",(long)BG.badgeCount] forState:UIControlStateNormal];
+        [updateNotificationsButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        updateNotificationsButton.titleLabel.font = [UIFont boldSystemFontOfSize:14.0f];
+        updateNotificationsButton.tag=5346;
+        updateNotificationsButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+        updateNotificationsButton.backgroundColor=[UIColor colorWithRed:231.0f/255.0f green:60.0f/255.0f blue:48.0f/255.0f alpha:0.85f];
+        updateNotificationsButton.layer.cornerRadius = 2.0f;
+        updateNotificationsButton.layer.masksToBounds = YES;
+        [headerView addSubview:updateNotificationsButton];
         }
 
 }
@@ -906,7 +908,7 @@
         }
             break;
         case 2:{
-            filterText = @"Friends Around You";
+            filterText = @"Created by Friends";
             CGRect textRect = [filterText
                                boundingRectWithSize:size
                                options:NSStringDrawingUsesLineFragmentOrigin
@@ -970,9 +972,16 @@
             id status=[response objectForKey:@"status"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 
+                id badge=[response objectForKey:@"badge"];
+                if (badge != nil && [badge class] != [NSNull class]){
                 
+                NSLog(@"check for badge count in Home Screen=%@",badge);
+                [[BeagleManager SharedInstance]setBadgeCount:[badge integerValue]];
+                [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[BeagleManager SharedInstance]badgeCount]];
                 
-                
+                [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
+
+                }
                 id activities=[response objectForKey:@"activities"];
                 if (activities != nil && [activities class] != [NSNull class]) {
                     
@@ -1412,10 +1421,10 @@
     _interestUpdateManager.delegate=self;
     
     if (play.isParticipant) {
-        [_interestUpdateManager removeMembership:play.activityId];
+        [_interestUpdateManager removeMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
     }
     else{
-        [_interestUpdateManager participateMembership:play.activityId];
+        [_interestUpdateManager participateMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
     }
 }
 @end

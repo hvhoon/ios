@@ -191,10 +191,27 @@ enum Weeks {
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
     
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
+    
+    if(!notifObject.isOffline){
     InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0,0, 320, 64) appNotification:notifObject];
     notifView.delegate=self;
     UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
     [keyboard addSubview:notifView];
+    }
+    else if(notifObject.isOffline && notifObject.activityId!=0 && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE)){
+        
+        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
+        viewController.interestServerManager=[[ServerManager alloc]init];
+        viewController.interestServerManager.delegate=viewController;
+        viewController.isRedirected=TRUE;
+        viewController.toLastPost=TRUE;
+        [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
+        [self.navigationController presentViewController:viewController animated:YES completion:nil];
+        
+        
+    }
     BeagleManager *BG=[BeagleManager SharedInstance];
     BG.activityCreated=TRUE;
 
@@ -204,11 +221,27 @@ enum Weeks {
 
 -(void)postInAppNotification:(NSNotification*)note{
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
+    
+    if(!notifObject.isOffline){
     InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0, 0, 320, 64) appNotification:notifObject];
     notifView.delegate=self;
     
     UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
     [keyboard addSubview:notifView];
+    }else if(notifObject.isOffline && notifObject.activityId!=0 && notifObject.notificationType==CHAT_TYPE){
+        
+        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
+        viewController.interestServerManager=[[ServerManager alloc]init];
+        viewController.interestServerManager.delegate=viewController;
+        viewController.isRedirected=TRUE;
+        viewController.toLastPost=TRUE;
+        [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
+        [self.navigationController presentViewController:viewController animated:YES completion:nil];
+
+        
+    }
     BeagleManager *BG=[BeagleManager SharedInstance];
     BG.activityCreated=TRUE;
 
@@ -220,7 +253,10 @@ enum Weeks {
     DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
     viewController.interestServerManager=[[ServerManager alloc]init];
     viewController.interestServerManager.delegate=viewController;
-    viewController.isRedirectedFromNotif=TRUE;
+    viewController.isRedirected=TRUE;
+    if(notification.notificationType==CHAT_TYPE)
+        viewController.toLastPost=TRUE;
+
     [viewController.interestServerManager getDetailedInterest:notification.activityId];
     [self.navigationController presentViewController:viewController animated:YES completion:nil];
     
@@ -321,20 +357,15 @@ enum Weeks {
     // Set in 1 month start and end dates
     NSDateComponents *monthComponents = [[NSDateComponents alloc] init];
     monthComponents.month = 1;
-    NSDate *oneMonthFromNow = [[NSCalendar currentCalendar] dateByAddingComponents:components toDate:[NSDate date] options:0];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-    NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
-    [dateFormatter setTimeZone:utcTimeZone];
-    [components setMonth:[components month]+1];
-    [components setDay:0];
-    NSDate *endOfMonth = [myCalendar dateFromComponents:components];
+    NSLog(@"The beginning of this week = %@",beginningOfWeek);
+
 #if 0
+    NSDate *oneMonthFromNow = [[NSCalendar currentCalendar] dateByAddingComponents:components toDate:[NSDate date] options:0];
+
     // Verifying all date stuff
     NSLog(@"Later Today= %@",laterToday);
     NSLog(@"Tomorrow start = %@",tomorrowStart);
     NSLog(@"Tomorrow end = %@",tomorrowEnd);
-    NSLog(@"The beginning of this week = %@",beginningOfWeek);
     NSLog(@"The beginning of this weekend = %@", startOfThisWeekend);
     NSLog(@"The End of this weekend = %@", endOfThisWeekend);
     NSLog(@"The beginning of next week = %@", nextMondayStart);
@@ -343,6 +374,16 @@ enum Weeks {
     NSLog(@"One Month From Now = %@",oneMonthFromNow);
     NSLog(@"One Month from Now = %@",endOfMonth);
 #endif
+    
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+    [dateFormatter setTimeZone:utcTimeZone];
+    [components setMonth:[components month]+1];
+    [components setDay:0];
+    NSDate *endOfMonth = [myCalendar dateFromComponents:components];
+
     switch (timeIndex) {
         // Setting the start date as NOW and the end date as LATER TODAY
         case 1: {

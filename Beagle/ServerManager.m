@@ -36,16 +36,7 @@
     if (self) {
         
         _internetReachability = [Reachability reachabilityForInternetConnection];
-#ifdef __i386__
-        NSLog(@"Running in the simulator");
         _serverUrl =herokuHost;
-#else
-        NSLog(@"Running on a device");
-        _serverUrl =herokuHost;
-#endif
-
-        
-
         [self populateErrorCodes];
     }
     return self;
@@ -168,13 +159,13 @@
         [self internetNotAvailable];
     }
 }
--(void)removeMembership:(NSInteger)activityId{
+-(void)removeMembership:(NSInteger)activityId playerid:(NSInteger)playerId{
     _serverCallType = kServerCallLeaveInterest;
     if([self isInternetAvailable])
     {
         
         NSMutableDictionary* updateMembership =[[NSMutableDictionary alloc] init];
-        [updateMembership setObject:[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"] forKey:@"pid"];
+        [updateMembership setObject:[NSNumber numberWithInteger:playerId] forKey:@"pid"];
         [updateMembership setObject:[NSNumber numberWithInteger:activityId] forKey:@"id"];
         [updateMembership setObject:@"true" forKey:@"pstatus"];
         
@@ -191,13 +182,13 @@
         [self internetNotAvailable];
     }
 }
--(void)participateMembership:(NSInteger)activityId{
+-(void)participateMembership:(NSInteger)activityId playerid:(NSInteger)playerId{
     _serverCallType = kServerCallParticipateInterest;
     if([self isInternetAvailable])
     {
         
         NSMutableDictionary* updateMembership =[[NSMutableDictionary alloc] init];
-        [updateMembership setObject:[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"] forKey:@"pid"];
+        [updateMembership setObject:[NSNumber numberWithInteger:playerId] forKey:@"pid"];
         [updateMembership setObject:[NSNumber numberWithInteger:activityId] forKey:@"id"];
         [updateMembership setObject:@"true" forKey:@"pstatus"];
         
@@ -326,8 +317,31 @@
         }
 }
 
--(void)requestInAppNotification:(NSInteger)notificationId{
+
+-(void)requestInAppNotificationForPosts:(NSInteger)chatId isOffline:(BOOL)isOffline{
+    _serverCallType=kServerCallInAppNotificationForPosts;
+    if(isOffline)
+        _serverCallType=kServerCallInAppForOfflinePost;
+    
+    if([self isInternetAvailable])
+    {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/%ld/acparameter.json",_serverUrl,chatId]
+                         method:@"GET"
+                         params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+    
+}
+-(void)requestInAppNotification:(NSInteger)notificationId isOffline:(BOOL)isOffline{
+
     _serverCallType=kServerCallInAppNotification;
+
+    if(isOffline)
+        _serverCallType=kServerCallRequestForOfflineNotification;
+
     
     if([self isInternetAvailable])
     {
@@ -342,20 +356,9 @@
         [self internetNotAvailable];
     }
 }
--(void)requestInAppNotificationForPosts:(NSInteger)chatId{
-    _serverCallType=kServerCallInAppNotificationForPosts;
-    if([self isInternetAvailable])
-    {
-        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/%ld/acparameter.json",_serverUrl,chatId]
-                         method:@"GET"
-                         params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
-    }
-    else
-    {
-        [self internetNotAvailable];
-    }
 
-}
+
+
 
 -(void)getMoreBackgroundPostsForAnInterest:(InterestChatClass*)lastChatPost activId:(NSInteger)activId{
     _serverCallType=kServerCallGetBackgroundChats;
@@ -417,6 +420,7 @@
     }
     
 }
+
 -(void)populateErrorCodes
 {
     _errorCodes = [[NSMutableDictionary alloc]init];

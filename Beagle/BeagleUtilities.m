@@ -8,6 +8,7 @@
 
 #import "BeagleUtilities.h"
 #import "BeagleNotificationClass.h"
+#import "JSON.h"
 @implementation BeagleUtilities
 + (int) getRandomIntBetweenLow:(int) low andHigh:(int) high {
 	return ((arc4random() % (high - low + 1)) + low);
@@ -29,8 +30,7 @@
     }
     else
     {
-        // if portrait
-        y = (image.size.height - image.size.width)/2;
+        // if portrait use the top portion of the image
         dimensions.height = image.size.width;
         dimensions.width = image.size.width;
         
@@ -344,9 +344,9 @@
     NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
     [dateFormatter setTimeZone:utcTimeZone];
     NSDate *startActivityDate = [dateFormatter dateFromString:startDate];
-    NSLog(@"startActivityDate=%@",startActivityDate);
+//    NSLog(@"startActivityDate=%@",startActivityDate);
     NSDate *endActivityDate = [dateFormatter dateFromString:endDate];
-    NSLog(@"endActivityDate=%@",endActivityDate);
+//    NSLog(@"endActivityDate=%@",endActivityDate);
     
     NSTimeInterval Interval=[endActivityDate timeIntervalSinceDate:[NSDate date]];
     
@@ -542,12 +542,15 @@
     
     [[BeagleManager SharedInstance]setBadgeCount:[[[object valueForKey:@"userInfo"] valueForKey:@"badge"]intValue]];
     notification.profileImage=[[object valueForKey:@"userInfo"] valueForKey:@"profileImage"];
+    notification.isOffline=[[[object valueForKey:@"userInfo"] valueForKey:@"isOffline"]boolValue];
     notification.latitude=[[object valueForKey:@"userInfo"] valueForKey:@"lat"];
     notification.longitude=[[object valueForKey:@"userInfo"] valueForKey:@"lng"];
     notification.notificationString=[[object valueForKey:@"userInfo"] valueForKey:@"message"];
+    notification.playerName=[[object valueForKey:@"userInfo"] valueForKey:@"player_name"];
     notification.photoUrl=[[object valueForKey:@"userInfo"] valueForKey:@"photo_url"];
     notification.timeOfNotification=[[object valueForKey:@"userInfo"] valueForKey:@"timing"];
     notification.referredId=[[[object valueForKey:@"userInfo"] valueForKey:@"reffered_to"]integerValue];
+    notification.dos1_relation=[[[object valueForKey:@"userInfo"] valueForKey:@"dos1_relation"]integerValue];
     return notification;
 }
 +(BeagleNotificationClass*)getNotificationForInterestPost:(NSNotification*)object{
@@ -560,6 +563,7 @@
     notification.postChatId=[[obj1 valueForKey:@"chatid"]integerValue];
     notification.activityOwnerId=[[obj1 valueForKey:@"ownerid"]integerValue];
     notification.postDesc=[obj1 valueForKey:@"post"];
+    notification.isOffline=[[[object valueForKey:@"userInfo"] valueForKey:@"isOffline"]boolValue];
     notification.profileImage=[[object valueForKey:@"userInfo"] valueForKey:@"profileImage"];
     notification.activityId=[[obj1 valueForKey:@"activity_id"]integerValue];
     notification.photoUrl=[obj1 valueForKey:@"player_photo_url"];
@@ -568,6 +572,24 @@
     notification.notificationType=17;
     return notification;
     
+    
+}
+
++(void)updateBadgeInfoOnTheServer:(NSInteger)notificationId{
+    NSURL *url=[NSURL URLWithString:[[NSString stringWithFormat:@"%@received_notification.json?id=%ld",herokuHost,notificationId] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    
+    NSURLRequest *notificationRequest = [[NSURLRequest alloc] initWithURL: url];
+    NSHTTPURLResponse *response = NULL;
+	NSError *error = nil;
+    NSData *returnData = [NSURLConnection sendSynchronousRequest:notificationRequest returningResponse:&response error:&error];
+    
+    NSDictionary* resultsd = [[[NSString alloc] initWithData:returnData
+                                                    encoding:NSUTF8StringEncoding] JSONValue];
+    
+    [[BeagleManager SharedInstance]setBadgeCount:[[resultsd objectForKey:@"badge"]integerValue]];
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[BeagleManager SharedInstance]badgeCount]];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
     
 }
 @end
