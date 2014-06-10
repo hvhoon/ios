@@ -558,7 +558,6 @@
 -(UIView*)renderFilterHeaderView {
 
     UIView *headerView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 44)];
-    headerView.backgroundColor=[BeagleUtilities returnBeagleColor:11];
     CGSize size = CGSizeMake(220,999);
     
     NSString* filterText = @"Happening Around You";
