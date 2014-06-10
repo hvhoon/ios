@@ -41,6 +41,7 @@
     BOOL hideInAppNotification;
 }
 @property(nonatomic,strong)EventInterestFilterBlurView*filterBlurView;
+@property(nonatomic, strong)UIView *filterView;
 @property(nonatomic, weak) NSTimer *timer;
 @property(nonatomic,strong)  NSMutableDictionary *imageDownloadsInProgress;
 @property(nonatomic,strong)  NSMutableDictionary *filterActivitiesOnHomeScreen;
@@ -196,16 +197,16 @@
 #else
     [self.view addSubview:eventButton];
 #endif
-
+    
     // Setting up the filter pane
 #if stockCroppingCheck
-    UIView *filterView=[[UIView alloc]initWithFrame:CGRectMake(0, 103, 320, 44)];
-    [filterView addSubview:[self renderFilterHeaderView]];
-    [bottomNavigationView addSubview:filterView];
+    _filterView = [[UIView alloc] initWithFrame:CGRectMake(0, 103, 320, 44)];
+    [_filterView addSubview:[self renderFilterHeaderView]];
+    [bottomNavigationView addSubview:_filterView];
 #else
-    UIView *filterView=[[UIView alloc]initWithFrame:CGRectMake(0, 156, 320, 44)];
-    [filterView addSubview:[self renderFilterHeaderView]];
-    [self.view addSubview:filterView];
+    _filterView = [[UIView alloc] initWithFrame:CGRectMake(0, 156, 320, 44)];
+    [_filterView addSubview:[self renderFilterHeaderView]];
+    [self.view addSubview:_filterView];
 #endif
     
     _tableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStylePlain];
@@ -516,6 +517,7 @@
             }
         
         [self addCityName:[BG.placemark.addressDictionary objectForKey:@"City"]];
+        _filterView.backgroundColor = [BeagleUtilities returnAverageColor:flickrRequestInfo.photo];
         }];
     
     }];
@@ -541,21 +543,21 @@
         bottomNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockBottomImage2];
         
 #else
+        
         [[NSUserDefaults standardUserDefaults] setValue:[NSDate date] forKey:@"HourlyUpdate"];
         UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
         stockImageView.image=photo;
         [stockImageView setContentMode:UIViewContentModeScaleAspectFit];
+
         
 #endif
-
          
     } completion:NULL];
 }
 
--(UIView*)renderFilterHeaderView{
-    UIView *headerView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 44)];
-    headerView.backgroundColor=[BeagleUtilities returnBeagleColor:11];
+-(UIView*)renderFilterHeaderView {
 
+    UIView *headerView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 44)];
     CGSize size = CGSizeMake(220,999);
     
     NSString* filterText = @"Happening Around You";
@@ -608,7 +610,7 @@
                              [UIColor whiteColor],NSForegroundColorAttributeName,
                              style, NSParagraphStyleAttributeName, nil];
         
-        CGSize badgeCountSize=[[NSString stringWithFormat:@"%ld",BG.badgeCount] boundingRectWithSize:CGSizeMake(44, 999)
+        CGSize badgeCountSize=[[NSString stringWithFormat:@"%ld",(long)BG.badgeCount] boundingRectWithSize:CGSizeMake(44, 999)
                                                                                              options:NSStringDrawingUsesLineFragmentOrigin
                                                                                           attributes:attrs
                                                                                              context:nil].size;
@@ -627,7 +629,7 @@
         }
         
         updateNotificationsButton.alpha = 0.6;
-        [updateNotificationsButton setTitle:[NSString stringWithFormat:@"%ld",BG.badgeCount] forState:UIControlStateNormal];
+        [updateNotificationsButton setTitle:[NSString stringWithFormat:@"%ld",(long)BG.badgeCount] forState:UIControlStateNormal];
         [updateNotificationsButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         updateNotificationsButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
         updateNotificationsButton.tag=5346;
@@ -640,15 +642,16 @@
         
     }
 
-    
+    /* Disabled in the interim
     UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [settingsButton addTarget:self action:@selector(revealMenu:)forControlEvents:UIControlEventTouchUpInside];
     [settingsButton setBackgroundImage:[UIImage imageNamed:@"Settings"] forState:UIControlStateNormal];
     settingsButton.frame = CGRectMake(228, 0, 44, 44);
     settingsButton.alpha = 0.6;
     [headerView addSubview:settingsButton];
-    headerView.tag=43567;
-    return headerView;
+    */
+     headerView.tag=43567;
+     return headerView;
 }
 -(void)handleFilterHeaderTap:(UITapGestureRecognizer*)sender{
     [self.filterBlurView blurWithColor];
