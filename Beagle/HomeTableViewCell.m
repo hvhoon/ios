@@ -165,9 +165,9 @@ static UIFont *forthTextFont = nil;
         else
             relationship = @"Friend";
         
-        participantsCountTextSize = [[NSString stringWithFormat:@"%ld Interested -  %ld %@",(long)self.bg_activity.participantsCount,(long)self.bg_activity.dos1count, relationship]  boundingRectWithSize:CGSizeMake(288, r.size.height) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
+        participantsCountTextSize = [[NSString stringWithFormat:@"%ld %@ interested",(long)self.bg_activity.dos1count, relationship]  boundingRectWithSize:CGSizeMake(288, r.size.height) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
         
-        [[NSString stringWithFormat:@"%ld Interested -  %ld %@",(long)self.bg_activity.participantsCount,(long)self.bg_activity.dos1count, relationship] drawInRect:CGRectMake(16, fromTheTop, participantsCountTextSize.width, participantsCountTextSize.height) withAttributes:attrs];
+        [[NSString stringWithFormat:@"%ld %@ interested", (long)self.bg_activity.dos1count, relationship] drawInRect:CGRectMake(16, fromTheTop, participantsCountTextSize.width, participantsCountTextSize.height) withAttributes:attrs];
         fromTheTop = fromTheTop+participantsCountTextSize.height;
         fromTheTop = fromTheTop+18; // Spacing after the count of people interested
         

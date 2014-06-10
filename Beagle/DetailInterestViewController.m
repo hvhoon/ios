@@ -635,11 +635,11 @@ else if(!notifObject.isOffline){
                 else
                     relationship = @"Friend";
 
-                participantsCountTextSize = [[NSString stringWithFormat:@"%ld Interested - %ld %@",(long)self.interestActivity.participantsCount,(long)self.interestActivity.dos1count, relationship]  boundingRectWithSize:CGSizeMake(288, 999) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
+                participantsCountTextSize = [[NSString stringWithFormat:@"%ld %@ interested", (long)self.interestActivity.dos1count, relationship]  boundingRectWithSize:CGSizeMake(288, 999) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
                 
                 participantsCountTextLabel.frame=CGRectMake(16, fromTheTop, participantsCountTextSize.width, participantsCountTextSize.height);
                 
-                participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested - %ld %@",(long)self.interestActivity.participantsCount,(long)self.interestActivity.dos1count, relationship];
+                participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld %@ interested", (long)self.interestActivity.dos1count, relationship];
                 
                 [_backgroundView addSubview:participantsCountTextLabel];
             }
