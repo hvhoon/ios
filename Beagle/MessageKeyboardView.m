@@ -337,6 +337,7 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
 @interface MessageKeyboardView () <UITextViewDelegate> {
     UIInterfaceOrientation _currentOrientation;
     CGRect keyboardFrameUp;
+    BOOL _visible;
 }
 
 
@@ -478,9 +479,9 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
 
 - (void)_keyboardWillShow:(NSNotification *)notification
 {
+    _visible=TRUE;
     NSDictionary *userInfo = notification.userInfo;
     CGRect endFrame = [userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-   // keyboardFrameUp=endFrame;
     CGRect beginFrame = [userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue];
     CGFloat duration = [userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
     UIViewAnimationCurve curve = [userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
@@ -532,12 +533,12 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
 
 - (void)_keyboardWillHide:(NSNotification *)notification
 {
+        _visible=FALSE;
     NSDictionary *userInfo = notification.userInfo;
     CGRect endFrame = [userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
     CGRect beginFrame = [userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue];
     CGFloat duration = [userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
     UIViewAnimationCurve curve = [userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
-    //keyboardFrameUp=beginFrame;
     // When the user has lifted his or her finger, the
     // size of the end frame equals the size of the input view.
     CGRect inputViewBounds = self.inputView.bounds;
@@ -575,7 +576,6 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
     CGRect beginFrame = [userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue];
     CGFloat duration = [userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
     UIViewAnimationCurve curve = [userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
-   // keyboardFrameUp=beginFrame;
     // Disregard false notification
     // This works around a bug in iOS
     CGRect inputViewBounds = self.inputView.bounds;
@@ -609,7 +609,6 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
 
 - (void)_scrollViewAdaptInsetsToKeyboardFrame:(CGRect)keyboardFrame
 {
-    //keyboardFrameUp=keyboardFrame;
     // Convert keyboard frame to view coordinates
     UIWindow *window = [[UIApplication sharedApplication] keyWindow];
     UIView *view = window.rootViewController.view;
@@ -675,7 +674,7 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
     
     keyboardFrameUp=viewKeyboardFrame;
 
-    NSLog(@"keyboardFrameUp=%f,orign=%f",keyboardFrameUp.size.height,keyboardFrame.origin.y);
+//    NSLog(@"keyboardFrameUp=%f,orign=%f",keyboardFrameUp.size.height,keyboardFrame.origin.y);
     // Calculate max input view height
     CGFloat maxInputViewHeight = viewKeyboardFrame.origin.y -
     self.frame.origin.y - self.scrollView.contentInset.top;
@@ -687,8 +686,8 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
     CGFloat newInputViewHeight = RDRTextViewHeight(textView);
     newInputViewHeight += (2 * RDR_KEYBOARD_INPUT_VIEW_MARGIN_VERTICAL);
     newInputViewHeight = ceilf(newInputViewHeight);
+
     newInputViewHeight = MIN(maxInputViewHeight, newInputViewHeight);
-    
     // If the new input view height equals the current,
     // nothing has to be changed
     if (self.inputView.bounds.size.height == newInputViewHeight) {
@@ -719,19 +718,62 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
     }
 }
 
--(void)resize:(CGRect)frame{
+-(void)resize:(NSString*)text isAutoPost:(BOOL)isAutoPost{
     
-    [self _updateInputViewFrameWithKeyboardFrame:keyboardFrameUp forceReload:YES];
-    
-//    [self _scrollViewAdaptInsetsToKeyboardFrame:keyboardFrameUp];
+    CGFloat bottomInset=0.0f;
+    CGFloat newInputViewHeight =0.0f;
+    if(isAutoPost){
+        CGFloat maxInputViewHeight = keyboardFrameUp.origin.y -
+        self.frame.origin.y - self.scrollView.contentInset.top;
+        maxInputViewHeight += self.inputView.bounds.size.height;
+        
+        UITextView *textView = [[UITextView alloc]init];
+        textView.frame=self.inputView.frame;
+        textView.text=text;
+        newInputViewHeight = RDRTextViewHeight(textView);
+        newInputViewHeight += (2 * RDR_KEYBOARD_INPUT_VIEW_MARGIN_VERTICAL);
+        newInputViewHeight = ceilf(newInputViewHeight);
+        
+        newInputViewHeight = MIN(maxInputViewHeight, newInputViewHeight);
 
-//    [self _scrollViewAdaptInsetsToKeyboardFrame:keyboardFrameUp];
-//    
-//    [self.scrollView rdr_scrollToBottomWithOptions:RDRAnimationOptionsForCurve(7)
-//                                          duration:0.34
-//                                   completionBlock:nil];
+    }
+    else{
+     newInputViewHeight = self.inputView.bounds.size.height;
+    }
+    
+    if(isAutoPost){
+         bottomInset=0;
+        if(_visible){
+         bottomInset = keyboardFrameUp.size.height;
+        }
+    }
+    else{
+       if(newInputViewHeight>47)
+         bottomInset = keyboardFrameUp.size.height - newInputViewHeight;
+      else
+         bottomInset = keyboardFrameUp.size.height;
+     }
+
+
+    UIEdgeInsets contentInset = self.scrollView.contentInset;
+    contentInset.bottom = bottomInset;
+    self.scrollView.contentInset = contentInset;
+    
+    UIEdgeInsets scrollIndicatorInsets = self.scrollView.scrollIndicatorInsets;
+    scrollIndicatorInsets.bottom = bottomInset;
+    self.scrollView.scrollIndicatorInsets = scrollIndicatorInsets;
 
     
+    [self.scrollView rdr_scrollToBottomWithOptions:RDRAnimationOptionsForCurve(7)
+                                          duration:0.23
+                                   completionBlock:nil];
+    
+    [self.inputView.textView setText:nil];
+    [self.dummyInputView.textView setText:nil];
+    if(_visible)
+        [self _updateInputViewFrameWithKeyboardFrame:CGRectZero forceReload:NO];
+
+
 }
 #pragma mark - UITextViewDelegate
 

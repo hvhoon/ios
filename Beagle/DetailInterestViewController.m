@@ -369,30 +369,11 @@ else if(!notifObject.isOffline){
 
 //    NSLog(@"text1=%@",[self.contentWrapper.inputView.textView text]);
 //    NSLog(@"text2=%@",[self.contentWrapper.dummyInputView.textView text]);
-    [self.contentWrapper.inputView.textView setText:nil];
+//    [self.contentWrapper.inputView.textView setText:nil];
 //    [self.contentWrapper textViewDidChange:self.contentWrapper.inputView.textView];
     
-    [self.contentWrapper.dummyInputView.textView setText:nil];
-        
-        
-//     [self.contentWrapper reloadInputAccessoryView];
-//    [self.contentWrapper textViewDidChange:self.contentWrapper.dummyInputView.textView];
-    
-//    UIEdgeInsets contentInset = self.detailedInterestTableView.contentInset;
-//    contentInset.bottom = 0;
-//    self.detailedInterestTableView.contentInset = contentInset;
-//    
-//    UIEdgeInsets scrollIndicatorInsets = self.detailedInterestTableView.scrollIndicatorInsets;
-//    
-//    scrollIndicatorInsets.bottom = 0;
-//    self.detailedInterestTableView.scrollIndicatorInsets = scrollIndicatorInsets;
-
-//    [self.detailedInterestTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
-//                                          atScrollPosition:UITableViewScrollPositionTop
-//                                                  animated:YES];
-//    [self.detailedInterestTableView reloadData];
-
-    }
+//    [self.contentWrapper.dummyInputView.textView setText:nil];
+}
 
 }
 
@@ -1200,21 +1181,11 @@ else if(!notifObject.isOffline){
 
                     }
                    
+                    BOOL postType=TRUE;
+                    if(serverRequest==kServerCallPostComment)
+                          postType=FALSE;
+                    [self.contentWrapper resize:[[self.chatPostsArray lastObject]text] isAutoPost:postType];
                     
-                    [self.contentWrapper resize:CGRectZero];
-//                    [self.contentWrapper.inputView.textView setText:@"\n"];
-                    
-                    // [self.contentWrapper resize:CGRectZero];
-                    //[self.contentWrapper.inputView.textView setText:nil];
-                    //[self.contentWrapper textViewDidChange:self.contentWrapper.inputView.textView];
-                    
-                    //                    [self.contentWrapper.inputView.textView resignFirstResponder];
-                    //                     For dummyInputView.textView
-                    //                        [self.view endEditing:YES];
-                    
-                    //                    [self.contentWrapper.inputView.textView becomeFirstResponder];
-                    //                     For dummyInputView.textView
-                    //                        [self.view becomeFirstResponder];
                     
                     
                     

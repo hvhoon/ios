@@ -37,5 +37,5 @@
 - (void)textViewDidChange:(UITextView *)textView;
 - (void)_registerForNotifications;
 - (void)_unregisterForNotifications;
--(void)resize:(CGRect)frame;
+-(void)resize:(NSString*)text isAutoPost:(BOOL)isAutoPost;
 @end
