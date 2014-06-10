@@ -456,7 +456,7 @@ else if(!notifObject.isOffline){
             [style setAlignment:NSTextAlignmentLeft];
             
             NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                                   [UIFont systemFontOfSize:15.0f], NSFontAttributeName,
+                                   [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0f], NSFontAttributeName,
                                    [UIColor blackColor],NSForegroundColorAttributeName,
                                    style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
             

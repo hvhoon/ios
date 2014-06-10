@@ -32,8 +32,8 @@ static inline NSRegularExpression * NameRegularExpression() {
     
     self.summaryLabel = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
     self.summaryLabel.textColor= [BeagleUtilities returnBeagleColor:2];
-    self.summaryLabel.numberOfLines = 0;
-    self.summaryLabel.lineBreakMode = UILineBreakModeWordWrap;
+    self.summaryLabel.numberOfLines = 2;
+    self.summaryLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     self.summaryLabel.font=[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
     self.summaryLabel.highlightedTextColor = [UIColor whiteColor];
     self.summaryLabel.verticalAlignment = TTTAttributedLabelVerticalAlignmentTop;
@@ -103,6 +103,10 @@ static inline NSRegularExpression * NameRegularExpression() {
     
     // What's the height of the notification text
     height += ceilf([text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f] constrainedToSize:CGSizeMake(195, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height);
+    
+    // Limit Summary to 2 lines only
+    if(height > 35.0f)
+        height = 35.0f;
     
     return height;
 }
