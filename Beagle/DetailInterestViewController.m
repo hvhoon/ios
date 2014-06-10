@@ -456,7 +456,7 @@ else if(!notifObject.isOffline){
             [style setAlignment:NSTextAlignmentLeft];
             
             NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                                   [UIFont systemFontOfSize:15.0f], NSFontAttributeName,
+                                   [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0f], NSFontAttributeName,
                                    [UIColor blackColor],NSForegroundColorAttributeName,
                                    style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
             
@@ -627,11 +627,19 @@ else if(!notifObject.isOffline){
             
             // Are any of your friends participants?
             if (self.interestActivity.dos1count>0) {
-                participantsCountTextSize = [[NSString stringWithFormat:@"%ld Interested -  %ld Friends",(long)self.interestActivity.participantsCount,(long)self.interestActivity.dos1count]  boundingRectWithSize:CGSizeMake(288, 999) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
+                
+                NSString* relationship = nil;
+                
+                if(self.interestActivity.dos1count > 1)
+                    relationship = @"Friends";
+                else
+                    relationship = @"Friend";
+
+                participantsCountTextSize = [[NSString stringWithFormat:@"%ld Interested - %ld %@",(long)self.interestActivity.participantsCount,(long)self.interestActivity.dos1count, relationship]  boundingRectWithSize:CGSizeMake(288, 999) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
                 
                 participantsCountTextLabel.frame=CGRectMake(16, fromTheTop, participantsCountTextSize.width, participantsCountTextSize.height);
                 
-                participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested -  %ld Friends",(long)self.interestActivity.participantsCount,(long)self.interestActivity.dos1count];
+                participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested - %ld %@",(long)self.interestActivity.participantsCount,(long)self.interestActivity.dos1count, relationship];
                 
                 [_backgroundView addSubview:participantsCountTextLabel];
             }

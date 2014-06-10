@@ -157,9 +157,17 @@ static UIFont *forthTextFont = nil;
     
     // If your friends are interested
     if(self.bg_activity.participantsCount>0 && self.bg_activity.dos1count>0){
-        participantsCountTextSize = [[NSString stringWithFormat:@"%ld Interested -  %ld Friends",(long)self.bg_activity.participantsCount,(long)self.bg_activity.dos1count]  boundingRectWithSize:CGSizeMake(288, r.size.height) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
         
-        [[NSString stringWithFormat:@"%ld Interested -  %ld Friends",(long)self.bg_activity.participantsCount,(long)self.bg_activity.dos1count] drawInRect:CGRectMake(16, fromTheTop, participantsCountTextSize.width, participantsCountTextSize.height) withAttributes:attrs];
+        NSString* relationship = nil;
+        
+        if(self.bg_activity.dos1count > 1)
+            relationship = @"Friends";
+        else
+            relationship = @"Friend";
+        
+        participantsCountTextSize = [[NSString stringWithFormat:@"%ld Interested -  %ld %@",(long)self.bg_activity.participantsCount,(long)self.bg_activity.dos1count, relationship]  boundingRectWithSize:CGSizeMake(288, r.size.height) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
+        
+        [[NSString stringWithFormat:@"%ld Interested -  %ld %@",(long)self.bg_activity.participantsCount,(long)self.bg_activity.dos1count, relationship] drawInRect:CGRectMake(16, fromTheTop, participantsCountTextSize.width, participantsCountTextSize.height) withAttributes:attrs];
         fromTheTop = fromTheTop+participantsCountTextSize.height;
         fromTheTop = fromTheTop+18; // Spacing after the count of people interested
         
