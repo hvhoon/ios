@@ -115,7 +115,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     
 
 
-        if([[[userInfo valueForKey:@"params"] valueForKey:@"notification_type"]isEqualToString:@"17"]){
+        if([[[userInfo valueForKey:@"params"] valueForKey:@"notification_type"]integerValue]==CHAT_TYPE){
             [_notificationServerManager requestInAppNotificationForPosts:[[[userInfo valueForKey:@"params"] valueForKey:@"chat_id"]integerValue] isOffline:NO];
             [[BeagleManager SharedInstance]setBadgeCount:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
             [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
@@ -123,7 +123,27 @@ void uncaughtExceptionHandler(NSException *exception) {
             NSLog(@"badge Value=%ld",[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]);
 
             
-        }else{
+        }else if([[[userInfo valueForKey:@"params"] valueForKey:@"notification_type"]integerValue]==CANCEL_ACTIVITY_TYPE){
+            NSMutableDictionary *cancelDictionary=[NSMutableDictionary new];
+            [cancelDictionary setObject:[[userInfo valueForKey:@"params"] valueForKey:@"notification_type"] forKey:@"activity_type"];
+            
+            [cancelDictionary setObject:[[userInfo valueForKey:@"aps"] valueForKey:@"alert"] forKey:@"message"];
+
+            [cancelDictionary setObject:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture",[[userInfo valueForKey:@"params"] valueForKey:@"fbuid"]] forKey:@"photo_url"];
+            NSMutableDictionary *activity=[NSMutableDictionary new];
+            [activity setObject:[NSNumber numberWithInteger:[[[userInfo valueForKey:@"params"] valueForKey:@"activity_id"]integerValue]] forKey:@"id"];
+            [cancelDictionary setObject:activity forKey:@"activity"];
+            
+            NSOperationQueue *queue = [NSOperationQueue new];
+            NSInvocationOperation *operation = [[NSInvocationOperation alloc]
+                                                initWithTarget:self
+                                                selector:@selector(loadProfileImageData:)
+                                                object:cancelDictionary];
+            [queue addOperation:operation];
+
+
+        }
+        else{
             [_notificationServerManager requestInAppNotification:[[[userInfo valueForKey:@"params"] valueForKey:@"notification_id"]integerValue] isOffline:NO];
             
         }
@@ -132,13 +152,34 @@ void uncaughtExceptionHandler(NSException *exception) {
         // app was just brought from background to foreground
         NSLog(@"userInfo=%@",userInfo);
         
-        if([[[userInfo valueForKey:@"params"] valueForKey:@"notification_type"]isEqualToString:@"17"]){
+        if([[[userInfo valueForKey:@"params"] valueForKey:@"notification_type"]integerValue]==CHAT_TYPE){
             [_notificationServerManager requestInAppNotificationForPosts:[[[userInfo valueForKey:@"params"] valueForKey:@"chat_id"]integerValue]isOffline:YES];
             [[BeagleManager SharedInstance]setBadgeCount:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
             [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
             
             NSLog(@"badge Value=%ld",[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]);
             
+            
+        }
+        else if([[[userInfo valueForKey:@"params"] valueForKey:@"notification_type"]integerValue]==CANCEL_ACTIVITY_TYPE){
+            
+             NSMutableDictionary *cancelDictionary=[NSMutableDictionary new];
+             [cancelDictionary setObject:[NSNumber numberWithBool:YES] forKey:@"isOffline"];
+            
+            [cancelDictionary setObject:[[userInfo valueForKey:@"params"] valueForKey:@"notification_type"] forKey:@"activity_type"];
+            
+            [cancelDictionary setObject:[[userInfo valueForKey:@"aps"] valueForKey:@"alert"] forKey:@"message"];
+            
+            NSMutableDictionary *activity=[NSMutableDictionary new];
+            [activity setObject:[NSNumber numberWithInteger:[[[userInfo valueForKey:@"params"] valueForKey:@"activity_id"]integerValue]] forKey:@"id"];
+            [cancelDictionary setObject:activity forKey:@"activity"];
+            
+            NSNotification* notification = [NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:nil userInfo:cancelDictionary];
+            [[NSNotificationCenter defaultCenter] postNotification:notification];
+
+            
+
+
             
         }else
             [_notificationServerManager requestInAppNotification:[[[userInfo valueForKey:@"params"] valueForKey:@"notification_id"]integerValue] isOffline:YES];

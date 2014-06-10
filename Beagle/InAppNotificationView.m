@@ -151,7 +151,7 @@ static inline NSRegularExpression * NameRegularExpression() {
     
     [BeagleUtilities updateBadgeInfoOnTheServer:inAppNotif.notificationId];
     
-    if (inAppNotif.backgroundTap) {
+    if (inAppNotif.backgroundTap && inAppNotif.notificationType!=CANCEL_ACTIVITY_TYPE) {
         
         [self HideNotification];
         if (self.delegate && [self.delegate respondsToSelector:@selector(backgroundTapToPush:)])
