@@ -20,6 +20,7 @@
 +(NSString *)calculateChatTimestamp:(NSString *)timeString;
 +(UIColor*)returnBeagleColor:(NSInteger)colorID;
 +(UIColor*)returnAverageColor:(UIImage*)image;
++(UIColor*)getDominantColor:(UIImage*)image;
 +(BOOL)hasBeenMoreThanSixtyMinutes;
 +(BOOL)LastDistanceFromLocationExceeds_50M;
 +(void) saveImage:(UIImage *)image withFileName:(NSInteger)imageName;

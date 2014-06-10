@@ -104,6 +104,65 @@
 }
 
 #pragma mark - Image processing functions
++(UIColor*)getDominantColor:(UIImage*)image {
+    struct pixel {
+        unsigned char r, g, b, a;
+    };
+    
+    NSUInteger red = 0;
+    NSUInteger green = 0;
+    NSUInteger blue = 0;
+    
+    
+    // Allocate a buffer big enough to hold all the pixels
+    
+    struct pixel* pixels = (struct pixel*) calloc(1, image.size.width * image.size.height * sizeof(struct pixel));
+    if (pixels != nil)
+    {
+        
+        CGContextRef context = CGBitmapContextCreate(
+                                                     (void*) pixels,
+                                                     image.size.width,
+                                                     image.size.height,
+                                                     8,
+                                                     image.size.width * 4,
+                                                     CGImageGetColorSpace(image.CGImage),
+                                                     kCGImageAlphaPremultipliedLast
+                                                     );
+        
+        if (context != NULL)
+        {
+            // Draw the image in the bitmap
+            
+            CGContextDrawImage(context, CGRectMake(0.0f, 0.0f, image.size.width, image.size.height), image.CGImage);
+            
+            // Now that we have the image drawn in our own buffer, we can loop over the pixels to
+            // process it. This simple case simply counts all pixels that have a pure red component.
+            
+            // There are probably more efficient and interesting ways to do this. But the important
+            // part is that the pixels buffer can be read directly.
+            
+            NSUInteger numberOfPixels = image.size.width * image.size.height;
+            for (int i=0; i<numberOfPixels; i++) {
+                red += pixels[i].r;
+                green += pixels[i].g;
+                blue += pixels[i].b;
+            }
+            
+            
+            red /= numberOfPixels;
+            green /= numberOfPixels;
+            blue/= numberOfPixels;
+            
+            
+            CGContextRelease(context);
+        }
+        
+        free(pixels);
+    }
+    return [UIColor colorWithRed:red/255.0f green:green/255.0f blue:blue/255.0f alpha:1.0f];
+}
+
 + (UIImage*) getSubImageFrom: (UIImage*) img rect: (CGRect) rect {
     
     UIGraphicsBeginImageContext(rect.size);
@@ -272,7 +331,7 @@
     CGContextRelease(context);
     
     if(rgba[3] > 0) {
-        CGFloat alpha = 0.6;
+        CGFloat alpha = 1.0;
         CGFloat multiplier = alpha/255.0;
         return [UIColor colorWithRed:((CGFloat)rgba[0])*multiplier
                                green:((CGFloat)rgba[1])*multiplier
