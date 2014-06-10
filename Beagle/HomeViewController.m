@@ -354,7 +354,7 @@
         updateNotificationsButton.tag=5346;
         updateNotificationsButton.titleLabel.textAlignment = NSTextAlignmentCenter;
         updateNotificationsButton.backgroundColor=[UIColor colorWithRed:231.0f/255.0f green:60.0f/255.0f blue:48.0f/255.0f alpha:0.85f];
-        updateNotificationsButton.layer.cornerRadius = 2.0f;
+        updateNotificationsButton.layer.cornerRadius = 4.0f;
         updateNotificationsButton.layer.masksToBounds = YES;
         [headerView addSubview:updateNotificationsButton];
         }
@@ -517,7 +517,14 @@
             }
         
         [self addCityName:[BG.placemark.addressDictionary objectForKey:@"City"]];
-        _filterView.backgroundColor = [BeagleUtilities returnAverageColor:flickrRequestInfo.photo];
+        _filterView.backgroundColor = [BeagleUtilities getDominantColor:flickrRequestInfo.photo];
+            
+        /* Test square for alternate algorithm to pull AVERAGE COLOR
+        UIView* testSquare = [[UIView alloc] initWithFrame:CGRectMake(16, 100, 50, 50)];
+        testSquare.backgroundColor = [BeagleUtilities returnAverageColor:flickrRequestInfo.photo];
+        [self.view addSubview:testSquare];
+         */
+    
         }];
     
     }];
