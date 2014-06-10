@@ -272,7 +272,7 @@
     CGContextRelease(context);
     
     if(rgba[3] > 0) {
-        CGFloat alpha = 0.7;
+        CGFloat alpha = 0.6;
         CGFloat multiplier = alpha/255.0;
         return [UIColor colorWithRed:((CGFloat)rgba[0])*multiplier
                                green:((CGFloat)rgba[1])*multiplier

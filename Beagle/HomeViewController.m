@@ -610,7 +610,7 @@
                              [UIColor whiteColor],NSForegroundColorAttributeName,
                              style, NSParagraphStyleAttributeName, nil];
         
-        CGSize badgeCountSize=[[NSString stringWithFormat:@"%ld",BG.badgeCount] boundingRectWithSize:CGSizeMake(44, 999)
+        CGSize badgeCountSize=[[NSString stringWithFormat:@"%ld",(long)BG.badgeCount] boundingRectWithSize:CGSizeMake(44, 999)
                                                                                              options:NSStringDrawingUsesLineFragmentOrigin
                                                                                           attributes:attrs
                                                                                              context:nil].size;
@@ -629,7 +629,7 @@
         }
         
         updateNotificationsButton.alpha = 0.6;
-        [updateNotificationsButton setTitle:[NSString stringWithFormat:@"%ld",BG.badgeCount] forState:UIControlStateNormal];
+        [updateNotificationsButton setTitle:[NSString stringWithFormat:@"%ld",(long)BG.badgeCount] forState:UIControlStateNormal];
         [updateNotificationsButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         updateNotificationsButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
         updateNotificationsButton.tag=5346;
@@ -642,15 +642,16 @@
         
     }
 
-    
+    /* Disabled in the interim
     UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [settingsButton addTarget:self action:@selector(revealMenu:)forControlEvents:UIControlEventTouchUpInside];
     [settingsButton setBackgroundImage:[UIImage imageNamed:@"Settings"] forState:UIControlStateNormal];
     settingsButton.frame = CGRectMake(228, 0, 44, 44);
     settingsButton.alpha = 0.6;
     [headerView addSubview:settingsButton];
-    headerView.tag=43567;
-    return headerView;
+    */
+     headerView.tag=43567;
+     return headerView;
 }
 -(void)handleFilterHeaderTap:(UITapGestureRecognizer*)sender{
     [self.filterBlurView blurWithColor];
