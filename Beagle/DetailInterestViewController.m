@@ -19,7 +19,7 @@
 #import "InAppNotificationView.h"
 #import "BeagleNotificationClass.h"
 static NSString * const CellIdentifier = @"cell";
-@interface DetailInterestViewController ()<BeaglePlayerScrollMenuDelegate,ServerManagerDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,IconDownloaderDelegate,InAppNotificationViewDelegate>{
+@interface DetailInterestViewController ()<BeaglePlayerScrollMenuDelegate,ServerManagerDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,IconDownloaderDelegate,InAppNotificationViewDelegate,UIAlertViewDelegate>{
     BOOL scrollViewResize;
 }
 
@@ -112,8 +112,9 @@ static NSString * const CellIdentifier = @"cell";
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
     
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
-    if(notifObject.activityId==self.interestActivity.activityId && (notifObject.notificationType==WHAT_CHANGE_TYPE || notifObject.notificationType==DATE_CHANGE_TYPE)){
+    if(notifObject.activityId==self.interestActivity.activityId && (notifObject.notificationType==WHAT_CHANGE_TYPE || notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==CANCEL_ACTIVITY_TYPE)){
         //do the description and text update
+        if(notifObject.notificationType!=CANCEL_ACTIVITY_TYPE){
         [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
         self.interestActivity.startActivityDate=notifObject.activityStartTime;
         self.interestActivity.endActivityDate=notifObject.activityEndTime;
@@ -121,6 +122,21 @@ static NSString * const CellIdentifier = @"cell";
         self.navigationItem.title = screenTitle;
         self.interestActivity.activityDesc=notifObject.activityWhat;
         [self.detailedInterestTableView reloadData];
+        }else{
+
+            NSString *message = NSLocalizedString (@"'This activity has been cancelled, let's show you what else is happening around you'",
+                                                   @"Cancel Activity Type");
+
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Beagle"
+                                                            message:message
+                                                           delegate:self
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles: nil];
+            alert.tag=1467;
+            [alert show];
+
+
+        }
 
     }else if(notifObject.activityId==self.interestActivity.activityId && self.interestActivity.ownerid ==[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]){
     if(notifObject.notificationType==LEAVED_ACTIVITY_TYPE){
@@ -1236,6 +1252,20 @@ else if(!notifObject.isOffline){
     [alert show];
 }
 
+
+
+#pragma mark -
+#pragma mark UIAlertView methods
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    
+    //[alertView resignFirstResponder];
+    
+    if(alertView.tag==1467){
+        if (buttonIndex == 0) {
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+}
+}
 /*
 #pragma mark - Navigation
 
