@@ -519,10 +519,12 @@
         [self addCityName:[BG.placemark.addressDictionary objectForKey:@"City"]];
         _filterView.backgroundColor = [BeagleUtilities getDominantColor:flickrRequestInfo.photo];
             
+        /* Test square for alternate algorithm to pull AVERAGE COLOR
         UIView* testSquare = [[UIView alloc] initWithFrame:CGRectMake(16, 100, 50, 50)];
         testSquare.backgroundColor = [BeagleUtilities returnAverageColor:flickrRequestInfo.photo];
         [self.view addSubview:testSquare];
-        //_filterView.backgroundColor = [BeagleUtilities returnAverageColor:flickrRequestInfo.photo];
+         */
+    
         }];
     
     }];
