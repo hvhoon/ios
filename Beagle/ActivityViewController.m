@@ -212,6 +212,12 @@ enum Weeks {
         
         
     }
+    else if (notifObject.isOffline && notifObject.notificationType==CANCEL_ACTIVITY_TYPE){
+        BeagleManager *BG=[BeagleManager SharedInstance];
+        BG.activityCreated=TRUE;
+
+        [self dismissViewControllerAnimated:YES completion:Nil];
+    }
     BeagleManager *BG=[BeagleManager SharedInstance];
     BG.activityCreated=TRUE;
 
