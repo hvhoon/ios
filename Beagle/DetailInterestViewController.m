@@ -148,10 +148,23 @@ static NSString * const CellIdentifier = @"cell";
         userObject.beagleUserId=notifObject.referredId;
         
         self.interestActivity.participantsCount--;
+        UILabel *participantsCountTextLabel=(UILabel*)[self.view viewWithTag:347];
+
         if(notifObject.dos1_relation==1){
             self.interestActivity.dos1count--;
-            UILabel *participantsCountTextLabel=(UILabel*)[self.view viewWithTag:347];
-            participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested -  %ld Friends",(long)self.interestActivity.participantsCount,(long)self.interestActivity.dos1count];
+            NSString* relationship = nil;
+            
+            if(self.interestActivity.dos1count > 1)
+                relationship = @"Friends";
+            else
+                relationship = @"Friend";
+            
+            participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld %@ interested", (long)self.interestActivity.dos1count, relationship];
+
+
+        }else{
+            participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested",(long)self.interestActivity.participantsCount];
+
         }
         
         NSMutableArray *testArray=[NSMutableArray new];
@@ -176,10 +189,25 @@ static NSString * const CellIdentifier = @"cell";
         userObject.beagleUserId=notifObject.referredId;
         
         self.interestActivity.participantsCount++;
+        UILabel *participantsCountTextLabel=(UILabel*)[self.view viewWithTag:347];
+
         if(notifObject.dos1_relation==1){
             self.interestActivity.dos1count++;
-            UILabel *participantsCountTextLabel=(UILabel*)[self.view viewWithTag:347];
-            participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested -  %ld Friends",(long)self.interestActivity.participantsCount,(long)self.interestActivity.dos1count];
+            
+            NSString* relationship = nil;
+            
+            if(self.interestActivity.dos1count > 1)
+                relationship = @"Friends";
+            else
+                relationship = @"Friend";
+
+            
+            participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld %@ interested", (long)self.interestActivity.dos1count, relationship];
+
+        }
+        else{
+            participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested",(long)self.interestActivity.participantsCount];
+
         }
             NSMutableArray*interestArray=[NSMutableArray new];
             
@@ -339,15 +367,15 @@ else if(!notifObject.isOffline){
     [_chatPostManager postAComment:self.interestActivity.activityId desc:[self.contentWrapper.inputView.textView text]];
     
 
-    NSLog(@"text1=%@",[self.contentWrapper.inputView.textView text]);
-    NSLog(@"text2=%@",[self.contentWrapper.dummyInputView.textView text]);
+//    NSLog(@"text1=%@",[self.contentWrapper.inputView.textView text]);
+//    NSLog(@"text2=%@",[self.contentWrapper.dummyInputView.textView text]);
     [self.contentWrapper.inputView.textView setText:nil];
 //    [self.contentWrapper textViewDidChange:self.contentWrapper.inputView.textView];
     
     [self.contentWrapper.dummyInputView.textView setText:nil];
         
         
-     [self.contentWrapper reloadInputAccessoryView];
+//     [self.contentWrapper reloadInputAccessoryView];
 //    [self.contentWrapper textViewDidChange:self.contentWrapper.dummyInputView.textView];
     
 //    UIEdgeInsets contentInset = self.detailedInterestTableView.contentInset;
@@ -1173,8 +1201,8 @@ else if(!notifObject.isOffline){
                     }
                    
                     
-                    
-                    
+                    [self.contentWrapper resize:CGRectZero];
+//                    [self.contentWrapper.inputView.textView setText:@"\n"];
                     
                     // [self.contentWrapper resize:CGRectZero];
                     //[self.contentWrapper.inputView.textView setText:nil];
