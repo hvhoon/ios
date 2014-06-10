@@ -345,7 +345,7 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
 @end
 
 @implementation MessageKeyboardView
-@synthesize dummyInputView,interested;
+@synthesize dummyInputView,interested,delegate;
 #pragma mark - Lifecycle
 
 - (instancetype)initWithScrollView:(UIScrollView *)scrollView
@@ -480,6 +480,9 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
 - (void)_keyboardWillShow:(NSNotification *)notification
 {
     _visible=TRUE;
+    if (self.delegate && [self.delegate respondsToSelector:@selector(show)])
+        [self.delegate show];
+
     NSDictionary *userInfo = notification.userInfo;
     CGRect endFrame = [userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
     CGRect beginFrame = [userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue];
@@ -534,6 +537,8 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
 - (void)_keyboardWillHide:(NSNotification *)notification
 {
         _visible=FALSE;
+        if (self.delegate && [self.delegate respondsToSelector:@selector(hide)])
+                [self.delegate hide];
     NSDictionary *userInfo = notification.userInfo;
     CGRect endFrame = [userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
     CGRect beginFrame = [userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue];
@@ -767,9 +772,10 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
     [self.scrollView rdr_scrollToBottomWithOptions:RDRAnimationOptionsForCurve(7)
                                           duration:0.23
                                    completionBlock:nil];
-    
+    if(!isAutoPost){
     [self.inputView.textView setText:nil];
     [self.dummyInputView.textView setText:nil];
+    }
     if(_visible)
         [self _updateInputViewFrameWithKeyboardFrame:CGRectZero forceReload:NO];
 

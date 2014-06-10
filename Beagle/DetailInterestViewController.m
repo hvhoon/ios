@@ -19,7 +19,7 @@
 #import "InAppNotificationView.h"
 #import "BeagleNotificationClass.h"
 static NSString * const CellIdentifier = @"cell";
-@interface DetailInterestViewController ()<BeaglePlayerScrollMenuDelegate,ServerManagerDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,IconDownloaderDelegate,InAppNotificationViewDelegate,UIAlertViewDelegate>{
+@interface DetailInterestViewController ()<BeaglePlayerScrollMenuDelegate,ServerManagerDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,IconDownloaderDelegate,InAppNotificationViewDelegate,UIAlertViewDelegate,MessageKeyboardViewDelegate>{
     BOOL scrollViewResize;
 }
 
@@ -285,6 +285,21 @@ else if(!notifObject.isOffline){
     [self.navigationController pushViewController:viewController animated:YES];
     
 }
+
+-(void)backButtonClicked:(id)sender{
+    //[self.contentWrapper _unregisterForNotifications];
+    
+    [self.contentWrapper.inputView.textView resignFirstResponder];
+    // For dummyInputView.textView
+    [self.view endEditing:YES];
+    
+    [self.contentWrapper.inputView.textView setText:nil];
+        //[self.contentWrapper textViewDidChange:self.contentWrapper.inputView.textView];
+    
+    [self.contentWrapper.dummyInputView.textView setText:nil];
+
+    [self.navigationController popViewControllerAnimated:YES];
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -293,6 +308,7 @@ else if(!notifObject.isOffline){
     _triangle = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Triangle"]];
     _triangle.hidden = YES;
     
+//    self.navigationItem.leftBarButtonItem=self.navigationItem.backBarButtonItem;
     if(!isRedirected)
       [self createInterestInitialCard];
 
@@ -327,6 +343,7 @@ else if(!notifObject.isOffline){
          self.contentWrapper.interested=NO;
     self.contentWrapper.frame = self.view.bounds;
     self.contentWrapper.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+    self.contentWrapper.delegate=self;
     [self.view addSubview:self.contentWrapper];
     
     [self.contentWrapper.inputView.rightButton addTarget:self action:@selector(postClicked:) forControlEvents:UIControlEventTouchUpInside];
@@ -337,6 +354,54 @@ else if(!notifObject.isOffline){
     }
 
 }
+
+
+#pragma mark -
+#pragma mark Show/Hide Delegate Method
+
+- (void)show{
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStylePlain target:self action:@selector(doneButtonClicked:)];
+    
+//    [self.navigationItem.leftBarButtonItem setEnabled:NO];
+    
+    self.navigationItem.hidesBackButton = YES;
+}
+-(void)hide{
+    
+    if(self.interestActivity.dosRelation==0){
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(editButtonClicked:)];
+        
+    }else{
+        self.navigationItem.rightBarButtonItem=nil;
+    }
+
+    self.navigationItem.hidesBackButton = NO;
+
+}
+
+-(void)doneButtonClicked:(id)sender{
+    [self.contentWrapper.inputView.textView resignFirstResponder];
+    // For dummyInputView.textView
+    [self.view endEditing:YES];
+    [self.contentWrapper textViewDidChange:self.contentWrapper.inputView.textView];
+    
+    UIEdgeInsets contentInset = self.contentWrapper.scrollView.contentInset;
+    contentInset.bottom = 0;
+    self.contentWrapper.scrollView.contentInset = contentInset;
+    
+    UIEdgeInsets scrollIndicatorInsets = self.contentWrapper.scrollView.scrollIndicatorInsets;
+    scrollIndicatorInsets.bottom = 0;
+    self.contentWrapper.scrollView.scrollIndicatorInsets = scrollIndicatorInsets;
+    
+    [self.detailedInterestTableView reloadData];
+    
+    
+ // self.navigationItem.leftBarButtonItem=self.navigationItem.backBarButtonItem;
+    
+//    [self.navigationItem.backBarButtonItem setEnabled:YES];
+
+}
+
 -(void)editButtonClicked:(id)sender{
     
     [self.contentWrapper _unregisterForNotifications];

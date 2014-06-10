@@ -26,11 +26,20 @@
 
 #pragma mark - MessageKeyboardView
 
+@protocol MessageKeyboardViewDelegate <NSObject>
+
+@optional
+- (void)show;
+-(void)hide;
+@end
+
+
 @interface MessageKeyboardView : UIView
 @property(nonatomic,assign)BOOL interested;
 @property (nonatomic, strong, readonly) UIScrollView *scrollView;
 @property (nonatomic, strong, readonly) KeyboardInputView *inputView;
 @property (nonatomic, strong) KeyboardInputView *dummyInputView;
+@property(nonatomic,assign)id<MessageKeyboardViewDelegate>delegate;
 - (void)_setInitialFrames;
 - (instancetype)initWithScrollView:(UIScrollView *)scrollView;
 - (void)reloadInputAccessoryView;
