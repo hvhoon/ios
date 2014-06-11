@@ -1071,7 +1071,16 @@ else if(!notifObject.isOffline){
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 
                 
-                
+                id badge=[response objectForKey:@"badge"];
+                if (badge != nil && [badge class] != [NSNull class]){
+                    
+                    [[BeagleManager SharedInstance]setBadgeCount:[badge integerValue]];
+                    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[badge integerValue]];
+                    
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
+                    
+                }
+
                 
                 id interest=[response objectForKey:@"interest"];
                 if (interest != nil && [interest class] != [NSNull class]) {
@@ -1137,6 +1146,17 @@ else if(!notifObject.isOffline){
             id status=[response objectForKey:@"status"];
             id message=[response objectForKey:@"message"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
+                
+                id badge=[response objectForKey:@"badge"];
+                if (badge != nil && [badge class] != [NSNull class]){
+                    
+                    [[BeagleManager SharedInstance]setBadgeCount:[badge integerValue]];
+                    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[badge integerValue]];
+                    
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
+                    
+                }
+
                 
                 UILabel *participantsCountTextLabel=(UILabel*)[self.view viewWithTag:347];
                 if([message isEqualToString:@"Joined"]){
@@ -1221,7 +1241,16 @@ else if(!notifObject.isOffline){
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 
                 
-                
+                id badge=[response objectForKey:@"badge"];
+                if (badge != nil && [badge class] != [NSNull class]){
+                    
+                    [[BeagleManager SharedInstance]setBadgeCount:[badge integerValue]];
+                    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[badge integerValue]];
+                    
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
+                    
+                }
+
                 
                 NSArray* activity_chats=[response objectForKey:@"activity_chats"];
                 if (activity_chats != nil && [activity_chats class] != [NSNull class] && [activity_chats count]!=0) {
@@ -1236,15 +1265,6 @@ else if(!notifObject.isOffline){
                     
                     
                     [PostSoundEffect playMessageSentSound];
-                    id badge=[response objectForKey:@"badge"];
-                    if (badge != nil && [badge class] != [NSNull class]){
-                        
-                        [[BeagleManager SharedInstance]setBadgeCount:[badge integerValue]];
-                        [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[badge integerValue]];
-                        
-                        [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
-
-                    }
                    
                     BOOL postType=TRUE;
                     if(serverRequest==kServerCallPostComment)
