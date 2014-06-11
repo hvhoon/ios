@@ -73,6 +73,7 @@ static NSString * const CellIdentifier = @"cell";
         [self.navigationController popViewControllerAnimated:YES];
         return;
     }
+    scrollViewResize=TRUE;
     NSString* screenTitle = [BeagleUtilities activityTime:self.interestActivity.startActivityDate endate:self.interestActivity.endActivityDate];
     self.navigationItem.title = screenTitle;
     [self.detailedInterestTableView reloadData];
