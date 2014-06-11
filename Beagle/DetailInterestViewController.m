@@ -116,6 +116,13 @@ static NSString * const CellIdentifier = @"cell";
     if(notifObject.activityId==self.interestActivity.activityId && (notifObject.notificationType==WHAT_CHANGE_TYPE || notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==CANCEL_ACTIVITY_TYPE)){
         //do the description and text update
         if(notifObject.notificationType!=CANCEL_ACTIVITY_TYPE){
+ 
+            if(!notifObject.isOffline){
+        InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0,0, 320, 64) appNotification:notifObject];
+        notifView.delegate=self;
+        UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
+        [keyboard addSubview:notifView];
+            }
         [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
         self.interestActivity.startActivityDate=notifObject.activityStartTime;
         self.interestActivity.endActivityDate=notifObject.activityEndTime;
@@ -140,7 +147,16 @@ static NSString * const CellIdentifier = @"cell";
         }
 
     }else if(notifObject.activityId==self.interestActivity.activityId && self.interestActivity.ownerid ==[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]){
+        
+        if(!notifObject.isOffline){
+            InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0,0, 320, 64) appNotification:notifObject];
+            notifView.delegate=self;
+            UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
+            [keyboard addSubview:notifView];
+        }
+
     if(notifObject.notificationType==LEAVED_ACTIVITY_TYPE){
+
         
     [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
         BeagleUserClass *userObject=[[BeagleUserClass alloc]init];
@@ -274,6 +290,9 @@ else if(!notifObject.isOffline){
 }
 -(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
     
+    
+    if(notification.activityId!=self.interestActivity.activityId){
+    
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
     viewController.interestServerManager=[[ServerManager alloc]init];
@@ -284,6 +303,7 @@ else if(!notifObject.isOffline){
 
     [viewController.interestServerManager getDetailedInterest:notification.activityId];
     [self.navigationController pushViewController:viewController animated:YES];
+    }
     
 }
 
