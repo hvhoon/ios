@@ -57,7 +57,7 @@
 
     
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ECSlidingViewTopDidAnchorLeft" object:nil];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ECSlidingViewTopDidAnchorLeft" object:nil];
 
     
     
@@ -80,7 +80,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getUserNotifications) name:kUpdateNotificationStack object:Nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getUserNotifications) name:@"ECSlidingViewTopDidAnchorLeft" object:Nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getUserNotifications) name:@"ECSlidingViewTopDidAnchorLeft" object:Nil];
 
 
     [self getUserNotifications];

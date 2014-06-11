@@ -117,6 +117,8 @@ void uncaughtExceptionHandler(NSException *exception) {
 
         if([[[userInfo valueForKey:@"params"] valueForKey:@"notification_type"]integerValue]==CHAT_TYPE){
             [_notificationServerManager requestInAppNotificationForPosts:[[[userInfo valueForKey:@"params"] valueForKey:@"chat_id"]integerValue] isOffline:NO];
+            
+            
             [[BeagleManager SharedInstance]setBadgeCount:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
             [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
 
@@ -421,8 +423,6 @@ void uncaughtExceptionHandler(NSException *exception) {
     NSNotification* notification = [NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:nil userInfo:appNotifDictionary];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
     [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
-    
-
 }
 - (void)loadProfileImageDataForAPost:(NSMutableDictionary*)notificationDictionary {
     NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[notificationDictionary objectForKey:@"player_photo_url"]]];
