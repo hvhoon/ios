@@ -355,7 +355,7 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
         _scrollView = scrollView;
         _scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth|
         UIViewAutoresizingFlexibleHeight;
-        _scrollView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
+        //_scrollView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
         
         _currentOrientation = RDRInterfaceOrientationUnknown;
         
