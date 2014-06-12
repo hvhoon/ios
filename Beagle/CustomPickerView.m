@@ -7,7 +7,7 @@
 //
 
 #import "CustomPickerView.h"
-
+#import "UILabel+WhiteUIDatePickerLabels.h"
 @interface CustomPickerView (){
     IBOutlet UIDatePicker *pickerView;
     IBOutlet UILabel *monthYearLabel;
