@@ -348,6 +348,7 @@ NSString *const ECSlidingViewTopDidReset             = @"ECSlidingViewTopDidRese
 
 - (void)showFakeStatusBar
 {
+#if 0
     [self.statusBarContainer removeFromSuperview];
     UIView *screenshot = [[UIScreen mainScreen] snapshotViewAfterScreenUpdates:NO];
     self.statusBarContainer = [UIView new];
@@ -360,6 +361,7 @@ NSString *const ECSlidingViewTopDidReset             = @"ECSlidingViewTopDidRese
     [self setStatusBarHidden:YES];
     
     self.statusBarFaked = YES;
+#endif
 }
 
 
@@ -379,6 +381,7 @@ NSString *const ECSlidingViewTopDidReset             = @"ECSlidingViewTopDidRese
 
 - (void)hideFakeStatusBar
 {
+#if 0
     [self.statusBarContainer removeFromSuperview];
     self.statusBarContainer = nil;
     
@@ -387,6 +390,7 @@ NSString *const ECSlidingViewTopDidReset             = @"ECSlidingViewTopDidRese
     [self setStatusBarHidden:NO];
     
     self.statusBarFaked = NO;
+#endif
 }
 
 -(void)show{
