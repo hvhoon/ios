@@ -232,7 +232,11 @@
     }
     
 }
+-(void)slideUpToSelectTime{
+    CGPoint bottomOffset = CGPointMake(0, 0);
+    [self.scrollView setContentOffset:bottomOffset animated:YES];
 
+}
 -(void) datePicked:(NSDate*)dateSelected{
     
     [self crossDissolveHide];

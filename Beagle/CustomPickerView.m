@@ -183,6 +183,12 @@
 
 
 }
+-(IBAction)scrollToTheTopSelected:(id)sender{
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(slideUpToSelectTime)])
+           [_delegate slideUpToSelectTime];
+
+}
 -(void)dateChange:(id)sender{
     
     NSDate *currentDate = pickerView.date;

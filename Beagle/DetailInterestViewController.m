@@ -18,6 +18,7 @@
 #import "PostSoundEffect.h"
 #import "InAppNotificationView.h"
 #import "BeagleNotificationClass.h"
+#import "ASIHTTPRequest.h"
 static NSString * const CellIdentifier = @"cell";
 @interface DetailInterestViewController ()<BeaglePlayerScrollMenuDelegate,ServerManagerDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,IconDownloaderDelegate,InAppNotificationViewDelegate,UIAlertViewDelegate,MessageKeyboardViewDelegate>{
     BOOL scrollViewResize;
@@ -1371,6 +1372,16 @@ else if(!notifObject.isOffline){
         }
 }
 }
+
+-(void)dealloc{
+    
+    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
+    {
+        [req cancel];
+        [req setDelegate:nil];
+    }
+}
+
 /*
 #pragma mark - Navigation
 
