@@ -17,6 +17,7 @@
 #import "DetailInterestViewController.h"
 #import "InAppNotificationView.h"
 #import "BeagleNotificationClass.h"
+#import "ASIHTTPRequest.h"
 enum Weeks {
     SUNDAY = 1,
     MONDAY,
@@ -800,6 +801,15 @@ enum Weeks {
             
             
             
+    }
+}
+
+-(void)dealloc{
+    
+    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
+    {
+        [req cancel];
+        [req setDelegate:nil];
     }
 }
 #pragma mark - server calls

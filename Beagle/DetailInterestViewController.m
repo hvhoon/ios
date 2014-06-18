@@ -18,6 +18,7 @@
 #import "PostSoundEffect.h"
 #import "InAppNotificationView.h"
 #import "BeagleNotificationClass.h"
+#import "ASIHTTPRequest.h"
 static NSString * const CellIdentifier = @"cell";
 @interface DetailInterestViewController ()<BeaglePlayerScrollMenuDelegate,ServerManagerDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,IconDownloaderDelegate,InAppNotificationViewDelegate,UIAlertViewDelegate,MessageKeyboardViewDelegate>{
     BOOL scrollViewResize;
@@ -132,6 +133,7 @@ static NSString * const CellIdentifier = @"cell";
         [self.detailedInterestTableView reloadData];
         }else{
 
+            [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
             NSString *message = NSLocalizedString (@"'This activity has been cancelled, let's show you what else is happening around you'",
                                                    @"Cancel Activity Type");
 
@@ -1371,6 +1373,16 @@ else if(!notifObject.isOffline){
         }
 }
 }
+
+-(void)dealloc{
+    
+    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
+    {
+        [req cancel];
+        [req setDelegate:nil];
+    }
+}
+
 /*
 #pragma mark - Navigation
 

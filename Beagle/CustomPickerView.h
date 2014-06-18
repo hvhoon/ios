@@ -16,5 +16,5 @@
 @optional
 -(void) filterIndex:(NSInteger) index;
 -(void) datePicked:(NSDate*)dateSelected;
-
+-(void)slideUpToSelectTime;
 @end

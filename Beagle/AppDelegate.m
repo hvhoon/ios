@@ -68,6 +68,7 @@ void uncaughtExceptionHandler(NSException *exception) {
         [[NSUserDefaults standardUserDefaults] synchronize];
         
     }
+    [self handlePush:launchOptions];
     return YES;
 }
 
@@ -75,7 +76,23 @@ void uncaughtExceptionHandler(NSException *exception) {
 	UIRemoteNotificationType type = UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound;
 	[[UIApplication sharedApplication] registerForRemoteNotificationTypes:type];
 }
+- (void)handlePush:(NSDictionary *)launchOptions {
+    
+    // If the app was launched in response to a push notification, we'll handle the payload here
+    NSDictionary *remoteNotificationPayload = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+    if (remoteNotificationPayload) {
 
+        if(_notificationServerManager!=nil){
+            _notificationServerManager.delegate = nil;
+            [_notificationServerManager releaseServerManager];
+            _notificationServerManager = nil;
+        }
+        _notificationServerManager=[[ServerManager alloc]init];
+        _notificationServerManager.delegate=self;
+
+        [self handleOfflineNotifications:remoteNotificationPayload];
+    }
+}
 
 //Device Token failed
 - (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error{
@@ -108,29 +125,35 @@ void uncaughtExceptionHandler(NSException *exception) {
     _notificationServerManager.delegate=self;
 
     
-    if ( application.applicationState == UIApplicationStateActive ){
+    if ( application.applicationState == UIApplicationStateActive){
+        [self handleOnlineNotifications:userInfo];
+    }
+    else{
+        [self handleOfflineNotifications:userInfo];
+    }
     
+}
+-(void)handleOnlineNotifications:(NSDictionary*)userInfo{
+    
+        
         // app was already in the foreground
-    
-    
-
-
+        
         if([[[userInfo valueForKey:@"params"] valueForKey:@"notification_type"]integerValue]==CHAT_TYPE){
             [_notificationServerManager requestInAppNotificationForPosts:[[[userInfo valueForKey:@"params"] valueForKey:@"chat_id"]integerValue] isOffline:NO];
             
             
             [[BeagleManager SharedInstance]setBadgeCount:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
             [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
-
+            
             NSLog(@"badge Value=%ld",[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]);
-
+            
             
         }else if([[[userInfo valueForKey:@"params"] valueForKey:@"notification_type"]integerValue]==CANCEL_ACTIVITY_TYPE){
             NSMutableDictionary *cancelDictionary=[NSMutableDictionary new];
             [cancelDictionary setObject:[[userInfo valueForKey:@"params"] valueForKey:@"notification_type"] forKey:@"activity_type"];
             
             [cancelDictionary setObject:[[userInfo valueForKey:@"aps"] valueForKey:@"alert"] forKey:@"message"];
-
+            
             [cancelDictionary setObject:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture",[[userInfo valueForKey:@"params"] valueForKey:@"fbuid"]] forKey:@"photo_url"];
             NSMutableDictionary *activity=[NSMutableDictionary new];
             [activity setObject:[NSNumber numberWithInteger:[[[userInfo valueForKey:@"params"] valueForKey:@"activity_id"]integerValue]] forKey:@"id"];
@@ -142,15 +165,17 @@ void uncaughtExceptionHandler(NSException *exception) {
                                                 selector:@selector(loadProfileImageData:)
                                                 object:cancelDictionary];
             [queue addOperation:operation];
-
-
+            
+            
         }
         else{
             [_notificationServerManager requestInAppNotification:[[[userInfo valueForKey:@"params"] valueForKey:@"notification_id"]integerValue] isOffline:NO];
             
         }
-    }
-    else{
+    
+}
+-(void)handleOfflineNotifications:(NSDictionary*)userInfo{
+    {
         // app was just brought from background to foreground
         NSLog(@"userInfo=%@",userInfo);
         
@@ -165,8 +190,8 @@ void uncaughtExceptionHandler(NSException *exception) {
         }
         else if([[[userInfo valueForKey:@"params"] valueForKey:@"notification_type"]integerValue]==CANCEL_ACTIVITY_TYPE){
             
-             NSMutableDictionary *cancelDictionary=[NSMutableDictionary new];
-             [cancelDictionary setObject:[NSNumber numberWithBool:YES] forKey:@"isOffline"];
+            NSMutableDictionary *cancelDictionary=[NSMutableDictionary new];
+            [cancelDictionary setObject:[NSNumber numberWithBool:YES] forKey:@"isOffline"];
             
             [cancelDictionary setObject:[[userInfo valueForKey:@"params"] valueForKey:@"notification_type"] forKey:@"activity_type"];
             
@@ -178,18 +203,17 @@ void uncaughtExceptionHandler(NSException *exception) {
             
             NSNotification* notification = [NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:nil userInfo:cancelDictionary];
             [[NSNotificationCenter defaultCenter] postNotification:notification];
-
             
-
-
+            
+            
+            
             
         }else
             [_notificationServerManager requestInAppNotification:[[[userInfo valueForKey:@"params"] valueForKey:@"notification_id"]integerValue] isOffline:YES];
-
+        
         // create a service which will return data and update the view badge count automatically
-
+        
     }
-    
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -271,6 +295,9 @@ void uncaughtExceptionHandler(NSException *exception) {
 #pragma mark - server calls
 
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
+    
+    
+
     _notificationServerManager.delegate = nil;
     [_notificationServerManager releaseServerManager];
     _notificationServerManager = nil;
@@ -365,7 +392,7 @@ void uncaughtExceptionHandler(NSException *exception) {
         
     }else if (serverRequest==kServerCallInAppForOfflinePost){
         
-        
+
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
             id status=[response objectForKey:@"status"];
