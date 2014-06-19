@@ -40,7 +40,7 @@ static inline NSRegularExpression * NameRegularExpression() {
         self.summaryLabel = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
         summaryLabel.frame=CGRectMake(63, 0, 241, 64);
         summaryLabel.textColor=[UIColor whiteColor];
-        summaryLabel.font =[UIFont fontWithName:@"HelveticaNueue-Light" size:14];
+        summaryLabel.font =[UIFont fontWithName:@"HelveticaNueue-Light" size:14.0f];
         summaryLabel.lineBreakMode = NSLineBreakByWordWrapping;
         summaryLabel.numberOfLines = 0;
         summaryLabel.highlightedTextColor = [UIColor whiteColor];

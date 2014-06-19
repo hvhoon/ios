@@ -964,11 +964,12 @@
 
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
     
+    [_tableViewController.refreshControl endRefreshing];
     
     if(serverRequest==kServerCallGetActivities){
         
         self.filterActivitiesOnHomeScreen=[[NSMutableDictionary alloc]init];
-        [_tableViewController.refreshControl endRefreshing];
+//        [_tableViewController.refreshControl endRefreshing];
         
         _homeActivityManager.delegate = nil;
         [_homeActivityManager releaseServerManager];
