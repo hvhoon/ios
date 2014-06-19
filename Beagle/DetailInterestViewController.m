@@ -1299,15 +1299,9 @@ else if(!notifObject.isOffline){
                           postType=FALSE;
                     [self.contentWrapper resize:[[self.chatPostsArray lastObject]text] isAutoPost:postType];
                     
-                    
-                    
-                    
+                    }
+                
                 }
-                
-                
-                
-                
-            }
         }
         
         

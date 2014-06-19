@@ -631,6 +631,23 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Gwl-Sb-fan" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
         </scene>
+        <!--Friends View Controller-->
+        <scene sceneID="otk-gN-0g1">
+            <objects>
+                <viewController storyboardIdentifier="profileScreen" id="C0I-BK-P16" customClass="FriendsViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="grI-4m-J2y"/>
+                        <viewControllerLayoutGuide type="bottom" id="ccL-ds-xyd"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="oeL-fM-YwJ">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="oUe-ro-x3f" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+        </scene>
     </scenes>
     <resources>
         <image name="Bell" width="14" height="15"/>

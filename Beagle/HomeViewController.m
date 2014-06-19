@@ -22,6 +22,7 @@
 #import "EventInterestFilterBlurView.h"
 #import "BeagleNotificationClass.h"
 #import "InAppNotificationView.h"
+#import "FriendsViewController.h"
 #define REFRESH_HEADER_HEIGHT 70.0f
 #define stockCroppingCheck 0
 #define kTimerIntervalInSeconds 10
@@ -1434,6 +1435,18 @@
     else{
         [_interestUpdateManager participateMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
     }
+}
+
+#pragma mark - Mutual Friends Redirect
+-(void)profileScreenRedirect:(NSInteger)index{
+    
+    BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:index];
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    FriendsViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"profileScreen"];
+    viewController.friendId=play.ownerid;
+    [self.navigationController pushViewController:viewController animated:YES];
+
 }
 @end
 

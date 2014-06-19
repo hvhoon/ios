@@ -36,7 +36,7 @@
     if (self) {
         
         _internetReachability = [Reachability reachabilityForInternetConnection];
-        _serverUrl =herokuHost;
+        _serverUrl =localHost;
         [self populateErrorCodes];
     }
     return self;
@@ -419,6 +419,21 @@
         [self internetNotAvailable];
     }
     
+}
+
+-(void)getMutualFriendsNetwork:(NSInteger)friendId{
+    _serverCallType=kServerCallGetProfileMutualFriends;
+    if([self isInternetAvailable])
+    {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@players/friendprofile.json?id=%@&fid=%ld",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],friendId]
+                         method:@"GET"
+                         params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+
 }
 
 -(void)populateErrorCodes

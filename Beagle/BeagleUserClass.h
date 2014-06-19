@@ -24,4 +24,5 @@
 @property(nonatomic,assign)NSInteger badge;
 @property(nonatomic,strong)NSData*profileData;
 -(id) initWithDictionary:(NSDictionary *)dictionary;
+-(id) initWithProfileDictionary:(NSDictionary*)dictionary;
 @end

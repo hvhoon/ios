@@ -38,6 +38,7 @@
 		180F604C1923D1D800B3807F /* LocationBlurView.m in Sources */ = {isa = PBXBuildFile; fileRef = 180F60451923D1D700B3807F /* LocationBlurView.m */; };
 		180F604D1923D1D800B3807F /* LocationBlurView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 180F60461923D1D700B3807F /* LocationBlurView.xib */; };
 		18216B1D18E350A800D9721F /* IconDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 18216B1C18E350A800D9721F /* IconDownloader.m */; };
+		1832F9C51953838000B271DB /* FriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1832F9C41953838000B271DB /* FriendsViewController.m */; };
 		183DFEAB19493D76008A556A /* UILabel+WhiteUIDatePickerLabels.m in Sources */ = {isa = PBXBuildFile; fileRef = 183DFEAA19493D76008A556A /* UILabel+WhiteUIDatePickerLabels.m */; };
 		1849D6B0192FCC540068BEDE /* InAppNotificationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1849D6AF192FCC540068BEDE /* InAppNotificationView.m */; };
 		18714B371940F1D2008F59DE /* messageReceived.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 18714B351940F1D2008F59DE /* messageReceived.aiff */; };
@@ -201,6 +202,8 @@
 		180F60471923D1D700B3807F /* LocationBlurView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationBlurView.h; sourceTree = "<group>"; };
 		18216B1B18E350A800D9721F /* IconDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IconDownloader.h; sourceTree = "<group>"; };
 		18216B1C18E350A800D9721F /* IconDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IconDownloader.m; sourceTree = "<group>"; };
+		1832F9C31953838000B271DB /* FriendsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendsViewController.h; sourceTree = "<group>"; };
+		1832F9C41953838000B271DB /* FriendsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendsViewController.m; sourceTree = "<group>"; };
 		183DFEA919493D76008A556A /* UILabel+WhiteUIDatePickerLabels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UILabel+WhiteUIDatePickerLabels.h"; sourceTree = "<group>"; };
 		183DFEAA19493D76008A556A /* UILabel+WhiteUIDatePickerLabels.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UILabel+WhiteUIDatePickerLabels.m"; sourceTree = "<group>"; };
 		1849D6AE192FCC540068BEDE /* InAppNotificationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InAppNotificationView.h; sourceTree = "<group>"; };
@@ -555,6 +558,15 @@
 			name = "Google Auto Complete";
 			sourceTree = "<group>";
 		};
+		1832F9C21953831800B271DB /* Mutual Friends */ = {
+			isa = PBXGroup;
+			children = (
+				1832F9C31953838000B271DB /* FriendsViewController.h */,
+				1832F9C41953838000B271DB /* FriendsViewController.m */,
+			);
+			name = "Mutual Friends";
+			sourceTree = "<group>";
+		};
 		1849D6AD192FCC1F0068BEDE /* In App Notification */ = {
 			isa = PBXGroup;
 			children = (
@@ -651,6 +663,7 @@
 		18EC22A618B5A0B400316B6E /* Beagle */ = {
 			isa = PBXGroup;
 			children = (
+				1832F9C21953831800B271DB /* Mutual Friends */,
 				1849D6AD192FCC1F0068BEDE /* In App Notification */,
 				180F604E1923D37800B3807F /* Google Auto Complete */,
 				18F889891902C14000C80011 /* Detailed Interest */,
@@ -1036,6 +1049,7 @@
 				18FADB8D18B662A000A62287 /* LoginViewController.m in Sources */,
 				18E7AF0918BBAA1700EBBDE2 /* FacebookLoginSession.m in Sources */,
 				18EC232618B5A42D00316B6E /* SBJsonBase.m in Sources */,
+				1832F9C51953838000B271DB /* FriendsViewController.m in Sources */,
 				18EC231B18B5A42D00316B6E /* ASICloudFilesContainer.m in Sources */,
 				180AF0B818DC7FE500EE87D6 /* HomeTableViewCell.m in Sources */,
 				18007F0B18C6568000230C23 /* MBProgressHUD.m in Sources */,

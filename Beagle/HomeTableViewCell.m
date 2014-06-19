@@ -60,6 +60,7 @@ static UIFont *forthTextFont = nil;
     CGRect thisRect = CGRectMake(16, fromTheTop, 50, 50);
     [newImage drawInRect:thisRect];
 
+    profileRect=thisRect;
     
     NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     
@@ -269,7 +270,12 @@ static UIFont *forthTextFont = nil;
             [delegate updateInterestedStatus:cellIndex];
         }
     }
-    else{
+    else if(CGRectContainsPoint(interestedRect,startPoint)){
+        if (self.delegate && [self.delegate respondsToSelector:@selector(profileScreenRedirect:)])
+            [self.delegate profileScreenRedirect:cellIndex];
+        
+    }
+    else {
         if (self.delegate && [self.delegate respondsToSelector:@selector(detailedInterestScreenRedirect:)])
             [self.delegate detailedInterestScreenRedirect:cellIndex];
 

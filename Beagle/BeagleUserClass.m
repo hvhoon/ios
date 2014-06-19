@@ -24,4 +24,18 @@
     }
     return self;
 }
+
+-(id) initWithProfileDictionary:(NSDictionary*)dictionary{
+    self = [super init];
+    if (self)
+    {
+        self.beagleUserId = [[dictionary valueForKey:@"id"]integerValue];
+        self.fbuid = [[dictionary valueForKey:@"fbuid"]integerValue];
+        self.fullName = [dictionary valueForKey:@"name"];
+        self.location=[dictionary valueForKey:@"location"];
+        self.profileImageUrl = [dictionary valueForKey:@"photo"];
+    }
+    return self;
+    
+}
 @end
