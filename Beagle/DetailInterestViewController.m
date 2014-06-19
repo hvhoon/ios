@@ -1255,7 +1255,9 @@ else if(!notifObject.isOffline){
         
     }
     else if (serverRequest==kServerCallPostComment||serverRequest==kServerCallGetBackgroundChats||serverRequest==kServerInAppChatDetail){
-        
+        BeagleManager *BG=[BeagleManager SharedInstance];
+        BG.activityCreated=TRUE;
+
         
         _chatPostManager.delegate = nil;
         [_chatPostManager releaseServerManager];
