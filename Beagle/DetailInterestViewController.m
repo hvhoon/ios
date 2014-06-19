@@ -1163,6 +1163,9 @@ else if(!notifObject.isOffline){
         [_interestUpdateManager releaseServerManager];
         _interestUpdateManager = nil;
         scrollViewResize=TRUE;
+        BeagleManager *BG=[BeagleManager SharedInstance];
+        BG.activityCreated=TRUE;
+
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
             
