@@ -42,7 +42,7 @@ static inline NSRegularExpression * NameRegularExpression() {
         summaryLabel.textColor=[UIColor whiteColor];
         summaryLabel.font =[UIFont fontWithName:@"HelveticaNueue-Light" size:14.0f];
         summaryLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        summaryLabel.numberOfLines = 0;
+        summaryLabel.numberOfLines = 2;
         summaryLabel.highlightedTextColor = [UIColor whiteColor];
         summaryLabel.backgroundColor=[UIColor clearColor];
         

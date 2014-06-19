@@ -108,7 +108,7 @@
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
      BeagleManager *BG=[BeagleManager SharedInstance];
     if(BG.activityCreated){
-        isPushAuto=TRUE;
+        isPushAuto=FALSE;
         BG.activityCreated=FALSE;
     if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
        
