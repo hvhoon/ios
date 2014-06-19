@@ -69,13 +69,12 @@ enum Weeks {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBackgroundInNotification:) name:kRemoteNotificationReceivedNotification object:Nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(postInAppNotification:) name:kNotificationForInterestPost object:Nil];
-
-    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
+    
     [self.navigationController setNavigationBarHidden:NO];
-
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
+    
 }
-
 - (void)viewWillLayoutSubviews {
     
     if (![descriptionTextView isFirstResponder]) {
@@ -85,6 +84,9 @@ enum Weeks {
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+
+    
     self.blrTimeView=[[EventTimeBlurView alloc]initWithFrame:self.view.frame parentView:self.view];
 //    self.blrTimeView = [EventTimeBlurView loadTimeFilter:self.view];
     self.blrVisbilityView=[EventVisibilityBlurView loadVisibilityFilter:self.view];
