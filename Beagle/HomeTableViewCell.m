@@ -270,9 +270,11 @@ static UIFont *forthTextFont = nil;
             [delegate updateInterestedStatus:cellIndex];
         }
     }
-    else if(CGRectContainsPoint(interestedRect,startPoint)){
+    else if(CGRectContainsPoint(profileRect,startPoint)){
+        if(self.bg_activity.dosRelation!=0){
         if (self.delegate && [self.delegate respondsToSelector:@selector(profileScreenRedirect:)])
             [self.delegate profileScreenRedirect:cellIndex];
+        }
         
     }
     else {

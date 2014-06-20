@@ -1439,13 +1439,14 @@
 
 #pragma mark - Mutual Friends Redirect
 -(void)profileScreenRedirect:(NSInteger)index{
-    
+#if 0
     BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:index];
     
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     FriendsViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"profileScreen"];
     viewController.friendId=play.ownerid;
     [self.navigationController pushViewController:viewController animated:YES];
+#endif
 
 }
 @end
