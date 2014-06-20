@@ -105,8 +105,8 @@
     if(self.tableView!=nil){
         [self.tableView reloadData];
     }
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
      BeagleManager *BG=[BeagleManager SharedInstance];
     if(BG.activityCreated){
         isPushAuto=FALSE;
@@ -191,7 +191,7 @@
     
     [eventButton addTarget:self action:@selector(createANewActivity:)forControlEvents:UIControlEventTouchUpInside];
 
-    eventButton.frame = CGRectMake(251.0, 20.0, 69.0, 44.0);
+    eventButton.frame = CGRectMake(263.0, 0.0, 57.0, 57.0);
     
 #if stockCroppingCheck
     [topNavigationView addSubview:eventButton];
@@ -400,7 +400,7 @@
         [textLabel removeFromSuperview];
     }
     
-    UILabel *fromLabel = [[UILabel alloc]initWithFrame:CGRectMake(16, 20, 251, 44)];
+    UILabel *fromLabel = [[UILabel alloc]initWithFrame:CGRectMake(16, 0, 263, 57)];
     
     fromLabel.text = name;
     fromLabel.tag=1234;

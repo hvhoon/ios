@@ -62,9 +62,8 @@ static NSString * const CellIdentifier = @"cell";
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (getPostsUpdateInBackground) name:kUpdatePostsOnInterest object:nil];
 
-
-    [UIApplication sharedApplication].statusBarHidden = NO;
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
     
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     
