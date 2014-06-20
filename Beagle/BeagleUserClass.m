@@ -7,9 +7,10 @@
 //
 
 #import "BeagleUserClass.h"
+#import "BeagleActivityClass.h"
 
 @implementation BeagleUserClass
-@synthesize userName,fullName,email,password,profileImageUrl,first_name,last_name,fbuid,access_token,location,fb_ticker,beagleUserId,profileData,badge;
+@synthesize userName,fullName,email,password,profileImageUrl,first_name,last_name,fbuid,access_token,location,fb_ticker,beagleUserId,profileData,badge,isInvited;
 
 -(id) initWithDictionary:(NSDictionary *)dictionary
 {
@@ -37,5 +38,18 @@
     }
     return self;
     
+}
+-(id) initWithActivityObject:(BeagleActivityClass*)activity{
+    self = [super init];
+    if (self)
+    {
+        self.profileData=UIImagePNGRepresentation(activity.profilePhotoImage);
+        self.beagleUserId = activity.ownerid;
+        self.fullName = activity.organizerName;
+        self.location=activity.locationName;
+        self.profileImageUrl = activity.photoUrl;
+    }
+    return self;
+
 }
 @end

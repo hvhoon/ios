@@ -1151,6 +1151,18 @@ else if(!notifObject.isOffline){
                 
                 
                 
+            }else if (status != nil && [status class] != [NSNull class] && [status integerValue]==205){
+                NSString *message = NSLocalizedString (@"'This activity has been cancelled, let's show you what else is happening around you'",
+                                                       @"Cancel Activity Type");
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Beagle"
+                                                                message:message
+                                                               delegate:self
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles: nil];
+                alert.tag=647;
+                [alert show];
+
             }
         }
         
@@ -1370,6 +1382,13 @@ else if(!notifObject.isOffline){
             [self.navigationController popViewControllerAnimated:YES];
         }
 }
+    else if(alertView.tag==647){
+        if (buttonIndex == 0) {
+            BeagleManager *BG=[BeagleManager SharedInstance];
+            BG.activityCreated=TRUE;
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+    }
 }
 
 -(void)dealloc{

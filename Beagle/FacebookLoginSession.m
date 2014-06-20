@@ -223,7 +223,6 @@
                              (NSString *)ACFacebookAudienceKey, ACFacebookAudienceEveryone,
                              nil];
     
-//    NSDictionary *dictFB = [NSDictionary dictionaryWithObjectsAndKeys:key,ACFacebookAppIdKey,@[@"offline_access"],@[@"read_stream"],@[@"email"],@[@"user_subscriptions"],@[@"friends_subscriptions"],@[@"friends_location"],@[@"user_location"],@[@"user_friends"],@[@"publish_stream"],@[@"xmpp_login"],ACFacebookPermissionsKey, nil];
     
     
     [self.accountStore requestAccessToAccountsWithType:FBaccountType options:dictFB completion:

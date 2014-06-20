@@ -902,7 +902,8 @@
     CGSize size = CGSizeMake(220,999);
     
     switch (index) {
-        case 1:{
+        case 1:
+        {
             filterText = @"Happening Around You";
             CGRect textRect = [filterText
                                boundingRectWithSize:size
@@ -915,7 +916,8 @@
             headerText.imageEdgeInsets = UIEdgeInsetsMake(2.0f, textRect.size.width+16+8, 0.0f, 0.0f);
         }
             break;
-        case 2:{
+        case 2:
+        {
             filterText = @"Created by Friends";
             CGRect textRect = [filterText
                                boundingRectWithSize:size
@@ -928,7 +930,8 @@
             headerText.imageEdgeInsets = UIEdgeInsetsMake(2.0f, textRect.size.width+16+8, 0.0f, 0.0f);
         }
             break;
-        case 3:{
+        case 3:
+        {
             filterText = @"Your Interests";
             CGRect textRect = [filterText
                                boundingRectWithSize:size
@@ -941,7 +944,8 @@
             headerText.imageEdgeInsets = UIEdgeInsetsMake(2.0f, textRect.size.width+16+8, 0.0f, 0.0f);
         }
             break;
-        case 4:{
+        case 4:
+        {
             filterText = @"Created by You";
             CGRect textRect = [filterText
                                boundingRectWithSize:size
@@ -970,7 +974,6 @@
     if(serverRequest==kServerCallGetActivities){
         
         self.filterActivitiesOnHomeScreen=[[NSMutableDictionary alloc]init];
-//        [_tableViewController.refreshControl endRefreshing];
         
         _homeActivityManager.delegate = nil;
         [_homeActivityManager releaseServerManager];
@@ -1296,7 +1299,7 @@
     switch (index) {
         case 0:
         {
-            
+            [self refresh];
         }
             break;
         case 1:
@@ -1439,14 +1442,13 @@
 
 #pragma mark - Mutual Friends Redirect
 -(void)profileScreenRedirect:(NSInteger)index{
-#if 0
     BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:index];
     
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     FriendsViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"profileScreen"];
-    viewController.friendId=play.ownerid;
+    BeagleUserClass *player=[[BeagleUserClass alloc]initWithActivityObject:play];
+    viewController.friendBeagle=player;
     [self.navigationController pushViewController:viewController animated:YES];
-#endif
 
 }
 @end

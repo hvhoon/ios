@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+@class BeagleUserClass;
 @interface FriendsViewController : UIViewController
-@property(nonatomic,assign)NSInteger friendId;
+@property(nonatomic,strong)BeagleUserClass *friendBeagle;
 @end
