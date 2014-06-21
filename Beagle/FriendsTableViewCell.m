@@ -101,10 +101,12 @@ static UIFont *secondTextFont = nil;
         UIButton *inviteStatusButton=[UIButton buttonWithType:UIButtonTypeCustom];
         inviteStatusButton.frame=CGRectMake(304-53, 10, 53, 25);
         if(self.bgPlayer.isInvited){
+            inviteStatusButton.titleLabel.backgroundColor=[UIColor clearColor];
             inviteStatusButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
-            inviteStatusButton.titleLabel.textColor=[BeagleUtilities returnBeagleColor:3];
+            inviteStatusButton.titleLabel.textColor=[UIColor blackColor];
             inviteStatusButton.titleLabel.font=secondTextFont;
-            inviteStatusButton.titleLabel.textAlignment = NSTextAlignmentCenter;             [inviteStatusButton setTitle: @"Invite\nSent" forState: UIControlStateNormal];
+            [inviteStatusButton setTitleColor:[BeagleUtilities returnBeagleColor:3] forState:UIControlStateNormal];
+         inviteStatusButton.titleLabel.textAlignment = NSTextAlignmentCenter;            [inviteStatusButton setTitle: @"Invite\nSent" forState: UIControlStateNormal];
         }else{
             [inviteStatusButton setImage:[UIImage imageNamed:@"Invite"] forState:UIControlStateNormal];
         [inviteStatusButton addTarget:self action:@selector(inviteButtonClicked:) forControlEvents:UIControlEventTouchUpInside];

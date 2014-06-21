@@ -199,10 +199,10 @@
     
     
     FriendsTableViewCell *cell = (FriendsTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
+    //if (cell == nil) {
         cell =[[FriendsTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         cell.selectionStyle=UITableViewCellSelectionStyleNone;
-    }
+    //}
     
     BeagleUserClass *player=nil;
 
@@ -273,12 +273,21 @@
 
 // this method is used in case the user scrolled into a set of cells that don't have their app icons yet
 - (void)loadImagesForOnscreenRows{
-    if ([self.beagleFriendsArray count] > 0)
-    {
+    
+    
+    if([self.beagleFriendsArray count]>0 || [self.facebookFriendsArray count]>0){
         NSArray *visiblePaths = [self.friendsTableView indexPathsForVisibleRows];
+    if([self.beagleFriendsArray count]>0 && [self.facebookFriendsArray count]>0){
+        
         for (NSIndexPath *indexPath in visiblePaths)
         {
-            BeagleUserClass *appRecord = (BeagleUserClass *)[self.beagleFriendsArray objectAtIndex:indexPath.row];
+            BeagleUserClass *appRecord=nil;
+                if(indexPath.section==0)
+               appRecord = (BeagleUserClass *)[self.beagleFriendsArray objectAtIndex:indexPath.row];
+                else{
+                    appRecord = (BeagleUserClass *)[self.facebookFriendsArray objectAtIndex:indexPath.row];
+                    
+                }
             
             
             if (!appRecord.profileData) // avoid the app icon download if the app already has an icon
@@ -286,25 +295,34 @@
                 [self startIconDownload:appRecord forIndexPath:indexPath];
             }
         }
+        
     }
-    
-    if ([self.facebookFriendsArray count] > 0)
-    {
-        NSArray *visiblePaths = [self.friendsTableView indexPathsForVisibleRows];
+    else if([self.beagleFriendsArray count]>0){
         for (NSIndexPath *indexPath in visiblePaths)
         {
-            BeagleUserClass *appRecord = (BeagleUserClass *)[self.facebookFriendsArray objectAtIndex:indexPath.row];
-            
-            
+            BeagleUserClass *appRecord=(BeagleUserClass *)[self.beagleFriendsArray objectAtIndex:indexPath.row];
             if (!appRecord.profileData) // avoid the app icon download if the app already has an icon
             {
                 [self startIconDownload:appRecord forIndexPath:indexPath];
             }
         }
+        
     }
-
+    else if ([self.facebookFriendsArray count]>0){
+        {
+            for (NSIndexPath *indexPath in visiblePaths)
+            {
+                BeagleUserClass *appRecord=(BeagleUserClass *)[self.facebookFriendsArray objectAtIndex:indexPath.row];
+                if (!appRecord.profileData) // avoid the app icon download if the app already has an icon
+                {
+                    [self startIconDownload:appRecord forIndexPath:indexPath];
+                }
+            }
+            
+        }
     
-    
+    }
+    }
 }
 
 - (void)appImageDidLoad:(NSIndexPath *)indexPath
@@ -346,7 +364,7 @@
 }
 #pragma mark - Facebook Invite  calls
 -(void)inviteFacebookFriendOnBeagle:(NSInteger)index{
-    BeagleUserClass *player=[self.beagleFriendsArray objectAtIndex:index];
+    BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:index];
     player.isInvited=TRUE;
     [self.friendsTableView reloadData];
 }
