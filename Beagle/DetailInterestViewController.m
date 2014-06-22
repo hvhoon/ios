@@ -16,11 +16,11 @@
 #import "IconDownloader.h"
 #import "ActivityViewController.h"
 #import "PostSoundEffect.h"
-#import "InAppNotificationView.h"
 #import "BeagleNotificationClass.h"
 #import "ASIHTTPRequest.h"
+#import "FriendsViewController.h"
 static NSString * const CellIdentifier = @"cell";
-@interface DetailInterestViewController ()<BeaglePlayerScrollMenuDelegate,ServerManagerDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,IconDownloaderDelegate,InAppNotificationViewDelegate,UIAlertViewDelegate,MessageKeyboardViewDelegate>{
+@interface DetailInterestViewController ()<BeaglePlayerScrollMenuDelegate,ServerManagerDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,IconDownloaderDelegate,InAppNotificationViewDelegate,UIAlertViewDelegate,MessageKeyboardViewDelegate,UIGestureRecognizerDelegate>{
     BOOL scrollViewResize;
 }
 
@@ -112,6 +112,9 @@ static NSString * const CellIdentifier = @"cell";
 
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
     
+    BeagleManager *BG=[BeagleManager SharedInstance];
+    BG.activityCreated=TRUE;
+
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
     if(notifObject.activityId==self.interestActivity.activityId && (notifObject.notificationType==WHAT_CHANGE_TYPE || notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==CANCEL_ACTIVITY_TYPE)){
         //do the description and text update
@@ -254,14 +257,16 @@ static NSString * const CellIdentifier = @"cell";
         
     }
     
-    BeagleManager *BG=[BeagleManager SharedInstance];
-    BG.activityCreated=TRUE;
     
     
 }
 
 
 -(void)postInAppNotification:(NSNotification*)note{
+    
+    BeagleManager *BG=[BeagleManager SharedInstance];
+    BG.activityCreated=TRUE;
+
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
     
     if(notifObject.activityId==self.interestActivity.activityId && notifObject.notificationType==CHAT_TYPE){
@@ -285,8 +290,6 @@ else if(!notifObject.isOffline){
     UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
     [keyboard addSubview:notifView];
     }
-    BeagleManager *BG=[BeagleManager SharedInstance];
-    BG.activityCreated=TRUE;
     
 }
 -(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
@@ -616,6 +619,13 @@ else if(!notifObject.isOffline){
         // Profile picture
         _profileImageView=[[UIImageView alloc]initWithFrame:CGRectMake(16, fromTheTop, 50, 50)];
         [_backgroundView addSubview:_profileImageView];
+        
+        if(self.interestActivity.dosRelation!=0){
+            UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(profileImageTapped:)];
+            tapRecognizer.numberOfTapsRequired = 1;
+            [_profileImageView addGestureRecognizer:tapRecognizer];
+            [_profileImageView setUserInteractionEnabled:YES];
+        }
         if(interestActivity.profilePhotoImage==nil){
             
             [self imageCircular:[UIImage imageNamed:@"picbox"]];
@@ -676,6 +686,15 @@ else if(!notifObject.isOffline){
         organizerNameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
         organizerNameLabel.textAlignment = NSTextAlignmentLeft;
         [_backgroundView addSubview:organizerNameLabel];
+        
+        
+        if(self.interestActivity.dosRelation!=0){
+            UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(profileImageTapped:)];
+            tapRecognizer.numberOfTapsRequired = 1;
+            [organizerNameLabel addGestureRecognizer:tapRecognizer];
+            [organizerNameLabel setUserInteractionEnabled:YES];
+        }
+
         
         // Adding the appropriate DOS icon
         if(self.interestActivity.dosRelation==1) {
@@ -1076,6 +1095,15 @@ else if(!notifObject.isOffline){
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     
     [self loadImagesForOnscreenRows];
+}
+
+-(void)profileImageTapped:(UITapGestureRecognizer*)sender{
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    FriendsViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"profileScreen"];
+    BeagleUserClass *player=[[BeagleUserClass alloc]initWithActivityObject:self.interestActivity];
+    viewController.friendBeagle=player;
+    [self.navigationController pushViewController:viewController animated:YES];
+
 }
 #pragma mark - server calls
 

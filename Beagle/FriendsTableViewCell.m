@@ -9,7 +9,7 @@
 #import "FriendsTableViewCell.h"
 #import "BeagleUserClass.h"
 @implementation FriendsTableViewCell
-@synthesize photoImage,delegate,cellIndex,bgPlayer;
+@synthesize photoImage,delegate,cellIndexPath,bgPlayer;
 static UIFont *firstTextFont = nil;
 static UIFont *secondTextFont = nil;
 + (void)initialize
@@ -72,9 +72,9 @@ static UIFont *secondTextFont = nil;
                                                                      options:NSStringDrawingUsesLineFragmentOrigin
                                                                   attributes:attrs
                                                                      context:nil].size;
+    nameRect=CGRectMake(75, fromTheTop+4, organizerNameSize.width, organizerNameSize.height);
     
-    [self.bgPlayer.fullName drawInRect:CGRectMake(75, fromTheTop+4, organizerNameSize.width, organizerNameSize.height) withAttributes:attrs];
-    
+    [self.bgPlayer.fullName drawInRect:nameRect withAttributes:attrs];
     
     // Adding the height of the profile picture
     
@@ -120,13 +120,20 @@ static UIFont *secondTextFont = nil;
 
 -(void)inviteButtonClicked:(id)sender{
     if (self.delegate && [self.delegate respondsToSelector:@selector(inviteFacebookFriendOnBeagle:)])
-        [self.delegate inviteFacebookFriendOnBeagle:cellIndex];
+        [self.delegate inviteFacebookFriendOnBeagle:cellIndexPath];
 
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
-//    UITouch *touch =[touches anyObject];
-//    CGPoint startPoint =[touch locationInView:self.contentView];
+    UITouch *touch =[touches anyObject];
+    CGPoint startPoint =[touch locationInView:self.contentView];
+    
+    if((CGRectContainsPoint(profileRect,startPoint)||CGRectContainsPoint(nameRect,startPoint))&& self.bgPlayer.beagleUserId!=0){
+            if (self.delegate && [self.delegate respondsToSelector:@selector(userProfileSelected:)])
+                [self.delegate userProfileSelected:cellIndexPath];
+        }
+        
+ 
     
     [super touchesEnded:touches withEvent:event];
 }

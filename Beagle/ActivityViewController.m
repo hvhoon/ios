@@ -15,7 +15,6 @@
 #import "EventVisibilityBlurView.h"
 #import "LocationBlurView.h"
 #import "DetailInterestViewController.h"
-#import "InAppNotificationView.h"
 #import "BeagleNotificationClass.h"
 #import "ASIHTTPRequest.h"
 enum Weeks {
@@ -192,7 +191,9 @@ enum Weeks {
 }
 
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
-    
+    BeagleManager *BG=[BeagleManager SharedInstance];
+    BG.activityCreated=TRUE;
+
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
     
     if(!notifObject.isOffline){
@@ -216,19 +217,15 @@ enum Weeks {
         
     }
     else if (notifObject.isOffline && notifObject.notificationType==CANCEL_ACTIVITY_TYPE){
-        BeagleManager *BG=[BeagleManager SharedInstance];
-        BG.activityCreated=TRUE;
 
         [self dismissViewControllerAnimated:YES completion:Nil];
     }
-    BeagleManager *BG=[BeagleManager SharedInstance];
-    BG.activityCreated=TRUE;
-
-    
-    
 }
 
 -(void)postInAppNotification:(NSNotification*)note{
+    BeagleManager *BG=[BeagleManager SharedInstance];
+    BG.activityCreated=TRUE;
+
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
     
     if(!notifObject.isOffline){
@@ -251,8 +248,6 @@ enum Weeks {
 
         
     }
-    BeagleManager *BG=[BeagleManager SharedInstance];
-    BG.activityCreated=TRUE;
 
     
 }

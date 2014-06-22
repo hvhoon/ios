@@ -12,7 +12,7 @@
 #import "AttributedTableViewCell.h"
 #import "TTTAttributedLabel.h"
 #import "DetailInterestViewController.h"
-
+#import "FriendsViewController.h"
 @interface NotificationsViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,IconDownloaderDelegate,TTTAttributedLabelDelegate,ServerManagerDelegate>{
         NSInteger interestIndex;
 }
@@ -72,6 +72,10 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
+
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBackgroundInNotification:) name:kRemoteNotificationReceivedNotification object:Nil];
     
@@ -317,6 +321,14 @@
 
     [viewController.interestServerManager getDetailedInterest:play.activityId];
     [self.navigationController pushViewController:viewController animated:YES];
+
+    }
+    else if (play.notificationType==PLAYER_JOINED_BEAGLE){
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        FriendsViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"profileScreen"];
+        BeagleUserClass *player=[[BeagleUserClass alloc]initWithNotificationObject:play];
+        viewController.friendBeagle=player;
+        [self.navigationController pushViewController:viewController animated:YES];
 
     }
 }

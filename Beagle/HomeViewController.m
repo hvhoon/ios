@@ -21,7 +21,6 @@
 #import "BeagleUtilities.h"
 #import "EventInterestFilterBlurView.h"
 #import "BeagleNotificationClass.h"
-#import "InAppNotificationView.h"
 #import "FriendsViewController.h"
 #define REFRESH_HEADER_HEIGHT 70.0f
 #define stockCroppingCheck 0
@@ -107,6 +106,8 @@
     }
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
+    
+    
      BeagleManager *BG=[BeagleManager SharedInstance];
     if(BG.activityCreated){
         isPushAuto=FALSE;

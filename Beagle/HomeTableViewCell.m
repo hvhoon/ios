@@ -95,7 +95,14 @@ static UIFont *forthTextFont = nil;
                               attributes:attrs
                                  context:nil].size;
     
-    [bg_activity.organizerName drawInRect:CGRectMake(75, 55.5-organizerNameSize.height, organizerNameSize.width, organizerNameSize.height) withAttributes:attrs];
+    nameRect = CGRectMake(75, 55.5-organizerNameSize.height, organizerNameSize.width, organizerNameSize.height);
+
+    
+    [bg_activity.organizerName drawInRect:nameRect withAttributes:attrs];
+    
+    
+    
+    
     
     if(bg_activity.dosRelation!=0){
         if(bg_activity.dosRelation==1) {
@@ -270,10 +277,14 @@ static UIFont *forthTextFont = nil;
             [delegate updateInterestedStatus:cellIndex];
         }
     }
-    else if(CGRectContainsPoint(profileRect,startPoint)){
+    else if(CGRectContainsPoint(profileRect,startPoint) || CGRectContainsPoint(nameRect,startPoint)){
         if(self.bg_activity.dosRelation!=0){
         if (self.delegate && [self.delegate respondsToSelector:@selector(profileScreenRedirect:)])
             [self.delegate profileScreenRedirect:cellIndex];
+        }else{
+            if (self.delegate && [self.delegate respondsToSelector:@selector(detailedInterestScreenRedirect:)])
+                [self.delegate detailedInterestScreenRedirect:cellIndex];
+            
         }
         
     }

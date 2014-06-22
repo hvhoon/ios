@@ -12,7 +12,9 @@
 #import "IconDownloader.h"
 #import "SettingsViewController.h"
 #import "ECSlidingViewController.h"
-@interface FriendsViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,FriendsTableViewCellDelegate,IconDownloaderDelegate>
+#import "BeagleNotificationClass.h"
+#import "DetailInterestViewController.h"
+@interface FriendsViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,FriendsTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate>
 @property(nonatomic,strong)ServerManager*friendsManager;
 @property(nonatomic,strong)NSArray *beagleFriendsArray;
 @property(nonatomic,strong)NSArray *facebookFriendsArray;
@@ -38,11 +40,25 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBackgroundInNotification:) name:kRemoteNotificationReceivedNotification object:Nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(postInAppNotification:) name:kNotificationForInterestPost object:Nil];
+
     [self.navigationController setNavigationBarHidden:NO animated:NO];
 
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
 
+}
+
+-(void)viewDidDisappear:(BOOL)animated{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kRemoteNotificationReceivedNotification object:nil];
+    
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationForInterestPost object:nil];
+    
+    
 }
 - (void)viewDidLoad
 {
@@ -152,6 +168,83 @@
 
     // Do any additional setup after loading the view.
 }
+
+
+- (void)didReceiveBackgroundInNotification:(NSNotification*) note{
+    BeagleManager *BG=[BeagleManager SharedInstance];
+    BG.activityCreated=TRUE;
+
+    BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
+    
+    if(!notifObject.isOffline){
+        InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0,0, 320, 64) appNotification:notifObject];
+        notifView.delegate=self;
+        UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
+        [keyboard addSubview:notifView];
+    }
+    else if(notifObject.isOffline && notifObject.activityId!=0 && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE)){
+        
+        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
+        viewController.interestServerManager=[[ServerManager alloc]init];
+        viewController.interestServerManager.delegate=viewController;
+        viewController.isRedirected=TRUE;
+        viewController.toLastPost=TRUE;
+        [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
+        [self.navigationController pushViewController:viewController animated:YES];        
+        
+    }
+    
+    
+    
+}
+
+
+-(void)postInAppNotification:(NSNotification*)note{
+    
+    BeagleManager *BG=[BeagleManager SharedInstance];
+    BG.activityCreated=TRUE;
+
+    BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
+    
+    if(!notifObject.isOffline){
+        InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0, 0, 320, 64) appNotification:notifObject];
+        notifView.delegate=self;
+        
+        UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
+        [keyboard addSubview:notifView];
+    }else if(notifObject.isOffline && notifObject.activityId!=0 && notifObject.notificationType==CHAT_TYPE){
+        
+        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
+        viewController.interestServerManager=[[ServerManager alloc]init];
+        viewController.interestServerManager.delegate=viewController;
+        viewController.isRedirected=TRUE;
+        viewController.toLastPost=TRUE;
+        [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
+        [self.navigationController pushViewController:viewController animated:YES];
+        
+        
+    }
+    
+    
+}
+
+-(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
+    viewController.interestServerManager=[[ServerManager alloc]init];
+    viewController.interestServerManager.delegate=viewController;
+    viewController.isRedirected=TRUE;
+    if(notification.notificationType==CHAT_TYPE)
+        viewController.toLastPost=TRUE;
+    
+    [viewController.interestServerManager getDetailedInterest:notification.activityId];
+    [self.navigationController pushViewController:viewController animated:YES];    
+}
 #pragma mark - Table view data source
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     if([self.beagleFriendsArray count]>0 && [self.facebookFriendsArray count]>0)
@@ -255,7 +348,7 @@
         player = (BeagleUserClass *)[self.facebookFriendsArray objectAtIndex:indexPath.row];
 
     cell.delegate=self;
-    cell.cellIndex=indexPath.row;
+    cell.cellIndexPath=indexPath;
     cell.bgPlayer = player;
     UIImage*checkImge=nil;
     if(player.beagleUserId!=0)
@@ -396,11 +489,21 @@
     // Dispose of any resources that can be recreated.
 }
 #pragma mark - Facebook Invite  calls
--(void)inviteFacebookFriendOnBeagle:(NSInteger)index{
-    BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:index];
+-(void)inviteFacebookFriendOnBeagle:(NSIndexPath*)indexPath{
+    BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:indexPath.row];
     player.isInvited=TRUE;
     [self.friendsTableView reloadData];
+    
 }
+-(void)userProfileSelected:(NSIndexPath*)indexPath{
+    BeagleUserClass *player=[self.beagleFriendsArray objectAtIndex:indexPath.row];
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    FriendsViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"profileScreen"];
+    viewController.friendBeagle=player;
+    [self.navigationController pushViewController:viewController animated:YES];
+
+}
+
 #pragma mark - server calls
 
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{

@@ -21,6 +21,7 @@
    UIImage *photoImage;
    CGRect interestedRect;
    CGRect profileRect;
+   CGRect nameRect;
 }
 @property(nonatomic,strong)UIImage*photoImage;
 @property (nonatomic,weak)id <HomeTableViewCellDelegate> delegate;

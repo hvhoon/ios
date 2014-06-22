@@ -20,5 +20,5 @@
     #import "ServerManager.h"
     #import "BeagleManager.h"
     #import "BeagleUserClass.h"
-
+    #import "InAppNotificationView.h"
 #endif

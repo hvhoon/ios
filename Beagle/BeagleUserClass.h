@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 @class BeagleActivityClass;
-
+@class BeagleNotificationClass;
 @interface BeagleUserClass : NSObject
 @property(nonatomic,strong)NSString*first_name;
 @property(nonatomic,strong)NSString*last_name;
@@ -29,4 +29,5 @@
 -(id) initWithDictionary:(NSDictionary *)dictionary;
 -(id) initWithProfileDictionary:(NSDictionary*)dictionary;
 -(id) initWithActivityObject:(BeagleActivityClass*)activity;
+-(id)initWithNotificationObject:(BeagleNotificationClass*)notification;
 @end

@@ -8,7 +8,7 @@
 
 #import "BeagleUserClass.h"
 #import "BeagleActivityClass.h"
-
+#import "BeagleNotificationClass.h"
 @implementation BeagleUserClass
 @synthesize userName,fullName,email,password,profileImageUrl,first_name,last_name,fbuid,access_token,location,fb_ticker,beagleUserId,profileData,badge,isInvited;
 
@@ -35,7 +35,7 @@
         self.fullName = [dictionary valueForKey:@"name"];
         self.location=[dictionary valueForKey:@"location"];
         self.profileImageUrl = [dictionary valueForKey:@"photo"];
-        self.isInvited=[dictionary valueForKey:@"invited"];
+        self.isInvited=[[dictionary valueForKey:@"invited"]boolValue];
     }
     return self;
     
@@ -52,5 +52,18 @@
     }
     return self;
 
+}
+
+-(id)initWithNotificationObject:(BeagleNotificationClass*)notification{
+    self = [super init];
+    if (self)
+    {
+        self.profileData=UIImagePNGRepresentation(notification.profileImage);
+        self.beagleUserId = notification.referredId;
+        self.fullName = notification.playerName;
+        self.profileImageUrl = notification.photoUrl;
+    }
+    return self;
+    
 }
 @end

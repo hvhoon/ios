@@ -11,7 +11,8 @@
 @protocol FriendsTableViewCellDelegate <NSObject>
 
 @optional
--(void)inviteFacebookFriendOnBeagle:(NSInteger)index;
+-(void)inviteFacebookFriendOnBeagle:(NSIndexPath*)indexPath;
+-(void)userProfileSelected:(NSIndexPath*)indexPath;
 @end
 
 @interface FriendsTableViewCell : ABTableViewCell{
@@ -19,11 +20,11 @@
     UIImage *photoImage;
     CGRect interestedRect;
     CGRect profileRect;
-
+    CGRect nameRect;
 }
 @property(nonatomic,strong)UIImage*photoImage;
 @property (nonatomic,weak)id <FriendsTableViewCellDelegate> delegate;
 @property (nonatomic, strong) BeagleUserClass *bgPlayer;
-@property(nonatomic,assign)NSInteger cellIndex;
+@property(nonatomic,strong)NSIndexPath *cellIndexPath;
 
 @end
