@@ -449,6 +449,21 @@
     }
     
 }
+
+-(void)sendingAPostMessageOnFacebook:(NSInteger)fbuid{
+    _serverCallType=kServerPostAPrivateMessageOnFacebook;
+    if([self isInternetAvailable])
+    {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@players/send_facebook_message.json?id=%@&fbuid=%ld",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],(long)fbuid]
+                         method:@"POST"
+                         params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+
+}
 -(void)populateErrorCodes
 {
     _errorCodes = [[NSMutableDictionary alloc]init];

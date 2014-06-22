@@ -14,8 +14,11 @@
 #import "ECSlidingViewController.h"
 #import "BeagleNotificationClass.h"
 #import "DetailInterestViewController.h"
-@interface FriendsViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,FriendsTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate>
+@interface FriendsViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,FriendsTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate>{
+    NSInteger inviteIndex;
+}
 @property(nonatomic,strong)ServerManager*friendsManager;
+@property(nonatomic,strong)ServerManager*inviteManager;
 @property(nonatomic,strong)NSArray *beagleFriendsArray;
 @property(nonatomic,strong)NSArray *facebookFriendsArray;
 @property(nonatomic,strong)IBOutlet UITableView*friendsTableView;
@@ -26,6 +29,7 @@
 @synthesize friendsManager=_friendsManager;
 @synthesize friendBeagle;
 @synthesize inviteFriends;
+@synthesize inviteManager=_inviteManager;
 @synthesize imageDownloadsInProgress;
 @synthesize beagleFriendsArray=_beagleFriendsArray;
 @synthesize facebookFriendsArray=_facebookFriendsArray;
@@ -491,8 +495,18 @@
 #pragma mark - Facebook Invite  calls
 -(void)inviteFacebookFriendOnBeagle:(NSIndexPath*)indexPath{
     BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:indexPath.row];
-    player.isInvited=TRUE;
-    [self.friendsTableView reloadData];
+    inviteIndex=indexPath.row;
+    
+    if(_inviteManager!=nil){
+        _inviteManager.delegate = nil;
+        [_inviteManager releaseServerManager];
+        _inviteManager = nil;
+    }
+    
+    _inviteManager=[[ServerManager alloc]init];
+    _inviteManager.delegate=self;
+    [_inviteManager sendingAPostMessageOnFacebook:player.fbuid];
+
     
 }
 -(void)userProfileSelected:(NSIndexPath*)indexPath{
@@ -579,6 +593,46 @@
         }
         
     }
+    else if (serverRequest==kServerPostAPrivateMessageOnFacebook){
+        _inviteManager.delegate = nil;
+        [_inviteManager releaseServerManager];
+        _inviteManager = nil;
+        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
+            
+            id status=[response objectForKey:@"status"];
+            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
+                
+                NSString *message = NSLocalizedString (@"Message sent successfully",
+                                                       @"Message sent successfully");
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Beagle"
+                                                                message:message
+                                                               delegate:self
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles: nil];
+                [alert show];
+
+                BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndex];
+                player.isInvited=TRUE;
+                [self.friendsTableView reloadData];
+
+            }
+            else if (status != nil && [status class] != [NSNull class] && [status integerValue]==205){
+                // not authorized to send facebook message
+                
+                NSString *message = NSLocalizedString (@"You are not authorized to send facebook message",
+                                                       @"Message Failure");
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Beagle"
+                                                                message:message
+                                                               delegate:self
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles: nil];
+                [alert show];
+
+            }
+        }
+    }
 }
 
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
@@ -589,6 +643,12 @@
         _friendsManager.delegate = nil;
         [_friendsManager releaseServerManager];
         _friendsManager = nil;
+    }
+    else if (serverRequest==kServerPostAPrivateMessageOnFacebook){
+        _inviteManager.delegate = nil;
+        [_inviteManager releaseServerManager];
+        _inviteManager = nil;
+
     }
     
     NSString *message = NSLocalizedString (@"Unable to initiate request.",
@@ -604,6 +664,12 @@
         _friendsManager.delegate = nil;
         [_friendsManager releaseServerManager];
         _friendsManager = nil;
+    }
+    else if (serverRequest==kServerPostAPrivateMessageOnFacebook){
+        _inviteManager.delegate = nil;
+        [_inviteManager releaseServerManager];
+        _inviteManager = nil;
+        
     }
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
