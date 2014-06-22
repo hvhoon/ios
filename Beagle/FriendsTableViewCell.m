@@ -125,8 +125,8 @@ static UIFont *secondTextFont = nil;
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
-    UITouch *touch =[touches anyObject];
-    CGPoint startPoint =[touch locationInView:self.contentView];
+//    UITouch *touch =[touches anyObject];
+//    CGPoint startPoint =[touch locationInView:self.contentView];
     
     [super touchesEnded:touches withEvent:event];
 }

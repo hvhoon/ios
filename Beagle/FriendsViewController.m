@@ -10,6 +10,8 @@
 #import "BeagleUserClass.h"
 #import "FriendsTableViewCell.h"
 #import "IconDownloader.h"
+#import "SettingsViewController.h"
+#import "ECSlidingViewController.h"
 @interface FriendsViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,FriendsTableViewCellDelegate,IconDownloaderDelegate>
 @property(nonatomic,strong)ServerManager*friendsManager;
 @property(nonatomic,strong)NSArray *beagleFriendsArray;
@@ -21,6 +23,7 @@
 @implementation FriendsViewController
 @synthesize friendsManager=_friendsManager;
 @synthesize friendBeagle;
+@synthesize inviteFriends;
 @synthesize imageDownloadsInProgress;
 @synthesize beagleFriendsArray=_beagleFriendsArray;
 @synthesize facebookFriendsArray=_facebookFriendsArray;
@@ -62,9 +65,12 @@
     
     _friendsManager=[[ServerManager alloc]init];
     _friendsManager.delegate=self;
-    [_friendsManager getMutualFriendsNetwork:self.friendBeagle.beagleUserId];
+    if(inviteFriends)
+        [_friendsManager getDOS1Friends];
+     else
+       [_friendsManager getMutualFriendsNetwork:self.friendBeagle.beagleUserId];
     
-    
+    if(!inviteFriends){
     UIView*navigationProfileView=[[UIView alloc]init];
     
     UIImageView *imageView=[[UIImageView alloc]initWithImage:[BeagleUtilities imageCircularBySize:[UIImage imageWithData:self.friendBeagle.profileData] sqr:70.0f]];
@@ -116,6 +122,33 @@
 
     navigationProfileView.frame=CGRectMake(0, 4.5, friendNameSize.width+35+19, 35);
     self.navigationItem.titleView=navigationProfileView;
+    }else{
+        NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+        [style setAlignment:NSTextAlignmentLeft];
+        
+        NSDictionary *attrs=[NSDictionary dictionaryWithObjectsAndKeys:
+                             [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f], NSFontAttributeName,
+                             [BeagleUtilities returnBeagleColor:4],NSForegroundColorAttributeName,
+                             style, NSParagraphStyleAttributeName, nil];
+        
+        CGSize maximumLabelSize = CGSizeMake(288,999);
+        
+        CGRect inviteFriendsTextRect = [@"Invite Friends" boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
+                                                                      attributes:attrs
+                                                                         context:nil];
+        
+        UILabel *inviteFriendsTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,0,inviteFriendsTextRect.size.width,inviteFriendsTextRect.size.height)];
+        inviteFriendsTextLabel.backgroundColor = [UIColor clearColor];
+        inviteFriendsTextLabel.text = @"Invite Friends";
+        inviteFriendsTextLabel.textColor = [BeagleUtilities returnBeagleColor:4];
+        inviteFriendsTextLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f];
+        inviteFriendsTextLabel.textAlignment = NSTextAlignmentLeft;
+        self.navigationItem.titleView=inviteFriendsTextLabel;
+        
+//        [self.view addGestureRecognizer:self.slidingViewController.panGesture];
+
+
+    }
 
     // Do any additional setup after loading the view.
 }
@@ -174,18 +207,18 @@
     
     if([self.beagleFriendsArray count]>0 && [self.facebookFriendsArray count]>0){
         if(section==0)
-            sectionLabel.text=[NSString stringWithFormat:@"%ld ALREADY ON BEAGLE",[self.beagleFriendsArray count]];
+            sectionLabel.text=[NSString stringWithFormat:@"%ld ALREADY ON BEAGLE",(unsigned long)[self.beagleFriendsArray count]];
         else{
-            sectionLabel.text=[NSString stringWithFormat:@"%ld POOR SOULS ARE MISSING OUT",[self.facebookFriendsArray count]];
+            sectionLabel.text=[NSString stringWithFormat:@"%ld POOR SOULS ARE MISSING OUT",(unsigned long)[self.facebookFriendsArray count]];
         }
         
     }
     else if([self.beagleFriendsArray count]>0){
-        sectionLabel.text=[NSString stringWithFormat:@"%ld ALREADY ON BEAGLE",[self.beagleFriendsArray count]];
+        sectionLabel.text=[NSString stringWithFormat:@"%ld ALREADY ON BEAGLE",(unsigned long)[self.beagleFriendsArray count]];
         
     }
     else if ([self.facebookFriendsArray count]>0)
-        sectionLabel.text=[NSString stringWithFormat:@"%ld POOR SOULS ARE MISSING OUT",[self.facebookFriendsArray count]];
+        sectionLabel.text=[NSString stringWithFormat:@"%ld POOR SOULS ARE MISSING OUT",(unsigned long)[self.facebookFriendsArray count]];
 
      return sectionHeaderview;
     
@@ -372,7 +405,7 @@
 
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
     
-    if(serverRequest==kServerCallGetProfileMutualFriends){
+    if(serverRequest==kServerCallGetProfileMutualFriends||serverRequest==kServerCallGetDOS1Friends){
         
         _friendsManager.delegate = nil;
         [_friendsManager releaseServerManager];
@@ -434,8 +467,10 @@
                     
                     
                 }
+                if(!inviteFriends){
                 UILabel* mutualCountLabel=(UILabel*)[[self.navigationController navigationBar]viewWithTag:654];
-                mutualCountLabel.text=[NSString stringWithFormat:@"%ld Mutual Friends",[self.beagleFriendsArray count]+[self.facebookFriendsArray count]];
+                mutualCountLabel.text=[NSString stringWithFormat:@"%ld Mutual Friends",(long)[self.beagleFriendsArray count]+[self.facebookFriendsArray count]];
+                }
                 [_friendsTableView reloadData];
             }
         }
@@ -446,7 +481,7 @@
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {
     
-    if(serverRequest==kServerCallGetProfileMutualFriends)
+    if(serverRequest==kServerCallGetProfileMutualFriends||serverRequest==kServerCallGetDOS1Friends)
     {
         _friendsManager.delegate = nil;
         [_friendsManager releaseServerManager];
@@ -461,7 +496,7 @@
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
 {
     
-    if(serverRequest==kServerCallGetProfileMutualFriends)
+    if(serverRequest==kServerCallGetProfileMutualFriends||serverRequest==kServerCallGetDOS1Friends)
     {
         _friendsManager.delegate = nil;
         [_friendsManager releaseServerManager];

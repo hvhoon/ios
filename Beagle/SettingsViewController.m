@@ -7,6 +7,7 @@
 //
 
 #import "SettingsViewController.h"
+#import "FriendsViewController.h"
 
 @interface SettingsViewController ()<ServerManagerDelegate>
 @property(nonatomic,strong)ServerManager*updateFBTickerManager;
@@ -84,6 +85,13 @@
         }
             break;
             
+        case 3:
+        {
+            identifier=@"profileScreen";
+        }
+            break;
+
+            
         case 8:
         {
             identifier=@"loginScreen";
@@ -99,6 +107,12 @@
         if([identifier isEqualToString:@"homeScreen"]&& [(AppDelegate*)[[UIApplication sharedApplication] delegate]listViewController] != nil){
             newTopViewController=[(AppDelegate*)[[UIApplication sharedApplication] delegate]listViewController];
         }
+        else if ([identifier isEqualToString:@"profileScreen"]){
+            FriendsViewController *viewController=(FriendsViewController*)newTopViewController;
+            viewController.inviteFriends=TRUE;
+            [self.navigationController pushViewController:viewController animated:YES];
+            return;
+        }
     
     [self.slidingViewController anchorTopViewOffScreenTo:ECRight animations:nil onComplete:^{
         CGRect frame = self.slidingViewController.topViewController.view.frame;
@@ -106,6 +120,7 @@
         self.slidingViewController.topViewController.view.frame = frame;
         [self.slidingViewController resetTopView];
     }];
+
 }
 
 - (IBAction) switchChanged:(id)sender {

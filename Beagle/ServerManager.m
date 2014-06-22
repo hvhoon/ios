@@ -325,7 +325,7 @@
     
     if([self isInternetAvailable])
     {
-        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/%ld/acparameter.json",_serverUrl,chatId]
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/%ld/acparameter.json",_serverUrl,(long)chatId]
                          method:@"GET"
                          params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
     }
@@ -374,7 +374,7 @@
 
     if([self isInternetAvailable])
     {
-        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/backgroundchat.json?pid=%@&aid=%ld&chatid=%ld&start_time=%@&end_time=%@",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],activId,lastChatPost.chat_id,[dateFormatter stringFromDate:updatedDate],[dateFormatter stringFromDate:[NSDate date]]]
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/backgroundchat.json?pid=%@&aid=%ld&chatid=%ld&start_time=%@&end_time=%@",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],activId,(long)lastChatPost.chat_id,[dateFormatter stringFromDate:updatedDate],[dateFormatter stringFromDate:[NSDate date]]]
                          method:@"GET"
                          params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
     }
@@ -394,7 +394,7 @@
     [dateFormatter setTimeZone:utcTimeZone];
 
     if([self isInternetAvailable]) {
-        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/testbackgroundchat.json?pid=%@&aid=%ld",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],activityId]
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/testbackgroundchat.json?pid=%@&aid=%ld",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],(long)activityId]
                          method:@"GET"
                          params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
     }
@@ -410,7 +410,7 @@
     
     if([self isInternetAvailable])
     {
-        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/%ld/chat_detail.json?pid=%@",_serverUrl,chatId,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]]
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/%ld/chat_detail.json?pid=%@",_serverUrl,(long)chatId,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]]
                          method:@"GET"
                          params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
     }
@@ -425,7 +425,7 @@
     _serverCallType=kServerCallGetProfileMutualFriends;
     if([self isInternetAvailable])
     {
-        [self callServerWithUrl:[NSString stringWithFormat:@"%@players/friendprofile.json?id=%@&fid=%ld",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],friendId]
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@players/friendprofile.json?id=%@&fid=%ld",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],(long)friendId]
                          method:@"GET"
                          params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
     }
@@ -435,7 +435,20 @@
     }
 
 }
-
+-(void)getDOS1Friends{
+    _serverCallType=kServerCallGetDOS1Friends;
+    if([self isInternetAvailable])
+    {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@players/friendwithdos1.json?id=%@",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]]
+                         method:@"GET"
+                         params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+    
+}
 -(void)populateErrorCodes
 {
     _errorCodes = [[NSMutableDictionary alloc]init];

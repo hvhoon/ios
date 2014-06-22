@@ -35,6 +35,7 @@
         self.fullName = [dictionary valueForKey:@"name"];
         self.location=[dictionary valueForKey:@"location"];
         self.profileImageUrl = [dictionary valueForKey:@"photo"];
+        self.isInvited=[dictionary valueForKey:@"invited"];
     }
     return self;
     

@@ -566,7 +566,7 @@
     NSString *documentsDirectory = [paths objectAtIndex:0];
 
 
-        NSString *savedImagePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%ld.png", imageName]];
+        NSString *savedImagePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%ld.png", (long)imageName]];
         NSData *data=UIImagePNGRepresentation(image);
         [ data writeToFile:savedImagePath atomically:YES];
 }
@@ -574,7 +574,7 @@
 +(UIImage *) loadImage:(NSInteger)fileName{
     NSString * directoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
 
-    UIImage * result = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/%ld.png", directoryPath, fileName]];
+    UIImage * result = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/%ld.png", directoryPath, (long)fileName]];
     
     return result;
 }
@@ -636,7 +636,7 @@
 }
 
 +(void)updateBadgeInfoOnTheServer:(NSInteger)notificationId{
-    NSURL *url=[NSURL URLWithString:[[NSString stringWithFormat:@"%@received_notification.json?id=%ld",herokuHost,notificationId] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    NSURL *url=[NSURL URLWithString:[[NSString stringWithFormat:@"%@received_notification.json?id=%ld",herokuHost,(long)notificationId] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     
     NSURLRequest *notificationRequest = [[NSURLRequest alloc] initWithURL: url];
     NSHTTPURLResponse *response = NULL;
