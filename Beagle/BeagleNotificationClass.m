@@ -36,6 +36,7 @@
             self.referredId= [referredTo intValue];
         self.photoUrl=[dictionary objectForKey:@"photo_url"];
         self.activityWhat=[NSString stringWithFormat:@"\"%@\"",[dictionary objectForKey:@"what"]];
+        self.playerName=[dictionary objectForKey:@"name"];
     }
     return self;
 }

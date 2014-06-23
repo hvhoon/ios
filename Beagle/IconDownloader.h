@@ -10,6 +10,7 @@
 @class BeagleActivityClass;
 @class InterestChatClass;
 @class BeagleNotificationClass;
+@class BeagleUserClass;
 @protocol IconDownloaderDelegate;
 
 @interface IconDownloader : NSObject
@@ -21,6 +22,7 @@
     NSMutableData *activeDownload;
     NSURLConnection *imageConnection;
     NSInteger tagkey;
+    BeagleUserClass *friendRecord;
     
 }
 @property (nonatomic, strong) BeagleNotificationClass *notificationRecord;
@@ -31,7 +33,7 @@
 @property (nonatomic,assign)NSInteger tagkey;
 @property (nonatomic, strong) NSMutableData *activeDownload;
 @property (nonatomic, strong) NSURLConnection *imageConnection;
-
+@property(nonatomic,strong)BeagleUserClass*friendRecord;
 - (void)startDownload:(NSInteger)uniqueKey;
 - (void)cancelDownload;
 

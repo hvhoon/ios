@@ -34,10 +34,12 @@
 #define kParticipantInActivity 12
 #define kInterestChat 13
 #define kNotificationRecord 14
+#define kFriendRecord 15
 #define CANCEL_ACTIVITY_TYPE 9
 #define CHAT_TYPE 17
 #define WHAT_CHANGE_TYPE 1
 #define DATE_CHANGE_TYPE 2
+#define PLAYER_JOINED_BEAGLE 7
 #define LEAVED_ACTIVITY_TYPE 8
 #define GOING_TYPE 13
 

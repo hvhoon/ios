@@ -7,7 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-
+@class BeagleActivityClass;
+@class BeagleNotificationClass;
 @interface BeagleUserClass : NSObject
 @property(nonatomic,strong)NSString*first_name;
 @property(nonatomic,strong)NSString*last_name;
@@ -23,5 +24,10 @@
 @property(nonatomic,assign)NSInteger beagleUserId;
 @property(nonatomic,assign)NSInteger badge;
 @property(nonatomic,strong)NSData*profileData;
+@property(nonatomic,assign)BOOL isInvited;
+
 -(id) initWithDictionary:(NSDictionary *)dictionary;
+-(id) initWithProfileDictionary:(NSDictionary*)dictionary;
+-(id) initWithActivityObject:(BeagleActivityClass*)activity;
+-(id)initWithNotificationObject:(BeagleNotificationClass*)notification;
 @end

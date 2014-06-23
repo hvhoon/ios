@@ -25,7 +25,10 @@ typedef enum {
     kServerCallGetBackgroundChats,
     kServerInAppChatDetail,
     kServerCallRequestForOfflineNotification,
-    kServerCallInAppForOfflinePost
+    kServerCallInAppForOfflinePost,
+    kServerCallGetProfileMutualFriends,
+    kServerCallGetDOS1Friends,
+    kServerPostAPrivateMessageOnFacebook
 } ServerCallType;
 
 @class ServerManager;
@@ -65,4 +68,7 @@ typedef enum {
 -(void)getMoreBackgroundPostsForAnInterest:(InterestChatClass*)lastChatPost activId:(NSInteger)activId;
 -(void)getNewBackgroundPostsForAnInterest:(NSInteger)activityId;
 -(void)getPostDetail:(NSInteger)chatId;
+-(void)getMutualFriendsNetwork:(NSInteger)friendId;
+-(void)getDOS1Friends;
+-(void)sendingAPostMessageOnFacebook:(NSInteger)fbuid;
 @end

@@ -10,6 +10,7 @@
 #import "InterestChatClass.h"
 #import "BeagleActivityClass.h"
 #import "BeagleNotificationClass.h"
+#import "BeagleUserClass.h"
 #define kIconHeight 100
 #define kIconWidth 100
 
@@ -23,6 +24,7 @@
 @synthesize tagkey;
 @synthesize chatRecord;
 @synthesize notificationRecord;
+@synthesize friendRecord;
 #pragma mark
 
 
@@ -68,6 +70,21 @@
                 NSURLConnection *conn = [[NSURLConnection alloc] initWithRequest:
                                          [NSURLRequest requestWithURL:
                                           [NSURL URLWithString:notificationRecord.photoUrl]] delegate:self];
+                self.imageConnection = conn;
+            }
+            
+        }
+            break;
+            
+            case kFriendRecord:
+            
+        {
+            if(friendRecord.profileImageUrl != nil)
+            {
+                
+                NSURLConnection *conn = [[NSURLConnection alloc] initWithRequest:
+                                         [NSURLRequest requestWithURL:
+                                          [NSURL URLWithString:friendRecord.profileImageUrl]] delegate:self];
                 self.imageConnection = conn;
             }
             
@@ -138,6 +155,14 @@
                
            }
                break;
+               
+           case kFriendRecord:
+           {
+               self.friendRecord.profileData = UIImagePNGRepresentation(image);
+               
+           }
+               break;
+
                
         }
 

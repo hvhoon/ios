@@ -30,25 +30,60 @@
     ACAccountType *FBaccountType= [self.accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
     
     NSString *key = @"500525846725031";
-    NSDictionary *dictFB = [NSDictionary dictionaryWithObjectsAndKeys:key,ACFacebookAppIdKey,@[@"email"],ACFacebookPermissionsKey, nil];
+    NSDictionary *dictFB = [NSDictionary dictionaryWithObjectsAndKeys:key,ACFacebookAppIdKey,@[@"email"],ACFacebookPermissionsKey,ACFacebookAudienceEveryone,ACFacebookAudienceKey,nil];
     
     
-    [self.accountStore requestAccessToAccountsWithType:FBaccountType options:dictFB completion:
-     ^(BOOL granted, NSError *e) {
-         if (granted) {
-             NSArray *accounts = [self.accountStore accountsWithAccountType:FBaccountType];
-             //it will always be the last object with single sign on
-             self.facebookAccount = [accounts lastObject];
-            // NSLog(@"facebook account =%@",self.facebookAccount);
-             [self get];
-         } else {
-             //Fail gracefully...
-             NSLog(@"error getting permission %@",e);
-             
-             [delegate facebookAccountNotSetup];
-             
-         }
-     }];
+    
+    
+    [self.accountStore requestAccessToAccountsWithType:FBaccountType options:dictFB completion:^(BOOL granted, NSError *error) {
+        if (granted) {
+            NSArray *accounts = [self.accountStore accountsWithAccountType:FBaccountType];
+            
+            if ([accounts count] > 0) {
+                ACAccountType *FBaccountType= [self.accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
+                NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:key,ACFacebookAppIdKey,[NSArray arrayWithObjects:@"friends_location",@"user_friends",@"publish_stream",@"xmpp_login",nil],ACFacebookPermissionsKey,ACFacebookAudienceEveryone,ACFacebookAudienceKey,nil];
+
+                
+
+                
+                [self.accountStore requestAccessToAccountsWithType:FBaccountType options:options completion:^(BOOL granted2, NSError *error) {
+                    if (granted2) {
+                        NSLog(@"granted")
+                        ;
+                        self.facebookAccount = [accounts lastObject];
+                        // NSLog(@"facebook account =%@",self.facebookAccount);
+                        [self get];
+
+                    }
+                    else {
+                        NSLog(@" permission error: %@", [error localizedDescription]);
+                        [delegate facebookAccountNotSetup];
+                        //_publishPermissionsGranted = NO;
+                    }
+                    
+                }];
+            }
+        }
+        else {
+            NSLog(@"Nope");
+            [delegate facebookAccountNotSetup];
+        }
+        
+        if (error) {
+            if (error.code == 6) {
+                NSLog(@"FB Account doesn't exist");
+            }
+            NSLog(@"Error: %@", error.localizedDescription);
+            
+            
+            [delegate facebookAccountNotSetup];
+
+        }
+    }];
+    
+    
+    
+    
 
 }
 
@@ -180,7 +215,14 @@
     
     NSString *key = @"500525846725031";
     
-    NSDictionary *dictFB = [NSDictionary dictionaryWithObjectsAndKeys:key,ACFacebookAppIdKey,@[@"offline_access"],@[@"read_stream"],@[@"email"],@[@"user_subscriptions"],@[@"friends_subscriptions"],@[@"publish_stream"],@[@"xmpp_login"],ACFacebookPermissionsKey, nil];
+//    [NSArray arrayWithObjects:@"email",@"offline_access",@"read_stream",@"user_subscriptions",@"friends_subscriptions",@"friends_location",@"user_location",@"user_friends",@"publish_stream",@"xmpp_login",nil]
+    
+    NSDictionary *dictFB = [[NSDictionary alloc] initWithObjectsAndKeys:
+                             (NSString *)ACFacebookAppIdKey,key,
+                            (NSString *)ACFacebookPermissionsKey,@[@"email", @"offline_access",@"read_stream",@"user_subscriptions", @"friends_subscriptions",@"friends_location",@"user_location", @"user_friends",@"publish_stream",@"xmpp_login"],
+                             (NSString *)ACFacebookAudienceKey, ACFacebookAudienceEveryone,
+                             nil];
+    
     
     
     [self.accountStore requestAccessToAccountsWithType:FBaccountType options:dictFB completion:

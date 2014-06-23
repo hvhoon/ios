@@ -145,7 +145,7 @@ void uncaughtExceptionHandler(NSException *exception) {
             [[BeagleManager SharedInstance]setBadgeCount:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
             [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
             
-            NSLog(@"badge Value=%ld",[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]);
+            NSLog(@"badge Value=%ld",(long)[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]);
             
             
         }else if([[[userInfo valueForKey:@"params"] valueForKey:@"notification_type"]integerValue]==CANCEL_ACTIVITY_TYPE){
@@ -184,7 +184,7 @@ void uncaughtExceptionHandler(NSException *exception) {
             [[BeagleManager SharedInstance]setBadgeCount:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
             [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
             
-            NSLog(@"badge Value=%ld",[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]);
+            NSLog(@"badge Value=%ld",(long)[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]);
             
             
         }
@@ -313,7 +313,7 @@ void uncaughtExceptionHandler(NSException *exception) {
                 NSMutableDictionary *inappnotification=[response objectForKey:@"inappnotification"];
                 if (inappnotification != nil && [inappnotification class] != [NSNull class]) {
 
-                NSLog(@"badge Value=%ld",[[inappnotification objectForKey:@"badge"]integerValue]);
+                NSLog(@"badge Value=%ld",(long)[[inappnotification objectForKey:@"badge"]integerValue]);
                 
                 
                 NSOperationQueue *queue = [NSOperationQueue new];
