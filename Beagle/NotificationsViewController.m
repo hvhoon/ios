@@ -170,7 +170,7 @@
             break;
             
         case 11: {
-            notif.rowHeight = [AttributedTableViewCell heightForNewInterestText:notif.notificationString];
+            notif.rowHeight = [AttributedTableViewCell heightForNotificationText:notif.notificationString];
             notif.rowHeight += [AttributedTableViewCell heightForTimeStampText:[BeagleUtilities calculateChatTimestamp:notif.timeOfNotification]];
             notif.rowHeight += [AttributedTableViewCell heightForNewInterestText:notif.activityWhat];
             notif.rowHeight += 25; // this is the 'Are you in' button;
