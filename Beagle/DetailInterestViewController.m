@@ -34,6 +34,7 @@ static NSString * const CellIdentifier = @"cell";
 @property(nonatomic,strong)NSMutableArray *chatPostsArray;
 @property(nonatomic,strong)UITableView *detailedInterestTableView;
 @property (nonatomic, strong) MessageKeyboardView *contentWrapper;
+@property (nonatomic, strong) UIProgressView* sendMessage;
 @end
 
 @implementation DetailInterestViewController
@@ -57,11 +58,8 @@ static NSString * const CellIdentifier = @"cell";
     
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBackgroundInNotification:) name:kRemoteNotificationReceivedNotification object:Nil];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(postInAppNotification:) name:kNotificationForInterestPost object:Nil];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (getPostsUpdateInBackground) name:kUpdatePostsOnInterest object:nil];
-
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
     
@@ -73,6 +71,13 @@ static NSString * const CellIdentifier = @"cell";
         [self.navigationController popViewControllerAnimated:YES];
         return;
     }
+    
+    // Setup the progress indicator
+    _sendMessage = [[UIProgressView alloc] initWithFrame:CGRectMake(0, 64, 320, 1)];
+    [_sendMessage setProgressTintColor:[BeagleUtilities returnBeagleColor:1]];
+    [self.view addSubview:_sendMessage];
+    [_sendMessage setHidden:YES];
+    
     scrollViewResize=TRUE;
     NSString* screenTitle = [BeagleUtilities activityTime:self.interestActivity.startActivityDate endate:self.interestActivity.endActivityDate];
     self.navigationItem.title = screenTitle;
@@ -332,6 +337,7 @@ else if(!notifObject.isOffline){
     
     _triangle = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Triangle"]];
     _triangle.hidden = YES;
+
     
 //    self.navigationItem.leftBarButtonItem=self.navigationItem.backBarButtonItem;
     if(!isRedirected)
@@ -442,29 +448,31 @@ else if(!notifObject.isOffline){
 -(void)postClicked:(id)sender{
     if([[self.contentWrapper.inputView.textView text]length]!=0){
         
-    //[self.contentWrapper.inputView.textView resignFirstResponder];
-    // For dummyInputView.textView
-//    [self.view endEditing:YES];
-    
-    if(_chatPostManager!=nil){
-        _chatPostManager.delegate = nil;
-        [_chatPostManager releaseServerManager];
-        _chatPostManager = nil;
+        // Gray out 'Post' button
+        self.contentWrapper.inputView.rightButton.enabled = NO;
+        self.contentWrapper.inputView.rightButton.tintColor = [UIColor darkGrayColor];
+        
+        // Show progress indicator
+        [_sendMessage setProgress:0.0f];
+        [_sendMessage setHidden:NO];
+        [_sendMessage setProgress:0.25f animated:YES];
+        
+        if(_chatPostManager!=nil){
+            _chatPostManager.delegate = nil;
+            [_chatPostManager releaseServerManager];
+            _chatPostManager = nil;
+        }
+        
+        _chatPostManager=[[ServerManager alloc]init];
+        _chatPostManager.delegate=self;
+        [_chatPostManager postAComment:self.interestActivity.activityId desc:[self.contentWrapper.inputView.textView text]];
+        
     }
-    
-    _chatPostManager=[[ServerManager alloc]init];
-    _chatPostManager.delegate=self;
-    [_chatPostManager postAComment:self.interestActivity.activityId desc:[self.contentWrapper.inputView.textView text]];
-    
-
-//    NSLog(@"text1=%@",[self.contentWrapper.inputView.textView text]);
-//    NSLog(@"text2=%@",[self.contentWrapper.dummyInputView.textView text]);
-//    [self.contentWrapper.inputView.textView setText:nil];
-//    [self.contentWrapper textViewDidChange:self.contentWrapper.inputView.textView];
-    
-//    [self.contentWrapper.dummyInputView.textView setText:nil];
 }
 
+-(void)removeProgressIndicator {
+    [_sendMessage setHidden:YES];
+    [_sendMessage setProgress:0.0f];
 }
 
 -(void)handleTapGestures:(UITapGestureRecognizer*)sender{
@@ -1196,7 +1204,6 @@ else if(!notifObject.isOffline){
         
         
     }
-    
     else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
         _interestUpdateManager.delegate = nil;
         [_interestUpdateManager releaseServerManager];
@@ -1296,11 +1303,11 @@ else if(!notifObject.isOffline){
     else if (serverRequest==kServerCallPostComment||serverRequest==kServerCallGetBackgroundChats||serverRequest==kServerInAppChatDetail){
         BeagleManager *BG=[BeagleManager SharedInstance];
         BG.activityCreated=TRUE;
-
-        
         _chatPostManager.delegate = nil;
         [_chatPostManager releaseServerManager];
         _chatPostManager = nil;
+        
+        [_sendMessage setProgress:0.75 animated:YES];
         
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
@@ -1313,7 +1320,6 @@ else if(!notifObject.isOffline){
                     
                     [[BeagleManager SharedInstance]setBadgeCount:[badge integerValue]];
                     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[badge integerValue]];
-                    
                     [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
                     
                 }
@@ -1341,9 +1347,19 @@ else if(!notifObject.isOffline){
                     }
                 
                 }
+        
         }
         
+        // Successfully added the post!
+        [_sendMessage setProgress:1.0 animated:YES];
         
+        
+        // Make sure the animation completed
+        if(_sendMessage.progress == 1.0f) {
+            [NSTimer scheduledTimerWithTimeInterval:.5 target:self selector:@selector(removeProgressIndicator) userInfo:nil repeats:NO];
+            self.contentWrapper.inputView.rightButton.enabled = YES;
+            self.contentWrapper.inputView.rightButton.tintColor = [BeagleUtilities returnBeagleColor:1];
+        }
     }
     [self.detailedInterestTableView reloadData];
 }
@@ -1367,11 +1383,16 @@ else if(!notifObject.isOffline){
         _chatPostManager.delegate = nil;
         [_chatPostManager releaseServerManager];
         _chatPostManager = nil;
+        [_sendMessage setHidden:YES];
+        [_sendMessage setProgress:0.0];
+        self.contentWrapper.inputView.rightButton.enabled = YES;
+        self.contentWrapper.inputView.rightButton.tintColor = [BeagleUtilities returnBeagleColor:1];
     }
     
-    NSString *message = NSLocalizedString (@"Unable to initiate request.",
+    NSString *message = NSLocalizedString (@"Oops...something went wrong!",
                                            @"NSURLConnection initialization method failed.");
     BeagleAlertWithMessage(message);
+
 }
 
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
@@ -1392,6 +1413,10 @@ else if(!notifObject.isOffline){
         _chatPostManager.delegate = nil;
         [_chatPostManager releaseServerManager];
         _chatPostManager = nil;
+        [_sendMessage setHidden:YES];
+        [_sendMessage setProgress:0.0];
+        self.contentWrapper.inputView.rightButton.enabled = YES;
+        self.contentWrapper.inputView.rightButton.tintColor = [BeagleUtilities returnBeagleColor:1];
     }
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
     [alert show];
