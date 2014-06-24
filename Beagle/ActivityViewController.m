@@ -85,10 +85,7 @@ enum Weeks {
 {
     [super viewDidLoad];
     
-
-    
     self.blrTimeView=[[EventTimeBlurView alloc]initWithFrame:self.view.frame parentView:self.view];
-//    self.blrTimeView = [EventTimeBlurView loadTimeFilter:self.view];
     self.blrVisbilityView=[EventVisibilityBlurView loadVisibilityFilter:self.view];
     self.blrVisbilityView.delegate=self;
     self.blrTimeView.delegate=self;
@@ -184,11 +181,7 @@ enum Weeks {
 }
 -(void)viewDidDisappear:(BOOL)animated{
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kRemoteNotificationReceivedNotification object:nil];
-    
-    
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationForInterestPost object:nil];
-    
-    
 }
 
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{

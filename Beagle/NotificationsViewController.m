@@ -49,18 +49,8 @@
     
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kUpdateNotificationStack object:nil];
-    
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kRemoteNotificationReceivedNotification object:nil];
-
-    
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationForInterestPost object:nil];
-
-    
-    
-//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ECSlidingViewTopDidAnchorLeft" object:nil];
-
-    
-    
     [[NSNotificationCenter defaultCenter] postNotificationName:@"ECSlidingViewTopDidAnchorRight" object:self userInfo:nil];
 
     [[BeagleManager SharedInstance]setBadgeCount:0];
@@ -72,21 +62,9 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
-    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
-
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBackgroundInNotification:) name:kRemoteNotificationReceivedNotification object:Nil];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(postInAppNotification:) name:kNotificationForInterestPost object:Nil];
-
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getUserNotifications) name:kUpdateNotificationStack object:Nil];
-    
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getUserNotifications) name:@"ECSlidingViewTopDidAnchorLeft" object:Nil];
-
-
     [self getUserNotifications];
     [self.slidingViewController hide];
 }
@@ -170,7 +148,7 @@
             break;
             
         case 11: {
-            notif.rowHeight = [AttributedTableViewCell heightForNewInterestText:notif.notificationString];
+            notif.rowHeight = [AttributedTableViewCell heightForNotificationText:notif.notificationString];
             notif.rowHeight += [AttributedTableViewCell heightForTimeStampText:[BeagleUtilities calculateChatTimestamp:notif.timeOfNotification]];
             notif.rowHeight += [AttributedTableViewCell heightForNewInterestText:notif.activityWhat];
             notif.rowHeight += 25; // this is the 'Are you in' button;
