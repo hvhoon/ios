@@ -104,8 +104,9 @@
         [activityEvent setObject:data.visibility forKey:@"access"];
         [activityEvent setObject:[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"] forKey:@"ownnerid"];
         [activityEvent setObject:data.endActivityDate  forKey:@"stop_when"];
-        
-        
+//        NSString *myTest=[NSString stringWithFormat:@"\"id\":123,\"pid\":124"];
+//
+//        [activityEvent setObject:myTest     forKey:@"invitees"];
         
         
         NSData *postData = [[activityEvent JSONRepresentation] dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];

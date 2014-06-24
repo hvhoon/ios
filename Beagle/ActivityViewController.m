@@ -17,6 +17,7 @@
 #import "DetailInterestViewController.h"
 #import "BeagleNotificationClass.h"
 #import "ASIHTTPRequest.h"
+#import "InterestInviteViewController.h"
 enum Weeks {
     SUNDAY = 1,
     MONDAY,
@@ -285,6 +286,15 @@ enum Weeks {
 }
 -(void)createButtonClicked:(id)sender{
     
+    
+    if(visibilityIndex==3 && !editState){
+     
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        InterestInviteViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestInvite"];
+        [self.navigationController presentViewController:viewController animated:YES completion:nil];
+        return;
+
+    }
     if([descriptionTextView.text length]==0){
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Missing Description"
                                                         message:@"Your interest must have a description."
@@ -451,7 +461,7 @@ enum Weeks {
     
         case 3:
         {
-            bg_activity.visibility=@"private";
+            bg_activity.visibility=@"custom";
             
         }
             break;
@@ -793,6 +803,8 @@ enum Weeks {
         case 3:
         {
             [visibilityFilterButton setTitle:@"Custom" forState:UIControlStateNormal];
+            [self.navigationItem.rightBarButtonItem setTitle:@"Select"];
+
         }
             break;
             

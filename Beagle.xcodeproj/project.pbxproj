@@ -41,6 +41,7 @@
 		1832F9C51953838000B271DB /* FriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1832F9C41953838000B271DB /* FriendsViewController.m */; };
 		183DFEAB19493D76008A556A /* UILabel+WhiteUIDatePickerLabels.m in Sources */ = {isa = PBXBuildFile; fileRef = 183DFEAA19493D76008A556A /* UILabel+WhiteUIDatePickerLabels.m */; };
 		1849D6B0192FCC540068BEDE /* InAppNotificationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1849D6AF192FCC540068BEDE /* InAppNotificationView.m */; };
+		186B11FA1958E02D00FF5A4D /* InterestInviteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 186B11F91958E02D00FF5A4D /* InterestInviteViewController.m */; };
 		18714B371940F1D2008F59DE /* messageReceived.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 18714B351940F1D2008F59DE /* messageReceived.aiff */; };
 		18714B381940F1D2008F59DE /* messageSent.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 18714B361940F1D2008F59DE /* messageSent.aiff */; };
 		18714B3B1940F268008F59DE /* PostSoundEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = 18714B3A1940F268008F59DE /* PostSoundEffect.m */; };
@@ -209,6 +210,8 @@
 		183DFEAA19493D76008A556A /* UILabel+WhiteUIDatePickerLabels.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UILabel+WhiteUIDatePickerLabels.m"; sourceTree = "<group>"; };
 		1849D6AE192FCC540068BEDE /* InAppNotificationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InAppNotificationView.h; sourceTree = "<group>"; };
 		1849D6AF192FCC540068BEDE /* InAppNotificationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InAppNotificationView.m; sourceTree = "<group>"; };
+		186B11F81958E02D00FF5A4D /* InterestInviteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InterestInviteViewController.h; sourceTree = "<group>"; };
+		186B11F91958E02D00FF5A4D /* InterestInviteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InterestInviteViewController.m; sourceTree = "<group>"; };
 		18714B351940F1D2008F59DE /* messageReceived.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = messageReceived.aiff; sourceTree = "<group>"; };
 		18714B361940F1D2008F59DE /* messageSent.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = messageSent.aiff; sourceTree = "<group>"; };
 		18714B391940F268008F59DE /* PostSoundEffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostSoundEffect.h; sourceTree = "<group>"; };
@@ -581,6 +584,15 @@
 			name = "In App Notification";
 			sourceTree = "<group>";
 		};
+		186B11FB1958E03300FF5A4D /* Invitees */ = {
+			isa = PBXGroup;
+			children = (
+				186B11F81958E02D00FF5A4D /* InterestInviteViewController.h */,
+				186B11F91958E02D00FF5A4D /* InterestInviteViewController.m */,
+			);
+			name = Invitees;
+			sourceTree = "<group>";
+		};
 		18714B341940F1D2008F59DE /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
@@ -668,6 +680,7 @@
 		18EC22A618B5A0B400316B6E /* Beagle */ = {
 			isa = PBXGroup;
 			children = (
+				186B11FB1958E03300FF5A4D /* Invitees */,
 				1832F9C21953831800B271DB /* Mutual Friends */,
 				1849D6AD192FCC1F0068BEDE /* In App Notification */,
 				180F604E1923D37800B3807F /* Google Auto Complete */,
@@ -1085,6 +1098,7 @@
 				18EC231F18B5A42D00316B6E /* ASICloudFilesObjectRequest.m in Sources */,
 				18F9FE6118DB40E4004BFE4E /* BeagleManager.m in Sources */,
 				180F604B1923D1D800B3807F /* GooglePlacesAutocompleteUtilities.m in Sources */,
+				186B11FA1958E02D00FF5A4D /* InterestInviteViewController.m in Sources */,
 				18EC231A18B5A42D00316B6E /* ASICloudFilesCDNRequest.m in Sources */,
 				18EC232418B5A42D00316B6E /* NSString+SBJSON.m in Sources */,
 				18FADBA318B66A8D00A62287 /* NotificationsViewController.m in Sources */,

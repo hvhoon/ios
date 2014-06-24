@@ -10,8 +10,6 @@
 #import "BeagleUserClass.h"
 #import "FriendsTableViewCell.h"
 #import "IconDownloader.h"
-#import "SettingsViewController.h"
-#import "ECSlidingViewController.h"
 #import "BeagleNotificationClass.h"
 #import "DetailInterestViewController.h"
 @interface FriendsViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,FriendsTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate>{
