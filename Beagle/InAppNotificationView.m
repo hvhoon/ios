@@ -49,8 +49,6 @@ static inline NSRegularExpression * NameRegularExpression() {
         [self setSummaryText:inAppNotif.notificationString];
         
         profileImageView.frame=CGRectMake(16, 14.5, 35, 35);
-//        NSData *bytes=[NSData dataWithContentsOfURL:[NSURL URLWithString:appNotification.photoUrl]];
-//        appNotification.profileImage=[UIImage imageWithData:bytes];
         profileImageView.image=[BeagleUtilities imageCircularBySize:appNotification.profileImage sqr:70.0f];
         
 
@@ -66,7 +64,6 @@ static inline NSRegularExpression * NameRegularExpression() {
         [self addSubview:notificationView];
         
         
-        
         counter=0;
         timer =[NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(countdownTracker:) userInfo:nil repeats:YES];
         
@@ -75,17 +72,11 @@ static inline NSRegularExpression * NameRegularExpression() {
         self.frame = popupStartRect;
         self.alpha = 1.0f;
         
-        
-        
-        
-        
         [UIView animateWithDuration:0.35 delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
             self.frame = popupEndRect;
             [[UIApplication sharedApplication] setStatusBarHidden:YES];
         } completion:^(BOOL finished) {
         }];
-        
-        
     }
     return self;
 }
