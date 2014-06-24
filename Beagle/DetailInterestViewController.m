@@ -62,13 +62,13 @@ static NSString * const CellIdentifier = @"cell";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (getPostsUpdateInBackground) name:kUpdatePostsOnInterest object:nil];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
-    
+
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     
     BeagleManager *BG=[BeagleManager SharedInstance];
     if(BG.activityDeleted){
         BG.activityDeleted=FALSE;
-        [self.navigationController popViewControllerAnimated:YES];
+        [self.navigationController popViewControllerAnimated:NO];
         return;
     }
     
@@ -318,16 +318,12 @@ else if(!notifObject.isOffline){
 
 -(void)backButtonClicked:(id)sender{
     //[self.contentWrapper _unregisterForNotifications];
-    
     [self.contentWrapper.inputView.textView resignFirstResponder];
     // For dummyInputView.textView
     [self.view endEditing:YES];
-    
     [self.contentWrapper.inputView.textView setText:nil];
         //[self.contentWrapper textViewDidChange:self.contentWrapper.inputView.textView];
-    
     [self.contentWrapper.dummyInputView.textView setText:nil];
-
     [self.navigationController popViewControllerAnimated:YES];
 }
 - (void)viewDidLoad

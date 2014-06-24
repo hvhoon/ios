@@ -90,14 +90,14 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableInAppNotification) name:@"ECSlidingViewTopDidAnchorRight" object:Nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh) name:@"HomeViewRefresh" object:Nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (UpdateBadgeCount) name:kBeagleBadgeCount object:nil];
-    [self.navigationController setNavigationBarHidden:YES];
 
     if(self.tableView!=nil){
         [self.tableView reloadData];
     }
+    [self.navigationController setNavigationBarHidden:YES];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
-    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
-    
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
+   
     
      BeagleManager *BG=[BeagleManager SharedInstance];
     if(BG.activityCreated){
