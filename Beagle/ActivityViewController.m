@@ -751,26 +751,17 @@ enum Weeks {
     [calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSEraCalendarUnit forDate:eventDate]-
     [calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSEraCalendarUnit forDate:[NSDate date]];
 
-    NSDateComponents*components = [calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit
+    NSDateComponents*components = [calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit|NSHourCalendarUnit|NSSecondCalendarUnit|NSMinuteCalendarUnit
                                                 fromDate:eventDate];
 
     if([eventDate timeIntervalSinceDate:[NSDate date]]<0 && differenceInDays==0){
-        self.bg_activity.startActivityDate=[dateFormatter stringFromDate:[NSDate date]];
         [timeFilterButton setTitle:@"Later Today" forState:UIControlStateNormal];
 
         //user has picked today
     }else if(differenceInDays==1){
-        [components setHour: [components hour]];
-        [components setMinute:[components minute]];
-        [components setSecond:[components second]];
-        self.bg_activity.startActivityDate=[dateFormatter stringFromDate:[calendar dateFromComponents:components]];
         [timeFilterButton setTitle:@"Tommorow" forState:UIControlStateNormal];
     }
     else{
-        [components setHour: [components hour]];
-        [components setMinute:[components minute]];
-        [components setSecond:[components second]];
-        self.bg_activity.startActivityDate=[dateFormatter stringFromDate:[calendar dateFromComponents:components]];
         NSDateFormatter *localDateFormatter = [[NSDateFormatter alloc] init];
         [localDateFormatter setDateFormat:@"EEE, MMM d"];
         [localDateFormatter setTimeZone:[NSTimeZone systemTimeZone]];
@@ -782,6 +773,9 @@ enum Weeks {
     [components setHour: [components hour]];
     [components setMinute:[components minute]];
     [components setSecond:[components second]];
+    
+    self.bg_activity.startActivityDate=[dateFormatter stringFromDate:[calendar dateFromComponents:components]];
+
     self.bg_activity.endActivityDate=[dateFormatter stringFromDate:[calendar dateFromComponents:components]];
     
     
