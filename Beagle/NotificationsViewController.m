@@ -147,10 +147,21 @@
         }
             break;
             
-        case 11: {
+        case ACTIVITY_CREATION_TYPE:
+        {
             notif.rowHeight = [AttributedTableViewCell heightForNotificationText:notif.notificationString];
             notif.rowHeight += [AttributedTableViewCell heightForTimeStampText:[BeagleUtilities calculateChatTimestamp:notif.timeOfNotification]];
             notif.rowHeight += [AttributedTableViewCell heightForNewInterestText:notif.activityWhat];
+            notif.rowHeight += 25; // this is the 'Are you in' button;
+            notif.rowHeight += 42.5; // all other buffers between object;
+            height=notif.rowHeight;
+        }
+            break;
+            
+         case JOINED_ACTIVITY_TYPE:
+        {
+            notif.rowHeight = [AttributedTableViewCell heightForNotificationText:notif.notificationString];
+            notif.rowHeight += [AttributedTableViewCell heightForTimeStampText:[BeagleUtilities calculateChatTimestamp:notif.timeOfNotification]];
             notif.rowHeight += 25; // this is the 'Are you in' button;
             notif.rowHeight += 42.5; // all other buffers between object;
             height=notif.rowHeight;
@@ -217,8 +228,9 @@
     
     fromTheTop += [AttributedTableViewCell heightForTimeStampText:[BeagleUtilities calculateChatTimestamp:play.timeOfNotification]];
     
-    if(play.notificationType==11){
+    if(play.notificationType==ACTIVITY_CREATION_TYPE||play.notificationType==JOINED_ACTIVITY_TYPE){
         
+        if(play.notificationType!=JOINED_ACTIVITY_TYPE){
         fromTheTop += 8; // adding buffer above the interest text
         
         NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
@@ -240,6 +252,7 @@
         [cell.contentView addSubview:whatLabel];
         
         fromTheTop += whatTextRect.size.height;
+        }
         fromTheTop += 8; // buffer below interest text
 
         UIButton *interestButton=[UIButton buttonWithType:UIButtonTypeCustom];
@@ -250,6 +263,7 @@
         
         fromTheTop += interestButton.frame.size.height;
     }
+    
     
     fromTheTop += 12; // buffer below the items on top
     

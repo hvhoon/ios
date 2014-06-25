@@ -39,8 +39,10 @@
 #define CHAT_TYPE 17
 #define WHAT_CHANGE_TYPE 1
 #define DATE_CHANGE_TYPE 2
+#define JOINED_ACTIVITY_TYPE 6
 #define PLAYER_JOINED_BEAGLE 7
 #define LEAVED_ACTIVITY_TYPE 8
+#define ACTIVITY_CREATION_TYPE 11
 #define GOING_TYPE 13
 
 #define kBeagleBadgeCount @"BeagleBadgeCount"
