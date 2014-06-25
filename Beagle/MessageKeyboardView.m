@@ -338,6 +338,7 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
     UIInterfaceOrientation _currentOrientation;
     CGRect keyboardFrameUp;
     BOOL _visible;
+    CGFloat bottomInsetS;
 }
 
 
@@ -626,6 +627,7 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
     CGFloat bottomInset = keyboardHeight - inputViewHeight;
     bottomInset *= RDRKeyboardIsFullyHidden(keyboardFrame) ? 0 : 1;
     
+    bottomInsetS=bottomInset;
     UIEdgeInsets contentInset = self.scrollView.contentInset;
     contentInset.bottom = bottomInset;
     self.scrollView.contentInset = contentInset;
@@ -745,19 +747,20 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
     else{
      newInputViewHeight = self.inputView.bounds.size.height;
     }
-    
-    if(isAutoPost){
-         bottomInset=0;
-        if(_visible){
-         bottomInset = keyboardFrameUp.size.height;
-        }
-    }
-    else{
-       if(newInputViewHeight>47)
+//    
+//    if(isAutoPost){
+//         bottomInset=47.0f+17.0f+bottomInsetS;
+//        //if(_visible){
+//         //bottomInset = keyboardFrameUp.size.height;
+//        //}
+//    }
+//    else{
+       if(newInputViewHeight>47.0f)
          bottomInset = keyboardFrameUp.size.height - newInputViewHeight;
       else
-         bottomInset = keyboardFrameUp.size.height;
-     }
+//         bottomInset = keyboardFrameUp.size.height;
+         bottomInset=47.0f+17.0f+bottomInsetS;
+//     }
 
 
     UIEdgeInsets contentInset = self.scrollView.contentInset;

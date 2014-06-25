@@ -784,7 +784,7 @@ enum Weeks {
 
 -(void)changeVisibilityFilter:(NSInteger)index{
     visibilityIndex=index;
-    
+    [self.navigationItem.rightBarButtonItem setTitle:@"Create"];
     switch (index) {
         case 1:
         {
