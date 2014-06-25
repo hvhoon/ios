@@ -747,22 +747,15 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
     else{
      newInputViewHeight = self.inputView.bounds.size.height;
     }
-//    
-//    if(isAutoPost){
-//         bottomInset=47.0f+17.0f+bottomInsetS;
-//        //if(_visible){
-//         //bottomInset = keyboardFrameUp.size.height;
-//        //}
-//    }
-//    else{
        if(newInputViewHeight>47.0f)
          bottomInset = keyboardFrameUp.size.height - newInputViewHeight;
       else
-//         bottomInset = keyboardFrameUp.size.height;
          bottomInset=47.0f+17.0f+bottomInsetS;
-//     }
-
-
+    
+    if(isAutoPost && newInputViewHeight>47.0f){
+       if(_visible)
+         bottomInset = keyboardFrameUp.size.height;
+    }
     UIEdgeInsets contentInset = self.scrollView.contentInset;
     contentInset.bottom = bottomInset;
     self.scrollView.contentInset = contentInset;
