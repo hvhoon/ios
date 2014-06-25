@@ -74,6 +74,14 @@ enum Weeks {
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
     
+    BeagleManager *BG=[BeagleManager SharedInstance];
+    if(BG.activityDeleted){
+        BG.activityDeleted=FALSE;
+        [self dismissViewControllerAnimated:NO completion:nil];
+        return;
+    }
+
+    
 }
 - (void)viewWillLayoutSubviews {
     
@@ -279,15 +287,6 @@ enum Weeks {
 }
 -(void)createButtonClicked:(id)sender{
     
-    
-    if(visibilityIndex==3 && !editState){
-     
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-        InterestInviteViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestInvite"];
-        [self.navigationController pushViewController:viewController animated:YES];
-        return;
-
-    }
     if([descriptionTextView.text length]==0){
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Missing Description"
                                                         message:@"Your interest must have a description."
@@ -295,6 +294,8 @@ enum Weeks {
         [alert show];
         return;
     }
+
+    
     bg_activity.activityDesc=descriptionTextView.text;
     
     NSDate *today = [NSDate date];
@@ -461,6 +462,18 @@ enum Weeks {
 }
 
     bg_activity.ownerid=[[BeagleManager SharedInstance]beaglePlayer].beagleUserId;
+    
+    if(visibilityIndex==3 && !editState){
+        
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        InterestInviteViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestInvite"];
+        viewController.interestDetail=bg_activity;
+        [self.navigationController pushViewController:viewController animated:YES];
+        return;
+        
+    }
+
+    
     
     if(self.activityServerManager!=nil){
         self.activityServerManager.delegate = nil;
@@ -797,8 +810,6 @@ enum Weeks {
         {
             [visibilityFilterButton setTitle:@"Custom" forState:UIControlStateNormal];
             [self.navigationItem.rightBarButtonItem setTitle:@"Select"];
-            [self.navigationItem.rightBarButtonItem setEnabled:YES];
-            [self.navigationItem.rightBarButtonItem setTintColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0]];
 
 
         }

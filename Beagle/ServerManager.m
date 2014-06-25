@@ -36,7 +36,7 @@
     if (self) {
         
         _internetReachability = [Reachability reachabilityForInternetConnection];
-        _serverUrl =localHost;
+        _serverUrl =herokuHost;
         [self populateErrorCodes];
     }
     return self;
@@ -104,12 +104,18 @@
         [activityEvent setObject:data.visibility forKey:@"access"];
         [activityEvent setObject:[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"] forKey:@"ownnerid"];
         [activityEvent setObject:data.endActivityDate  forKey:@"stop_when"];
-//        NSString *myTest=[NSString stringWithFormat:@"\"id\":123,\"pid\":124"];
-//
-//        [activityEvent setObject:myTest     forKey:@"invitees"];
+        NSString *bodyData=nil;
         
+        if([data.requestString length]!=0){
+
+      NSString *activityEventData=[NSString stringWithFormat:@"\"atype\":\"%@\",\"start_when\":\"%@\",\"where_lat\":\"%@\",\"where_lng\":\"%@\",\"where_city\":\"%@\",\"where_state\":\"%@\",\"what\":\"%@\",\"access\":\"%@\",\"ownnerid\":\"%@\",\"stop_when\":\"%@\"",[NSNumber numberWithInteger:1],data.startActivityDate,[NSNumber numberWithFloat:data.latitude],[NSNumber numberWithFloat:data.longitude],data.city,data.state,data.activityDesc,data.visibility,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],data.endActivityDate];
+       bodyData = [NSString stringWithFormat:@"{\"invitees\":%@,%@}",data.requestString,activityEventData];
+        }else{
+            bodyData=[activityEvent JSONRepresentation];
+        }
+        NSLog(@"bodyData=%@",bodyData);
         
-        NSData *postData = [[activityEvent JSONRepresentation] dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
+        NSData *postData = [bodyData dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
         
         
         [self callServerWithUrl:[NSString stringWithFormat:@"%@activities.json", _serverUrl]

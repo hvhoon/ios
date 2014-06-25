@@ -10,7 +10,8 @@
 #import "BeagleUserClass.h"
 #import "InviteTableViewCell.h"
 #import "IconDownloader.h"
-
+#import "BeagleActivityClass.h"
+#import "JSON.h"
 @interface InterestInviteViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,InviteTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate,UISearchBarDelegate>{
     BOOL isSearching;
 }
@@ -32,6 +33,7 @@
 @synthesize inviteTableView=_inviteTableView;
 @synthesize searchResults;
 @synthesize nameSearchBar;
+@synthesize interestDetail;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -103,6 +105,26 @@
 
 -(void)createButtonClicked:(id)sender{
     
+    if(self.inviteManager!=nil){
+        self.inviteManager.delegate = nil;
+        [self.inviteManager releaseServerManager];
+        self.inviteManager = nil;
+    }
+    
+    self.inviteManager=[[ServerManager alloc]init];
+    self.inviteManager.delegate=self;
+    if([self.selectedFriendsArray count]>0){
+    NSMutableArray *jsonContentArray=[NSMutableArray new];
+    for(BeagleUserClass*data in self.selectedFriendsArray){
+        		NSMutableDictionary *dictionary =[[NSMutableDictionary alloc]init];
+        			[dictionary setObject:[NSNumber numberWithInteger:data.beagleUserId] forKey:@"id"];
+        			[dictionary setObject:[NSNumber numberWithInteger:data.fbuid] forKey:@"fbuid"];
+        [jsonContentArray addObject:dictionary];
+    }
+      interestDetail.requestString =[jsonContentArray JSONRepresentation];
+    }
+    [self.inviteManager createActivityOnBeagle:interestDetail];
+
 }
 - (void)didReceiveMemoryWarning
 {
@@ -446,6 +468,7 @@
 
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
     
+    searchBar.showsCancelButton=NO;
     isSearching=TRUE;
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(doneButtonClicked:)];
@@ -601,7 +624,28 @@
         }
         
     }
-}
+    
+   else if(serverRequest==kServerCallCreateActivity){
+        
+        self.inviteManager.delegate = nil;
+        [self.inviteManager releaseServerManager];
+        self.inviteManager = nil;
+        
+        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
+            
+            id status=[response objectForKey:@"status"];
+            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
+                if(serverRequest==kServerCallCreateActivity){
+                    BeagleManager *BG=[BeagleManager SharedInstance];
+                    BG.activityDeleted=TRUE;
+                    BG.activityCreated=TRUE;
+                }
+                [self.navigationController popViewControllerAnimated:YES];
+                
+            }
+        }
+        
+    }}
 
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {

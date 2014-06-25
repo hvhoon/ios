@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+@class BeagleActivityClass;
 @interface InterestInviteViewController : UIViewController
-
+@property(nonatomic,strong)BeagleActivityClass*interestDetail;
 @end
