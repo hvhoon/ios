@@ -8,25 +8,30 @@
 
 #import "InterestInviteViewController.h"
 #import "BeagleUserClass.h"
-#import "FriendsTableViewCell.h"
+#import "InviteTableViewCell.h"
 #import "IconDownloader.h"
 
-@interface InterestInviteViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,FriendsTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate>
+@interface InterestInviteViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,InviteTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate,UISearchBarDelegate>{
+    BOOL isSearching;
+}
 @property(nonatomic,strong)ServerManager*inviteManager;
-@property(nonatomic,strong)NSArray *beagleFriendsArray;
-@property(nonatomic,strong)NSArray *facebookFriendsArray;
+@property(nonatomic,strong)NSMutableArray *nearbyFriendsArray;
+@property(nonatomic,strong)NSMutableArray *worldwideFriendsArray;
+@property(nonatomic,strong)NSMutableArray *searchResults;
+@property(nonatomic,strong)NSMutableArray *selectedFriendsArray;
 @property(nonatomic,strong)IBOutlet UITableView*inviteTableView;
 @property(nonatomic,strong)NSMutableDictionary*imageDownloadsInProgress;
-
+@property(nonatomic,strong)IBOutlet UISearchBar *nameSearchBar;
 @end
 
 @implementation InterestInviteViewController
 @synthesize inviteManager=_inviteManager;
 @synthesize imageDownloadsInProgress;
-@synthesize beagleFriendsArray=_beagleFriendsArray;
-@synthesize facebookFriendsArray=_facebookFriendsArray;
+@synthesize nearbyFriendsArray=_nearbyFriendsArray;
+@synthesize worldwideFriendsArray=_worldwideFriendsArray;
 @synthesize inviteTableView=_inviteTableView;
-
+@synthesize searchResults;
+@synthesize nameSearchBar;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -40,11 +45,23 @@
 {
     [super viewDidLoad];
     
+    _nearbyFriendsArray=[NSMutableArray new];
+    _selectedFriendsArray=[NSMutableArray new];
+    _worldwideFriendsArray=[NSMutableArray new];
+    CGRect newBounds = self.inviteTableView.bounds;
+    newBounds.origin.y = newBounds.origin.y + self.nameSearchBar.bounds.size.height;
+    self.inviteTableView.bounds = newBounds;
+    self.nameSearchBar.showsCancelButton=NO;
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Create" style:UIBarButtonItemStyleDone target:self action:@selector(createButtonClicked:)];
+    [self.navigationItem.rightBarButtonItem setTintColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0]];
+    self.navigationItem.rightBarButtonItem.enabled=YES;
+
     self.inviteTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
     self.inviteTableView.separatorInset = UIEdgeInsetsZero;
     self.inviteTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth
     |UIViewAutoresizingFlexibleHeight;
-    [self.inviteTableView setBackgroundColor:[BeagleUtilities returnBeagleColor:2]];
+    [self.inviteTableView setBackgroundColor:[UIColor whiteColor]];
     
     imageDownloadsInProgress=[NSMutableDictionary new];
     self.navigationController.navigationBar.topItem.title = @"";
@@ -57,7 +74,7 @@
     
     _inviteManager=[[ServerManager alloc]init];
     _inviteManager.delegate=self;
-    [_inviteManager getDOS1Friends];
+    [_inviteManager getNearbyAndWorldWideFriends];
     
         NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
         [style setAlignment:NSTextAlignmentLeft];
@@ -69,19 +86,23 @@
         
         CGSize maximumLabelSize = CGSizeMake(288,999);
         
-        CGRect inviteFriendsTextRect = [@"Invite Friends" boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
+        CGRect inviteFriendsTextRect = [@"Selected" boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
                                                                     attributes:attrs
                                                                        context:nil];
         
         UILabel *inviteFriendsTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,0,inviteFriendsTextRect.size.width,inviteFriendsTextRect.size.height)];
         inviteFriendsTextLabel.backgroundColor = [UIColor clearColor];
-        inviteFriendsTextLabel.text = @"Invite Friends";
+        inviteFriendsTextLabel.text = @"Selected";
         inviteFriendsTextLabel.textColor = [BeagleUtilities returnBeagleColor:4];
         inviteFriendsTextLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f];
         inviteFriendsTextLabel.textAlignment = NSTextAlignmentLeft;
         self.navigationItem.titleView=inviteFriendsTextLabel;
         
     // Do any additional setup after loading the view.
+}
+
+-(void)createButtonClicked:(id)sender{
+    
 }
 - (void)didReceiveMemoryWarning
 {
@@ -90,109 +111,212 @@
 }
 #pragma mark - Table view data source
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    if([self.beagleFriendsArray count]>0 && [self.facebookFriendsArray count]>0)
+    
+    if(isSearching){
+        return 1;
+    }
+    else{
+    if([self.selectedFriendsArray count]>0 && [self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0){
+        
+        return 3;
+    }
+    if(([self.selectedFriendsArray count]>0 && [self.nearbyFriendsArray count]>0)||([self.selectedFriendsArray count]>0 && [self.worldwideFriendsArray count]>0)||([self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0))
         return 2;
-    else if([self.beagleFriendsArray count]>0 || [self.facebookFriendsArray count]>0)
+    else if([self.selectedFriendsArray count]>0||[self.nearbyFriendsArray count]>0 || [self.worldwideFriendsArray count]>0)
         return 1;
     else
         return 0;
+    }
+    return 0;
 }
+
+
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
     
-    if([self.beagleFriendsArray count]>0 && [self.facebookFriendsArray count]>0){
-        if(section==0)
-            return [self.beagleFriendsArray count];
-        else{
-            return [self.facebookFriendsArray count];
+    if (isSearching) {
+        return [searchResults count];
+        
+    } else{
+        
+        if([self.selectedFriendsArray count]>0 && [self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0){
+            if (section==0) {
+                return [self.selectedFriendsArray count];
+            }
+            else if(section==1)
+                return [self.nearbyFriendsArray count];
+            else{
+                return [self.worldwideFriendsArray count];
+            }
+            
+        }
+        else if ([self.selectedFriendsArray count]>0 && [self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]==0){
+            if (section==0) {
+                return [self.selectedFriendsArray count];
+            }
+            else if(section==1)
+                return [self.nearbyFriendsArray count];
+            
         }
         
-    }
-    else if([self.beagleFriendsArray count]>0){
-        return [self.beagleFriendsArray count];
+        else if ([self.selectedFriendsArray count]>0 && [self.nearbyFriendsArray count]==0 && [self.worldwideFriendsArray count]>0){
+            if (section==0) {
+                return [self.selectedFriendsArray count];
+            }
+            else if(section==1)
+                return [self.worldwideFriendsArray count];
+            
+        }
+
+        
+        
+       else if([self.selectedFriendsArray count]==0 && [self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0){
+        if(section==0)
+            return [self.nearbyFriendsArray count];
+        else{
+            return [self.worldwideFriendsArray count];
+        }
+        
+       }
+    else if([self.selectedFriendsArray count]==0 && [self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]==0){
+        return [self.nearbyFriendsArray count];
         
     }
-    else if ([self.facebookFriendsArray count]>0)
-        return [self.facebookFriendsArray count];
+    else if ([self.selectedFriendsArray count]==0 && [self.nearbyFriendsArray count]==0 && [self.worldwideFriendsArray count]>0)
+        return [self.worldwideFriendsArray count];
+        
+    else if ([self.selectedFriendsArray count]>0 && [self.nearbyFriendsArray count]==0 && [self.worldwideFriendsArray count]==0)
+        return [self.selectedFriendsArray count];
     else
         return 0;
-    
+    }
+    return 0;
 }
 
-#define kSectionHeaderHeight    28.0
+#define kSectionHeaderHeight    31.0
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    if (!isSearching){
+    if([self.selectedFriendsArray count]>0 && section==0){
+         return 0.0f;
+    }
+    }
     return kSectionHeaderHeight;
 }
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     
+  if (!isSearching){
+    if([self.selectedFriendsArray count]>0 && section==0){
+        return [[UIView alloc]initWithFrame:CGRectZero];
+    }
+    }
     UIView *sectionHeaderview=[[UIView alloc]initWithFrame:CGRectMake(0,0,320,kSectionHeaderHeight)];
-    sectionHeaderview.backgroundColor=[BeagleUtilities returnBeagleColor:2];
+    sectionHeaderview.backgroundColor=[UIColor clearColor];
     
     
-    CGRect sectionLabelRect=CGRectMake(8,6.5,240,15);
+    CGRect sectionLabelRect=CGRectMake(16,16,240,15);
     UILabel *sectionLabel=[[UILabel alloc] initWithFrame:sectionLabelRect];
     sectionLabel.textAlignment=NSTextAlignmentLeft;
     
     sectionLabel.font=[UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f];
-    sectionLabel.textColor=[BeagleUtilities returnBeagleColor:4];
+    sectionLabel.textColor=[BeagleUtilities returnBeagleColor:12];
     sectionLabel.backgroundColor=[UIColor clearColor];
     [sectionHeaderview addSubview:sectionLabel];
     
     
-    if([self.beagleFriendsArray count]>0 && [self.facebookFriendsArray count]>0){
-        if(section==0)
-            sectionLabel.text=[NSString stringWithFormat:@"%ld ALREADY ON BEAGLE",(unsigned long)[self.beagleFriendsArray count]];
-        else{
-            sectionLabel.text=[NSString stringWithFormat:@"%ld POOR SOULS ARE MISSING OUT",(unsigned long)[self.facebookFriendsArray count]];
-        }
-        
-    }
-    else if([self.beagleFriendsArray count]>0){
-        sectionLabel.text=[NSString stringWithFormat:@"%ld ALREADY ON BEAGLE",(unsigned long)[self.beagleFriendsArray count]];
-        
-    }
-    else if ([self.facebookFriendsArray count]>0)
-        sectionLabel.text=[NSString stringWithFormat:@"%ld POOR SOULS ARE MISSING OUT",(unsigned long)[self.facebookFriendsArray count]];
+    if (isSearching){
+        sectionLabel.text=@"SEARCH RESULTS";
     
+    }
+    
+    else{
+      if([self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0){
+         if(section==1)
+            sectionLabel.text=@"FRIENDS AROUND YOU";
+        else
+            sectionLabel.text=@"FRIENDS WORLDWIDE";
+      }
+    else if([self.nearbyFriendsArray count]>0)
+            sectionLabel.text=@"FRIENDS AROUND YOU";
+
+    else if ([self.worldwideFriendsArray count]>0)
+            sectionLabel.text=@"FRIENDS WORLDWIDE";
+    }
     return sectionHeaderview;
     
 }
 -(CGFloat)tableView:(UITableView*)tableView heightForRowAtIndexPath:(NSIndexPath*)indexPath {
     
-    return 51.0f;
+    return 66.0f;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *CellIdentifier = @"MediaTableCell";
     
     
-    FriendsTableViewCell *cell = (FriendsTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    InviteTableViewCell *cell = (InviteTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     //if (cell == nil) {
-    cell =[[FriendsTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+    cell =[[InviteTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     cell.selectionStyle=UITableViewCellSelectionStyleNone;
     //}
     
     BeagleUserClass *player=nil;
+
     
-    if([self.beagleFriendsArray count]>0 && [self.facebookFriendsArray count]>0){
-        if(indexPath.section==0)
-            player = (BeagleUserClass *)[self.beagleFriendsArray objectAtIndex:indexPath.row];
+    if (isSearching){
+        player=[self.searchResults objectAtIndex:indexPath.row];
+    }else{
+    
+    if([self.selectedFriendsArray count]>0 && [self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0){
+        if(indexPath.section==0){
+            player = (BeagleUserClass *)[self.selectedFriendsArray objectAtIndex:indexPath.row];
+        }
+        else if(indexPath.section==1)
+            player = (BeagleUserClass *)[self.nearbyFriendsArray objectAtIndex:indexPath.row];
         else{
-            player = (BeagleUserClass *)[self.facebookFriendsArray objectAtIndex:indexPath.row];
+            player = (BeagleUserClass *)[self.worldwideFriendsArray objectAtIndex:indexPath.row];
         }
         
     }
-    else if([self.beagleFriendsArray count]>0){
-        player = (BeagleUserClass *)[self.beagleFriendsArray objectAtIndex:indexPath.row];
+    else if([self.selectedFriendsArray count]>0 &&[self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]==0){
+        if(indexPath.section==0)
+            player = (BeagleUserClass *)[self.selectedFriendsArray objectAtIndex:indexPath.row];
+        else
+            player = (BeagleUserClass *)[self.nearbyFriendsArray objectAtIndex:indexPath.row];
+        
         
     }
-    else if ([self.facebookFriendsArray count]>0)
-        player = (BeagleUserClass *)[self.facebookFriendsArray objectAtIndex:indexPath.row];
+    else if ([self.selectedFriendsArray count]>0 && [self.worldwideFriendsArray count]>0&& [self.nearbyFriendsArray count]==0){
+        if(indexPath.section==0)
+            player = (BeagleUserClass *)[self.selectedFriendsArray objectAtIndex:indexPath.row];
+        else
+            player = (BeagleUserClass *)[self.worldwideFriendsArray objectAtIndex:indexPath.row];
+    }
+    else if([self.selectedFriendsArray count]==0 && [self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0){
+        if(indexPath.section==0)
+            player = (BeagleUserClass *)[self.nearbyFriendsArray objectAtIndex:indexPath.row];
+        else{
+            player = (BeagleUserClass *)[self.worldwideFriendsArray objectAtIndex:indexPath.row];
+        }
+        
+    }
+    else if([self.selectedFriendsArray count]==0 && [self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]==0){
+        player = (BeagleUserClass *)[self.nearbyFriendsArray objectAtIndex:indexPath.row];
+        
+    }
+    else if ([self.selectedFriendsArray count]==0 && [self.nearbyFriendsArray count]==0 && [self.worldwideFriendsArray count]>0)
+        player = (BeagleUserClass *)[self.worldwideFriendsArray objectAtIndex:indexPath.row];
+        
     
+    else if ([self.selectedFriendsArray count]>0 && [self.nearbyFriendsArray count]==0 && [self.worldwideFriendsArray count]==0){
+        player = (BeagleUserClass *)[self.selectedFriendsArray objectAtIndex:indexPath.row];
+    }
+    }
     cell.delegate=self;
     cell.cellIndexPath=indexPath;
     cell.bgPlayer = player;
+    
+
     UIImage*checkImge=nil;
     if(player.beagleUserId!=0)
         checkImge= [BeagleUtilities loadImage:player.beagleUserId];
@@ -217,7 +341,6 @@
         player.profileData=UIImagePNGRepresentation(checkImge);
         cell.photoImage =checkImge;
     }
-    
     
     [cell setNeedsDisplay];
     return cell;
@@ -244,17 +367,17 @@
 - (void)loadImagesForOnscreenRows{
     
     
-    if([self.beagleFriendsArray count]>0 || [self.facebookFriendsArray count]>0){
+    if([self.nearbyFriendsArray count]>0 || [self.worldwideFriendsArray count]>0){
         NSArray *visiblePaths = [self.inviteTableView indexPathsForVisibleRows];
-        if([self.beagleFriendsArray count]>0 && [self.facebookFriendsArray count]>0){
+        if([self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0){
             
             for (NSIndexPath *indexPath in visiblePaths)
             {
                 BeagleUserClass *appRecord=nil;
                 if(indexPath.section==0)
-                    appRecord = (BeagleUserClass *)[self.beagleFriendsArray objectAtIndex:indexPath.row];
+                    appRecord = (BeagleUserClass *)[self.nearbyFriendsArray objectAtIndex:indexPath.row];
                 else{
-                    appRecord = (BeagleUserClass *)[self.facebookFriendsArray objectAtIndex:indexPath.row];
+                    appRecord = (BeagleUserClass *)[self.worldwideFriendsArray objectAtIndex:indexPath.row];
                     
                 }
                 
@@ -266,10 +389,10 @@
             }
             
         }
-        else if([self.beagleFriendsArray count]>0){
+        else if([self.nearbyFriendsArray count]>0){
             for (NSIndexPath *indexPath in visiblePaths)
             {
-                BeagleUserClass *appRecord=(BeagleUserClass *)[self.beagleFriendsArray objectAtIndex:indexPath.row];
+                BeagleUserClass *appRecord=(BeagleUserClass *)[self.nearbyFriendsArray objectAtIndex:indexPath.row];
                 if (!appRecord.profileData) // avoid the app icon download if the app already has an icon
                 {
                     [self startIconDownload:appRecord forIndexPath:indexPath];
@@ -277,11 +400,11 @@
             }
             
         }
-        else if ([self.facebookFriendsArray count]>0){
+        else if ([self.worldwideFriendsArray count]>0){
             {
                 for (NSIndexPath *indexPath in visiblePaths)
                 {
-                    BeagleUserClass *appRecord=(BeagleUserClass *)[self.facebookFriendsArray objectAtIndex:indexPath.row];
+                    BeagleUserClass *appRecord=(BeagleUserClass *)[self.worldwideFriendsArray objectAtIndex:indexPath.row];
                     if (!appRecord.profileData) // avoid the app icon download if the app already has an icon
                     {
                         [self startIconDownload:appRecord forIndexPath:indexPath];
@@ -299,7 +422,7 @@
     IconDownloader *iconDownloader = [self.imageDownloadsInProgress objectForKey:indexPath];
     if (iconDownloader != nil)
     {
-        FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.inviteTableView cellForRowAtIndexPath:iconDownloader.indexPathInTableView];
+        InviteTableViewCell *cell = (InviteTableViewCell*)[self.inviteTableView cellForRowAtIndexPath:iconDownloader.indexPathInTableView];
         cell.photoImage =[UIImage imageWithData:iconDownloader.friendRecord.profileData];
         if(iconDownloader.friendRecord.beagleUserId!=0)
             [BeagleUtilities saveImage:cell.photoImage withFileName:iconDownloader.friendRecord.beagleUserId];
@@ -309,6 +432,44 @@
 }
 
 
+#pragma mark -
+#pragma mark UISearchBar Delegate
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    
+    
+    if (![searchBar isFirstResponder]) {
+        // User tapped the 'clear' button.
+    }
+    [self filterContentForSearchText:searchBar.text];
+}
+
+- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
+    
+    isSearching=TRUE;
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(doneButtonClicked:)];
+    
+    self.navigationItem.hidesBackButton = YES;
+
+    return YES;
+}
+-(void)doneButtonClicked:(id)sender{
+    isSearching=FALSE;
+    [self.inviteTableView reloadData];
+    [self.nameSearchBar resignFirstResponder];
+    CGRect newBounds = self.inviteTableView.bounds;
+    newBounds.origin.y = newBounds.origin.y + self.nameSearchBar.bounds.size.height;
+    self.inviteTableView.bounds = newBounds;
+    self.nameSearchBar.showsCancelButton=YES;
+
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Create" style:UIBarButtonItemStylePlain target:self action:@selector(createButtonClicked:)];
+    self.navigationItem.hidesBackButton = NO;
+
+}
+-(void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
+    [searchBar resignFirstResponder];
+}
 #pragma mark -
 #pragma mark Deferred image loading (UIScrollViewDelegate)
 
@@ -326,17 +487,63 @@
     [self loadImagesForOnscreenRows];
 }
 
-#pragma mark - Facebook Invite  calls
--(void)inviteFacebookFriendOnBeagle:(NSIndexPath*)indexPath{
-    BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:indexPath.row];
+#pragma mark -  Invite/Uninvite  calls
+-(void)inviteFriendOnBeagle:(NSIndexPath*)indexPath{
+    BeagleUserClass *player=nil;
+    if ([self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0){
+        if(indexPath.section==0){
+            player = (BeagleUserClass *)[self.nearbyFriendsArray objectAtIndex:indexPath.row];
+         [self.nearbyFriendsArray removeObjectAtIndex:indexPath.row];
+        }
+        else{
+            player = (BeagleUserClass *)[self.worldwideFriendsArray objectAtIndex:indexPath.row];
+           [self.worldwideFriendsArray removeObjectAtIndex:indexPath.row];
+        }
+        
+    }
+    else if([self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]==0){
+
+        player = (BeagleUserClass *)[self.nearbyFriendsArray objectAtIndex:indexPath.row];
+       [self.nearbyFriendsArray removeObjectAtIndex:indexPath.row];
+    }
+    else if ([self.nearbyFriendsArray count]==0 && [self.worldwideFriendsArray count]>0){
+        player = (BeagleUserClass *)[self.worldwideFriendsArray objectAtIndex:indexPath.row];
+    [self.worldwideFriendsArray removeObjectAtIndex:indexPath.row];
+    }
+    player.isInvited=TRUE;
+    [self.selectedFriendsArray addObject:player];
+    [self.inviteTableView reloadData];
+    if(isSearching){
+        [self filterContentForSearchText:self.nameSearchBar.text];
+    }
+
+}
+
+
+-(void)unInviteFriendOnBeagle:(NSIndexPath*)indexPath{
+    if([self.selectedFriendsArray count]>0){
+        BeagleUserClass *player=[self.selectedFriendsArray objectAtIndex:indexPath.row];
+        player.isInvited=FALSE;
+        [self.selectedFriendsArray removeObjectAtIndex:indexPath.row];
+        if(player.distance<=50.0f){
+             [self.nearbyFriendsArray addObject:player];
+        }
+        else{
+             [self.worldwideFriendsArray addObject:player];
+        }
+        [self.inviteTableView reloadData];
+    }
     
+    if(isSearching){
+        [self filterContentForSearchText:self.nameSearchBar.text];
+    }
 }
 
 #pragma mark - server calls
 
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
     
-    if(serverRequest==kServerCallGetDOS1Friends){
+    if(serverRequest==kServerCallgetNearbyAndWorldWideFriends){
         
             _inviteManager.delegate = nil;
             [_inviteManager releaseServerManager];
@@ -354,32 +561,32 @@
                 if (profile != nil && [profile class] != [NSNull class]) {
                     
                     
-                    NSArray *beagle_friends=[profile objectForKey:@"beagle_friends"];
-                    if (beagle_friends != nil && [beagle_friends class] != [NSNull class] && [beagle_friends count]!=0) {
+                    NSArray *nearby_friends=[profile objectForKey:@"nearby_friends"];
+                    if (nearby_friends != nil && [nearby_friends class] != [NSNull class] && [nearby_friends count]!=0) {
                         
                         
-                        NSMutableArray *beagleFriendsArray=[[NSMutableArray alloc]init];
-                        for(id el in beagle_friends){
+                        NSMutableArray *nearbyFriendsArray=[[NSMutableArray alloc]init];
+                        for(id el in nearby_friends){
                             BeagleUserClass *userClass=[[BeagleUserClass alloc]initWithProfileDictionary:el];
-                            [beagleFriendsArray addObject:userClass];
+                            [nearbyFriendsArray addObject:userClass];
                         }
                         
-                        if([beagleFriendsArray count]!=0){
-                            self.beagleFriendsArray=[NSArray arrayWithArray:beagleFriendsArray];
+                        if([nearbyFriendsArray count]!=0){
+                            [self.nearbyFriendsArray addObjectsFromArray:nearbyFriendsArray];
                         }
                         
                     }
-                    NSArray *facebook_friends=[profile objectForKey:@"facebook_friends"];
-                    if (facebook_friends != nil && [facebook_friends class] != [NSNull class] && [facebook_friends count]!=0) {
+                    NSArray *worldwide_friends=[profile objectForKey:@"worldwide_friends"];
+                    if (worldwide_friends != nil && [worldwide_friends class] != [NSNull class] && [worldwide_friends count]!=0) {
                         
-                        NSMutableArray *facebookFriendsArray=[[NSMutableArray alloc]init];
-                        for(id el in facebook_friends){
+                        NSMutableArray *worldwideFriendsArray=[[NSMutableArray alloc]init];
+                        for(id el in worldwideFriendsArray){
                             BeagleUserClass *userClass=[[BeagleUserClass alloc]initWithProfileDictionary:el];
-                            [facebookFriendsArray addObject:userClass];
+                            [worldwideFriendsArray addObject:userClass];
                         }
                         
-                        if([facebookFriendsArray count]!=0){
-                            self.facebookFriendsArray=[NSArray arrayWithArray:facebookFriendsArray];
+                        if([worldwideFriendsArray count]!=0){
+                            [self.worldwideFriendsArray addObjectsFromArray:worldwideFriendsArray];
                         }
                         
                         
@@ -399,7 +606,7 @@
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {
     
-    if(serverRequest==kServerCallGetDOS1Friends)
+    if(serverRequest==kServerCallgetNearbyAndWorldWideFriends)
     {
         _inviteManager.delegate = nil;
         [_inviteManager releaseServerManager];
@@ -414,7 +621,7 @@
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
 {
     
-    if(serverRequest==kServerCallGetDOS1Friends)
+    if(serverRequest==kServerCallgetNearbyAndWorldWideFriends)
     {
         _inviteManager.delegate = nil;
         [_inviteManager releaseServerManager];
@@ -424,6 +631,47 @@
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
     [alert show];
 }
+
+- (void)filterContentForSearchText:(NSString*)searchText
+{
+    NSPredicate *resultPredicate = [NSPredicate
+                                    predicateWithFormat:@"SELF.fullName contains[cd] %@",
+                                    searchText];
+    
+    NSMutableArray *testArray=[NSMutableArray new];
+    
+    
+    NSMutableSet* firstArraySet = [[NSMutableSet alloc] init];
+    NSMutableSet* secondArraySet = [[NSMutableSet alloc] init];
+    
+
+    
+
+    
+    if([self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0){
+        [testArray addObjectsFromArray:self.nearbyFriendsArray];
+        [testArray addObjectsFromArray:self.worldwideFriendsArray];
+    NSArray *resultsArray = [testArray filteredArrayUsingPredicate:resultPredicate];
+    self.searchResults=[NSMutableArray arrayWithArray:resultsArray];
+    }
+    else if([self.nearbyFriendsArray count]>0){
+    [testArray addObjectsFromArray:self.nearbyFriendsArray];
+    NSArray *resultsArray = [testArray filteredArrayUsingPredicate:resultPredicate];
+    self.searchResults=[NSMutableArray arrayWithArray:resultsArray];
+    }
+    else if ([self.worldwideFriendsArray count]>0){
+    [testArray addObjectsFromArray:self.worldwideFriendsArray];
+    NSArray *resultsArray = [testArray filteredArrayUsingPredicate:resultPredicate];
+    self.searchResults=[NSMutableArray arrayWithArray:resultsArray];
+    }
+    [firstArraySet addObjectsFromArray:self.searchResults];
+    [secondArraySet addObjectsFromArray:self.selectedFriendsArray];
+    [firstArraySet minusSet: secondArraySet];
+    self.searchResults=[NSMutableArray arrayWithArray:[firstArraySet allObjects]];
+    [self.inviteTableView reloadData];
+}
+
+
 
 /*
 #pragma mark - Navigation

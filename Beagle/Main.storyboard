@@ -688,6 +688,14 @@
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <searchBar key="tableHeaderView" contentMode="redraw" placeholder="Search for people" id="c5W-Y0-h92">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                    <textInputTraits key="textInputTraits"/>
+                                    <connections>
+                                        <outlet property="delegate" destination="F0j-Xp-e2F" id="ucz-Ov-hbs"/>
+                                    </connections>
+                                </searchBar>
                                 <connections>
                                     <outlet property="dataSource" destination="F0j-Xp-e2F" id="uV3-df-xhS"/>
                                     <outlet property="delegate" destination="F0j-Xp-e2F" id="Uqc-5p-BO4"/>
@@ -696,6 +704,10 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
+                    <connections>
+                        <outlet property="inviteTableView" destination="9IQ-Dh-jKp" id="9Nm-Le-Yza"/>
+                        <outlet property="nameSearchBar" destination="c5W-Y0-h92" id="q9Z-Gf-pAe"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0q7-aQ-UUh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

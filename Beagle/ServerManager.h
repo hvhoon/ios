@@ -28,7 +28,8 @@ typedef enum {
     kServerCallInAppForOfflinePost,
     kServerCallGetProfileMutualFriends,
     kServerCallGetDOS1Friends,
-    kServerPostAPrivateMessageOnFacebook
+    kServerPostAPrivateMessageOnFacebook,
+    kServerCallgetNearbyAndWorldWideFriends
 } ServerCallType;
 
 @class ServerManager;
@@ -71,4 +72,5 @@ typedef enum {
 -(void)getMutualFriendsNetwork:(NSInteger)friendId;
 -(void)getDOS1Friends;
 -(void)sendingAPostMessageOnFacebook:(NSInteger)fbuid;
+-(void)getNearbyAndWorldWideFriends;
 @end

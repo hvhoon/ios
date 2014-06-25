@@ -26,5 +26,4 @@
 @property (nonatomic,weak)id <FriendsTableViewCellDelegate> delegate;
 @property (nonatomic, strong) BeagleUserClass *bgPlayer;
 @property(nonatomic,strong)NSIndexPath *cellIndexPath;
-
 @end

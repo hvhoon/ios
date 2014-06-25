@@ -25,7 +25,7 @@
 @property(nonatomic,assign)NSInteger badge;
 @property(nonatomic,strong)NSData*profileData;
 @property(nonatomic,assign)BOOL isInvited;
-
+@property(nonatomic,assign)CGFloat distance;
 -(id) initWithDictionary:(NSDictionary *)dictionary;
 -(id) initWithProfileDictionary:(NSDictionary*)dictionary;
 -(id) initWithActivityObject:(BeagleActivityClass*)activity;

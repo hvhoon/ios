@@ -112,11 +112,10 @@ static UIFont *secondTextFont = nil;
         [inviteStatusButton addTarget:self action:@selector(inviteButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
         }
         [self addSubview:inviteStatusButton];
+        
     }
-
-    
-    
 }
+
 
 -(void)inviteButtonClicked:(id)sender{
     if (self.delegate && [self.delegate respondsToSelector:@selector(inviteFacebookFriendOnBeagle:)])

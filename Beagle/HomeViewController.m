@@ -1304,7 +1304,11 @@
             break;
         case 2:
         {
-            
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+            FriendsViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"profileScreen"];
+            viewController.inviteFriends=YES;
+            [self.navigationController pushViewController:viewController animated:YES];
+
         }
             break;
         case 3:

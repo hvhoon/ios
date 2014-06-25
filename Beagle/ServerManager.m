@@ -36,7 +36,7 @@
     if (self) {
         
         _internetReachability = [Reachability reachabilityForInternetConnection];
-        _serverUrl =herokuHost;
+        _serverUrl =localHost;
         [self populateErrorCodes];
     }
     return self;
@@ -464,6 +464,20 @@
         [self internetNotAvailable];
     }
 
+}
+-(void)getNearbyAndWorldWideFriends{
+    _serverCallType=kServerCallgetNearbyAndWorldWideFriends;
+    if([self isInternetAvailable])
+    {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@players/friendwithdos1NearbyAndWorldwide.json?id=%@&lat=%@&lng=%@",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],[NSNumber numberWithFloat:[[BeagleManager SharedInstance]currentLocation].coordinate.latitude],[NSNumber numberWithFloat:[[BeagleManager SharedInstance]currentLocation].coordinate.longitude]]
+                         method:@"GET"
+                         params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+    
 }
 -(void)populateErrorCodes
 {

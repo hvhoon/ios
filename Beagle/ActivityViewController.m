@@ -284,7 +284,7 @@ enum Weeks {
      
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         InterestInviteViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestInvite"];
-        [self.navigationController presentViewController:viewController animated:YES completion:nil];
+        [self.navigationController pushViewController:viewController animated:YES];
         return;
 
     }
@@ -797,6 +797,9 @@ enum Weeks {
         {
             [visibilityFilterButton setTitle:@"Custom" forState:UIControlStateNormal];
             [self.navigationItem.rightBarButtonItem setTitle:@"Select"];
+            [self.navigationItem.rightBarButtonItem setEnabled:YES];
+            [self.navigationItem.rightBarButtonItem setTintColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0]];
+
 
         }
             break;
