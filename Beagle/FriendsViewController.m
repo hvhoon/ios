@@ -166,8 +166,6 @@
 
 
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
-    BeagleManager *BG=[BeagleManager SharedInstance];
-    BG.activityCreated=TRUE;
 
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
     
@@ -191,16 +189,14 @@
         
     }
     
-    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+
     
 }
 
 
 -(void)postInAppNotification:(NSNotification*)note{
     
-    BeagleManager *BG=[BeagleManager SharedInstance];
-    BG.activityCreated=TRUE;
-
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
     
     if(!notifObject.isOffline){
@@ -223,7 +219,8 @@
         
         
     }
-    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+
     
 }
 

@@ -193,8 +193,6 @@ enum Weeks {
 }
 
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
-    BeagleManager *BG=[BeagleManager SharedInstance];
-    BG.activityCreated=TRUE;
 
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
     
@@ -222,11 +220,12 @@ enum Weeks {
 
         [self dismissViewControllerAnimated:YES completion:Nil];
     }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+
 }
 
 -(void)postInAppNotification:(NSNotification*)note{
-    BeagleManager *BG=[BeagleManager SharedInstance];
-    BG.activityCreated=TRUE;
 
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
     
@@ -250,6 +249,7 @@ enum Weeks {
 
         
     }
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
 
     
 }
@@ -844,8 +844,7 @@ enum Weeks {
             id status=[response objectForKey:@"status"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 if(serverRequest==kServerCallCreateActivity){
-                    BeagleManager *BG=[BeagleManager SharedInstance];
-                    BG.activityCreated=TRUE;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
                 }
                 [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
 
@@ -865,7 +864,8 @@ enum Weeks {
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 BeagleManager *BG=[BeagleManager SharedInstance];
                 BG.activityDeleted=TRUE;
-                 BG.activityCreated=TRUE;
+                [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+
                 [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
                 
             }

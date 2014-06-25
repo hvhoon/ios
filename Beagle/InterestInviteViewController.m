@@ -638,7 +638,8 @@
                 if(serverRequest==kServerCallCreateActivity){
                     BeagleManager *BG=[BeagleManager SharedInstance];
                     BG.activityDeleted=TRUE;
-                    BG.activityCreated=TRUE;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+
                 }
                 [self.navigationController popViewControllerAnimated:YES];
                 

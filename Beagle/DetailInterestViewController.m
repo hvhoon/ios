@@ -117,9 +117,6 @@ static NSString * const CellIdentifier = @"cell";
 
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
     
-    BeagleManager *BG=[BeagleManager SharedInstance];
-    BG.activityCreated=TRUE;
-
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
     if(notifObject.activityId==self.interestActivity.activityId && (notifObject.notificationType==WHAT_CHANGE_TYPE || notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==CANCEL_ACTIVITY_TYPE)){
         //do the description and text update
@@ -263,15 +260,13 @@ static NSString * const CellIdentifier = @"cell";
     }
     
     
-    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+
 }
 
 
 -(void)postInAppNotification:(NSNotification*)note{
     
-    BeagleManager *BG=[BeagleManager SharedInstance];
-    BG.activityCreated=TRUE;
-
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
     
     if(notifObject.activityId==self.interestActivity.activityId && notifObject.notificationType==CHAT_TYPE){
@@ -295,6 +290,9 @@ else if(!notifObject.isOffline){
     UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
     [keyboard addSubview:notifView];
     }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+
     
 }
 -(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
@@ -1205,8 +1203,6 @@ else if(!notifObject.isOffline){
         [_interestUpdateManager releaseServerManager];
         _interestUpdateManager = nil;
         scrollViewResize=TRUE;
-        BeagleManager *BG=[BeagleManager SharedInstance];
-        BG.activityCreated=TRUE;
 
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
@@ -1294,11 +1290,10 @@ else if(!notifObject.isOffline){
                 
             }
         }
-        
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+
     }
     else if (serverRequest==kServerCallPostComment||serverRequest==kServerCallGetBackgroundChats||serverRequest==kServerInAppChatDetail){
-        BeagleManager *BG=[BeagleManager SharedInstance];
-        BG.activityCreated=TRUE;
         _chatPostManager.delegate = nil;
         [_chatPostManager releaseServerManager];
         _chatPostManager = nil;
@@ -1356,6 +1351,8 @@ else if(!notifObject.isOffline){
             self.contentWrapper.inputView.rightButton.enabled = YES;
             self.contentWrapper.inputView.rightButton.tintColor = [BeagleUtilities returnBeagleColor:1];
         }
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+
     }
     [self.detailedInterestTableView reloadData];
 }
@@ -1433,8 +1430,7 @@ else if(!notifObject.isOffline){
 }
     else if(alertView.tag==647){
         if (buttonIndex == 0) {
-            BeagleManager *BG=[BeagleManager SharedInstance];
-            BG.activityCreated=TRUE;
+            [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
             [self.navigationController popViewControllerAnimated:YES];
         }
     }

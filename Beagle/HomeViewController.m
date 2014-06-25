@@ -98,21 +98,21 @@
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
    
-    
-     BeagleManager *BG=[BeagleManager SharedInstance];
-    if(BG.activityCreated){
-        isPushAuto=FALSE;
-        BG.activityCreated=FALSE;
+}
+
+-(void)addADelay{
+    [self performSelector:@selector(updateHomeScreen) withObject:nil afterDelay:1.0];
+}
+-(void)updateHomeScreen{
     if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
-       
+        
         [self refresh];
         
     }
     else{
         [self startStandardUpdates];
     }
-
-    }
+    
 }
 
 -(void)disableInAppNotification{
@@ -124,7 +124,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addADelay) name:kNotificationHomeAutoRefresh object:Nil];
+
     categoryFilterType=1;
     self.filterBlurView = [EventInterestFilterBlurView loadEventInterestFilter:self.view];
     self.filterBlurView.delegate=self;
