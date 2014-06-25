@@ -760,16 +760,16 @@ enum Weeks {
 
         //user has picked today
     }else if(differenceInDays==1){
-        [components setHour: 00];
-        [components setMinute:00];
-        [components setSecond:00];
+        [components setHour: [components hour]];
+        [components setMinute:[components minute]];
+        [components setSecond:[components second]];
         self.bg_activity.startActivityDate=[dateFormatter stringFromDate:[calendar dateFromComponents:components]];
         [timeFilterButton setTitle:@"Tommorow" forState:UIControlStateNormal];
     }
     else{
-        [components setHour: 00];
-        [components setMinute:00];
-        [components setSecond:00];
+        [components setHour: [components hour]];
+        [components setMinute:[components minute]];
+        [components setSecond:[components second]];
         self.bg_activity.startActivityDate=[dateFormatter stringFromDate:[calendar dateFromComponents:components]];
         NSDateFormatter *localDateFormatter = [[NSDateFormatter alloc] init];
         [localDateFormatter setDateFormat:@"EEE, MMM d"];
@@ -779,9 +779,9 @@ enum Weeks {
         
     }
     
-    [components setHour: 23];
-    [components setMinute:59];
-    [components setSecond:59];
+    [components setHour: [components hour]];
+    [components setMinute:[components minute]];
+    [components setSecond:[components second]];
     self.bg_activity.endActivityDate=[dateFormatter stringFromDate:[calendar dateFromComponents:components]];
     
     
