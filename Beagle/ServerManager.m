@@ -485,6 +485,30 @@
     }
     
 }
+-(void)updateSuggestedPostMembership:(NSInteger)activityId{
+        _serverCallType=kServerCallSuggestedPostMembership;
+    if([self isInternetAvailable])
+    {
+        
+        NSMutableDictionary* updateMembership =[[NSMutableDictionary alloc] init];
+        [updateMembership setObject:[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"] forKey:@"pid"];
+        [updateMembership setObject:[NSNumber numberWithInteger:activityId] forKey:@"id"];
+        [updateMembership setObject:@"true" forKey:@"pstatus"];
+        
+        NSData *postData = [[updateMembership JSONRepresentation] dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
+        
+        
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@suggestedactivity.json", _serverUrl]
+                         method:@"PUT"
+                         params:nil data:postData];
+        
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+
+}
 -(void)populateErrorCodes
 {
     _errorCodes = [[NSMutableDictionary alloc]init];

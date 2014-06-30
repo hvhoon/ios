@@ -306,7 +306,6 @@
     viewController.interestServerManager=[[ServerManager alloc]init];
     viewController.interestServerManager.delegate=viewController;
     viewController.isRedirected=TRUE;
-        //ask harish about this scenario
         
     if(play.notificationType==CHAT_TYPE)
         viewController.toLastPost=TRUE;

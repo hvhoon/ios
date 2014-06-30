@@ -101,7 +101,7 @@
 }
 
 -(void)addADelay{
-    [self performSelector:@selector(updateHomeScreen) withObject:nil afterDelay:1.0];
+    [self performSelector:@selector(updateHomeScreen) withObject:nil afterDelay:0.85];
 }
 -(void)updateHomeScreen{
     if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
@@ -689,6 +689,10 @@
     CGRect textRect = [play.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
                                                      attributes:attrs context:nil];
     
+    if(play.activityType==2){
+        return rowHeight+textRect.size.height+16+18+16;
+    }
+    
     // If there are no participants, reduce the size of the card
     if (play.participantsCount==0) return rowHeight+textRect.size.height;
     
@@ -708,10 +712,13 @@
     
     cell.delegate=self;
     cell.cellIndex=indexPath.row;
-//    NSLog(@"result=%@",[BeagleUtilities activityTime:play.startActivityDate endate:play.endActivityDate]);
+    
     cell.bg_activity = play;
     
-    UIImage*checkImge= [BeagleUtilities loadImage:play.ownerid];
+    UIImage*checkImge=nil;
+    if(play.ownerid!=0 && play.activityType==1)
+        checkImge= [BeagleUtilities loadImage:play.ownerid];
+
     if(checkImge==nil){
     
     if (!play.profilePhotoImage)
@@ -959,273 +966,7 @@
     
 }
 
-#pragma mark - server calls
 
-- (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
-    
-    [_tableViewController.refreshControl endRefreshing];
-    
-    if(serverRequest==kServerCallGetActivities){
-        
-        self.filterActivitiesOnHomeScreen=[[NSMutableDictionary alloc]init];
-        
-        _homeActivityManager.delegate = nil;
-        [_homeActivityManager releaseServerManager];
-        _homeActivityManager = nil;
-        
-        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
-            
-            id status=[response objectForKey:@"status"];
-            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
-                
-                id badge=[response objectForKey:@"badge"];
-                if (badge != nil && [badge class] != [NSNull class]){
-                
-                NSLog(@"check for badge count in Home Screen=%@",badge);
-                [[BeagleManager SharedInstance]setBadgeCount:[badge integerValue]];
-                [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[BeagleManager SharedInstance]badgeCount]];
-                
-                [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
-
-                }
-                id activities=[response objectForKey:@"activities"];
-                if (activities != nil && [activities class] != [NSNull class]) {
-                    
-                    
-                    NSArray *happenarndu=[activities objectForKey:@"beagle_happenarndu"];
-                    if (happenarndu != nil && [happenarndu class] != [NSNull class] && [happenarndu count]!=0) {
-                        NSMutableArray *activitiesArray=[[NSMutableArray alloc]init];
-                        for(id el in happenarndu){
-                            BeagleActivityClass *actclass=[[BeagleActivityClass alloc]initWithDictionary:el];
-                             [activitiesArray addObject:actclass];
-                        }
-                        
-                        NSArray *listArray=[NSArray arrayWithArray:activitiesArray];
-
-                        listArray = [listArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
-                            
-                            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-                            
-                            NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
-                            [dateFormatter setTimeZone:utcTimeZone];
-
-                            NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
-                            NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
-                            
-                            return [s1 compare:s2];
-                        }];
-                            
-                        
-                        [self.filterActivitiesOnHomeScreen setObject:listArray forKey:@"beagle_happenarndu"];
-                    }else{
-                        [self.filterActivitiesOnHomeScreen setObject:[NSMutableArray new] forKey:@"beagle_happenarndu"];
-                        
-                    }
-                        
-                        NSArray * friendsarndu=[activities objectForKey:@"beagle_friendsarndu"];
-                        if (friendsarndu != nil && [friendsarndu class] != [NSNull class]&& [friendsarndu count]!=0) {
-                            NSMutableArray *friendsAroundYouArray=[[NSMutableArray alloc]init];
-                            for(id el in friendsarndu){
-                                BeagleActivityClass *actclass=[[BeagleActivityClass alloc]initWithDictionary:el];
-                                [friendsAroundYouArray addObject:actclass];
-                            }
-                            
-                            NSArray *listArray=[NSArray arrayWithArray:friendsAroundYouArray];
-                            
-                            listArray = [listArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
-                                
-                                NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                                dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-                                
-                                NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
-                                [dateFormatter setTimeZone:utcTimeZone];
-                                
-                                NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
-                                NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
-                                
-                                return [s1 compare:s2];
-                            }];
-                            
-                            
-                            [self.filterActivitiesOnHomeScreen setObject:listArray forKey:@"beagle_friendsarndu"];
-
-
-                        }else{
-                            [self.filterActivitiesOnHomeScreen setObject:[NSMutableArray new] forKey:@"beagle_friendsarndu"];
-
-                        }
-                    
-                    
-                    
-                    
-                    NSArray *expressint=[activities objectForKey:@"beagle_expressint"];
-                    if (expressint != nil && [expressint class] != [NSNull class]&& [expressint count]!=0) {
-                        NSMutableArray *expressInterestArray=[[NSMutableArray alloc]init];
-                        for(id el in expressint){
-                            BeagleActivityClass *actclass=[[BeagleActivityClass alloc]initWithDictionary:el];
-                            [expressInterestArray addObject:actclass];
-                        }
-                        
-                        NSArray *listArray=[NSArray arrayWithArray:expressInterestArray];
-                        
-                        listArray = [listArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
-                            
-                            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-                            
-                            NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
-                            [dateFormatter setTimeZone:utcTimeZone];
-                            
-                            NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
-                            NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
-                            
-                            return [s1 compare:s2];
-                        }];
-                        
-                        
-                        [self.filterActivitiesOnHomeScreen setObject:listArray forKey:@"beagle_expressint"];
-                        
-                        
-                    }
-                    
-                    else{
-                        [self.filterActivitiesOnHomeScreen setObject:[NSMutableArray new] forKey:@"beagle_expressint"];
-                        
-                    }
-
-                    
-                    NSArray * crtbyu=[activities objectForKey:@"beagle_crtbyu"];
-                    if (crtbyu != nil && [crtbyu class] != [NSNull class]&& [crtbyu count]!=0) {
-                        NSMutableArray *createdByYouArray=[[NSMutableArray alloc]init];
-                        for(id el in crtbyu){
-                            BeagleActivityClass *actclass=[[BeagleActivityClass alloc]initWithDictionary:el];
-                            [createdByYouArray addObject:actclass];
-                        }
-                        
-                        NSArray *listArray=[NSArray arrayWithArray:createdByYouArray];
-                        
-                        listArray = [listArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
-                            
-                            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-                            
-                            NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
-                            [dateFormatter setTimeZone:utcTimeZone];
-                            
-                            NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
-                            NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
-                            
-                            return [s1 compare:s2];
-                        }];
-                        
-                        
-                        [self.filterActivitiesOnHomeScreen setObject:listArray forKey:@"beagle_crtbyu"];
-                        
-                        
-                    }
-                    
-                    else{
-                        [self.filterActivitiesOnHomeScreen setObject:[NSMutableArray new] forKey:@"beagle_crtbyu"];
-                        
-                    }
-                    
-                    
-                    [self filterByCategoryType:categoryFilterType];
-                    
-                }
-            }
-        }
-        if(isPushAuto){
-            isPushAuto=FALSE;
-        }
-    }
-    else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
-            _interestUpdateManager.delegate = nil;
-            [_interestUpdateManager releaseServerManager];
-            _interestUpdateManager = nil;
-        
-        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
-            
-            id status=[response objectForKey:@"status"];
-            id message=[response objectForKey:@"message"];
-            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
-                 BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:interestIndex];
-                
-
-                if([message isEqualToString:@"Joined"]){
-                    play.participantsCount++;
-                }
-                else if([message isEqualToString:@"Already Joined"]){
-                    
-                    NSString *message = NSLocalizedString (@"You have already joined.",
-                                                           @"Already Joined");
-                    BeagleAlertWithMessage(message);
-                    return;
-                    
-                }
-                else{
-                    play.participantsCount--;
-                }
-                    if(play.isParticipant){
-                        play.isParticipant=FALSE;
-                    }
-                    else{
-                        play.isParticipant=TRUE;
-                    }
-                    [self.tableView reloadData];
-       }
-        }
-
-    }
-}
-
-
-- (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
-{
-    if(isPushAuto){
-        isPushAuto=FALSE;
-    }
-    [_tableViewController.refreshControl endRefreshing];
-    if(serverRequest==kServerCallGetActivities)
-    {
-        _homeActivityManager.delegate = nil;
-        [_homeActivityManager releaseServerManager];
-        _homeActivityManager = nil;
-    }
-    else if(serverRequest==kServerCallLeaveInterest ||serverRequest==kServerCallParticipateInterest){
-            _interestUpdateManager.delegate = nil;
-            [_interestUpdateManager releaseServerManager];
-            _interestUpdateManager = nil;
-        }
-    
-    NSString *message = NSLocalizedString (@"Unable to initiate request.",
-                                           @"NSURLConnection initialization method failed.");
-    BeagleAlertWithMessage(message);
-}
-
-- (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
-{
-    if(isPushAuto){
-        isPushAuto=FALSE;
-    }
-    [_tableViewController.refreshControl endRefreshing];
-    if(serverRequest==kServerCallGetActivities)
-    {
-        _homeActivityManager.delegate = nil;
-        [_homeActivityManager releaseServerManager];
-        _homeActivityManager = nil;
-    }
-    else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
-        _interestUpdateManager.delegate = nil;
-        [_interestUpdateManager releaseServerManager];
-        _interestUpdateManager = nil;
-    }
-
-    
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
-    [alert show];
-}
 
 -(void)filterByCategoryType:(NSInteger)type{
     
@@ -1448,6 +1189,376 @@
     viewController.friendBeagle=player;
     [self.navigationController pushViewController:viewController animated:YES];
 
+}
+#pragma mark - askNearbyFriendsToPartOfSuggestedPost call
+-(void)askNearbyFriendsToPartOfSuggestedPost:(NSInteger)index{
+    
+    BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:index];
+    interestIndex=index;
+
+    if(_interestUpdateManager!=nil){
+        _interestUpdateManager.delegate = nil;
+        [_interestUpdateManager releaseServerManager];
+        _interestUpdateManager = nil;
+    }
+    
+    _interestUpdateManager=[[ServerManager alloc]init];
+    _interestUpdateManager.delegate=self;
+    
+    [_interestUpdateManager updateSuggestedPostMembership:play.activityId];
+}
+
+#pragma mark - server calls
+
+- (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
+    
+    [_tableViewController.refreshControl endRefreshing];
+    
+    if(serverRequest==kServerCallGetActivities){
+        
+        self.filterActivitiesOnHomeScreen=[[NSMutableDictionary alloc]init];
+        
+        _homeActivityManager.delegate = nil;
+        [_homeActivityManager releaseServerManager];
+        _homeActivityManager = nil;
+        
+        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
+            
+            id status=[response objectForKey:@"status"];
+            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
+                
+                id badge=[response objectForKey:@"badge"];
+                if (badge != nil && [badge class] != [NSNull class]){
+                    
+                    NSLog(@"check for badge count in Home Screen=%@",badge);
+                    [[BeagleManager SharedInstance]setBadgeCount:[badge integerValue]];
+                    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[BeagleManager SharedInstance]badgeCount]];
+                    
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
+                    
+                }
+                id activities=[response objectForKey:@"activities"];
+                if (activities != nil && [activities class] != [NSNull class]) {
+                    
+                    NSMutableArray*suggestedList=[NSMutableArray new];
+                    NSArray *suggestedPosts=[activities objectForKey:@"beagle_suggestedposts"];
+                    if (suggestedPosts != nil && [suggestedPosts class] != [NSNull class] && [suggestedPosts count]!=0) {
+                        NSMutableArray *suggestedPostsArray=[[NSMutableArray alloc]init];
+                        for(id el in suggestedPosts){
+                            BeagleActivityClass *actclass=[[BeagleActivityClass alloc]initWithDictionary:el];
+                            [suggestedPostsArray addObject:actclass];
+                        }
+                        
+                        NSArray *suggestedListArray=[NSArray arrayWithArray:suggestedPostsArray];
+                        
+                        suggestedListArray = [suggestedListArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
+                            
+                            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+                            
+                            NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+                            [dateFormatter setTimeZone:utcTimeZone];
+                            
+                            NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
+                            NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
+                            
+                            return [s1 compare:s2];
+                        }];
+                        
+                        [suggestedList addObjectsFromArray:suggestedListArray];
+                        
+                    }
+                    NSArray *happenarndu=[activities objectForKey:@"beagle_happenarndu"];
+                    if (happenarndu != nil && [happenarndu class] != [NSNull class] && [happenarndu count]!=0) {
+                        NSMutableArray *activitiesArray=[[NSMutableArray alloc]init];
+                        for(id el in happenarndu){
+                            BeagleActivityClass *actclass=[[BeagleActivityClass alloc]initWithDictionary:el];
+                            [activitiesArray addObject:actclass];
+                        }
+                        
+                        NSArray *listArray=[NSArray arrayWithArray:activitiesArray];
+                        
+                        listArray = [listArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
+                            
+                            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+                            
+                            NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+                            [dateFormatter setTimeZone:utcTimeZone];
+                            
+                            NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
+                            NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
+                            
+                            return [s1 compare:s2];
+                        }];
+                        
+                        if([suggestedList count]!=0){
+                            NSMutableArray *testArray=[NSMutableArray new];
+                            [testArray addObjectsFromArray:listArray];
+                            [testArray addObjectsFromArray:suggestedList];
+                            listArray=[NSArray arrayWithArray:testArray];
+                        }
+                        
+                        [self.filterActivitiesOnHomeScreen setObject:listArray forKey:@"beagle_happenarndu"];
+                    }else{
+                        if([suggestedList count]!=0){
+                            NSArray *listArray=[NSArray arrayWithArray:suggestedList];
+                            [self.filterActivitiesOnHomeScreen setObject:listArray forKey:@"beagle_happenarndu"];
+                            
+                        }else
+                            
+                            [self.filterActivitiesOnHomeScreen setObject:[NSMutableArray new] forKey:@"beagle_happenarndu"];
+                        
+                    }
+                    
+                    NSArray * friendsarndu=[activities objectForKey:@"beagle_friendsarndu"];
+                    if (friendsarndu != nil && [friendsarndu class] != [NSNull class]&& [friendsarndu count]!=0) {
+                        NSMutableArray *friendsAroundYouArray=[[NSMutableArray alloc]init];
+                        for(id el in friendsarndu){
+                            BeagleActivityClass *actclass=[[BeagleActivityClass alloc]initWithDictionary:el];
+                            [friendsAroundYouArray addObject:actclass];
+                        }
+                        
+                        NSArray *listArray=[NSArray arrayWithArray:friendsAroundYouArray];
+                        
+                        listArray = [listArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
+                            
+                            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+                            
+                            NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+                            [dateFormatter setTimeZone:utcTimeZone];
+                            
+                            NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
+                            NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
+                            
+                            return [s1 compare:s2];
+                        }];
+                        
+                        
+                        [self.filterActivitiesOnHomeScreen setObject:listArray forKey:@"beagle_friendsarndu"];
+                        
+                        
+                    }else{
+                        [self.filterActivitiesOnHomeScreen setObject:[NSMutableArray new] forKey:@"beagle_friendsarndu"];
+                        
+                    }
+                    
+                    
+                    
+                    
+                    NSArray *expressint=[activities objectForKey:@"beagle_expressint"];
+                    if (expressint != nil && [expressint class] != [NSNull class]&& [expressint count]!=0) {
+                        NSMutableArray *expressInterestArray=[[NSMutableArray alloc]init];
+                        for(id el in expressint){
+                            BeagleActivityClass *actclass=[[BeagleActivityClass alloc]initWithDictionary:el];
+                            [expressInterestArray addObject:actclass];
+                        }
+                        
+                        NSArray *listArray=[NSArray arrayWithArray:expressInterestArray];
+                        
+                        listArray = [listArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
+                            
+                            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+                            
+                            NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+                            [dateFormatter setTimeZone:utcTimeZone];
+                            
+                            NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
+                            NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
+                            
+                            return [s1 compare:s2];
+                        }];
+                        
+                        
+                        [self.filterActivitiesOnHomeScreen setObject:listArray forKey:@"beagle_expressint"];
+                        
+                        
+                    }
+                    
+                    else{
+                        [self.filterActivitiesOnHomeScreen setObject:[NSMutableArray new] forKey:@"beagle_expressint"];
+                        
+                    }
+                    
+                    
+                    NSArray * crtbyu=[activities objectForKey:@"beagle_crtbyu"];
+                    if (crtbyu != nil && [crtbyu class] != [NSNull class]&& [crtbyu count]!=0) {
+                        NSMutableArray *createdByYouArray=[[NSMutableArray alloc]init];
+                        for(id el in crtbyu){
+                            BeagleActivityClass *actclass=[[BeagleActivityClass alloc]initWithDictionary:el];
+                            [createdByYouArray addObject:actclass];
+                        }
+                        
+                        NSArray *listArray=[NSArray arrayWithArray:createdByYouArray];
+                        
+                        listArray = [listArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
+                            
+                            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+                            
+                            NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+                            [dateFormatter setTimeZone:utcTimeZone];
+                            
+                            NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
+                            NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
+                            
+                            return [s1 compare:s2];
+                        }];
+                        
+                        
+                        [self.filterActivitiesOnHomeScreen setObject:listArray forKey:@"beagle_crtbyu"];
+                        
+                        
+                    }
+                    
+                    else{
+                        [self.filterActivitiesOnHomeScreen setObject:[NSMutableArray new] forKey:@"beagle_crtbyu"];
+                        
+                    }
+                    
+                    
+                    [self filterByCategoryType:categoryFilterType];
+                    
+                }
+            }
+        }
+        if(isPushAuto){
+            isPushAuto=FALSE;
+        }
+    }
+    else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
+        _interestUpdateManager.delegate = nil;
+        [_interestUpdateManager releaseServerManager];
+        _interestUpdateManager = nil;
+        
+        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
+            
+            id status=[response objectForKey:@"status"];
+            id message=[response objectForKey:@"message"];
+            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
+                BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:interestIndex];
+                
+                
+                if([message isEqualToString:@"Joined"]){
+                    play.participantsCount++;
+                }
+                else if([message isEqualToString:@"Already Joined"]){
+                    
+                    NSString *message = NSLocalizedString (@"You have already joined.",
+                                                           @"Already Joined");
+                    BeagleAlertWithMessage(message);
+                    return;
+                    
+                }
+                else{
+                    play.participantsCount--;
+                }
+                if(play.isParticipant){
+                    play.isParticipant=FALSE;
+                }
+                else{
+                    play.isParticipant=TRUE;
+                }
+                [self.tableView reloadData];
+            }
+        }
+        
+    }
+    else if (serverRequest==kServerCallSuggestedPostMembership){
+        _interestUpdateManager.delegate = nil;
+        [_interestUpdateManager releaseServerManager];
+        _interestUpdateManager = nil;
+        
+        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
+            
+            id status=[response objectForKey:@"status"];
+            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
+                BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:interestIndex];
+                _interestUpdateManager=[[ServerManager alloc]init];
+                _interestUpdateManager.delegate=self;
+                NSArray *commaSeperated=[play.locationName componentsSeparatedByString:@","];
+                if([commaSeperated count]==2){
+                    play.city=[commaSeperated objectAtIndex:0];
+                    play.state=[commaSeperated objectAtIndex:1];
+                }
+                else if([commaSeperated count]==1){
+                    play.city=[commaSeperated objectAtIndex:0];
+                    play.state=@"";
+                    
+                }
+                play.visibility=@"private";
+                [_interestUpdateManager createActivityOnBeagle:play];
+            }
+        }
+        
+        
+    }else if (serverRequest==kServerCallCreateActivity){
+        _interestUpdateManager.delegate = nil;
+        [_interestUpdateManager releaseServerManager];
+        _interestUpdateManager = nil;
+        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
+            
+            id status=[response objectForKey:@"status"];
+            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
+                if(serverRequest==kServerCallCreateActivity){
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+                }
+                
+            }
+        }
+        
+        
+        
+    }
+}
+
+
+- (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
+{
+    if(isPushAuto){
+        isPushAuto=FALSE;
+    }
+    [_tableViewController.refreshControl endRefreshing];
+    if(serverRequest==kServerCallGetActivities)
+    {
+        _homeActivityManager.delegate = nil;
+        [_homeActivityManager releaseServerManager];
+        _homeActivityManager = nil;
+    }
+    else if(serverRequest==kServerCallLeaveInterest ||serverRequest==kServerCallParticipateInterest||serverRequest==kServerCallSuggestedPostMembership||serverRequest==kServerCallCreateActivity){
+        _interestUpdateManager.delegate = nil;
+        [_interestUpdateManager releaseServerManager];
+        _interestUpdateManager = nil;
+    }
+    
+    NSString *message = NSLocalizedString (@"Unable to initiate request.",
+                                           @"NSURLConnection initialization method failed.");
+    BeagleAlertWithMessage(message);
+}
+
+- (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
+{
+    if(isPushAuto){
+        isPushAuto=FALSE;
+    }
+    [_tableViewController.refreshControl endRefreshing];
+    if(serverRequest==kServerCallGetActivities)
+    {
+        _homeActivityManager.delegate = nil;
+        [_homeActivityManager releaseServerManager];
+        _homeActivityManager = nil;
+    }
+    else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest||serverRequest==kServerCallSuggestedPostMembership||serverRequest==kServerCallCreateActivity){
+        _interestUpdateManager.delegate = nil;
+        [_interestUpdateManager releaseServerManager];
+        _interestUpdateManager = nil;
+    }
+    
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
+    [alert show];
 }
 @end
 

@@ -493,9 +493,8 @@ else if(!notifObject.isOffline){
 
 - (void)loadProfileImage:(NSString*)url {
     NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:url]];
-    UIImage* image =[[UIImage alloc] initWithData:imageData];
-    interestActivity.profilePhotoImage=image;
-    [self performSelectorOnMainThread:@selector(imageCircular:) withObject:image waitUntilDone:NO];
+    interestActivity.profilePhotoImage =[[UIImage alloc] initWithData:imageData];
+    [self performSelectorOnMainThread:@selector(imageCircular:) withObject:interestActivity.profilePhotoImage waitUntilDone:NO];
 }
 -(void)imageCircular:(UIImage*)image{
     _profileImageView.image=[BeagleUtilities imageCircularBySize:image sqr:100.0f];

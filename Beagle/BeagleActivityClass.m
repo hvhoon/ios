@@ -27,12 +27,20 @@
         self.visibility = [dictionary valueForKey:@"access"];
         self.ownerid = [[dictionary valueForKey:@"ownnerid"]integerValue];
         self.endActivityDate = [dictionary valueForKey:@"stop_when"];
-        self.organizerName = [dictionary valueForKey:@"organizer"];
-        self.photoUrl = [dictionary valueForKey:@"owner_photo_url"];
+        if(self.activityType==1){
+            self.organizerName = [dictionary valueForKey:@"organizer"];
+            self.photoUrl = [dictionary valueForKey:@"owner_photo_url"];
+            self.locationName=[NSString stringWithFormat:@"%@, %@",self.city,self.state];
+        }
+        else{
+            self.organizerName = [dictionary valueForKey:@"suggested_post"];
+            self.photoUrl = [NSString stringWithFormat:@"%@%@",@"http://infinite-spire-6520.herokuapp.com",[dictionary valueForKey:@"owner_photo_url"]];
+                self.locationName=[dictionary valueForKey:@"where_address"];
+        }
         self.dosRelation = [[dictionary valueForKey:@"dosRelation"]integerValue];
         self.dos1count = [[dictionary valueForKey:@"dos1count"]integerValue];
         self.participantsCount = [[dictionary valueForKey:@"total_count"]integerValue];
-        self.locationName=[NSString stringWithFormat:@"%@, %@",self.city,self.state];
+
         self.isParticipant=[[dictionary valueForKey:@"isParticipant"]boolValue];
         self.postCount = [[dictionary valueForKey:@"postCount"]integerValue];
     }
