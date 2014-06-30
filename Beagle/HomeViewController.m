@@ -689,6 +689,10 @@
     CGRect textRect = [play.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
                                                      attributes:attrs context:nil];
     
+    if(play.activityType==2){
+        return rowHeight+textRect.size.height+16+18+16;
+    }
+    
     // If there are no participants, reduce the size of the card
     if (play.participantsCount==0) return rowHeight+textRect.size.height;
     
@@ -708,10 +712,13 @@
     
     cell.delegate=self;
     cell.cellIndex=indexPath.row;
-//    NSLog(@"result=%@",[BeagleUtilities activityTime:play.startActivityDate endate:play.endActivityDate]);
+    
     cell.bg_activity = play;
     
-    UIImage*checkImge= [BeagleUtilities loadImage:play.ownerid];
+    UIImage*checkImge=nil;
+    if(play.ownerid!=0 && play.activityType==1)
+        checkImge= [BeagleUtilities loadImage:play.ownerid];
+
     if(checkImge==nil){
     
     if (!play.profilePhotoImage)
@@ -991,7 +998,34 @@
                 id activities=[response objectForKey:@"activities"];
                 if (activities != nil && [activities class] != [NSNull class]) {
                     
-                    
+                    NSMutableArray*suggestedList=[NSMutableArray new];
+                    NSArray *suggestedPosts=[activities objectForKey:@"beagle_suggestedposts"];
+                    if (suggestedPosts != nil && [suggestedPosts class] != [NSNull class] && [suggestedPosts count]!=0) {
+                        NSMutableArray *suggestedPostsArray=[[NSMutableArray alloc]init];
+                        for(id el in suggestedPosts){
+                            BeagleActivityClass *actclass=[[BeagleActivityClass alloc]initWithDictionary:el];
+                            [suggestedPostsArray addObject:actclass];
+                        }
+                        
+                        NSArray *suggestedListArray=[NSArray arrayWithArray:suggestedPostsArray];
+                        
+                        suggestedListArray = [suggestedListArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
+                            
+                            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+                            
+                            NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+                            [dateFormatter setTimeZone:utcTimeZone];
+                            
+                            NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
+                            NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
+                            
+                            return [s1 compare:s2];
+                        }];
+                        
+                        [suggestedList addObjectsFromArray:suggestedListArray];
+
+                    }
                     NSArray *happenarndu=[activities objectForKey:@"beagle_happenarndu"];
                     if (happenarndu != nil && [happenarndu class] != [NSNull class] && [happenarndu count]!=0) {
                         NSMutableArray *activitiesArray=[[NSMutableArray alloc]init];
@@ -1015,10 +1049,19 @@
                             
                             return [s1 compare:s2];
                         }];
-                            
+                        
+                        if([suggestedList count]!=0){
+                            [listArray arrayByAddingObjectsFromArray:suggestedList];
+                        }
                         
                         [self.filterActivitiesOnHomeScreen setObject:listArray forKey:@"beagle_happenarndu"];
                     }else{
+                        if([suggestedList count]!=0){
+                                NSArray *listArray=[NSArray arrayWithArray:suggestedList];
+                            [self.filterActivitiesOnHomeScreen setObject:listArray forKey:@"beagle_happenarndu"];
+
+                        }else
+
                         [self.filterActivitiesOnHomeScreen setObject:[NSMutableArray new] forKey:@"beagle_happenarndu"];
                         
                     }
@@ -1448,6 +1491,10 @@
     viewController.friendBeagle=player;
     [self.navigationController pushViewController:viewController animated:YES];
 
+}
+
+-(void)asknearbyFriendsToPartofSuggestedPost:(NSInteger)index{
+    
 }
 @end
 

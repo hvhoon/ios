@@ -590,7 +590,7 @@
     id obj=[object valueForKey:@"userInfo"];
     id obj1=[obj valueForKey:@"activity"];
     NSLog(@"obj1=%@",obj1);
-    notification.notificationId=[[[object valueForKey:@"userInfo"]valueForKey:@"nid"]integerValue];
+    notification.notificationId=[[[object valueForKey:@"userInfo"]valueForKey:@"notification_id"]integerValue];
     if(obj1!=nil && obj1!=[NSNull class] && [[obj1 allKeys]count]!=0){
         notification.activityId=[[obj1 valueForKey:@"id"]integerValue];
         notification.activityStartTime=[obj1 valueForKey:@"start_when"];

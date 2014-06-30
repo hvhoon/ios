@@ -38,7 +38,7 @@ static UIFont *forthTextFont = nil;
     
     // Start from the top and set the top padding to 8
     int fromTheTop = 0;
-    
+    CGFloat organizerName_y=55.50f;
     if(self.selected)
     {
         backgroundColor = background;
@@ -49,12 +49,43 @@ static UIFont *forthTextFont = nil;
     
     CGContextFillRect(context, r);
     
+    NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+    
+    // Drawing the time label
+    [style setAlignment:NSTextAlignmentLeft];
+    UIColor *color=[UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0];
+    NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+                           [UIFont fontWithName:@"HelveticaNeue-Bold" size:11.0f], NSFontAttributeName,
+                           [BeagleUtilities returnBeagleColor:12],NSForegroundColorAttributeName,
+                           style, NSParagraphStyleAttributeName, nil];
+
+    
+    if(self.bg_activity.activityType==2){
+        
+        CGSize suggestedBySize = [@"SUGGESTED BY" boundingRectWithSize:CGSizeMake(288, r.size.height)
+                                                                                                                                            options:NSStringDrawingUsesLineFragmentOrigin
+                                                                                                                                         attributes:attrs
+                                                                                                                                            context:nil].size;
+        
+        
+        [@"SUGGESTED BY" drawInRect:CGRectMake(16,10,suggestedBySize.width,suggestedBySize.height) withAttributes:attrs];
+        CGRect stripRect = {0, 10+suggestedBySize.height+9, 320, 1};
+        
+        CGContextSetRGBFillColor(context, 230.0/255.0, 230.0/255.0, 230.0/255.0, 1.0);
+        CGContextFillRect(context, stripRect);
+
+        fromTheTop=fromTheTop+34;
+        organizerName_y=organizerName_y+34.0f;
+    }
+    fromTheTop = fromTheTop+8;
+
     UIImage * originalImage =self.photoImage;
     
     // Draw the original image at the origin
     UIImage *newImage = [BeagleUtilities imageCircularBySize:originalImage sqr:100.0f];
     
-    fromTheTop = 8; // top spacing
+    
+     // top spacing
     
     //Draw the scaled and cropped image
     CGRect thisRect = CGRectMake(16, fromTheTop, 50, 50);
@@ -62,14 +93,12 @@ static UIFont *forthTextFont = nil;
 
     profileRect=thisRect;
     
-    NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     
     // Drawing the time label
     [style setAlignment:NSTextAlignmentRight];
-    UIColor *color=[UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0];
-    NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+    attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                             secondTextFont, NSFontAttributeName,
-                            color,NSForegroundColorAttributeName,
+                            [UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
                             style, NSParagraphStyleAttributeName, nil];
     
     CGSize dateTextSize = [[BeagleUtilities activityTime:bg_activity.startActivityDate endate:bg_activity.endActivityDate] boundingRectWithSize:CGSizeMake(300, r.size.height)
@@ -95,7 +124,7 @@ static UIFont *forthTextFont = nil;
                               attributes:attrs
                                  context:nil].size;
     
-    nameRect = CGRectMake(75, 55.5-organizerNameSize.height, organizerNameSize.width, organizerNameSize.height);
+    nameRect = CGRectMake(75,organizerName_y-organizerNameSize.height, organizerNameSize.width, organizerNameSize.height);
 
     
     [bg_activity.organizerName drawInRect:nameRect withAttributes:attrs];
@@ -104,7 +133,7 @@ static UIFont *forthTextFont = nil;
     
     
     
-    if(bg_activity.dosRelation!=0){
+    if(bg_activity.dosRelation!=0 && self.bg_activity.activityType!=2){
         if(bg_activity.dosRelation==1) {
             [[UIImage imageNamed:@"DOS2"] drawInRect:CGRectMake(75+8+organizerNameSize.width, 38.5, 27, 15)];
         }else {
@@ -153,6 +182,33 @@ static UIFont *forthTextFont = nil;
                                           locationTextSize.width, locationTextSize.height) withAttributes:attrs];
     fromTheTop = fromTheTop+locationTextSize.height;
     fromTheTop = fromTheTop+16; // Adding space after location
+    
+    
+    
+//    suggested post
+    if(self.bg_activity.activityType==2){
+    UIBezierPath *bezierPath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(16, fromTheTop,
+                                                                                  165,30) cornerRadius:25.0];
+    CGContextSetStrokeColorWithColor(context, [UIColor grayColor].CGColor);
+    [bezierPath stroke];
+        attrs =[NSDictionary dictionaryWithObjectsAndKeys:
+                [UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0f], NSFontAttributeName,
+                [UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
+                style, NSParagraphStyleAttributeName, nil];
+
+        CGSize askFriendsNearbySize = [@"ASK FRIENDS NEARBY" boundingRectWithSize:CGSizeMake(288, r.size.height)
+                                                               options:NSStringDrawingUsesLineFragmentOrigin
+                                                            attributes:attrs
+                                                               context:nil].size;
+        
+        
+        [@"ASK FRIENDS NEARBY" drawInRect:CGRectMake(32,fromTheTop+7.5,askFriendsNearbySize.width,askFriendsNearbySize.height) withAttributes:attrs];
+        
+        suggestedRect=CGRectMake(16, fromTheTop,
+                                 165,30);
+        fromTheTop = fromTheTop+46;
+    }
+    else{
 
     // Drawing number of interested text
     [style setAlignment:NSTextAlignmentLeft];
@@ -252,9 +308,11 @@ static UIFont *forthTextFont = nil;
     }
     else
         [[UIImage imageNamed:@"Add-Comment"] drawInRect:CGRectMake(304-21, fromTheTop, 21, 18)];
-    
-    fromTheTop = fromTheTop+16;
-    fromTheTop = fromTheTop+10;
+        
+        fromTheTop = fromTheTop+16;
+        fromTheTop = fromTheTop+10;
+
+    }
     
     // Drawing the card seperator
     CGRect stripRect = {0, fromTheTop, 320, 8};
@@ -263,7 +321,8 @@ static UIFont *forthTextFont = nil;
     CGContextFillRect(context, stripRect);
     
     // add the interested touchzone rectangle back!!
-    interestedRect=CGRectMake(0, fromTheTop-8-35, 250, 35);
+    if(self.bg_activity.activityType==1)
+        interestedRect=CGRectMake(0, fromTheTop-8-35, 250, 35);
     
 
 }
@@ -271,6 +330,7 @@ static UIFont *forthTextFont = nil;
     UITouch *touch =[touches anyObject];
     CGPoint startPoint =[touch locationInView:self.contentView];
     
+    if(self.bg_activity.activityType==1){
     if(CGRectContainsPoint(interestedRect,startPoint)){
         if(self.bg_activity.dosRelation!=0){
             if (self.delegate && [self.delegate respondsToSelector:@selector(updateInterestedStatus:)])
@@ -291,6 +351,13 @@ static UIFont *forthTextFont = nil;
     else {
         if (self.delegate && [self.delegate respondsToSelector:@selector(detailedInterestScreenRedirect:)])
             [self.delegate detailedInterestScreenRedirect:cellIndex];
+
+    }
+    }else{
+        if(CGRectContainsPoint(suggestedRect,startPoint)){
+                if (self.delegate && [self.delegate respondsToSelector:@selector(asknearbyFriendsToPartofSuggestedPost:)])
+                    [delegate asknearbyFriendsToPartofSuggestedPost:cellIndex];
+            }
 
     }
     [super touchesEnded:touches withEvent:event];

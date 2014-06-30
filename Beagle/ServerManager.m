@@ -36,7 +36,7 @@
     if (self) {
         
         _internetReachability = [Reachability reachabilityForInternetConnection];
-        _serverUrl =herokuHost;
+        _serverUrl =localHost;
         [self populateErrorCodes];
     }
     return self;
