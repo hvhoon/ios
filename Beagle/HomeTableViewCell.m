@@ -355,8 +355,8 @@ static UIFont *forthTextFont = nil;
     }
     }else{
         if(CGRectContainsPoint(suggestedRect,startPoint)){
-                if (self.delegate && [self.delegate respondsToSelector:@selector(asknearbyFriendsToPartofSuggestedPost:)])
-                    [delegate asknearbyFriendsToPartofSuggestedPost:cellIndex];
+                if (self.delegate && [self.delegate respondsToSelector:@selector(askNearbyFriendsToPartOfSuggestedPost:)])
+                    [delegate askNearbyFriendsToPartOfSuggestedPost:cellIndex];
             }
 
     }

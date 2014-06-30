@@ -14,7 +14,7 @@
 -(void)detailedInterestScreenRedirect:(NSInteger)index;
 -(void)updateInterestedStatus:(NSInteger)index;
 -(void)profileScreenRedirect:(NSInteger)index;
--(void)asknearbyFriendsToPartofSuggestedPost:(NSInteger)index;
+-(void)askNearbyFriendsToPartOfSuggestedPost:(NSInteger)index;
 @end
 
 @interface HomeTableViewCell : ABTableViewCell{

@@ -34,7 +34,7 @@
         }
         else{
             self.organizerName = [dictionary valueForKey:@"suggested_post"];
-            self.photoUrl = [NSString stringWithFormat:@"%@%@",@"http://localhost:3000",[dictionary valueForKey:@"owner_photo_url"]];
+            self.photoUrl = [NSString stringWithFormat:@"%@%@",@"http://infinite-spire-6520.herokuapp.com",[dictionary valueForKey:@"owner_photo_url"]];
                 self.locationName=[dictionary valueForKey:@"where_address"];
         }
         self.dosRelation = [[dictionary valueForKey:@"dosRelation"]integerValue];
