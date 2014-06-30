@@ -36,10 +36,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Welcome" translatesAutoresizingMaskIntoConstraints="NO" id="ibs-qq-6W0">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5F8-nW-xgb">
                                 <rect key="frame" x="0.0" y="446" width="320" height="122"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -79,7 +75,7 @@
                                 </constraints>
                             </imageView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="I4P-5s-SbQ" firstAttribute="leading" secondItem="bIx-1C-8jM" secondAttribute="leading" constant="268" id="6aI-tK-TRG"/>
                             <constraint firstItem="4gp-wI-KSS" firstAttribute="top" secondItem="ai2-E1-4qz" secondAttribute="bottom" id="7xc-mp-bYc"/>
@@ -723,7 +719,6 @@
         <image name="Time" width="16" height="16"/>
         <image name="User-Agreement" width="22" height="22"/>
         <image name="Visibility" width="20" height="12"/>
-        <image name="Welcome" width="320" height="568"/>
         <image name="beagle" width="266" height="119"/>
         <image name="bug_icon" width="27" height="24"/>
         <image name="invite_icon" width="27" height="21"/>
