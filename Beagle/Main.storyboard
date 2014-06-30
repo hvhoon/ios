@@ -63,7 +63,7 @@
                                 </constraints>
                             </activityIndicatorView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="beagle" translatesAutoresizingMaskIntoConstraints="NO" id="ai2-E1-4qz">
-                                <rect key="frame" x="78" y="485" width="182" height="56"/>
+                                <rect key="frame" x="70" y="485" width="182" height="56"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Next-Arrow" translatesAutoresizingMaskIntoConstraints="NO" id="8ri-y9-k08">
@@ -76,7 +76,7 @@
                             </imageView>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="I4P-5s-SbQ" firstAttribute="leading" secondItem="ai2-E1-4qz" secondAttribute="trailing" constant="8" id="1aN-7T-7u4"/>
+                            <constraint firstItem="I4P-5s-SbQ" firstAttribute="leading" secondItem="ai2-E1-4qz" secondAttribute="trailing" constant="16" id="1aN-7T-7u4"/>
                             <constraint firstItem="7Am-pN-Mfi" firstAttribute="top" secondItem="bIx-1C-8jM" secondAttribute="top" id="2ig-J4-Ybu"/>
                             <constraint firstItem="I4P-5s-SbQ" firstAttribute="leading" secondItem="bIx-1C-8jM" secondAttribute="leading" constant="268" id="6aI-tK-TRG"/>
                             <constraint firstItem="4gp-wI-KSS" firstAttribute="top" secondItem="ai2-E1-4qz" secondAttribute="bottom" constant="27" id="6of-xq-2fX"/>
@@ -88,7 +88,7 @@
                             <constraint firstItem="5F8-nW-xgb" firstAttribute="leading" secondItem="bIx-1C-8jM" secondAttribute="leading" id="UE9-Y8-raf"/>
                             <constraint firstItem="4gp-wI-KSS" firstAttribute="top" secondItem="8ri-y9-k08" secondAttribute="bottom" constant="16" id="e5e-ll-U3o"/>
                             <constraint firstItem="8ri-y9-k08" firstAttribute="leading" secondItem="bIx-1C-8jM" secondAttribute="leading" constant="248" id="gxn-u9-Bal"/>
-                            <constraint firstItem="ai2-E1-4qz" firstAttribute="leading" secondItem="bIx-1C-8jM" secondAttribute="leading" constant="78" id="kWZ-U8-VXj"/>
+                            <constraint firstItem="ai2-E1-4qz" firstAttribute="leading" secondItem="bIx-1C-8jM" secondAttribute="leading" constant="70" id="kWZ-U8-VXj"/>
                             <constraint firstAttribute="trailing" secondItem="I4P-5s-SbQ" secondAttribute="trailing" constant="15" id="nEc-LB-dWq"/>
                             <constraint firstAttribute="trailing" secondItem="5F8-nW-xgb" secondAttribute="trailing" id="op9-fL-FBI"/>
                             <constraint firstItem="4gp-wI-KSS" firstAttribute="top" secondItem="I4P-5s-SbQ" secondAttribute="bottom" constant="37" id="uKS-GC-wzD"/>
@@ -491,7 +491,7 @@
                                 </constraints>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="15"/>
                                 <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="16" maxY="0.0"/>
-                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="10" maxY="0.0"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="5" maxY="0.0"/>
                                 <state key="normal" title="Friends Nearby" image="Visibility">
                                     <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -509,7 +509,7 @@
                                 </constraints>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="15"/>
                                 <inset key="contentEdgeInsets" minX="16" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                <inset key="titleEdgeInsets" minX="10" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                <inset key="titleEdgeInsets" minX="5" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 <state key="normal" title="Next Weekend" image="Time">
                                     <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
