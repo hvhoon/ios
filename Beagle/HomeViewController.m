@@ -51,7 +51,6 @@
 @property (strong,nonatomic) NSMutableArray *filteredCandyArray;
 @property(strong,nonatomic)ServerManager *homeActivityManager;
 @property(strong,nonatomic)ServerManager *interestUpdateManager;
-@property(strong, nonatomic)UIImageView *stockImageView;
 @end
 
 @implementation HomeViewController
@@ -168,10 +167,14 @@
     [self.view addSubview:bottomNavigationView];
 
 #else
-    _stockImageView= [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 320, 200)];
-    _stockImageView.backgroundColor = [BeagleUtilities returnBeagleColor:13];
-    _stockImageView.tag=3456;
-    [self.view addSubview:_stockImageView];
+    UIImageView* stockImageView= [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 320, 200)];
+    stockImageView.backgroundColor = [UIColor grayColor];
+    stockImageView.tag=3456;
+    [self.view addSubview:stockImageView];
+    
+    UIImageView *topGradient=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"gradient"]];
+    topGradient.frame = CGRectMake(0, 0, 320, 64);
+    [stockImageView addSubview:topGradient];
     
 #endif
 
@@ -510,10 +513,6 @@
         
         [self addCityName:[BG.placemark.addressDictionary objectForKey:@"City"]];
         _filterView.backgroundColor = [BeagleUtilities getDominantColor:flickrRequestInfo.photo];
-            
-        UIImageView *topGradient=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"gradient"]];
-        topGradient.frame = CGRectMake(0, 0, 320, 64);
-        [_stockImageView addSubview:topGradient];
             
         /* Test square for alternate algorithm to pull AVERAGE COLOR
         UIView* testSquare = [[UIView alloc] initWithFrame:CGRectMake(16, 100, 50, 50)];
