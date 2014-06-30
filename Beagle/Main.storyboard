@@ -494,7 +494,9 @@
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="5" maxY="0.0"/>
                                 <state key="normal" title="Friends Nearby" image="Visibility">
                                     <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                    <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="highlighted" image="Visibility-Highlighted">
+                                    <color key="titleColor" red="0.0" green="0.47843137254901957" blue="1" alpha="0.33000000000000002" colorSpace="calibratedRGB"/>
                                 </state>
                                 <connections>
                                     <action selector="visibilityFilter:" destination="S9M-sC-S9q" eventType="touchUpInside" id="sZA-4p-Shw"/>
@@ -512,7 +514,9 @@
                                 <inset key="titleEdgeInsets" minX="5" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 <state key="normal" title="Next Weekend" image="Time">
                                     <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                    <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="highlighted" image="Time-Highlighted">
+                                    <color key="titleColor" red="0.0" green="0.47843137254901957" blue="1" alpha="0.33000000000000002" colorSpace="calibratedRGB"/>
                                 </state>
                                 <connections>
                                     <action selector="timeFilter:" destination="S9M-sC-S9q" eventType="touchUpInside" id="PhX-Qx-jGt"/>
@@ -720,8 +724,10 @@
         <image name="Notifications-Blank" width="149" height="84"/>
         <image name="Power" width="23" height="23"/>
         <image name="Time" width="16" height="16"/>
+        <image name="Time-Highlighted" width="16" height="16"/>
         <image name="User-Agreement" width="22" height="22"/>
         <image name="Visibility" width="20" height="12"/>
+        <image name="Visibility-Highlighted" width="20" height="12"/>
         <image name="Welcome" width="320" height="568"/>
         <image name="beagle" width="182" height="56"/>
         <image name="bug_icon" width="27" height="24"/>
