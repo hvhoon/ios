@@ -423,7 +423,7 @@
                                 </constraints>
                             </imageView>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8k2-Wd-CIH">
-                                <rect key="frame" x="56" y="30" width="248" height="234"/>
+                                <rect key="frame" x="56" y="30" width="248" height="242"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
@@ -453,9 +453,10 @@
                                     <constraint firstAttribute="height" constant="17" id="Pum-hM-NzH"/>
                                     <constraint firstAttribute="width" constant="44" id="usN-x8-bal"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="17"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="15"/>
                                 <color key="textColor" red="0.90196078431372551" green="0.90196078431372551" blue="0.90196078431372551" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
+                                <size key="shadowOffset" width="0.0" height="0.0"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1A7-qG-45x">
                                 <rect key="frame" x="16" y="317" width="244" height="30"/>
@@ -464,7 +465,7 @@
                                     <constraint firstAttribute="height" constant="30" id="DNX-ob-VHd"/>
                                     <constraint firstAttribute="width" constant="244" id="cUa-8v-24p"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="17"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="15"/>
                                 <state key="normal" title="New York, NY">
                                     <color key="titleColor" red="0.90196078431372551" green="0.90196078431372551" blue="0.90196078431372551" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
@@ -482,34 +483,36 @@
                                     <action selector="deleteButtonClicked:" destination="S9M-sC-S9q" eventType="touchUpInside" id="ip7-7g-lBp"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3MQ-a9-lKU" userLabel="visibilityFilterButton">
-                                <rect key="frame" x="160" y="264" width="160" height="48"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3MQ-a9-lKU" userLabel="visibilityFilterButton">
+                                <rect key="frame" x="176" y="272" width="144" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="160" id="Ro7-id-t4C"/>
-                                    <constraint firstAttribute="height" constant="48" id="fxX-xz-2Da"/>
+                                    <constraint firstAttribute="height" constant="40" id="TXG-rq-fxn"/>
+                                    <constraint firstAttribute="width" constant="144" id="lLY-AJ-URU"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="17"/>
-                                <inset key="contentEdgeInsets" minX="48" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                <state key="normal" title="Friends Only" backgroundImage="Visibility">
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="15"/>
+                                <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="16" maxY="0.0"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="10" maxY="0.0"/>
+                                <state key="normal" title="Friends Nearby" image="Visibility">
+                                    <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
                                     <action selector="visibilityFilter:" destination="S9M-sC-S9q" eventType="touchUpInside" id="sZA-4p-Shw"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" restorationIdentifier="TimeFilterButton" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NHs-Eo-wtu" userLabel="timeFilterButton">
-                                <rect key="frame" x="0.0" y="264" width="160" height="48"/>
+                            <button opaque="NO" contentMode="scaleToFill" restorationIdentifier="TimeFilterButton" contentHorizontalAlignment="left" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NHs-Eo-wtu" userLabel="timeFilterButton">
+                                <rect key="frame" x="0.0" y="272" width="177" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="160" id="7h1-RR-uzz"/>
-                                    <constraint firstAttribute="width" constant="160" id="7qY-Cz-dHy"/>
-                                    <constraint firstAttribute="height" constant="48" id="Us3-o0-Z3U"/>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="48" id="tbX-nc-Adm"/>
+                                    <constraint firstAttribute="width" constant="177" id="FAl-Wt-A6x"/>
+                                    <constraint firstAttribute="height" constant="40" id="W3M-P4-0NE"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="17"/>
-                                <inset key="contentEdgeInsets" minX="44" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                <state key="normal" title="Next Weekend" backgroundImage="Time">
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="15"/>
+                                <inset key="contentEdgeInsets" minX="16" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                <inset key="titleEdgeInsets" minX="10" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                <state key="normal" title="Next Weekend" image="Time">
+                                    <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
@@ -526,26 +529,20 @@
                             <constraint firstAttribute="trailing" secondItem="8k2-Wd-CIH" secondAttribute="trailing" constant="16" id="4At-fh-fpV"/>
                             <constraint firstItem="sqL-0B-EFK" firstAttribute="top" secondItem="NHs-Eo-wtu" secondAttribute="bottom" id="9va-Rp-OjH"/>
                             <constraint firstItem="hMI-Wc-Jow" firstAttribute="top" secondItem="sqL-0B-EFK" secondAttribute="bottom" constant="216" id="BnS-hb-wru"/>
-                            <constraint firstItem="NHs-Eo-wtu" firstAttribute="leading" secondItem="ygx-zD-J8O" secondAttribute="leading" id="DIB-X5-PzF"/>
-                            <constraint firstItem="3MQ-a9-lKU" firstAttribute="leading" secondItem="NHs-Eo-wtu" secondAttribute="trailing" id="E4x-vQ-nMM"/>
-                            <constraint firstItem="sqL-0B-EFK" firstAttribute="top" secondItem="NHs-Eo-wtu" secondAttribute="bottom" id="Eu2-s7-weO"/>
+                            <constraint firstItem="NHs-Eo-wtu" firstAttribute="top" secondItem="8k2-Wd-CIH" secondAttribute="bottom" id="Dm4-9p-ug2"/>
                             <constraint firstItem="sqL-0B-EFK" firstAttribute="top" secondItem="BsK-la-ctD" secondAttribute="bottom" constant="12" id="EvX-L3-WNg"/>
                             <constraint firstItem="8k2-Wd-CIH" firstAttribute="top" secondItem="9iY-EO-BXw" secondAttribute="bottom" constant="10" id="Icc-VY-YpT"/>
                             <constraint firstAttribute="trailing" secondItem="BsK-la-ctD" secondAttribute="trailing" constant="20" id="K1j-lJ-9xG"/>
-                            <constraint firstItem="3MQ-a9-lKU" firstAttribute="top" secondItem="8k2-Wd-CIH" secondAttribute="bottom" id="P7V-kv-iuA"/>
                             <constraint firstItem="5Kw-tX-RGq" firstAttribute="leading" secondItem="1A7-qG-45x" secondAttribute="trailing" id="PFb-og-YqP"/>
                             <constraint firstItem="hMI-Wc-Jow" firstAttribute="top" secondItem="5Kw-tX-RGq" secondAttribute="bottom" constant="228" id="QeU-h0-HHh"/>
-                            <constraint firstAttribute="trailing" secondItem="3MQ-a9-lKU" secondAttribute="trailing" id="VEK-57-eHQ"/>
-                            <constraint firstItem="3MQ-a9-lKU" firstAttribute="leading" secondItem="NHs-Eo-wtu" secondAttribute="trailing" id="Xhy-b7-ca6"/>
+                            <constraint firstAttribute="trailing" secondItem="3MQ-a9-lKU" secondAttribute="trailing" id="TwX-mk-TlV"/>
+                            <constraint firstItem="sqL-0B-EFK" firstAttribute="top" secondItem="3MQ-a9-lKU" secondAttribute="bottom" id="Yo5-gD-CmZ"/>
                             <constraint firstAttribute="trailing" secondItem="5Kw-tX-RGq" secondAttribute="trailing" constant="16" id="ZxY-Xo-Izb"/>
                             <constraint firstItem="hMI-Wc-Jow" firstAttribute="top" secondItem="sqL-0B-EFK" secondAttribute="bottom" constant="216" id="aMB-fz-JZK"/>
                             <constraint firstItem="5Kw-tX-RGq" firstAttribute="leading" secondItem="1A7-qG-45x" secondAttribute="trailing" id="b33-NN-HR5"/>
                             <constraint firstItem="hMI-Wc-Jow" firstAttribute="top" secondItem="1A7-qG-45x" secondAttribute="bottom" constant="221" id="cxf-0D-ljX"/>
-                            <constraint firstItem="sqL-0B-EFK" firstAttribute="top" secondItem="3MQ-a9-lKU" secondAttribute="bottom" id="gNp-jV-r02"/>
                             <constraint firstItem="1A7-qG-45x" firstAttribute="leading" secondItem="ygx-zD-J8O" secondAttribute="leading" constant="16" id="liH-n1-N9G"/>
-                            <constraint firstItem="NHs-Eo-wtu" firstAttribute="top" secondItem="8k2-Wd-CIH" secondAttribute="bottom" id="o9t-wL-oyn"/>
                             <constraint firstItem="FOF-FV-DTm" firstAttribute="leading" secondItem="ygx-zD-J8O" secondAttribute="leading" constant="16" id="qff-NO-TDF"/>
-                            <constraint firstItem="NHs-Eo-wtu" firstAttribute="top" secondItem="8k2-Wd-CIH" secondAttribute="bottom" id="qkP-Tp-qmz"/>
                         </constraints>
                     </view>
                     <connections>
@@ -691,6 +688,7 @@
                                 <searchBar key="tableHeaderView" contentMode="redraw" placeholder="Search for people" id="c5W-Y0-h92">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                    <color key="barTintColor" red="0.90196078431372551" green="0.90196078431372551" blue="0.90196078431372551" alpha="1" colorSpace="calibratedRGB"/>
                                     <textInputTraits key="textInputTraits"/>
                                     <connections>
                                         <outlet property="delegate" destination="F0j-Xp-e2F" id="ucz-Ov-hbs"/>
@@ -722,9 +720,9 @@
         <image name="Next-Arrow" width="67" height="79"/>
         <image name="Notifications-Blank" width="149" height="84"/>
         <image name="Power" width="23" height="23"/>
-        <image name="Time" width="160" height="48"/>
+        <image name="Time" width="16" height="16"/>
         <image name="User-Agreement" width="22" height="22"/>
-        <image name="Visibility" width="160" height="48"/>
+        <image name="Visibility" width="20" height="12"/>
         <image name="Welcome" width="320" height="568"/>
         <image name="beagle" width="266" height="119"/>
         <image name="bug_icon" width="27" height="24"/>
