@@ -100,7 +100,9 @@
             
         case 12:
             return [UIColor colorWithRed:175.0/255.0 green:175.0/255.0 blue:175.0/255.0 alpha:1.0];
-
+        // Pastel Orange used in the logo
+        case 13:
+            return [UIColor colorWithRed:255.0/255.0 green:149.0/255.0 blue:0.0/255.0 alpha:1.0];
         default:
             return [UIColor whiteColor];
     }

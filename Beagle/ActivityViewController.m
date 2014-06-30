@@ -167,7 +167,7 @@ enum Weeks {
     else{
          timeIndex=6;
         visibilityIndex=2;
-        [visibilityFilterButton setTitle:@"Friends Only" forState:UIControlStateNormal];
+        [visibilityFilterButton setTitle:@"Friends Nearby" forState:UIControlStateNormal];
         [timeFilterButton setTitle:@"This Weekend" forState:UIControlStateNormal];
     }
     
@@ -795,7 +795,7 @@ enum Weeks {
             
         case 2:
         {
-            [visibilityFilterButton setTitle:@"Friends Only" forState:UIControlStateNormal];
+            [visibilityFilterButton setTitle:@"Friends Nearby" forState:UIControlStateNormal];
         }
             break;
             
