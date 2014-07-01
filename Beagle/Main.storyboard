@@ -167,7 +167,7 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="invite_icon" translatesAutoresizingMaskIntoConstraints="NO" id="zXB-Zt-JEQ">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Invite-Friends" translatesAutoresizingMaskIntoConstraints="NO" id="zXB-Zt-JEQ">
                                 <rect key="frame" x="16" y="141" width="27" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
@@ -280,7 +280,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" tag="3" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iO2-Mz-GFm">
-                                <rect key="frame" x="0.0" y="130" width="270" height="44"/>
+                                <rect key="frame" x="0.0" y="130" width="53" height="25"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -718,8 +718,9 @@
         <image name="Bell" width="14" height="15"/>
         <image name="Delete" width="16" height="20"/>
         <image name="Facebook" width="28" height="28"/>
-        <image name="Home" width="24" height="24"/>
-        <image name="Info" width="23" height="23"/>
+        <image name="Home" width="26" height="25"/>
+        <image name="Info" width="25" height="25"/>
+        <image name="Invite-Friends" width="25" height="21"/>
         <image name="Next-Arrow" width="67" height="79"/>
         <image name="Notifications-Blank" width="149" height="84"/>
         <image name="Power" width="23" height="23"/>
@@ -731,7 +732,6 @@
         <image name="Welcome" width="320" height="568"/>
         <image name="beagle" width="182" height="56"/>
         <image name="bug_icon" width="27" height="24"/>
-        <image name="invite_icon" width="27" height="21"/>
         <image name="megaphone" width="27" height="20"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
