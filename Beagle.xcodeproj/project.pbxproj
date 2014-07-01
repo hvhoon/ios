@@ -1283,7 +1283,10 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Harish Hoon (B99DQ79SBX)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Harish Hoon (B99DQ79SBX)";
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SRCROOT)",
+					"$(inherited)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Beagle/Beagle-Prefix.pch";
 				INFOPLIST_FILE = "Beagle/Beagle-Info.plist";
@@ -1301,7 +1304,10 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Harish Hoon (B99DQ79SBX)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Harish Hoon (B99DQ79SBX)";
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SRCROOT)",
+					"$(inherited)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Beagle/Beagle-Prefix.pch";
 				INFOPLIST_FILE = "Beagle/Beagle-Info.plist";
