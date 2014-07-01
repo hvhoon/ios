@@ -126,6 +126,7 @@
 		18FDA34F192BDD9A00D13667 /* TTTAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FDA34B192BDD9A00D13667 /* TTTAttributedLabel.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		18FDA350192BDD9A00D13667 /* AttributedTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FDA34C192BDD9A00D13667 /* AttributedTableViewCell.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		18FDA352192BDDE000D13667 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18FDA351192BDDE000D13667 /* CoreText.framework */; };
+		6891059519632C1E00BE23B7 /* AboutUsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6891059419632C1E00BE23B7 /* AboutUsViewController.m */; };
 		68EDF869192AC578008ED9C1 /* Instabug.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 68EDF867192AC578008ED9C1 /* Instabug.bundle */; };
 		68EDF86A192AC578008ED9C1 /* Instabug.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68EDF868192AC578008ED9C1 /* Instabug.framework */; };
 		68EDF86C192AC760008ED9C1 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68EDF86B192AC760008ED9C1 /* CoreFoundation.framework */; };
@@ -361,6 +362,8 @@
 		18FDA34D192BDD9A00D13667 /* AttributedTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AttributedTableViewCell.h; sourceTree = "<group>"; };
 		18FDA34E192BDD9A00D13667 /* TTTAttributedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTAttributedLabel.h; sourceTree = "<group>"; };
 		18FDA351192BDDE000D13667 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		6891059319632C1E00BE23B7 /* AboutUsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutUsViewController.h; sourceTree = "<group>"; };
+		6891059419632C1E00BE23B7 /* AboutUsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutUsViewController.m; sourceTree = "<group>"; };
 		68EDF867192AC578008ED9C1 /* Instabug.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Instabug.bundle; sourceTree = "<group>"; };
 		68EDF868192AC578008ED9C1 /* Instabug.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Instabug.framework; sourceTree = "<group>"; };
 		68EDF86B192AC760008ED9C1 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
@@ -701,6 +704,7 @@
 		18EC22A618B5A0B400316B6E /* Beagle */ = {
 			isa = PBXGroup;
 			children = (
+				6891059619632C3000BE23B7 /* About */,
 				182F0B8B19630059001771AD /* Feedback */,
 				186B11FB1958E03300FF5A4D /* Invitees */,
 				1832F9C21953831800B271DB /* Mutual Friends */,
@@ -955,6 +959,15 @@
 			name = "Notifications Screen";
 			sourceTree = "<group>";
 		};
+		6891059619632C3000BE23B7 /* About */ = {
+			isa = PBXGroup;
+			children = (
+				6891059319632C1E00BE23B7 /* AboutUsViewController.h */,
+				6891059419632C1E00BE23B7 /* AboutUsViewController.m */,
+			);
+			name = About;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1095,6 +1108,7 @@
 				18007F0B18C6568000230C23 /* MBProgressHUD.m in Sources */,
 				18EC232718B5A42D00316B6E /* SBJsonParser.m in Sources */,
 				18007EEF18C6508200230C23 /* LFSiteReachability.m in Sources */,
+				6891059519632C1E00BE23B7 /* AboutUsViewController.m in Sources */,
 				18EC231118B5A42D00316B6E /* ServerManager.m in Sources */,
 				18007F0118C6541200230C23 /* UIImage+Alpha.m in Sources */,
 				18EC231718B5A42D00316B6E /* ASIHTTPRequest.m in Sources */,

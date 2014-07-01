@@ -9,6 +9,7 @@
 #import "SettingsViewController.h"
 #import "FriendsViewController.h"
 #import "FeedbackReporting.h"
+#import "AboutUsViewController.h"
 
 @interface SettingsViewController ()<ServerManagerDelegate>
 @property(nonatomic,strong)ServerManager*updateFBTickerManager;
@@ -132,6 +133,11 @@
         else if ([identifier isEqualToString:@"profileScreen"]){
             FriendsViewController *viewController=(FriendsViewController*)newTopViewController;
             viewController.inviteFriends=TRUE;
+            [self.navigationController pushViewController:viewController animated:YES];
+            return;
+        }
+        else if ([identifier isEqualToString:@"aboutUs"]){
+            AboutUsViewController *viewController=(AboutUsViewController*)newTopViewController;
             [self.navigationController pushViewController:viewController animated:YES];
             return;
         }
