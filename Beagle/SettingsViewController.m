@@ -97,10 +97,6 @@
                 UINavigationController* shareFeedbackController = [[FeedbackReporting sharedInstance] shareFeedbackController];
 
                 [self presentViewController:shareFeedbackController animated:YES completion:Nil];
-                [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
-                [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
-                
-                
             }
             else{
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Please setup your email account" message:nil
@@ -112,7 +108,12 @@
             return;
 
         }
+        case 5:
+        {
+            identifier=@"aboutUs";
+        }
             break;
+            
         case 8:
         {
             identifier=@"loginScreen";
@@ -135,6 +136,7 @@
             return;
         }
     
+    // Sliding animation
     [self.slidingViewController anchorTopViewOffScreenTo:ECRight animations:nil onComplete:^{
         CGRect frame = self.slidingViewController.topViewController.view.frame;
         self.slidingViewController.topViewController = newTopViewController;
