@@ -57,9 +57,13 @@ static FeedbackReporting *sharedInstance = nil;
     NSLog(@"iOS Version: %@", osVersion);
     
     // Fill out the email body text
-    NSString *emailBody = [NSString stringWithFormat:@"Please tell us why you find this activity objectionable? (Enter below):\n\n\n\n--\n Flag Report:\n Activity :%@ \n Organizer:%@\n Beagle %@ (%@)\niPhone iOS: %@", activityName,orgName,appVersion, gitCommit, osVersion];
+    NSString *emailBody = [NSString stringWithFormat:@"Please tell us why you find this activity objectionable? (Enter below):\n\n\n\n\n--\n Flag Report:\n Activity : %@ \n Organizer: %@\n Beagle: %@ (%@)\niPhone iOS: %@", activityName,orgName,appVersion, gitCommit, osVersion];
     
     return emailBody;
+}
+- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error
+{
+    [controller dismissViewControllerAnimated:YES completion:Nil];
 }
 
 @end
