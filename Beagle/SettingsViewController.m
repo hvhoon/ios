@@ -98,7 +98,7 @@
 
                 [self presentViewController:shareFeedbackController animated:YES completion:Nil];
                 [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
-                [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+                [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
                 
                 
             }
