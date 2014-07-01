@@ -9,6 +9,7 @@
 #import "SettingsViewController.h"
 #import "FriendsViewController.h"
 #import "FeedbackReporting.h"
+#import "AboutUsViewController.h"
 
 @interface SettingsViewController ()<ServerManagerDelegate>
 @property(nonatomic,strong)ServerManager*updateFBTickerManager;
@@ -97,10 +98,6 @@
                 UINavigationController* shareFeedbackController = [[FeedbackReporting sharedInstance] shareFeedbackController];
 
                 [self presentViewController:shareFeedbackController animated:YES completion:Nil];
-                [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
-                [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
-                
-                
             }
             else{
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Please setup your email account" message:nil
@@ -112,7 +109,12 @@
             return;
 
         }
+        case 5:
+        {
+            identifier=@"aboutUs";
+        }
             break;
+            
         case 8:
         {
             identifier=@"loginScreen";
@@ -134,7 +136,14 @@
             [self.navigationController pushViewController:viewController animated:YES];
             return;
         }
+        else if ([identifier isEqualToString:@"aboutUs"]){
+            
+            AboutUsViewController *viewController=(AboutUsViewController*)newTopViewController;
+            [self.navigationController pushViewController:viewController animated:YES];
+            return;
+        }
     
+    // Sliding animation
     [self.slidingViewController anchorTopViewOffScreenTo:ECRight animations:nil onComplete:^{
         CGRect frame = self.slidingViewController.topViewController.view.frame;
         self.slidingViewController.topViewController = newTopViewController;

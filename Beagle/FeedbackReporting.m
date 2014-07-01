@@ -32,12 +32,10 @@ static FeedbackReporting *sharedInstance = nil;
 
 - (MFMailComposeViewController *)shareFeedbackController
 {
-    staturBarShow=TRUE;
-
     MFMailComposeViewController *picker = [[MFMailComposeViewController alloc] init];
     picker.mailComposeDelegate = self;
     
-    NSArray *toRecipients = [NSArray arrayWithObject:@"ideas@soclivity.com"];
+    NSArray *toRecipients = [NSArray arrayWithObject:@"help@mybeagleapp.com"];
     
     [picker setSubject:@"Feedback"];
     [picker setToRecipients:toRecipients];
@@ -50,7 +48,7 @@ static FeedbackReporting *sharedInstance = nil;
     MFMailComposeViewController *picker = [[MFMailComposeViewController alloc] init];
     picker.mailComposeDelegate = self;
     
-    NSArray *toRecipients = [NSArray arrayWithObject:@"flag@soclivity.com"];
+    NSArray *toRecipients = [NSArray arrayWithObject:@"flagged@mybeagleapp.com"];
     
     [picker setSubject:@"Flag Activity"];
     [picker setToRecipients:toRecipients];
@@ -104,6 +102,7 @@ static FeedbackReporting *sharedInstance = nil;
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
         [[UIApplication sharedApplication] setStatusBarHidden:YES];
 
+     
     }
     [controller dismissViewControllerAnimated:YES completion:Nil];
 }
