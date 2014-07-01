@@ -423,12 +423,15 @@ else if(!notifObject.isOffline){
     self.contentWrapper.scrollView.scrollIndicatorInsets = scrollIndicatorInsets;
     
     [self.detailedInterestTableView reloadData];
+    [self.detailedInterestTableView beginUpdates];
+    
+    [self.detailedInterestTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow: 0 inSection:0]
+                                          atScrollPosition:UITableViewScrollPositionTop
+                                                  animated:YES];
+    
+    [self.detailedInterestTableView endUpdates];
     
     
- // self.navigationItem.leftBarButtonItem=self.navigationItem.backBarButtonItem;
-    
-//    [self.navigationItem.backBarButtonItem setEnabled:YES];
-
 }
 -(void)flagButtonClicked:(id)sender{
     
@@ -1188,11 +1191,17 @@ else if(!notifObject.isOffline){
                         }
                     }
                     
+                [self.detailedInterestTableView reloadData];
+                    
                     if(toLastPost){
                         
-            [self.detailedInterestTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow: [self.chatPostsArray count] - 1 inSection:0]
-                                                    atScrollPosition:UITableViewScrollPositionTop
-                                                            animated:YES];
+                        [self.detailedInterestTableView beginUpdates];
+                        
+                        [self.detailedInterestTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow: [self.chatPostsArray count] inSection:0]
+                                                              atScrollPosition:UITableViewScrollPositionTop
+                                                                      animated:YES];
+                        
+                        [self.detailedInterestTableView endUpdates];
                         
                     }
                     
@@ -1312,6 +1321,7 @@ else if(!notifObject.isOffline){
         }
         [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
 
+            [self.detailedInterestTableView reloadData];
     }
     else if (serverRequest==kServerCallPostComment||serverRequest==kServerCallGetBackgroundChats||serverRequest==kServerInAppChatDetail){
         _chatPostManager.delegate = nil;
@@ -1349,11 +1359,23 @@ else if(!notifObject.isOffline){
                     
                     
                     [PostSoundEffect playMessageSentSound];
-                   
-                    BOOL postType=TRUE;
-                    if(serverRequest==kServerCallPostComment)
-                          postType=FALSE;
-                    [self.contentWrapper resize:[[self.chatPostsArray lastObject]text] isAutoPost:postType];
+                    
+                    [self.detailedInterestTableView reloadData];
+                    if(serverRequest==kServerCallPostComment){
+                        [self.contentWrapper.inputView.textView setText:nil];
+                        [self.contentWrapper.dummyInputView.textView setText:nil];
+                        [self.contentWrapper resize];
+
+                    }
+                    [self.detailedInterestTableView beginUpdates];
+                    
+                    [self.detailedInterestTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow: [self.chatPostsArray count] inSection:0]
+                                                          atScrollPosition:UITableViewScrollPositionTop
+                                                                  animated:YES];
+                    
+                    [self.detailedInterestTableView endUpdates];
+
+                    
                     
                     }
                 
@@ -1374,7 +1396,7 @@ else if(!notifObject.isOffline){
         [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
 
     }
-    [self.detailedInterestTableView reloadData];
+
 }
 
 

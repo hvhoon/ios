@@ -21,6 +21,8 @@
 +(UIColor*)returnBeagleColor:(NSInteger)colorID;
 +(UIColor*)returnAverageColor:(UIImage*)image;
 +(UIColor*)getDominantColor:(UIImage*)image;
++ (UIColor *)lighterColorForColor:(UIColor *)c;
++ (UIColor *)darkerColorForColor:(UIColor *)c;
 +(BOOL)hasBeenMoreThanSixtyMinutes;
 +(BOOL)LastDistanceFromLocationExceeds_50M;
 +(void) saveImage:(UIImage *)image withFileName:(NSInteger)imageName;
