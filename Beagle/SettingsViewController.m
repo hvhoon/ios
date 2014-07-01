@@ -8,6 +8,7 @@
 
 #import "SettingsViewController.h"
 #import "FriendsViewController.h"
+#import "FeedbackReporting.h"
 
 @interface SettingsViewController ()<ServerManagerDelegate>
 @property(nonatomic,strong)ServerManager*updateFBTickerManager;
@@ -90,7 +91,28 @@
         }
             break;
 
-            
+        case 4:
+        {
+            if ([[FeedbackReporting sharedInstance] canSendFeedback]) {
+                UINavigationController* shareFeedbackController = [[FeedbackReporting sharedInstance] shareFeedbackController];
+
+                [self presentViewController:shareFeedbackController animated:YES completion:Nil];
+                [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+                [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
+                
+                
+            }
+            else{
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Please setup your email account" message:nil
+                                                               delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                
+                [alert show];
+                
+            }
+            return;
+
+        }
+            break;
         case 8:
         {
             identifier=@"loginScreen";

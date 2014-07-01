@@ -36,6 +36,7 @@
 @property(nonatomic,assign)NSInteger postChatId;
 @property(nonatomic,assign)NSInteger activityOwnerId;
 @property(nonatomic,assign)NSInteger dos1_relation;
+@property(nonatomic,assign)NSInteger activityType;
 @property(nonatomic,assign)BOOL isOffline;
 -(id) initWithDictionary:(NSDictionary *)dictionary;
 @end

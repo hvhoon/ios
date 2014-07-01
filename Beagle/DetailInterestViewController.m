@@ -19,6 +19,7 @@
 #import "BeagleNotificationClass.h"
 #import "ASIHTTPRequest.h"
 #import "FriendsViewController.h"
+#import "FeedbackReporting.h"
 static NSString * const CellIdentifier = @"cell";
 @interface DetailInterestViewController ()<BeaglePlayerScrollMenuDelegate,ServerManagerDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,IconDownloaderDelegate,InAppNotificationViewDelegate,UIAlertViewDelegate,MessageKeyboardViewDelegate,UIGestureRecognizerDelegate>{
     BOOL scrollViewResize;
@@ -343,6 +344,9 @@ else if(!notifObject.isOffline){
     if(self.interestActivity.dosRelation==0){
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(editButtonClicked:)];
         
+    }else{
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Flag" style:UIBarButtonItemStylePlain target:self action:@selector(flagButtonClicked:)];
+        
     }
     
     
@@ -426,7 +430,24 @@ else if(!notifObject.isOffline){
 //    [self.navigationItem.backBarButtonItem setEnabled:YES];
 
 }
+-(void)flagButtonClicked:(id)sender{
+    
+    NSString* flagMessage = [NSString stringWithFormat:@"Please tell us why you find this activity objectionable? (Enter below):\n\n\n\n--\nFlag Report:\nActivity: %@ (%ld)\nOrganizer: %@ (%ld)", self.interestActivity.activityDesc, (long)self.interestActivity.activityId, self.interestActivity.organizerName, (long)self.interestActivity.ownerid];
 
+    
+    if ([[FeedbackReporting sharedInstance] canSendFeedback]) {
+        MFMailComposeViewController* flagAnInterestController = [[FeedbackReporting sharedInstance] flagAnActivityController:flagMessage];
+        [self presentViewController:flagAnInterestController animated:YES completion:Nil];
+    }
+    else{
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Please setup your email account" message:nil
+                                                       delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        
+        [alert show];
+        
+    }
+
+}
 -(void)editButtonClicked:(id)sender{
     
     [self.contentWrapper _unregisterForNotifications];
