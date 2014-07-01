@@ -19,6 +19,7 @@
 #import "BeagleNotificationClass.h"
 #import "ASIHTTPRequest.h"
 #import "FriendsViewController.h"
+#import "FeedbackReporting.h"
 static NSString * const CellIdentifier = @"cell";
 @interface DetailInterestViewController ()<BeaglePlayerScrollMenuDelegate,ServerManagerDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,IconDownloaderDelegate,InAppNotificationViewDelegate,UIAlertViewDelegate,MessageKeyboardViewDelegate,UIGestureRecognizerDelegate>{
     BOOL scrollViewResize;
@@ -343,6 +344,9 @@ else if(!notifObject.isOffline){
     if(self.interestActivity.dosRelation==0){
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(editButtonClicked:)];
         
+    }else{
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Flag" style:UIBarButtonItemStylePlain target:self action:@selector(flagButtonClicked:)];
+        
     }
     
     
@@ -426,7 +430,13 @@ else if(!notifObject.isOffline){
 //    [self.navigationItem.backBarButtonItem setEnabled:YES];
 
 }
-
+-(void)flagButtonClicked:(id)sender{
+    
+    if ([[FeedbackReporting sharedInstance] canSendFeedback]) {
+        MFMailComposeViewController* flagAnInterestController = [[FeedbackReporting sharedInstance] flagAnActivityController:self.interestActivity.activityDesc player:self.interestActivity.organizerName];
+        [self presentViewController:flagAnInterestController animated:YES completion:Nil];
+    }
+}
 -(void)editButtonClicked:(id)sender{
     
     [self.contentWrapper _unregisterForNotifications];

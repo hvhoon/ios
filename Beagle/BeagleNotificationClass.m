@@ -11,7 +11,7 @@
 @implementation BeagleNotificationClass
 @synthesize notificationString,type,profileImage,date,count,notificationId,userId;
 @synthesize activityId,expirationDate,photoUrl,latitude,longitude,notificationType,isRead;
-@synthesize rowHeight,timeOfNotification,referredId,backgroundTap,playerId,activityWhat,activityStartTime,activityEndTime,postChatId,activityOwnerId,postDesc,playerName,dos1_relation,isOffline;
+@synthesize rowHeight,timeOfNotification,referredId,backgroundTap,playerId,activityWhat,activityStartTime,activityEndTime,postChatId,activityOwnerId,postDesc,playerName,dos1_relation,isOffline,activityType;
 -(id) initWithDictionary:(NSDictionary *)dictionary
 {
     self = [super init];
@@ -20,6 +20,7 @@
         
         NSNumber * n = [dictionary objectForKey:@"id"];
         self.notificationId= [n intValue];
+        self.activityType=[[dictionary objectForKey:@"atype"]integerValue];
         self.userId = [dictionary objectForKey:@"user_id"];
         self.notificationType = [[dictionary objectForKey:@"notification_type"]integerValue];
         self.notificationString = [dictionary objectForKey:@"notification"];

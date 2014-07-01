@@ -38,6 +38,8 @@
 		180F604C1923D1D800B3807F /* LocationBlurView.m in Sources */ = {isa = PBXBuildFile; fileRef = 180F60451923D1D700B3807F /* LocationBlurView.m */; };
 		180F604D1923D1D800B3807F /* LocationBlurView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 180F60461923D1D700B3807F /* LocationBlurView.xib */; };
 		18216B1D18E350A800D9721F /* IconDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 18216B1C18E350A800D9721F /* IconDownloader.m */; };
+		182F0B8E19630077001771AD /* FeedbackReporting.m in Sources */ = {isa = PBXBuildFile; fileRef = 182F0B8D19630077001771AD /* FeedbackReporting.m */; };
+		182F0B9019630328001771AD /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 182F0B8F19630328001771AD /* MessageUI.framework */; };
 		1832F9C51953838000B271DB /* FriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1832F9C41953838000B271DB /* FriendsViewController.m */; };
 		183DFEAB19493D76008A556A /* UILabel+WhiteUIDatePickerLabels.m in Sources */ = {isa = PBXBuildFile; fileRef = 183DFEAA19493D76008A556A /* UILabel+WhiteUIDatePickerLabels.m */; };
 		1849D6B0192FCC540068BEDE /* InAppNotificationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1849D6AF192FCC540068BEDE /* InAppNotificationView.m */; };
@@ -205,6 +207,9 @@
 		180F60471923D1D700B3807F /* LocationBlurView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationBlurView.h; sourceTree = "<group>"; };
 		18216B1B18E350A800D9721F /* IconDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IconDownloader.h; sourceTree = "<group>"; };
 		18216B1C18E350A800D9721F /* IconDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IconDownloader.m; sourceTree = "<group>"; };
+		182F0B8C19630077001771AD /* FeedbackReporting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedbackReporting.h; sourceTree = "<group>"; };
+		182F0B8D19630077001771AD /* FeedbackReporting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedbackReporting.m; sourceTree = "<group>"; };
+		182F0B8F19630328001771AD /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		1832F9C31953838000B271DB /* FriendsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendsViewController.h; sourceTree = "<group>"; };
 		1832F9C41953838000B271DB /* FriendsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendsViewController.m; sourceTree = "<group>"; };
 		183DFEA919493D76008A556A /* UILabel+WhiteUIDatePickerLabels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UILabel+WhiteUIDatePickerLabels.h"; sourceTree = "<group>"; };
@@ -370,6 +375,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				182F0B9019630328001771AD /* MessageUI.framework in Frameworks */,
 				18FDA352192BDDE000D13667 /* CoreText.framework in Frameworks */,
 				68EDF874192AC7A0008ED9C1 /* CoreTelephony.framework in Frameworks */,
 				18EC232B18B5A65C00316B6E /* AudioToolbox.framework in Frameworks */,
@@ -571,6 +577,15 @@
 			name = "Google Auto Complete";
 			sourceTree = "<group>";
 		};
+		182F0B8B19630059001771AD /* Feedback */ = {
+			isa = PBXGroup;
+			children = (
+				182F0B8C19630077001771AD /* FeedbackReporting.h */,
+				182F0B8D19630077001771AD /* FeedbackReporting.m */,
+			);
+			name = Feedback;
+			sourceTree = "<group>";
+		};
 		1832F9C21953831800B271DB /* Mutual Friends */ = {
 			isa = PBXGroup;
 			children = (
@@ -653,6 +668,7 @@
 		18EC229F18B5A0B400316B6E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				182F0B8F19630328001771AD /* MessageUI.framework */,
 				18FDA351192BDDE000D13667 /* CoreText.framework */,
 				68EDF873192AC7A0008ED9C1 /* CoreTelephony.framework */,
 				68EDF871192AC78D008ED9C1 /* AVFoundation.framework */,
@@ -685,6 +701,7 @@
 		18EC22A618B5A0B400316B6E /* Beagle */ = {
 			isa = PBXGroup;
 			children = (
+				182F0B8B19630059001771AD /* Feedback */,
 				186B11FB1958E03300FF5A4D /* Invitees */,
 				1832F9C21953831800B271DB /* Mutual Friends */,
 				1849D6AD192FCC1F0068BEDE /* In App Notification */,
@@ -1103,6 +1120,7 @@
 				18EC231F18B5A42D00316B6E /* ASICloudFilesObjectRequest.m in Sources */,
 				18F9FE6118DB40E4004BFE4E /* BeagleManager.m in Sources */,
 				180F604B1923D1D800B3807F /* GooglePlacesAutocompleteUtilities.m in Sources */,
+				182F0B8E19630077001771AD /* FeedbackReporting.m in Sources */,
 				186B11FA1958E02D00FF5A4D /* InterestInviteViewController.m in Sources */,
 				18EC231A18B5A42D00316B6E /* ASICloudFilesCDNRequest.m in Sources */,
 				18EC232418B5A42D00316B6E /* NSString+SBJSON.m in Sources */,

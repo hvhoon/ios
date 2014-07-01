@@ -199,7 +199,7 @@
     UIImageView *cellImageView=[[UIImageView alloc]initWithFrame:CGRectMake(fromTheTop, 12, 35, 35)];
     
     UIImage*checkImage= [BeagleUtilities loadImage:play.referredId];
-    if(checkImage==nil|| play.referredId==0){
+    if(checkImage==nil|| play.referredId==0 || play.activityType==2){
     if (!play.profileImage)
     {
         if (tableView.dragging == NO && tableView.decelerating == NO)
@@ -424,7 +424,8 @@
                     NSMutableArray *notificationsArray=[[NSMutableArray alloc]init];
                     for(id el in notifications){
                         BeagleNotificationClass *actclass=[[BeagleNotificationClass alloc]initWithDictionary:el];
-                            [notificationsArray addObject:actclass];
+                            if(actclass.activityType!=2)
+                                [notificationsArray addObject:actclass];
                     }
 
                     if([notificationsArray count]!=0){
