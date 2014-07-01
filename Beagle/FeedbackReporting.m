@@ -29,8 +29,22 @@ static FeedbackReporting *sharedInstance = nil;
     
 }
 
-- (MFMailComposeViewController *)flagAnActivityController:(NSString*)actName player:(NSString*)plyName
+
+- (MFMailComposeViewController *)shareFeedbackController
 {
+    MFMailComposeViewController *picker = [[MFMailComposeViewController alloc] init];
+    picker.mailComposeDelegate = self;
+    
+    NSArray *toRecipients = [NSArray arrayWithObject:@"ideas@soclivity.com"];
+    
+    [picker setSubject:@"Feedback"];
+    [picker setToRecipients:toRecipients];
+    [picker setMessageBody:[self messageBody] isHTML:NO];
+    
+    return picker;
+}
+
+- (MFMailComposeViewController *)flagAnActivityController:(NSString*)flagMessage {
     MFMailComposeViewController *picker = [[MFMailComposeViewController alloc] init];
     picker.mailComposeDelegate = self;
     
@@ -38,12 +52,12 @@ static FeedbackReporting *sharedInstance = nil;
     
     [picker setSubject:@"Flag Activity"];
     [picker setToRecipients:toRecipients];
-    [picker setMessageBody:[self messageBody:actName orgName:plyName] isHTML:NO];
+    [picker setMessageBody:flagMessage isHTML:NO];
     
     return picker;
 }
 
-- (NSString *)messageBody:(NSString*)activityName orgName:(NSString*)orgName
+-(NSString *)messageBody:(NSString*)activityName orgName:(NSString*)orgName
 {
     
     // Getting the iOS environment settings
@@ -61,6 +75,26 @@ static FeedbackReporting *sharedInstance = nil;
     
     return emailBody;
 }
+
+- (NSString *)messageBody
+{
+    
+    // Getting the iOS environment settings
+    
+    NSDictionary *appMetaData = [[NSBundle mainBundle] infoDictionary];
+    NSString* appVersion = [appMetaData objectForKey:@"CFBundleShortVersionString"];
+    NSString* gitCommit = [appMetaData objectForKey:@"CFBundleVersion"];
+    NSString* osVersion = [[UIDevice currentDevice] systemVersion];
+    
+    NSLog(@"App Version: %@, (%@)", appVersion, gitCommit);
+    NSLog(@"iOS Version: %@", osVersion);
+    
+    // Fill out the email body text
+    NSString *emailBody = [NSString stringWithFormat:@"\n\n\n\n--\nBeagle: %@ (%@)\niPhone iOS: %@", appVersion, gitCommit, osVersion];
+    
+    return emailBody;
+}
+
 - (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error
 {
     [controller dismissViewControllerAnimated:YES completion:Nil];

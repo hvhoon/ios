@@ -11,6 +11,6 @@
 @interface FeedbackReporting : NSObject<MFMailComposeViewControllerDelegate>
 + (FeedbackReporting *)sharedInstance;
 - (BOOL)canSendFeedback;
-- (MFMailComposeViewController *)flagAnActivityController:(NSString*)actName player:(NSString*)plyName;
-
+- (MFMailComposeViewController *)flagAnActivityController:(NSString*)flagMessage;
+- (MFMailComposeViewController *)shareFeedbackController;
 @end

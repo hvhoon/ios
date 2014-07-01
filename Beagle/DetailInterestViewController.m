@@ -432,10 +432,21 @@ else if(!notifObject.isOffline){
 }
 -(void)flagButtonClicked:(id)sender{
     
+    NSString* flagMessage = [NSString stringWithFormat:@"Please tell us why you find this activity objectionable? (Enter below):\n\n\n\n--\nFlag Report:\nActivity: %@ (%ld)\nOrganizer: %@ (%ld)", self.interestActivity.activityDesc, (long)self.interestActivity.activityId, self.interestActivity.organizerName, (long)self.interestActivity.ownerid];
+
+    
     if ([[FeedbackReporting sharedInstance] canSendFeedback]) {
-        MFMailComposeViewController* flagAnInterestController = [[FeedbackReporting sharedInstance] flagAnActivityController:self.interestActivity.activityDesc player:self.interestActivity.organizerName];
+        MFMailComposeViewController* flagAnInterestController = [[FeedbackReporting sharedInstance] flagAnActivityController:flagMessage];
         [self presentViewController:flagAnInterestController animated:YES completion:Nil];
     }
+    else{
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Please setup your email account" message:nil
+                                                       delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        
+        [alert show];
+        
+    }
+
 }
 -(void)editButtonClicked:(id)sender{
     
