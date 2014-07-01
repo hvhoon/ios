@@ -95,7 +95,10 @@
         {
             if ([[FeedbackReporting sharedInstance] canSendFeedback]) {
                 UINavigationController* shareFeedbackController = [[FeedbackReporting sharedInstance] shareFeedbackController];
+
                 [self presentViewController:shareFeedbackController animated:YES completion:Nil];
+                [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+                [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
                 
                 
             }

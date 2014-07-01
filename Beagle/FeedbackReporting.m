@@ -32,6 +32,8 @@ static FeedbackReporting *sharedInstance = nil;
 
 - (MFMailComposeViewController *)shareFeedbackController
 {
+    staturBarShow=TRUE;
+
     MFMailComposeViewController *picker = [[MFMailComposeViewController alloc] init];
     picker.mailComposeDelegate = self;
     
@@ -97,6 +99,12 @@ static FeedbackReporting *sharedInstance = nil;
 
 - (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error
 {
+    if(staturBarShow){
+        staturBarShow=FALSE;
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+        [[UIApplication sharedApplication] setStatusBarHidden:YES];
+
+    }
     [controller dismissViewControllerAnimated:YES completion:Nil];
 }
 
