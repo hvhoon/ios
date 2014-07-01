@@ -9,7 +9,8 @@
 #import "AboutUsViewController.h"
 
 @interface AboutUsViewController ()
-@property (strong, nonatomic) IBOutlet UILabel *buildText;
+@property (weak, nonatomic) IBOutlet UILabel *buildText;
+@property (weak, nonatomic) IBOutlet UIButton *backButton;
 
 @end
 
@@ -24,20 +25,10 @@
     return self;
 }
 
--(void)viewWillAppear:(BOOL)animated{
-    
-    [self.navigationController setNavigationBarHidden:NO animated:YES];
-    
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
-    self.navigationController.navigationBar.topItem.title = @"";
-    [self.navigationController.navigationBar setBarTintColor:[BeagleUtilities returnBeagleColor:13]];
-    [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
     
     // Extract App Name
     NSDictionary *appMetaData = [[NSBundle mainBundle] infoDictionary];
@@ -53,6 +44,10 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+- (IBAction)settingsButtonPressed:(id)sender {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 
 /*
 #pragma mark - Navigation
