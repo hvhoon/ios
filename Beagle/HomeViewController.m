@@ -513,10 +513,6 @@
             
         // Color play :)
             
-        UIView* canvas = [[UIView alloc] initWithFrame:CGRectMake(0, 58, 156, 98)];
-        canvas.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.7];
-        [self.view addSubview:canvas];
-            
         UIColor *dominantColor = nil;
         
         dominantColor = [BeagleUtilities getDominantColor:flickrRequestInfo.photo];
@@ -540,35 +536,39 @@
                 }
             }
             
-            // Test light square
-            UIView* harishLightSquare = [[UIView alloc] initWithFrame:CGRectMake(16, 74, 25, 25)];
-            harishLightSquare.backgroundColor = harishLightColor;
-            [self.view addSubview:harishLightSquare];
+        /*
+        // == TESTING OF COLOR PALETTE ==
+        // Setup Canvas
+        UIView* canvas = [[UIView alloc] initWithFrame:CGRectMake(0, 115, 320, 41)];
+        canvas.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.7];
+        [self.view addSubview:canvas];
             
-            // Test dark square
-            UIView* harishDarkSquare = [[UIView alloc] initWithFrame:CGRectMake(16+25+8+25+8, 74, 25, 25)];
-            harishDarkSquare.backgroundColor = harishDarkColor;
-            [self.view addSubview:harishDarkSquare];
-        
-        // Test light square
-        UIView* lightSquare = [[UIView alloc] initWithFrame:CGRectMake(16, 115, 25, 25)];
-        lightSquare.backgroundColor = [BeagleUtilities lighterColorForColor:dominantColor];
-        [self.view addSubview:lightSquare];
-            
-        // Test Dominant square
-        UIView* dominantSquare = [[UIView alloc] initWithFrame:CGRectMake(16+25+8, 115, 25, 25)];
+        // Sample 1: Dominant Color
+        UIView* dominantSquare = [[UIView alloc] initWithFrame:CGRectMake(16, 123, 25, 25)];
         dominantSquare.backgroundColor = dominantColor;
         [self.view addSubview:dominantSquare];
             
-        // Test dark square
-        UIView* darkSquare = [[UIView alloc] initWithFrame:CGRectMake(16+25+8+25+8, 115, 25, 25)];
+        // Sample 2: Light variation of Dominant color using Brightness
+        UIView* harishLightSquare = [[UIView alloc] initWithFrame:CGRectMake(16+25+25, 123, 25, 25)];
+        harishLightSquare.backgroundColor = harishLightColor;
+        [self.view addSubview:harishLightSquare];
+            
+        // Sample 3: Dark variation of Dominant color using Brightness
+        UIView* harishDarkSquare = [[UIView alloc] initWithFrame:CGRectMake(16+25+25+25+8, 123, 25, 25)];
+        harishDarkSquare.backgroundColor = harishDarkColor;
+        [self.view addSubview:harishDarkSquare];
+        
+        // Sample 4: Light variation of Dominant color by modifying RGB values
+        UIView* lightSquare = [[UIView alloc] initWithFrame:CGRectMake(16+25+25+25+8+25+25+8, 123, 25, 25)];
+        lightSquare.backgroundColor = [BeagleUtilities lighterColorForColor:dominantColor];
+        [self.view addSubview:lightSquare];
+            
+        // Sample 5: Dark variation of Dominant color by modifying RBG values
+        UIView* darkSquare = [[UIView alloc] initWithFrame:CGRectMake(16+25+25+25+8+25+25+8+25+8, 123, 25, 25)];
         darkSquare.backgroundColor = [BeagleUtilities darkerColorForColor:dominantColor];
         [self.view addSubview:darkSquare];
-        
-        // Average color square
-        UIView* averageSquare = [[UIView alloc] initWithFrame:CGRectMake(16+25+8+25+8+25+8, 115, 25, 25)];
-        averageSquare.backgroundColor = [BeagleUtilities returnAverageColor:flickrRequestInfo.photo];
-        [self.view addSubview:averageSquare];
+        // == END TESTING OF COLOR PALETTE
+        */
             
         // Add the city name and the filter pane to the top section
         [self addCityName:[BG.placemark.addressDictionary objectForKey:@"City"]];
