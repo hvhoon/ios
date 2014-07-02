@@ -89,7 +89,6 @@
 		18EC232718B5A42D00316B6E /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EC230D18B5A42D00316B6E /* SBJsonParser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		18EC232818B5A42D00316B6E /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EC230F18B5A42D00316B6E /* SBJsonWriter.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		18EC232B18B5A65C00316B6E /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC232A18B5A65C00316B6E /* AudioToolbox.framework */; };
-		18EC232D18B5A66500316B6E /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC232C18B5A66500316B6E /* StoreKit.framework */; };
 		18EC232F18B5A66E00316B6E /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC232E18B5A66E00316B6E /* libz.dylib */; };
 		18EC233118B5A67800316B6E /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC233018B5A67800316B6E /* libxml2.dylib */; };
 		18EC233318B5A68200316B6E /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC233218B5A68200316B6E /* CFNetwork.framework */; };
@@ -305,7 +304,6 @@
 		18EC230F18B5A42D00316B6E /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
 		18EC231018B5A42D00316B6E /* ServerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServerManager.h; sourceTree = "<group>"; };
 		18EC232A18B5A65C00316B6E /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		18EC232C18B5A66500316B6E /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		18EC232E18B5A66E00316B6E /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		18EC233018B5A67800316B6E /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		18EC233218B5A68200316B6E /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
@@ -398,7 +396,6 @@
 				18EC233318B5A68200316B6E /* CFNetwork.framework in Frameworks */,
 				18EC233118B5A67800316B6E /* libxml2.dylib in Frameworks */,
 				18EC232F18B5A66E00316B6E /* libz.dylib in Frameworks */,
-				18EC232D18B5A66500316B6E /* StoreKit.framework in Frameworks */,
 				18EC22A318B5A0B400316B6E /* CoreGraphics.framework in Frameworks */,
 				18EC22A518B5A0B400316B6E /* UIKit.framework in Frameworks */,
 				18EC22A118B5A0B400316B6E /* Foundation.framework in Frameworks */,
@@ -691,7 +688,6 @@
 				18EC233218B5A68200316B6E /* CFNetwork.framework */,
 				18EC233018B5A67800316B6E /* libxml2.dylib */,
 				18EC232E18B5A66E00316B6E /* libz.dylib */,
-				18EC232C18B5A66500316B6E /* StoreKit.framework */,
 				18EC232A18B5A65C00316B6E /* AudioToolbox.framework */,
 				18EC22A018B5A0B400316B6E /* Foundation.framework */,
 				18EC22A218B5A0B400316B6E /* CoreGraphics.framework */,
@@ -1018,6 +1014,11 @@
 				TargetAttributes = {
 					18EC229C18B5A0B400316B6E = {
 						DevelopmentTeam = RLC9X36TPX;
+						SystemCapabilities = {
+							com.apple.InAppPurchase = {
+								enabled = 0;
+							};
+						};
 					};
 					18EC22B718B5A0B400316B6E = {
 						TestTargetID = 18EC229C18B5A0B400316B6E;
@@ -1295,8 +1296,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Harish Hoon (B99DQ79SBX)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Harish Hoon (B99DQ79SBX)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)",
 					"$(inherited)",
@@ -1306,7 +1307,7 @@
 				INFOPLIST_FILE = "Beagle/Beagle-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "DA3E6DAA-11EC-4865-B40E-8CA1BCC193A1";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1316,8 +1317,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Harish Hoon (B99DQ79SBX)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Harish Hoon (B99DQ79SBX)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)",
 					"$(inherited)",
@@ -1327,7 +1328,7 @@
 				INFOPLIST_FILE = "Beagle/Beagle-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "DA3E6DAA-11EC-4865-B40E-8CA1BCC193A1";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
