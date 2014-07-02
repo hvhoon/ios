@@ -521,7 +521,7 @@
         CGFloat hue, saturation, brightness, alpha, r, g, b, a;
         
         CGFloat darkColor = 0.45;
-        CGFloat lightColor = 0.85;
+        CGFloat lightColor = 0.9;
             
         UIColor *harishLightColor, *harishDarkColor;
             
