@@ -27,7 +27,6 @@ static NSString * const CellIdentifier = @"cell";
 
 @property(nonatomic,strong)ServerManager*chatPostManager;
 @property(nonatomic,strong)NSMutableDictionary*imageDownloadsInProgress;
-@property (strong, nonatomic) UIView *backgroundView1;
 @property (strong, nonatomic) UIImageView *profileImageView;
 @property (strong, nonatomic) UIImageView *triangle;
 @property (strong,nonatomic)BeaglePlayerScrollMenu *scrollMenu;
@@ -39,7 +38,7 @@ static NSString * const CellIdentifier = @"cell";
 @end
 
 @implementation DetailInterestViewController
-@synthesize interestActivity,interestServerManager=_interestServerManager,backgroundView1=_backgroundView1;
+@synthesize interestActivity,interestServerManager=_interestServerManager ;
 @synthesize scrollMenu=_scrollMenu;
 @synthesize imageDownloadsInProgress;
 @synthesize interestUpdateManager=_interestUpdateManager;
@@ -365,7 +364,6 @@ else if(!notifObject.isOffline){
     self.detailedInterestTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth
     |UIViewAutoresizingFlexibleHeight;
     [self.detailedInterestTableView setBackgroundColor:[BeagleUtilities returnBeagleColor:2]];
-    
     self.contentWrapper = [[MessageKeyboardView alloc] initWithScrollView:self.detailedInterestTableView];
     self.contentWrapper.interested=YES;
      if(!self.interestActivity.isParticipant)
