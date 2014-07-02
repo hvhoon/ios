@@ -399,7 +399,8 @@ else if(!notifObject.isOffline){
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(editButtonClicked:)];
         
     }else{
-        self.navigationItem.rightBarButtonItem=nil;
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Flag" style:UIBarButtonItemStylePlain target:self action:@selector(flagButtonClicked:)];
+        
     }
 
     self.navigationItem.hidesBackButton = NO;
