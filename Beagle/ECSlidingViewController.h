@@ -73,6 +73,8 @@ typedef enum {
  */
 @property (nonatomic, strong) UIViewController *underLeftViewController;
 
+@property(nonatomic,assign)BOOL openingLeftMovesStatusBar;
+@property(nonatomic,assign)BOOL openingRightMovesStatusBar;
 /** Returns the view controller that will be visible when the top view is slide to the left.
  
  This view controller is typically a supplemental view to the top view.
@@ -83,7 +85,7 @@ typedef enum {
  
  This is the main view controller that is presented above the other view controllers.
  */
-@property (nonatomic, strong) UITabBarController *topViewController;
+@property (nonatomic, strong) UIViewController *topViewController;
 
 /** Returns the number of points the top view is visible when the top view is anchored to the left side.
  
@@ -215,6 +217,9 @@ typedef enum {
 
 /** Returns true if the top view is completely off the screen */
 - (BOOL)topViewIsOffScreen;
+
+-(void)show;
+-(void)hide;
 
 @end
 

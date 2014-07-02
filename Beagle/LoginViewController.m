@@ -9,11 +9,12 @@
 #import "LoginViewController.h"
 #import "InitialSlidingViewController.h"
 #import "FacebookLoginSession.h"
-#import "BeagleUserClass.h"
 #import <Social/Social.h>
 @interface LoginViewController ()<FacebookLoginSessionDelegate,ServerManagerDelegate>{
     IBOutlet UIActivityIndicatorView *activityIndicatorView;
+    __weak IBOutlet UIImageView *NextArrow;
     ServerManager *loginServerManager;
+     NSMutableData *_data;
 }
 @property(nonatomic,strong)ServerManager *loginServerManager;
 @end
@@ -28,16 +29,23 @@
     }
     return self;
 }
+
+-(void)viewWillAppear:(BOOL)animated{
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    
+    
+}
+
 -(IBAction)signInUsingFacebookClicked:(id)sender{
     
-    [self pushToHomeScreen];
-//    [activityIndicatorView setHidden:NO];
-//    [activityIndicatorView startAnimating];
-//    
-//
-//    FacebookLoginSession *facebookSession=[[FacebookLoginSession alloc]init];
-//    facebookSession.delegate=self;
-//    [facebookSession getUserNativeFacebookSession];
+    [NextArrow setHidden:YES];
+    [activityIndicatorView setHidden:NO];
+    [activityIndicatorView startAnimating];
+    
+
+    FacebookLoginSession *facebookSession=[[FacebookLoginSession alloc]init];
+    facebookSession.delegate=self;
+    [facebookSession getUserNativeFacebookSession];
 
     
 }
@@ -69,6 +77,7 @@
             [[NSUserDefaults standardUserDefaults]synchronize];
             [activityIndicatorView stopAnimating];
             [activityIndicatorView setHidden:YES];
+            [NextArrow setHidden:NO];
 
         }];
     });
@@ -79,18 +88,14 @@
 
 -(void)pushToHomeScreen{
     
-    [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"FacebookLogin"];
-    [[NSUserDefaults standardUserDefaults]synchronize];
     [activityIndicatorView stopAnimating];
     [activityIndicatorView setHidden:YES];
+    [NextArrow setHidden:NO];
 
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     
     InitialSlidingViewController *initialViewController = [storyboard instantiateViewControllerWithIdentifier:@"initialBeagle"];
     [self.navigationController pushViewController:initialViewController animated:YES];
-    
-    
-    
 
 }
 
@@ -122,11 +127,30 @@
             
             id player=[response objectForKey:@"player"];
             if (player != nil && [player class] != [NSNull class]) {
+
+                id beagleId=[player objectForKey:@"id"];
+                if (beagleId != nil && [beagleId class] != [NSNull class]) {
+                  [[[BeagleManager SharedInstance] beaglePlayer]setBeagleUserId:[beagleId integerValue]];
+                    [[BeagleManager SharedInstance] userProfileDataUpdate];
+                    [[NSUserDefaults standardUserDefaults]setObject:[NSNumber numberWithInteger:[beagleId integerValue]] forKey:@"beagleId"];
+                    [[NSUserDefaults standardUserDefaults]synchronize];
+                     NSLog(@"beagleId=%ld",(long)[beagleId integerValue]);
+                    
+                }
+
                 
                 
-                NSLog(@"player=%@",player);
-                
-            }
+                    NSURL *pictureURL = [NSURL URLWithString:[player objectForKey:@"image_url"]];
+                    
+                    NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:pictureURL
+                                                                              cachePolicy:NSURLRequestUseProtocolCachePolicy
+                                                                          timeoutInterval:2.0f];
+                    // Run network request asynchronously
+                    NSURLConnection *urlConnection = [[NSURLConnection alloc] initWithRequest:urlRequest delegate:self];
+                    if (!urlConnection) {
+                        NSLog(@"Failed to download picture");
+                    }
+                }
         }
         }
         
@@ -163,6 +187,19 @@
     [alert show];
 }
 
+#pragma mark - NSURLConnectionDataDelegate
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+    _data = [[NSMutableData alloc] init];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+    [_data appendData:data];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+    [[BeagleManager SharedInstance] processFacebookProfilePictureData:_data];
+}
 
 - (void)didReceiveMemoryWarning
 {

@@ -10,7 +10,6 @@
 #import <Social/Social.h>
 #import <Accounts/ACAccountType.h>
 #import <Accounts/ACAccountCredential.h>
-#import "BeagleUserClass.h"
 @implementation FacebookLoginSession
 @synthesize accountStore;
 @synthesize facebookAccount;
@@ -31,25 +30,60 @@
     ACAccountType *FBaccountType= [self.accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
     
     NSString *key = @"500525846725031";
-    NSDictionary *dictFB = [NSDictionary dictionaryWithObjectsAndKeys:key,ACFacebookAppIdKey,@[@"email"],ACFacebookPermissionsKey, nil];
+    NSDictionary *dictFB = [NSDictionary dictionaryWithObjectsAndKeys:key,ACFacebookAppIdKey,@[@"email"],ACFacebookPermissionsKey,ACFacebookAudienceEveryone,ACFacebookAudienceKey,nil];
     
     
-    [self.accountStore requestAccessToAccountsWithType:FBaccountType options:dictFB completion:
-     ^(BOOL granted, NSError *e) {
-         if (granted) {
-             NSArray *accounts = [self.accountStore accountsWithAccountType:FBaccountType];
-             //it will always be the last object with single sign on
-             self.facebookAccount = [accounts lastObject];
-             NSLog(@"facebook account =%@",self.facebookAccount);
-             [self get];
-         } else {
-             //Fail gracefully...
-             NSLog(@"error getting permission %@",e);
-             
-             [delegate facebookAccountNotSetup];
-             
-         }
-     }];
+    
+    
+    [self.accountStore requestAccessToAccountsWithType:FBaccountType options:dictFB completion:^(BOOL granted, NSError *error) {
+        if (granted) {
+            NSArray *accounts = [self.accountStore accountsWithAccountType:FBaccountType];
+            
+            if ([accounts count] > 0) {
+                ACAccountType *FBaccountType= [self.accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
+                NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:key,ACFacebookAppIdKey,[NSArray arrayWithObjects:@"friends_location",@"user_friends",@"publish_stream",@"xmpp_login",nil],ACFacebookPermissionsKey,ACFacebookAudienceEveryone,ACFacebookAudienceKey,nil];
+
+                
+
+                
+                [self.accountStore requestAccessToAccountsWithType:FBaccountType options:options completion:^(BOOL granted2, NSError *error) {
+                    if (granted2) {
+                        NSLog(@"granted")
+                        ;
+                        self.facebookAccount = [accounts lastObject];
+                        // NSLog(@"facebook account =%@",self.facebookAccount);
+                        [self get];
+
+                    }
+                    else {
+                        NSLog(@" permission error: %@", [error localizedDescription]);
+                        [delegate facebookAccountNotSetup];
+                        //_publishPermissionsGranted = NO;
+                    }
+                    
+                }];
+            }
+        }
+        else {
+            NSLog(@"Nope");
+            [delegate facebookAccountNotSetup];
+        }
+        
+        if (error) {
+            if (error.code == 6) {
+                NSLog(@"FB Account doesn't exist");
+            }
+            NSLog(@"Error: %@", error.localizedDescription);
+            
+            
+            [delegate facebookAccountNotSetup];
+
+        }
+    }];
+    
+    
+    
+    
 
 }
 
@@ -72,15 +106,21 @@
         {
             list =[NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
             
-            NSLog(@"Dictionary contains: %@", list );
+            //NSLog(@"Dictionary contains: %@", list );
             if([list objectForKey:@"error"]!=nil)
             {
                 [self attemptRenewCredentials];
             }
             dispatch_async(dispatch_get_main_queue(),^{
-                NSLog(@"name=%@",[list objectForKey:@"name"]);
+               // NSLog(@"name=%@",[list objectForKey:@"name"]);
+                BeagleManager *BGM=[BeagleManager SharedInstance];
+                BeagleUserClass *userObject=nil;
+                if([[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"]){
+                    userObject= BGM.beaglePlayer;
+                }else{
+                    userObject=[[BeagleUserClass alloc]init];
+                }
                 
-                BeagleUserClass *userObject=[[BeagleUserClass alloc]init];
                 
                 id userName = [list objectForKey:@"username"];
                 if (userName != nil && [userName class] != [NSNull class]) {
@@ -134,7 +174,7 @@
                 
                 
                 userObject.access_token = self.facebookAccount.credential.oauthToken;
-                NSLog(@"accessToken=%@", userObject.access_token);
+                //NSLog(@"accessToken=%@", userObject.access_token);
                 
                // userObject.profileImage=[UIImage imageWithData:facebookData];
                 
@@ -152,7 +192,7 @@
                     userObject.email=email;
                 }
                     
-                    
+                BGM.beaglePlayer=userObject;
                     
                 [delegate successfulFacebookLogin:userObject];
         
@@ -175,7 +215,14 @@
     
     NSString *key = @"500525846725031";
     
-    NSDictionary *dictFB = [NSDictionary dictionaryWithObjectsAndKeys:key,ACFacebookAppIdKey,@[@"offline_access"],@[@"read_stream"],@[@"email"],@[@"user_subscriptions"],@[@"friends_subscriptions"],@[@"publish_stream"],@[@"xmpp_login"],ACFacebookPermissionsKey, nil];
+//    [NSArray arrayWithObjects:@"email",@"offline_access",@"read_stream",@"user_subscriptions",@"friends_subscriptions",@"friends_location",@"user_location",@"user_friends",@"publish_stream",@"xmpp_login",nil]
+    
+    NSDictionary *dictFB = [[NSDictionary alloc] initWithObjectsAndKeys:
+                             (NSString *)ACFacebookAppIdKey,key,
+                            (NSString *)ACFacebookPermissionsKey,@[@"email", @"offline_access",@"read_stream",@"user_subscriptions", @"friends_subscriptions",@"friends_location",@"user_location", @"user_friends",@"publish_stream",@"xmpp_login"],
+                             (NSString *)ACFacebookAudienceKey, ACFacebookAudienceEveryone,
+                             nil];
+    
     
     
     [self.accountStore requestAccessToAccountsWithType:FBaccountType options:dictFB completion:

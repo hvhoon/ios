@@ -9,11 +9,34 @@
 #import <Foundation/Foundation.h>
 
 typedef enum {
-    kServerCallUserRegisteration
+    kServerCallUserRegisteration,
+    kServerCallCreateActivity,
+    kServerCallGetActivities,
+    kServerCallGetDetailedInterest,
+    kServerCallLeaveInterest,
+    kServerCallParticipateInterest,
+    kServerCallPostComment,
+    kServerCallDeleteActivity,
+    kServerCallEditActivity,
+    kServerCallUpdateFbTicker,
+    kServerCallGetNotifications,
+    kServerCallInAppNotification,
+    kServerCallInAppNotificationForPosts,
+    kServerCallGetBackgroundChats,
+    kServerInAppChatDetail,
+    kServerCallRequestForOfflineNotification,
+    kServerCallInAppForOfflinePost,
+    kServerCallGetProfileMutualFriends,
+    kServerCallGetDOS1Friends,
+    kServerPostAPrivateMessageOnFacebook,
+    kServerCallgetNearbyAndWorldWideFriends,
+    kServerCallSuggestedPostMembership
 } ServerCallType;
 
 @class ServerManager;
 @class BeagleUserClass;
+@class BeagleActivityClass;
+@class InterestChatClass;
 @protocol ServerManagerDelegate <NSObject>
 
 @optional
@@ -32,4 +55,24 @@ typedef enum {
 -(void)releaseServerManager;
 //*************************** API calls ***************************
 -(void)registerPlayerOnBeagle:(BeagleUserClass*)data;
+-(void)createActivityOnBeagle:(BeagleActivityClass*)data;
+-(void)getActivities;
+-(void)getDetailedInterest:(NSInteger)activityId;
+-(void)removeMembership:(NSInteger)activityId playerid:(NSInteger)playerId;
+-(void)participateMembership:(NSInteger)activityId playerid:(NSInteger)playerId;
+-(void)postAComment:(NSInteger)activityId desc:(NSString*)desc;
+-(void)deleteAnInterest:(NSInteger)activityId;
+-(void)updateActivityOnBeagle:(BeagleActivityClass*)data;
+-(void)updateFacebookTickerStatus:(BOOL)status;
+-(void)getNotifications;
+-(void)requestInAppNotificationForPosts:(NSInteger)chatId isOffline:(BOOL)isOffline;
+-(void)requestInAppNotification:(NSInteger)notificationId isOffline:(BOOL)isOffline;
+-(void)getMoreBackgroundPostsForAnInterest:(InterestChatClass*)lastChatPost activId:(NSInteger)activId;
+-(void)getNewBackgroundPostsForAnInterest:(NSInteger)activityId;
+-(void)getPostDetail:(NSInteger)chatId;
+-(void)getMutualFriendsNetwork:(NSInteger)friendId;
+-(void)getDOS1Friends;
+-(void)sendingAPostMessageOnFacebook:(NSInteger)fbuid;
+-(void)getNearbyAndWorldWideFriends;
+-(void)updateSuggestedPostMembership:(NSInteger)activityId;
 @end

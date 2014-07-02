@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="13D65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="5cL-RR-F5D" customClass="EventInterestFilterBlurView">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <button opaque="NO" tag="1" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OX2-4c-CJq">
+                    <rect key="frame" x="24" y="136" width="280" height="62"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <inset key="titleEdgeInsets" minX="16" minY="0.0" maxX="0.0" maxY="0.0"/>
+                    <state key="normal" title="Happening Around You" image="Happening-Around-You">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <state key="highlighted">
+                        <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="changeInterestFilterIndex:" destination="5cL-RR-F5D" eventType="touchUpInside" id="zSA-bc-L0p"/>
+                    </connections>
+                </button>
+                <button opaque="NO" tag="4" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sj3-83-sQV">
+                    <rect key="frame" x="24" y="370" width="280" height="62"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <inset key="titleEdgeInsets" minX="16" minY="0.0" maxX="0.0" maxY="0.0"/>
+                    <state key="normal" title="Created by You" image="Created-By-You">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <state key="highlighted">
+                        <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="changeInterestFilterIndex:" destination="5cL-RR-F5D" eventType="touchUpInside" id="DSP-C5-cTm"/>
+                    </connections>
+                </button>
+                <button opaque="NO" tag="2" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vtS-gs-o19">
+                    <rect key="frame" x="24" y="214" width="280" height="62"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <inset key="titleEdgeInsets" minX="16" minY="0.0" maxX="0.0" maxY="0.0"/>
+                    <state key="normal" title="Created by Friends" image="Friends-Only">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <state key="highlighted">
+                        <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="changeInterestFilterIndex:" destination="5cL-RR-F5D" eventType="touchUpInside" id="99a-Md-f0L"/>
+                    </connections>
+                </button>
+                <button opaque="NO" tag="3" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iMn-3Z-iLz">
+                    <rect key="frame" x="24" y="292" width="280" height="62"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <inset key="titleEdgeInsets" minX="16" minY="0.0" maxX="0.0" maxY="0.0"/>
+                    <state key="normal" title="Your Interests" image="Your-Interests">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <state key="highlighted">
+                        <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="changeInterestFilterIndex:" destination="5cL-RR-F5D" eventType="touchUpInside" id="G1N-9c-eTK"/>
+                    </connections>
+                </button>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="sj3-83-sQV" firstAttribute="leading" secondItem="5cL-RR-F5D" secondAttribute="leading" constant="24" id="15Z-Ky-bN9"/>
+                <constraint firstItem="iMn-3Z-iLz" firstAttribute="leading" secondItem="5cL-RR-F5D" secondAttribute="leading" constant="24" id="5UR-xP-78k"/>
+                <constraint firstItem="vtS-gs-o19" firstAttribute="leading" secondItem="5cL-RR-F5D" secondAttribute="leading" constant="24" id="84a-Tu-Wp6"/>
+                <constraint firstItem="OX2-4c-CJq" firstAttribute="leading" secondItem="5cL-RR-F5D" secondAttribute="leading" constant="24" id="AX8-Pc-iZx"/>
+                <constraint firstAttribute="trailing" secondItem="vtS-gs-o19" secondAttribute="trailing" constant="16" id="G6e-dw-CHQ"/>
+                <constraint firstAttribute="trailing" secondItem="iMn-3Z-iLz" secondAttribute="trailing" constant="16" id="Mug-MR-Rso"/>
+                <constraint firstItem="sj3-83-sQV" firstAttribute="top" secondItem="iMn-3Z-iLz" secondAttribute="bottom" constant="16" id="PQU-0D-1KJ"/>
+                <constraint firstAttribute="trailing" secondItem="sj3-83-sQV" secondAttribute="trailing" constant="16" id="Vm1-aG-vXA"/>
+                <constraint firstAttribute="trailing" secondItem="OX2-4c-CJq" secondAttribute="trailing" constant="16" id="ekq-Bx-ZmM"/>
+                <constraint firstItem="vtS-gs-o19" firstAttribute="top" secondItem="OX2-4c-CJq" secondAttribute="bottom" constant="16" id="jBC-Xr-JDd"/>
+                <constraint firstItem="iMn-3Z-iLz" firstAttribute="top" secondItem="vtS-gs-o19" secondAttribute="bottom" constant="16" id="k9v-f9-un8"/>
+                <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="sj3-83-sQV" secondAttribute="bottom" constant="92" id="piZ-41-JxD"/>
+                <constraint firstItem="OX2-4c-CJq" firstAttribute="top" relation="greaterThanOrEqual" secondItem="5cL-RR-F5D" secondAttribute="top" constant="92" id="wAK-Vn-Ybl"/>
+            </constraints>
+            <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+            <connections>
+                <outlet property="topSpacingGap" destination="wAK-Vn-Ybl" id="O2M-4F-kIG"/>
+            </connections>
+        </view>
+    </objects>
+    <resources>
+        <image name="Created-By-You" width="62" height="62"/>
+        <image name="Friends-Only" width="62" height="62"/>
+        <image name="Happening-Around-You" width="62" height="62"/>
+        <image name="Your-Interests" width="62" height="62"/>
+    </resources>
+</document>

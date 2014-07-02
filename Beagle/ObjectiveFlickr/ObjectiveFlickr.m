@@ -10,7 +10,7 @@ NSString *const OFFlickrSmallSquareSize = @"s";
 NSString *const OFFlickrThumbnailSize = @"t";
 NSString *const OFFlickrSmallSize = @"m";
 NSString *const OFFlickrMediumSize = nil;
-
+NSString *const OFFlickrSmall320Size = @"n";
 NSString *const OFFlickrMedium640Size = @"z";
 NSString *const OFFlickrMedium800Size = @"c";
 
@@ -38,14 +38,14 @@ typedef unsigned int NSUInteger;
 
 @interface OFFlickrAPIContext (PrivateMethods)
 - (NSArray *)signedArgumentComponentsFromArguments:(NSDictionary *)inArguments useURIEscape:(BOOL)inUseEscape;
-- (NSString *)signedQueryFromArguments:(NSDictionary *)inArguments;
+- (NSString *)signedQueryFromArguments:(NSDictionary *)inArguments tagType:(NSInteger)tagType;
 @end
 
-#define kDefaultFlickrRESTAPIEndpoint		@"http://api.flickr.com/services/rest/"
-#define kDefaultFlickrPhotoSource			@"http://static.flickr.com/"
-#define kDefaultFlickrPhotoWebPageSource	@"http://www.flickr.com/photos/"
-#define kDefaultFlickrAuthEndpoint			@"http://flickr.com/services/auth/"
-#define kDefaultFlickrUploadEndpoint		@"http://api.flickr.com/services/upload/"
+#define kDefaultFlickrRESTAPIEndpoint		@"https://api.flickr.com/services/rest/"
+#define kDefaultFlickrPhotoSource			@"https://static.flickr.com/"
+#define kDefaultFlickrPhotoWebPageSource	@"https://www.flickr.com/photos/"
+#define kDefaultFlickrAuthEndpoint			@"https://flickr.com/services/auth/"
+#define kDefaultFlickrUploadEndpoint		@"https://api.flickr.com/services/upload/"
 
 @implementation OFFlickrAPIContext
 - (void)dealloc
@@ -101,30 +101,30 @@ typedef unsigned int NSUInteger;
         perms = [NSString stringWithFormat:@"&perms=%@", inPermission];
     }
     
-    NSString *URLString = [NSString stringWithFormat:@"http://www.flickr.com/services/oauth/authorize?oauth_token=%@%@", inRequestToken, perms];
+    NSString *URLString = [NSString stringWithFormat:@"https://www.flickr.com/services/oauth/authorize?oauth_token=%@%@", inRequestToken, perms];
     return [NSURL URLWithString:URLString];
 }
 
 - (NSURL *)photoSourceURLFromDictionary:(NSDictionary *)inDictionary size:(NSString *)inSizeModifier
 {
-	// http://farm{farm-id}.static.flickr.com/{server-id}/{id}_{secret}_[mstb].jpg
-	// http://farm{farm-id}.static.flickr.com/{server-id}/{id}_{secret}.jpg
+	// https://farm{farm-id}.static.flickr.com/{server-id}/{id}_{secret}_[mstb].jpg
+	// https://farm{farm-id}.static.flickr.com/{server-id}/{id}_{secret}.jpg
 	
 	NSString *farm = [inDictionary objectForKey:@"farm"];
 	NSString *photoID = [inDictionary objectForKey:@"id"];
 	NSString *secret = [inDictionary objectForKey:@"secret"];
 	NSString *server = [inDictionary objectForKey:@"server"];
 	
-	NSMutableString *URLString = [NSMutableString stringWithString:@"http://"];
+	NSMutableString *URLString = [NSMutableString stringWithString:@"https://"];
 	if ([farm length]) {
 		[URLString appendFormat:@"farm%@.", farm];
 	}
 	
-	// skips "http://"
+	// skips "https://"
 	NSAssert([server length], @"Must have server attribute");
 	NSAssert([photoID length], @"Must have id attribute");
 	NSAssert([secret length], @"Must have secret attribute");
-	[URLString appendString:[photoSource substringFromIndex:7]];
+	[URLString appendString:[photoSource substringFromIndex:8]];
 	[URLString appendFormat:@"%@/%@_%@", server, photoID, secret];
 	
 	if ([inSizeModifier length]) {
@@ -146,7 +146,7 @@ typedef unsigned int NSUInteger;
 {
 	NSString *frob = [[inFrob objectForKey:@"frob"] objectForKey:OFXMLTextContentKey];
     NSDictionary *argDict = [frob length] ? [NSDictionary dictionaryWithObjectsAndKeys:frob, @"frob", inPermission, @"perms", nil] : [NSDictionary dictionaryWithObjectsAndKeys:inPermission, @"perms", nil];
-	NSString *URLString = [NSString stringWithFormat:@"%@?%@", authEndpoint, [self signedQueryFromArguments:argDict]];
+	NSString *URLString = [NSString stringWithFormat:@"%@?%@", authEndpoint, [self signedQueryFromArguments:argDict tagType:1]];
 	return [NSURL URLWithString:URLString];
 }
 
@@ -164,7 +164,7 @@ typedef unsigned int NSUInteger;
 
 - (void)setPhotoSource:(NSString *)inSource
 {
-	if (![inSource hasPrefix:@"http://"]) {
+	if (![inSource hasPrefix:@"https://"]) {
 		return;
 	}
 	
@@ -180,7 +180,7 @@ typedef unsigned int NSUInteger;
 
 - (void)setPhotoWebPageSource:(NSString *)inSource
 {
-	if (![inSource hasPrefix:@"http://"]) {
+	if (![inSource hasPrefix:@"https://"]) {
 		return;
 	}
 	
@@ -278,9 +278,14 @@ typedef unsigned int NSUInteger;
 }
 
 
-- (NSString *)signedQueryFromArguments:(NSDictionary *)inArguments
+- (NSString *)signedQueryFromArguments:(NSDictionary *)inArguments tagType:(NSInteger)tagType
 {
     NSArray *argComponents = [self signedArgumentComponentsFromArguments:inArguments useURIEscape:YES];
+    if(tagType==0){
+    NSMutableArray *testArray=[NSMutableArray arrayWithArray:argComponents];
+    [testArray removeLastObject];
+    argComponents=[NSArray arrayWithArray:testArray];
+    }
     NSMutableArray *args = [NSMutableArray array];
     NSEnumerator *componentEnumerator = [argComponents objectEnumerator];
     NSArray *nextArg;
@@ -437,7 +442,7 @@ typedef unsigned int NSUInteger;
     }
 
     NSDictionary *paramsDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[inCallbackURL absoluteString], @"oauth_callback", nil];
-    NSURL *requestURL = [context oauthURLFromBaseURL:[NSURL URLWithString:@"http://www.flickr.com/services/oauth/request_token"] method:LFHTTPRequestGETMethod arguments:paramsDictionary];
+    NSURL *requestURL = [context oauthURLFromBaseURL:[NSURL URLWithString:@"https://www.flickr.com/services/oauth/request_token"] method:LFHTTPRequestGETMethod arguments:paramsDictionary];
     [HTTPRequest setSessionInfo:OFFetchOAuthRequestTokenSession];
     [HTTPRequest setContentType:nil];
     return [HTTPRequest performMethod:LFHTTPRequestGETMethod onURL:requestURL withData:nil];
@@ -449,13 +454,13 @@ typedef unsigned int NSUInteger;
         return NO;
     }
     NSDictionary *paramsDictionary = [NSDictionary dictionaryWithObjectsAndKeys:inRequestToken, @"oauth_token", inVerifier, @"oauth_verifier", nil];
-    NSURL *requestURL = [context oauthURLFromBaseURL:[NSURL URLWithString:@"http://www.flickr.com/services/oauth/access_token"] method:LFHTTPRequestGETMethod arguments:paramsDictionary];
+    NSURL *requestURL = [context oauthURLFromBaseURL:[NSURL URLWithString:@"https://www.flickr.com/services/oauth/access_token"] method:LFHTTPRequestGETMethod arguments:paramsDictionary];
     [HTTPRequest setSessionInfo:OFFetchOAuthAccessTokenSession];
     [HTTPRequest setContentType:nil];
     return [HTTPRequest performMethod:LFHTTPRequestGETMethod onURL:requestURL withData:nil];
 }
 
-- (BOOL)callAPIMethodWithGET:(NSString *)inMethodName arguments:(NSDictionary *)inArguments
+- (BOOL)callAPIMethodWithGET:(NSString *)inMethodName arguments:(NSDictionary *)inArguments tag:(NSInteger)tag
 {
     if ([HTTPRequest isRunning]) {
         return NO;
@@ -470,7 +475,7 @@ typedef unsigned int NSUInteger;
         requestURL = [context oauthURLFromBaseURL:[NSURL URLWithString:[context RESTAPIEndpoint]] method:LFHTTPRequestGETMethod arguments:newArgs];
     }
     else {
-        NSString *query = [context signedQueryFromArguments:newArgs];
+        NSString *query = [context signedQueryFromArguments:newArgs tagType:tag];
         NSString *URLString = [NSString stringWithFormat:@"%@?%@", [context RESTAPIEndpoint], query];
         requestURL = [NSURL URLWithString:URLString];
     }
@@ -523,7 +528,7 @@ static NSData *NSDataFromOAuthPreferredWebForm(NSDictionary *formDictionary)
         postData = NSDataFromOAuthPreferredWebForm(signedArgs);
     }
     else {    
-        NSString *arguments = [context signedQueryFromArguments:newArgs];
+        NSString *arguments = [context signedQueryFromArguments:newArgs tagType:1];
         postData = [arguments dataUsingEncoding:NSUTF8StringEncoding];
     }
     

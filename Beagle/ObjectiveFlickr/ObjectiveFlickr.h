@@ -12,7 +12,7 @@ extern NSString *const OFFlickrMediumSize;			// (no size modifier) - 500 on long
 
 extern NSString *const OFFlickrMedium640Size;		// "z" - 640
 extern NSString *const OFFlickrMedium800Size;		// "c" - 800
-
+extern NSString *const OFFlickrSmall320Size;			// "n" - 320 on longest side
 extern NSString *const OFFlickrLargeSize;			// "b" - 1024 on longest side
 
 extern NSString *const OFFlickrReadPermission;
@@ -39,7 +39,6 @@ extern NSString *const OFFlickrDeletePermission;
 // OAuth URL
 - (NSURL *)userAuthorizationURLWithRequestToken:(NSString *)inRequestToken requestedPermission:(NSString *)inPermission;
 
-
 // URL provisioning
 - (NSURL *)photoSourceURLFromDictionary:(NSDictionary *)inDictionary size:(NSString *)inSizeModifier;
 - (NSURL *)photoWebPageURLFromDictionary:(NSDictionary *)inDictionary;
@@ -64,7 +63,6 @@ extern NSString *const OFFlickrDeletePermission;
 
 - (void)setAuthToken:(NSString *)inAuthToken;
 - (NSString *)authToken;
-
 
 - (void)setRESTAPIEndpoint:(NSString *)inEndpoint;
 - (NSString *)RESTAPIEndpoint;
@@ -96,9 +94,7 @@ enum {
     OFFlickrAPIRequestConnectionError = 0x7fff0001,
     OFFlickrAPIRequestTimeoutError = 0x7fff0002,    
 	OFFlickrAPIRequestFaultyXMLResponseError = 0x7fff0003,
-    
     OFFlickrAPIRequestOAuthError = 0x7fff0004,
-
     OFFlickrAPIRequestUnknownError = 0x7fff0042    
 };
 
@@ -106,7 +102,6 @@ extern NSString *const OFFlickrAPIRequestOAuthErrorUserInfoKey;
 
 extern NSString *const OFFetchOAuthRequestTokenSession;
 extern NSString *const OFFetchOAuthAccessTokenSession;
-
 
 @class OFFlickrAPIRequest;
 
@@ -160,9 +155,8 @@ typedef id OFFlickrAPIRequestDelegateType;
 - (BOOL)fetchOAuthRequestTokenWithCallbackURL:(NSURL *)inCallbackURL;
 - (BOOL)fetchOAuthAccessTokenWithRequestToken:(NSString *)inRequestToken verifier:(NSString *)inVerifier;
 
-
 // elementary methods
-- (BOOL)callAPIMethodWithGET:(NSString *)inMethodName arguments:(NSDictionary *)inArguments;
+- (BOOL)callAPIMethodWithGET:(NSString *)inMethodName arguments:(NSDictionary *)inArguments tag:(NSInteger)tag;
 - (BOOL)callAPIMethodWithPOST:(NSString *)inMethodName arguments:(NSDictionary *)inArguments;
 
 // image upload—we use NSInputStream here because we want to have flexibity; with this you can upload either a file or NSData from NSImage

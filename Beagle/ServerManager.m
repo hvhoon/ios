@@ -12,10 +12,8 @@
 #import "ASIFormDataRequest.h"
 #import "SBJSON.h"
 #import "JSON.h"
-#import "AppDelegate.h"
-#import "BeagleUserClass.h"
-#define localHost @"http://localhost:3000/"
-#define herokuHost @"http://infinite-spire-6520.herokuapp.com/"
+#import "BeagleActivityClass.h"
+#import "InterestChatClass.h"
 @interface ServerManager()
 {
     NSMutableDictionary *_errorCodes;
@@ -38,10 +36,7 @@
     if (self) {
         
         _internetReachability = [Reachability reachabilityForInternetConnection];
-
-
         _serverUrl =herokuHost;
-
         [self populateErrorCodes];
     }
     return self;
@@ -67,8 +62,10 @@
         [playerRegisteration setObject:data.profileImageUrl forKey:@"image_url"];
         [playerRegisteration setObject:[NSNumber numberWithInteger:data.fbuid] forKey:@"fbuid"];
         [playerRegisteration setObject:data.access_token forKey:@"access_token"];
-        [playerRegisteration setObject:data.location forKey:@"location"];
-        [playerRegisteration setObject:@"deviceToken" forKey:@"device_token"];
+            if([data.location length]!=0)
+            [playerRegisteration setObject:data.location forKey:@"location"];
+        if([[[NSUserDefaults standardUserDefaults]valueForKey:@"device_token"]length]!=0)
+            [playerRegisteration setObject:[[NSUserDefaults standardUserDefaults]valueForKey:@"device_token"] forKey:@"device_token"];
         [playerRegisteration setObject:[NSNumber numberWithBool:data.fb_ticker] forKey:@"fb_ticker"];
         
         
@@ -91,6 +88,427 @@
     
 }
 
+-(void)createActivityOnBeagle:(BeagleActivityClass*)data{
+    _serverCallType=kServerCallCreateActivity;
+    if([self isInternetAvailable]){
+        
+        
+        NSMutableDictionary* activityEvent =[[NSMutableDictionary alloc] init];
+        [activityEvent setObject:[NSNumber numberWithInteger:1] forKey:@"atype"];
+        [activityEvent setObject:data.startActivityDate forKey:@"start_when"];
+        [activityEvent setObject:[NSNumber numberWithFloat:data.latitude] forKey:@"where_lat"];
+        [activityEvent setObject:[NSNumber numberWithFloat:data.longitude] forKey:@"where_lng"];
+        [activityEvent setObject:data.city forKey:@"where_city"];
+        [activityEvent setObject:data.state  forKey:@"where_state"];
+        [activityEvent setObject:data.activityDesc forKey:@"what"];
+        [activityEvent setObject:data.visibility forKey:@"access"];
+        [activityEvent setObject:[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"] forKey:@"ownnerid"];
+        [activityEvent setObject:data.endActivityDate  forKey:@"stop_when"];
+        NSString *bodyData=nil;
+        
+        if([data.requestString length]!=0){
+
+      NSString *activityEventData=[NSString stringWithFormat:@"\"atype\":\"%@\",\"start_when\":\"%@\",\"where_lat\":\"%@\",\"where_lng\":\"%@\",\"where_city\":\"%@\",\"where_state\":\"%@\",\"what\":\"%@\",\"access\":\"%@\",\"ownnerid\":\"%@\",\"stop_when\":\"%@\"",[NSNumber numberWithInteger:1],data.startActivityDate,[NSNumber numberWithFloat:data.latitude],[NSNumber numberWithFloat:data.longitude],data.city,data.state,data.activityDesc,data.visibility,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],data.endActivityDate];
+       bodyData = [NSString stringWithFormat:@"{\"invitees\":%@,%@}",data.requestString,activityEventData];
+        }else{
+            bodyData=[activityEvent JSONRepresentation];
+        }
+        NSLog(@"bodyData=%@",bodyData);
+        
+        NSData *postData = [bodyData dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
+        
+        
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activities.json", _serverUrl]
+                         method:@"POST"
+                         params:nil data:postData];
+    }
+    else{
+        [self internetNotAvailable];
+    }
+    
+    
+    
+}
+
+
+-(void)getActivities{
+    _serverCallType = kServerCallGetActivities;
+    if([self isInternetAvailable])
+    {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@getactivities.json", _serverUrl]
+                         method:@"GET"
+                         params:[NSDictionary dictionaryWithObjectsAndKeys:
+                                 [[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],@"pid",
+                                 [NSNumber numberWithFloat:[[BeagleManager SharedInstance]currentLocation].coordinate.latitude],@"lat",
+                                 [NSNumber numberWithFloat:[[BeagleManager SharedInstance]currentLocation].coordinate.longitude],@"lng",
+                                 nil] data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+}
+-(void)getDetailedInterest:(NSInteger)activityId{
+    _serverCallType = kServerCallGetDetailedInterest;
+    if([self isInternetAvailable])
+    {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@getactivity.json", _serverUrl]
+                         method:@"GET"
+                         params:[NSDictionary dictionaryWithObjectsAndKeys:
+                                 [[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],@"pid",
+                                 [NSNumber numberWithInteger:activityId],@"id",
+                                 [NSNumber numberWithFloat:[[BeagleManager SharedInstance]currentLocation].coordinate.latitude],@"lat",
+                                 [NSNumber numberWithFloat:[[BeagleManager SharedInstance]currentLocation].coordinate.longitude],@"lng",
+                                 nil] data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+}
+-(void)removeMembership:(NSInteger)activityId playerid:(NSInteger)playerId{
+    _serverCallType = kServerCallLeaveInterest;
+    if([self isInternetAvailable])
+    {
+        
+        NSMutableDictionary* updateMembership =[[NSMutableDictionary alloc] init];
+        [updateMembership setObject:[NSNumber numberWithInteger:playerId] forKey:@"pid"];
+        [updateMembership setObject:[NSNumber numberWithInteger:activityId] forKey:@"id"];
+        [updateMembership setObject:@"true" forKey:@"pstatus"];
+        
+        NSData *postData = [[updateMembership JSONRepresentation] dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
+        
+        
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@leaveactivity.json", _serverUrl]
+                         method:@"POST"
+                         params:nil data:postData];
+
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+}
+-(void)participateMembership:(NSInteger)activityId playerid:(NSInteger)playerId{
+    _serverCallType = kServerCallParticipateInterest;
+    if([self isInternetAvailable])
+    {
+        
+        NSMutableDictionary* updateMembership =[[NSMutableDictionary alloc] init];
+        [updateMembership setObject:[NSNumber numberWithInteger:playerId] forKey:@"pid"];
+        [updateMembership setObject:[NSNumber numberWithInteger:activityId] forKey:@"id"];
+        [updateMembership setObject:@"true" forKey:@"pstatus"];
+        
+        NSData *postData = [[updateMembership JSONRepresentation] dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
+        
+        
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@joinactivity.json", _serverUrl]
+                         method:@"PUT"
+                         params:nil data:postData];
+        
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+}
+
+-(void)postAComment:(NSInteger)activityId desc:(NSString*)desc{
+    _serverCallType = kServerCallPostComment;
+    if([self isInternetAvailable])
+    {
+        
+        NSMutableDictionary* postComment =[[NSMutableDictionary alloc] init];
+        [postComment setObject:[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"] forKey:@"player_id"];
+        [postComment setObject:[NSNumber numberWithInteger:activityId] forKey:@"activity_id"];
+        [postComment setObject:desc forKey:@"description"];
+        
+        NSData *postData = [[postComment JSONRepresentation] dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
+        
+        
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats.json", _serverUrl]
+                         method:@"POST"
+                         params:nil data:postData];
+        
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+}
+
+-(void)deleteAnInterest:(NSInteger)activityId{
+    _serverCallType = kServerCallDeleteActivity;
+    if([self isInternetAvailable])
+    {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activities/%ld.json", _serverUrl,(long)activityId]
+                         method:@"DELETE"
+                         params:nil data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+}
+-(void)updateActivityOnBeagle:(BeagleActivityClass*)data{
+    _serverCallType=kServerCallEditActivity;
+    if([self isInternetAvailable]){
+        
+        
+        NSMutableDictionary* activityEvent =[[NSMutableDictionary alloc] init];
+        [activityEvent setObject:[NSNumber numberWithInteger:1] forKey:@"atype"];
+        [activityEvent setObject:data.startActivityDate forKey:@"start_when"];
+        [activityEvent setObject:[NSNumber numberWithFloat:data.latitude] forKey:@"where_lat"];
+        [activityEvent setObject:[NSNumber numberWithFloat:data.longitude] forKey:@"where_lng"];
+        [activityEvent setObject:data.city forKey:@"where_city"];
+        [activityEvent setObject:data.state  forKey:@"where_state"];
+        [activityEvent setObject:data.activityDesc forKey:@"what"];
+        [activityEvent setObject:data.visibility forKey:@"access"];
+        [activityEvent setObject:[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"] forKey:@"ownnerid"];
+        [activityEvent setObject:data.endActivityDate  forKey:@"stop_when"];
+        
+        
+        
+        
+        NSData *postData = [[activityEvent JSONRepresentation] dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
+        
+        
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activities/%ld.json", _serverUrl,(long)data.activityId]
+                         method:@"PUT"
+                         params:nil data:postData];
+    }
+    else{
+        [self internetNotAvailable];
+    }
+    
+    
+    
+}
+
+-(void)updateFacebookTickerStatus:(BOOL)status{
+    _serverCallType = kServerCallUpdateFbTicker;
+    if([self isInternetAvailable])
+    {
+        
+        NSMutableDictionary* updateStatus =[[NSMutableDictionary alloc] init];
+        [updateStatus setObject:[NSNumber numberWithBool:status] forKey:@"fb_ticker"];
+        
+        NSData *postData = [[updateStatus JSONRepresentation] dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
+        
+        
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@/players/%ld.json", _serverUrl,(long)[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]]
+                         method:@"PUT"
+                         params:nil data:postData];
+        
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+}
+
+-(void)getNotifications{
+    _serverCallType=kServerCallGetNotifications;
+    
+        if([self isInternetAvailable])
+        {
+            [self callServerWithUrl:[NSString stringWithFormat:@"%@mynotifications.json", _serverUrl]
+                             method:@"GET"
+                             params:[NSDictionary dictionaryWithObjectsAndKeys:
+                                     [[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],@"logged_in_user_id",
+                                     nil] data:nil];
+        }
+        else
+        {
+            [self internetNotAvailable];
+        }
+}
+
+
+-(void)requestInAppNotificationForPosts:(NSInteger)chatId isOffline:(BOOL)isOffline{
+    _serverCallType=kServerCallInAppNotificationForPosts;
+    if(isOffline)
+        _serverCallType=kServerCallInAppForOfflinePost;
+    
+    if([self isInternetAvailable])
+    {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/%ld/acparameter.json",_serverUrl,(long)chatId]
+                         method:@"GET"
+                         params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+    
+}
+-(void)requestInAppNotification:(NSInteger)notificationId isOffline:(BOOL)isOffline{
+
+    _serverCallType=kServerCallInAppNotification;
+
+    if(isOffline)
+        _serverCallType=kServerCallRequestForOfflineNotification;
+
+    
+    if([self isInternetAvailable])
+    {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@rsparameter.json", _serverUrl]
+                         method:@"GET"
+                         params:[NSDictionary dictionaryWithObjectsAndKeys:
+                                 [NSNumber numberWithInteger:notificationId],@"id",
+                                 nil] data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+}
+
+
+
+
+-(void)getMoreBackgroundPostsForAnInterest:(InterestChatClass*)lastChatPost activId:(NSInteger)activId{
+    _serverCallType=kServerCallGetBackgroundChats;
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+    [dateFormatter setTimeZone:utcTimeZone];
+    
+    NSDate *lastDate = [dateFormatter dateFromString:lastChatPost.timestamp];
+    NSDate *updatedDate=[lastDate dateByAddingTimeInterval:5];
+    NSLog(@"updatedDate=%@",updatedDate);
+
+    if([self isInternetAvailable])
+    {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/backgroundchat.json?pid=%@&aid=%ld&chatid=%ld&start_time=%@&end_time=%@",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],activId,(long)lastChatPost.chat_id,[dateFormatter stringFromDate:updatedDate],[dateFormatter stringFromDate:[NSDate date]]]
+                         method:@"GET"
+                         params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+    
+}
+
+-(void)getNewBackgroundPostsForAnInterest:(NSInteger)activityId{
+        _serverCallType=kServerCallGetBackgroundChats;
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+    [dateFormatter setTimeZone:utcTimeZone];
+
+    if([self isInternetAvailable]) {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/testbackgroundchat.json?pid=%@&aid=%ld",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],(long)activityId]
+                         method:@"GET"
+                         params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+
+}
+
+-(void)getPostDetail:(NSInteger)chatId{
+    _serverCallType=kServerInAppChatDetail;
+    
+    if([self isInternetAvailable])
+    {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/%ld/chat_detail.json?pid=%@",_serverUrl,(long)chatId,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]]
+                         method:@"GET"
+                         params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+    
+}
+
+-(void)getMutualFriendsNetwork:(NSInteger)friendId{
+    _serverCallType=kServerCallGetProfileMutualFriends;
+    if([self isInternetAvailable])
+    {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@players/friendprofile.json?id=%@&fid=%ld",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],(long)friendId]
+                         method:@"GET"
+                         params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+
+}
+-(void)getDOS1Friends{
+    _serverCallType=kServerCallGetDOS1Friends;
+    if([self isInternetAvailable])
+    {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@players/friendwithdos1.json?id=%@",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]]
+                         method:@"GET"
+                         params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+    
+}
+
+-(void)sendingAPostMessageOnFacebook:(NSInteger)fbuid{
+    _serverCallType=kServerPostAPrivateMessageOnFacebook;
+    if([self isInternetAvailable])
+    {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@players/send_facebook_message.json?id=%@&fbuid=%ld",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],(long)fbuid]
+                         method:@"POST"
+                         params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+
+}
+-(void)getNearbyAndWorldWideFriends{
+    _serverCallType=kServerCallgetNearbyAndWorldWideFriends;
+    if([self isInternetAvailable])
+    {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@players/friendwithdos1NearbyAndWorldwide.json?id=%@&lat=%@&lng=%@",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],[NSNumber numberWithFloat:[[BeagleManager SharedInstance]currentLocation].coordinate.latitude],[NSNumber numberWithFloat:[[BeagleManager SharedInstance]currentLocation].coordinate.longitude]]
+                         method:@"GET"
+                         params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+    
+}
+-(void)updateSuggestedPostMembership:(NSInteger)activityId{
+        _serverCallType=kServerCallSuggestedPostMembership;
+    if([self isInternetAvailable])
+    {
+        
+        NSMutableDictionary* updateMembership =[[NSMutableDictionary alloc] init];
+        [updateMembership setObject:[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"] forKey:@"pid"];
+        [updateMembership setObject:[NSNumber numberWithInteger:activityId] forKey:@"id"];
+        [updateMembership setObject:@"true" forKey:@"pstatus"];
+        
+        NSData *postData = [[updateMembership JSONRepresentation] dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
+        
+        
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@suggestedactivity.json", _serverUrl]
+                         method:@"PUT"
+                         params:nil data:postData];
+        
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+
+}
 -(void)populateErrorCodes
 {
     _errorCodes = [[NSMutableDictionary alloc]init];
@@ -181,17 +599,11 @@
     else
     {
         request = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:requestUrl]];
-        //[request appendPostData:data];
-
-//        for (NSString *key in [params allKeys])
-//        {
-//            NSString *value = [params valueForKey:key];
-//            
-//            [request setPostValue:value forKey:key];
-//            
-//        }
-    }
+        [request setPostBody:[NSMutableData dataWithData:data]];
+     }
     
+    
+
     // set headers valid for all requests
     [request setRequestMethod:requestMethod];
 
@@ -201,7 +613,6 @@
     request.allowCompressedResponse = NO;
     request.useCookiePersistence = NO;
     request.shouldCompressRequestBody = NO;
-    [request setPostBody:[NSMutableData dataWithData:data]];
     [request startAsynchronous];
 }
 
