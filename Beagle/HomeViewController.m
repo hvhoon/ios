@@ -510,15 +510,43 @@
                 [self.timer invalidate];
                 [self crossDissolvePhotos:flickrRequestInfo.photo withTitle:flickrRequestInfo.userInfo];
             }
-        
-        [self addCityName:[BG.placemark.addressDictionary objectForKey:@"City"]];
-        _filterView.backgroundColor = [BeagleUtilities getDominantColor:flickrRequestInfo.photo];
             
-        /* Test square for alternate algorithm to pull AVERAGE COLOR
-        UIView* testSquare = [[UIView alloc] initWithFrame:CGRectMake(16, 100, 50, 50)];
-        testSquare.backgroundColor = [BeagleUtilities returnAverageColor:flickrRequestInfo.photo];
-        [self.view addSubview:testSquare];
-         */
+        // Color play :)
+        UIColor *dominantColor = nil;
+        
+        dominantColor = [BeagleUtilities getDominantColor:flickrRequestInfo.photo];
+        UIColor* filterViewColor = nil;
+        //CGColorRef dominantColorRef = [dominantColor CGColor];
+        //const CGFloat *components = CGColorGetComponents(dominantColorRef);
+        
+        CGFloat r, g, b, a;
+            
+        if ([dominantColor getRed:&r green:&g blue:&b alpha:&a])
+            filterViewColor = [UIColor colorWithRed:r green:g blue:b alpha:0.8];
+            
+        // Test light square
+        UIView* lightSquare = [[UIView alloc] initWithFrame:CGRectMake(16, 115, 25, 25)];
+        lightSquare.backgroundColor = [BeagleUtilities lighterColorForColor:dominantColor];
+        [self.view addSubview:lightSquare];
+            
+        // Test Dominant square
+        UIView* dominantSquare = [[UIView alloc] initWithFrame:CGRectMake(16+25+8, 115, 25, 25)];
+        dominantSquare.backgroundColor = dominantColor;
+        [self.view addSubview:dominantSquare];
+            
+        // Test dark square
+        UIView* darkSquare = [[UIView alloc] initWithFrame:CGRectMake(16+25+8+25+8, 115, 25, 25)];
+        darkSquare.backgroundColor = [BeagleUtilities darkerColorForColor:dominantColor];
+        [self.view addSubview:darkSquare];
+        
+        // Average color square
+        UIView* averageSquare = [[UIView alloc] initWithFrame:CGRectMake(16+25+8+25+8+25+8, 115, 25, 25)];
+        averageSquare.backgroundColor = [BeagleUtilities returnAverageColor:flickrRequestInfo.photo];
+        [self.view addSubview:averageSquare];
+            
+        // Add the city name and the filter pane to the top section
+        [self addCityName:[BG.placemark.addressDictionary objectForKey:@"City"]];
+        _filterView.backgroundColor = filterViewColor;
     
         }];
     

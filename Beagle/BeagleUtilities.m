@@ -276,7 +276,7 @@
     NSUInteger green = 0;
     NSUInteger blue = 0;
     
-    float alpha = 0.8f;
+    float alpha = 1.0f;
     
     // Allocate a buffer big enough to hold all the pixels
     
