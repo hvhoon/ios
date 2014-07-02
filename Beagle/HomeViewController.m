@@ -512,18 +512,44 @@
             }
             
         // Color play :)
+            
+        UIView* canvas = [[UIView alloc] initWithFrame:CGRectMake(0, 58, 156, 98)];
+        canvas.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.7];
+        [self.view addSubview:canvas];
+            
         UIColor *dominantColor = nil;
         
         dominantColor = [BeagleUtilities getDominantColor:flickrRequestInfo.photo];
-        UIColor* filterViewColor = nil;
-        //CGColorRef dominantColorRef = [dominantColor CGColor];
-        //const CGFloat *components = CGColorGetComponents(dominantColorRef);
+        UIColor* filterViewColor = [dominantColor colorWithAlphaComponent:0.8];
+            
+        CGFloat hue, saturation, brightness, alpha, r, g, b, a;
         
-        CGFloat r, g, b, a;
+        CGFloat darkColor = 0.45;
+        CGFloat lightColor = 0.85;
             
-        if ([dominantColor getRed:&r green:&g blue:&b alpha:&a])
-            filterViewColor = [UIColor colorWithRed:r green:g blue:b alpha:0.8];
+        UIColor *harishLightColor, *harishDarkColor;
             
+            // Getting these values
+            if([dominantColor getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha]) {
+                harishLightColor = ([UIColor colorWithHue:hue saturation:saturation brightness:lightColor alpha:alpha]);
+                harishDarkColor = ([UIColor colorWithHue:hue saturation:saturation brightness:darkColor alpha:alpha]);
+                
+                if([dominantColor getRed:&r green:&g blue:&b alpha:&a]) {
+                    NSLog(@"Dominant Color = R:%i, G:%i, B:%i, Brightness:%f", (int)(r*255.0), (int)(g*255.0), (int)(b*255.0), brightness);
+        
+                }
+            }
+            
+            // Test light square
+            UIView* harishLightSquare = [[UIView alloc] initWithFrame:CGRectMake(16, 74, 25, 25)];
+            harishLightSquare.backgroundColor = harishLightColor;
+            [self.view addSubview:harishLightSquare];
+            
+            // Test dark square
+            UIView* harishDarkSquare = [[UIView alloc] initWithFrame:CGRectMake(16+25+8+25+8, 74, 25, 25)];
+            harishDarkSquare.backgroundColor = harishDarkColor;
+            [self.view addSubview:harishDarkSquare];
+        
         // Test light square
         UIView* lightSquare = [[UIView alloc] initWithFrame:CGRectMake(16, 115, 25, 25)];
         lightSquare.backgroundColor = [BeagleUtilities lighterColorForColor:dominantColor];
