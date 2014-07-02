@@ -747,23 +747,49 @@ enum Weeks {
     [dateFormatter setTimeZone:utcTimeZone];
     NSCalendar* calendar = [NSCalendar currentCalendar];
     
+    NSString *eventDateString = [dateFormatter stringFromDate:eventDate];
+
+    
+    NSDate *dateSelected = [dateFormatter dateFromString:eventDateString];//add the string
+    NSString *todayDate = [dateFormatter stringFromDate:[NSDate date]];
+    NSDate *currentDate=[dateFormatter dateFromString:todayDate];
+
+    
+    NSTimeZone* destinationTimeZone = [NSTimeZone systemTimeZone];
+    NSInteger destinationGMTOffset1 = [destinationTimeZone secondsFromGMTForDate:dateSelected];
+    NSInteger destinationGMTOffset2 = [destinationTimeZone secondsFromGMTForDate:currentDate];
+    
+    NSTimeInterval interval2 = destinationGMTOffset1;
+    NSTimeInterval interval3 = destinationGMTOffset2;
+    
+    NSDate* destinationDate =[[NSDate alloc] initWithTimeInterval:interval2 sinceDate:dateSelected];
+    NSDate* currentDateTime =[[NSDate alloc] initWithTimeInterval:interval3 sinceDate:currentDate];
+
     NSInteger differenceInDays =
-    [calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSEraCalendarUnit forDate:eventDate]-
-    [calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSEraCalendarUnit forDate:[NSDate date]];
+    [calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSEraCalendarUnit forDate:destinationDate]-
+    [calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSEraCalendarUnit forDate:currentDateTime];
 
     NSDateComponents*components = [calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit|NSHourCalendarUnit|NSSecondCalendarUnit|NSMinuteCalendarUnit
                                                 fromDate:eventDate];
 
-    if([eventDate timeIntervalSinceDate:[NSDate date]]<0 && differenceInDays==0){
-        [timeFilterButton setTitle:@"Later Today" forState:UIControlStateNormal];
+    if(differenceInDays==0){
+        NSDateFormatter *localDateFormatter = [[NSDateFormatter alloc] init];
+        localDateFormatter.dateFormat=@"h:mm a";
+
+        [timeFilterButton setTitle:[NSString stringWithFormat:@"Today, %@",[localDateFormatter stringFromDate:eventDate]] forState:UIControlStateNormal];
 
         //user has picked today
     }else if(differenceInDays==1){
-        [timeFilterButton setTitle:@"Tommorow" forState:UIControlStateNormal];
+        NSDateFormatter *localDateFormatter = [[NSDateFormatter alloc] init];
+        localDateFormatter.dateFormat=@"h:mm a";
+        
+
+        [timeFilterButton setTitle:[NSString stringWithFormat:@"Tomorrow, %@",[localDateFormatter stringFromDate:eventDate]] forState:UIControlStateNormal];
     }
     else{
         NSDateFormatter *localDateFormatter = [[NSDateFormatter alloc] init];
-        [localDateFormatter setDateFormat:@"EEE, MMM d"];
+        
+        localDateFormatter.dateFormat=@"EEE, MMM d, h:mm a";
         [localDateFormatter setTimeZone:[NSTimeZone systemTimeZone]];
         NSString *formattedDateString = [localDateFormatter stringFromDate:eventDate];
         [timeFilterButton setTitle:formattedDateString forState:UIControlStateNormal];

@@ -432,13 +432,61 @@
     NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
     [dateFormatter setTimeZone:utcTimeZone];
     NSDate *startActivityDate = [dateFormatter dateFromString:startDate];
-//    NSLog(@"startActivityDate=%@",startActivityDate);
     NSDate *endActivityDate = [dateFormatter dateFromString:endDate];
-//    NSLog(@"endActivityDate=%@",endActivityDate);
     
     NSTimeInterval Interval=[endActivityDate timeIntervalSinceDate:[NSDate date]];
     
-    // When is this activity?
+    // When pick a date option is selected
+    
+    if([startActivityDate timeIntervalSinceDate:endActivityDate]==0.0){
+        NSCalendar* calendar = [NSCalendar currentCalendar];
+        
+        NSString *eventDateString = [dateFormatter stringFromDate:startActivityDate];
+        NSDate *eventDate = [dateFormatter dateFromString:eventDateString];
+        NSString *todayDate = [dateFormatter stringFromDate:[NSDate date]];
+        NSDate *currentDate=[dateFormatter dateFromString:todayDate];
+        
+        
+        NSTimeZone* destinationTimeZone = [NSTimeZone systemTimeZone];
+        NSInteger destinationGMTOffset1 = [destinationTimeZone secondsFromGMTForDate:eventDate];
+        NSInteger destinationGMTOffset2 = [destinationTimeZone secondsFromGMTForDate:currentDate];
+        
+        NSTimeInterval interval2 = destinationGMTOffset1;
+        NSTimeInterval interval3 = destinationGMTOffset2;
+        
+        NSDate* destinationDate =[[NSDate alloc] initWithTimeInterval:interval2 sinceDate:eventDate];
+        NSDate* currentDateTime =[[NSDate alloc] initWithTimeInterval:interval3 sinceDate:currentDate];
+        
+        NSInteger differenceInDays =
+        [calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSEraCalendarUnit forDate:destinationDate]-
+        [calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSEraCalendarUnit forDate:currentDateTime];
+
+        
+        
+        if(differenceInDays==0){
+            NSDateFormatter *localDateFormatter = [[NSDateFormatter alloc] init];
+            localDateFormatter.dateFormat=@"h:mm a";
+            
+            return [NSString stringWithFormat:@"Today, %@",[localDateFormatter stringFromDate:startActivityDate]];
+            
+            //user has picked today
+        }else if(differenceInDays==1){
+            NSDateFormatter *localDateFormatter = [[NSDateFormatter alloc] init];
+            localDateFormatter.dateFormat=@"h:mm a";
+            
+            return [NSString stringWithFormat:@"Tomorrow, %@",[localDateFormatter stringFromDate:startActivityDate]];
+        }
+        else{
+            NSDateFormatter *localDateFormatter = [[NSDateFormatter alloc] init];
+            
+            localDateFormatter.dateFormat=@"EEE, MMM d, h:mm a";
+            [localDateFormatter setTimeZone:[NSTimeZone systemTimeZone]];
+            return [localDateFormatter stringFromDate:startActivityDate];
+            
+        }
+
+
+    }
     
     // Is it today?
     if([[NSDate date] timeIntervalSinceDate:startActivityDate]>0 && Interval>0 && Interval<=86400.00)
