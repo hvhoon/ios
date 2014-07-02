@@ -536,7 +536,6 @@
                 }
             }
             
-        /*
         // == TESTING OF COLOR PALETTE ==
         // Setup Canvas
         UIView* canvas = [[UIView alloc] initWithFrame:CGRectMake(0, 115, 320, 41)];
@@ -568,7 +567,6 @@
         darkSquare.backgroundColor = [BeagleUtilities darkerColorForColor:dominantColor];
         [self.view addSubview:darkSquare];
         // == END TESTING OF COLOR PALETTE
-        */
             
         // Add the city name and the filter pane to the top section
         [self addCityName:[BG.placemark.addressDictionary objectForKey:@"City"]];
