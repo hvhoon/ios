@@ -743,6 +743,8 @@ enum Weeks {
     timeIndex=8;
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    [dateFormatter setPMSymbol:@"pm"];
+    [dateFormatter setAMSymbol:@"am"];
     NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
     [dateFormatter setTimeZone:utcTimeZone];
     NSCalendar* calendar = [NSCalendar currentCalendar];
@@ -774,22 +776,27 @@ enum Weeks {
 
     if(differenceInDays==0){
         NSDateFormatter *localDateFormatter = [[NSDateFormatter alloc] init];
-        localDateFormatter.dateFormat=@"h:mm a";
+        localDateFormatter.dateFormat=@"h:mma";
+        [localDateFormatter setPMSymbol:@"pm"];
+        [localDateFormatter setAMSymbol:@"am"];
 
         [timeFilterButton setTitle:[NSString stringWithFormat:@"Today, %@",[localDateFormatter stringFromDate:eventDate]] forState:UIControlStateNormal];
 
         //user has picked today
     }else if(differenceInDays==1){
         NSDateFormatter *localDateFormatter = [[NSDateFormatter alloc] init];
-        localDateFormatter.dateFormat=@"h:mm a";
+        localDateFormatter.dateFormat=@"h:mma";
+        [localDateFormatter setPMSymbol:@"pm"];
+        [localDateFormatter setAMSymbol:@"am"];
         
-
         [timeFilterButton setTitle:[NSString stringWithFormat:@"Tomorrow, %@",[localDateFormatter stringFromDate:eventDate]] forState:UIControlStateNormal];
     }
     else{
         NSDateFormatter *localDateFormatter = [[NSDateFormatter alloc] init];
         
-        localDateFormatter.dateFormat=@"EEE, MMM d, h:mm a";
+        localDateFormatter.dateFormat=@"EEE, MMM d, h:mma";
+        [localDateFormatter setPMSymbol:@"pm"];
+        [localDateFormatter setAMSymbol:@"am"];
         [localDateFormatter setTimeZone:[NSTimeZone systemTimeZone]];
         NSString *formattedDateString = [localDateFormatter stringFromDate:eventDate];
         [timeFilterButton setTitle:formattedDateString forState:UIControlStateNormal];

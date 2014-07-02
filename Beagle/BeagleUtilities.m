@@ -428,6 +428,8 @@
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    [dateFormatter setPMSymbol:@"pm"];
+    [dateFormatter setAMSymbol:@"am"];
     
     NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
     [dateFormatter setTimeZone:utcTimeZone];
@@ -465,21 +467,27 @@
         
         if(differenceInDays==0){
             NSDateFormatter *localDateFormatter = [[NSDateFormatter alloc] init];
-            localDateFormatter.dateFormat=@"h:mm a";
+            localDateFormatter.dateFormat=@"h:mma";
+            [localDateFormatter setPMSymbol:@"pm"];
+            [localDateFormatter setAMSymbol:@"am"];
             
             return [NSString stringWithFormat:@"Today, %@",[localDateFormatter stringFromDate:startActivityDate]];
             
             //user has picked today
         }else if(differenceInDays==1){
             NSDateFormatter *localDateFormatter = [[NSDateFormatter alloc] init];
-            localDateFormatter.dateFormat=@"h:mm a";
+            localDateFormatter.dateFormat=@"h:mma";
+            [localDateFormatter setPMSymbol:@"pm"];
+            [localDateFormatter setAMSymbol:@"am"];
             
             return [NSString stringWithFormat:@"Tomorrow, %@",[localDateFormatter stringFromDate:startActivityDate]];
         }
         else{
             NSDateFormatter *localDateFormatter = [[NSDateFormatter alloc] init];
             
-            localDateFormatter.dateFormat=@"EEE, MMM d, h:mm a";
+            localDateFormatter.dateFormat=@"EEE, MMM d, h:mma";
+            [localDateFormatter setPMSymbol:@"pm"];
+            [localDateFormatter setAMSymbol:@"am"];
             [localDateFormatter setTimeZone:[NSTimeZone systemTimeZone]];
             return [localDateFormatter stringFromDate:startActivityDate];
             
