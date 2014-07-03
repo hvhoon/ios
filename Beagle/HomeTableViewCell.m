@@ -22,7 +22,7 @@ static UIFont *forthTextFont = nil;
         firstTextFont=[UIFont fontWithName:@"HelveticaNeue" size:17.0f];
         secondTextFont=[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
         thirdTextFont=[UIFont fontWithName:@"HelveticaNeue-Medium" size:15.0f];
-        forthTextFont=[UIFont fontWithName:@"HelveticaNeue" size:15.0f];
+        forthTextFont=[UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0f];
         
     }
 }
@@ -38,7 +38,7 @@ static UIFont *forthTextFont = nil;
     
     // Start from the top and set the top padding to 8
     int fromTheTop = 0;
-    CGFloat organizerName_y=55.50f;
+    CGFloat organizerName_y=60.0f;
     if(self.selected)
     {
         backgroundColor = background;
@@ -53,7 +53,6 @@ static UIFont *forthTextFont = nil;
     
     // Drawing the time label
     [style setAlignment:NSTextAlignmentLeft];
-    UIColor *color=[UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0];
     NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                            [UIFont fontWithName:@"HelveticaNeue-Bold" size:11.0f], NSFontAttributeName,
                            [BeagleUtilities returnBeagleColor:12],NSForegroundColorAttributeName,
@@ -62,33 +61,29 @@ static UIFont *forthTextFont = nil;
     
     if(self.bg_activity.activityType==2){
         
-        CGSize suggestedBySize = [@"SUGGESTED BY" boundingRectWithSize:CGSizeMake(288, r.size.height)
+        CGSize suggestedBySize = [@"SUGGESTED POST" boundingRectWithSize:CGSizeMake(288, r.size.height)
                                                                                                                                             options:NSStringDrawingUsesLineFragmentOrigin
                                                                                                                                          attributes:attrs
                                                                                                                                             context:nil].size;
         
         
-        [@"SUGGESTED BY" drawInRect:CGRectMake(16,10,suggestedBySize.width,suggestedBySize.height) withAttributes:attrs];
-        CGRect stripRect = {0, 10+suggestedBySize.height+9, 320, 1};
-        
-        CGContextSetRGBFillColor(context, 230.0/255.0, 230.0/255.0, 230.0/255.0, 1.0);
-        CGContextFillRect(context, stripRect);
+        [@"SUGGESTED POST" drawInRect:CGRectMake(16,10,suggestedBySize.width,suggestedBySize.height) withAttributes:attrs];
 
-        fromTheTop=fromTheTop+34;
-        organizerName_y=organizerName_y+34.0f;
+        fromTheTop += suggestedBySize.height+10;
+        organizerName_y=organizerName_y+suggestedBySize.height+10;
     }
-    fromTheTop = fromTheTop+8;
+    fromTheTop = fromTheTop+10;
 
     UIImage * originalImage =self.photoImage;
     
     // Draw the original image at the origin
-    UIImage *newImage = [BeagleUtilities imageCircularBySize:originalImage sqr:100.0f];
+    UIImage *newImage = [BeagleUtilities imageCircularBySize:originalImage sqr:105.0f];
     
     
      // top spacing
     
     //Draw the scaled and cropped image
-    CGRect thisRect = CGRectMake(16, fromTheTop, 50, 50);
+    CGRect thisRect = CGRectMake(16, fromTheTop, 52.5, 52.5);
     [newImage drawInRect:thisRect];
 
     profileRect=thisRect;
@@ -98,7 +93,7 @@ static UIFont *forthTextFont = nil;
     [style setAlignment:NSTextAlignmentRight];
     attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                             secondTextFont, NSFontAttributeName,
-                            [UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
+                            [BeagleUtilities returnBeagleColor:4],NSForegroundColorAttributeName,
                             style, NSParagraphStyleAttributeName, nil];
     
     CGSize dateTextSize = [[BeagleUtilities activityTime:bg_activity.startActivityDate endate:bg_activity.endActivityDate] boundingRectWithSize:CGSizeMake(300, r.size.height)
@@ -116,7 +111,7 @@ static UIFont *forthTextFont = nil;
     [style setAlignment:NSTextAlignmentLeft];
      attrs=[NSDictionary dictionaryWithObjectsAndKeys:
      secondTextFont, NSFontAttributeName,
-     [UIColor blackColor],NSForegroundColorAttributeName,
+     [BeagleUtilities returnBeagleColor:4],NSForegroundColorAttributeName,
      style, NSParagraphStyleAttributeName, nil];
 
     CGSize organizerNameSize=[bg_activity.organizerName boundingRectWithSize:CGSizeMake(300, r.size.height)
@@ -129,15 +124,11 @@ static UIFont *forthTextFont = nil;
     
     [bg_activity.organizerName drawInRect:nameRect withAttributes:attrs];
     
-    
-    
-    
-    
     if(bg_activity.dosRelation!=0 && self.bg_activity.activityType!=2){
         if(bg_activity.dosRelation==1) {
-            [[UIImage imageNamed:@"DOS2"] drawInRect:CGRectMake(75+8+organizerNameSize.width, 38.5, 27, 15)];
+            [[UIImage imageNamed:@"DOS2"] drawInRect:CGRectMake(75+8+organizerNameSize.width, 43, 27, 15)];
         }else {
-            [[UIImage imageNamed:@"DOS3"] drawInRect:CGRectMake(75+8+organizerNameSize.width, 38.5, 32, 15)];
+            [[UIImage imageNamed:@"DOS3"] drawInRect:CGRectMake(75+8+organizerNameSize.width, 43, 32, 15)];
         }
     }
     
@@ -168,7 +159,7 @@ static UIFont *forthTextFont = nil;
     [style setAlignment:NSTextAlignmentLeft];
     attrs =[NSDictionary dictionaryWithObjectsAndKeys:
     secondTextFont, NSFontAttributeName,
-    color,NSForegroundColorAttributeName,
+    [BeagleUtilities returnBeagleColor:4],NSForegroundColorAttributeName,
     style, NSParagraphStyleAttributeName, nil];
     
     CGSize locationTextSize = [self.bg_activity.locationName boundingRectWithSize:CGSizeMake(288, r.size.height)
@@ -185,15 +176,15 @@ static UIFont *forthTextFont = nil;
     
     
     
-//    suggested post
+    // Suggested post
     if(self.bg_activity.activityType==2){
     UIBezierPath *bezierPath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(16, fromTheTop,
                                                                                   165,30) cornerRadius:25.0];
-    CGContextSetStrokeColorWithColor(context, [UIColor grayColor].CGColor);
+    CGContextSetStrokeColorWithColor(context, [BeagleUtilities returnBeagleColor:3].CGColor);
     [bezierPath stroke];
         attrs =[NSDictionary dictionaryWithObjectsAndKeys:
                 [UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0f], NSFontAttributeName,
-                [UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
+                [BeagleUtilities returnBeagleColor:3],NSForegroundColorAttributeName,
                 style, NSParagraphStyleAttributeName, nil];
 
         CGSize askFriendsNearbySize = [@"ASK FRIENDS NEARBY" boundingRectWithSize:CGSizeMake(288, r.size.height)
@@ -203,10 +194,7 @@ static UIFont *forthTextFont = nil;
         
         
         [@"ASK FRIENDS NEARBY" drawInRect:CGRectMake(32,fromTheTop+7.5,askFriendsNearbySize.width,askFriendsNearbySize.height) withAttributes:attrs];
-        
-        suggestedRect=CGRectMake(16, fromTheTop,
-                                 165,30);
-        fromTheTop = fromTheTop+46;
+        suggestedRect=CGRectMake(16, fromTheTop, 165,33);
     }
     else{
 
@@ -214,116 +202,131 @@ static UIFont *forthTextFont = nil;
     [style setAlignment:NSTextAlignmentLeft];
     attrs=[NSDictionary dictionaryWithObjectsAndKeys:
            secondTextFont, NSFontAttributeName,
-           [UIColor blackColor],NSForegroundColorAttributeName,
+           [BeagleUtilities returnBeagleColor:4],NSForegroundColorAttributeName,
            style, NSParagraphStyleAttributeName, nil];
-
-    CGSize participantsCountTextSize;
     
     // If your friends are interested
-    if(self.bg_activity.participantsCount>0 && self.bg_activity.dos1count>0){
+    if(self.bg_activity.participantsCount>0){
         
-        NSString* relationship = nil;
+        int countFromTheLeft = 0;
+        countFromTheLeft += 16;
         
-        if(self.bg_activity.dos1count > 1)
-            relationship = @"Friends";
-        else
-            relationship = @"Friend";
+        CGSize participantsCountTextSize = [[NSString stringWithFormat:@"%ld Interested",(long)self.bg_activity.participantsCount]  boundingRectWithSize:CGSizeMake(288, r.size.height) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
         
-        participantsCountTextSize = [[NSString stringWithFormat:@"%ld %@ interested",(long)self.bg_activity.dos1count, relationship]  boundingRectWithSize:CGSizeMake(288, r.size.height) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
+        // Adding the Star image
+        [[UIImage imageNamed:@"Star-Wireframe"] drawInRect:CGRectMake(countFromTheLeft, fromTheTop, 17, 16)];
+        countFromTheLeft += 17+5;
         
-        [[NSString stringWithFormat:@"%ld %@ interested", (long)self.bg_activity.dos1count, relationship] drawInRect:CGRectMake(16, fromTheTop, participantsCountTextSize.width, participantsCountTextSize.height) withAttributes:attrs];
-        fromTheTop = fromTheTop+participantsCountTextSize.height;
-        fromTheTop = fromTheTop+18; // Spacing after the count of people interested
+        // Adding the # Interested
+        [[NSString stringWithFormat:@"%ld Interested", (long)self.bg_activity.participantsCount] drawInRect:CGRectMake(countFromTheLeft, fromTheTop, participantsCountTextSize.width, participantsCountTextSize.height) withAttributes:attrs];
+        countFromTheLeft += participantsCountTextSize.width+16;
         
-    // If people are interested but none of them are your friends
-    }else if(self.bg_activity.participantsCount>0){
-        
-        participantsCountTextSize = [[NSString stringWithFormat:@"%ld Interested",(long)self.bg_activity.participantsCount]  boundingRectWithSize:CGSizeMake(288, r.size.height) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs  context:nil].size;
-        
-        [[NSString stringWithFormat:@"%ld Interested",(long)self.bg_activity.participantsCount] drawInRect:CGRectMake(16, fromTheTop, participantsCountTextSize.width, participantsCountTextSize.height) withAttributes:attrs];
-        fromTheTop = fromTheTop+participantsCountTextSize.height;
-        fromTheTop = fromTheTop+18; // Spacing after the count of people interested
+        // If of the people interested you have friends interested
+        if(self.bg_activity.dos1count>0) {
+            
+            NSString* relationship = nil;
+            
+            if(self.bg_activity.dos1count > 1)
+                relationship = @"Friends";
+            else
+                relationship = @"Friend";
+            
+            // Adding the Friend Image
+            [[UIImage imageNamed:@"DOS2-Wireframe"] drawInRect:CGRectMake(countFromTheLeft, fromTheTop, 28, 16)];
+            countFromTheLeft += 28+5;
+            
+            // Adding the # of Friends
+            CGSize friendCountTextSize = [[NSString stringWithFormat:@"%ld %@",(long)self.bg_activity.dos1count, relationship]  boundingRectWithSize:CGSizeMake(288, r.size.height) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
+            
+            [[NSString stringWithFormat:@"%ld %@",(long)self.bg_activity.dos1count, relationship]  drawInRect:CGRectMake(countFromTheLeft, fromTheTop, friendCountTextSize.width, friendCountTextSize.height) withAttributes:attrs];
+            countFromTheLeft +=friendCountTextSize.width+16;
+        }
 
+        // Adding comment count
+        if(self.bg_activity.postCount>0) {
+            
+            // Adding the Comment icon
+            [[UIImage imageNamed:@"Comment-Wireframe"] drawInRect:CGRectMake(countFromTheLeft, fromTheTop, 20, 18)];
+            countFromTheLeft +=20+5;
+            
+            // Addinf the Comment # text
+            [style setAlignment:NSTextAlignmentLeft];
+            attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+                     secondTextFont, NSFontAttributeName,
+                     [BeagleUtilities returnBeagleColor:4],NSForegroundColorAttributeName,
+                     style, NSParagraphStyleAttributeName, nil];
+            
+            CGSize postCountTextSize = [[NSString stringWithFormat:@"%ld",(long)self.bg_activity.postCount]  boundingRectWithSize:CGSizeMake(288, r.size.height) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
+        
+            [[NSString stringWithFormat:@"%ld",(long)self.bg_activity.postCount] drawInRect:CGRectMake(countFromTheLeft, fromTheTop, postCountTextSize.width, postCountTextSize.height) withAttributes:attrs];
+        }
+
+        // Adding spacing after the Count section
+        fromTheTop += participantsCountTextSize.height+20;
     }
+        
+    // Draw the Button
+    UIBezierPath *bezierPath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(16, fromTheTop, 150, 33) cornerRadius:25.0];
+    UIColor *buttonColor = [BeagleUtilities returnBeagleColor:3];
 
     // If you've already expressed interest, icons for 'Count me in' and 'Comments'
-    if(self.bg_activity.isParticipant)
-        [[UIImage imageNamed:@"Star"] drawInRect:CGRectMake(16, fromTheTop, 19, 18)];
-    else
-        [[UIImage imageNamed:@"Star-Unfilled"] drawInRect:CGRectMake(16, fromTheTop, 19, 18)];
+    if(self.bg_activity.isParticipant) {
+        CGContextSetFillColorWithColor(context, buttonColor.CGColor);
+        [bezierPath fill];
+    }
+    else {
+        CGContextSetStrokeColorWithColor(context, buttonColor.CGColor);
+        [bezierPath stroke];
+    }
     
-    // Drawing the 'Count me in' text
+    // add the interested touchzone rectangle back!!
+    if(self.bg_activity.activityType==1)
+        interestedRect=CGRectMake(0, fromTheTop, 150, 33);
+    
     // Changing the text based on who is seeing this
     NSString* expressInterestText = nil;
-    
-    attrs=[NSDictionary dictionaryWithObjectsAndKeys:
-           forthTextFont, NSFontAttributeName,
-           [BeagleUtilities returnBeagleColor:1],NSForegroundColorAttributeName,
-           style, NSParagraphStyleAttributeName, nil];
-    
+    [style setAlignment:NSTextAlignmentCenter];
+        
     // If it's the organizer
     if (self.bg_activity.dosRelation==0) {
-        expressInterestText = @"Created by you";
+        expressInterestText = @"COMPLETED";
         attrs=[NSDictionary dictionaryWithObjectsAndKeys:
-               thirdTextFont, NSFontAttributeName,
-               [BeagleUtilities returnBeagleColor:1],NSForegroundColorAttributeName,
+               forthTextFont, NSFontAttributeName,
+               [UIColor whiteColor],NSForegroundColorAttributeName,
                style, NSParagraphStyleAttributeName, nil];
-    }
-    // If you are the first one to express interest
-    else if(self.bg_activity.dosRelation > 0 && self.bg_activity.participantsCount == 0) {
-        expressInterestText = @"Be the first to join";
     }
     // You are not the organizer and have already expressed interest
     else if(self.bg_activity.dosRelation > 0 && self.bg_activity.isParticipant)
     {
-        expressInterestText = @"Count me in";
+        expressInterestText = @"I'M INTERESTED";
         attrs=[NSDictionary dictionaryWithObjectsAndKeys:
-               thirdTextFont, NSFontAttributeName,
-               [BeagleUtilities returnBeagleColor:1],NSForegroundColorAttributeName,
+               forthTextFont, NSFontAttributeName,
+               [UIColor whiteColor],NSForegroundColorAttributeName,
                style, NSParagraphStyleAttributeName, nil];
-    }
-    // You are not the organizer and have not expressed interest
-    else
-        expressInterestText = @"Are you in?";
-    
-    // Actually draw it now!
-    CGSize interestedSize = [expressInterestText boundingRectWithSize:CGSizeMake(288, r.size.height) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
-    [expressInterestText drawInRect:CGRectMake(16+19+5, fromTheTop, interestedSize.width, interestedSize.height) withAttributes:attrs];
-    
-    fromTheTop = fromTheTop+3;
-    
-    // Comments icon and text now
-    if(self.bg_activity.postCount>0) {
-        [[UIImage imageNamed:@"Comment"] drawInRect:CGRectMake(304-21, fromTheTop, 21, 18)];
-        // Drawing the comment count text
-        [style setAlignment:NSTextAlignmentLeft];
-        attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                 secondTextFont, NSFontAttributeName,
-                 [UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
-                 style, NSParagraphStyleAttributeName, nil];
-        
-        CGSize postCountTextSize = [[NSString stringWithFormat:@"%ld",(long)self.bg_activity.postCount]  boundingRectWithSize:CGSizeMake(288, r.size.height) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
-        
-        [[NSString stringWithFormat:@"%ld",(long)self.bg_activity.postCount] drawInRect:CGRectMake(301-21-postCountTextSize.width, fromTheTop-1, postCountTextSize.width, postCountTextSize.height) withAttributes:attrs];
-    }
-    else
-        [[UIImage imageNamed:@"Add-Comment"] drawInRect:CGRectMake(304-21, fromTheTop, 21, 18)];
-        
-        fromTheTop = fromTheTop+16;
-        fromTheTop = fromTheTop+10;
 
     }
+    // You are not the organizer and have not expressed interest
+    else {
+        expressInterestText = @"I'M INTERESTED";
+        attrs=[NSDictionary dictionaryWithObjectsAndKeys:
+               forthTextFont, NSFontAttributeName,
+               buttonColor,NSForegroundColorAttributeName,
+               style, NSParagraphStyleAttributeName, nil];
+    }
+    // Actually draw it now!
+    [expressInterestText drawInRect:CGRectMake(16, fromTheTop+9, 150, 33) withAttributes:attrs];
+    
+    }
+    
+    // Space left after the button
+    fromTheTop += 33+20;
     
     // Drawing the card seperator
-    CGRect stripRect = {0, fromTheTop, 320, 8};
-    
+    CGRect stripRect = {0, fromTheTop, 320, 1};
     CGContextSetRGBFillColor(context, 230.0/255.0, 230.0/255.0, 230.0/255.0, 1.0);
     CGContextFillRect(context, stripRect);
     
-    // add the interested touchzone rectangle back!!
-    if(self.bg_activity.activityType==1)
-        interestedRect=CGRectMake(0, fromTheTop-8-35, 250, 35);
-    
+    fromTheTop += 1;
 
 }
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{

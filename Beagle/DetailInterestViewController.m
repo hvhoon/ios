@@ -850,8 +850,11 @@ else if(!notifObject.isOffline){
         starImageView.tag=345;
         [_backgroundView addSubview:starImageView];
         
-        if(self.interestActivity.isParticipant)
+        if(self.interestActivity.isParticipant) {
             starImageView.image=[UIImage imageNamed:@"Star"];
+            starImageView.image = [starImageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+            [starImageView setTintColor:[BeagleUtilities returnBeagleColor:1]];
+        }
         else
             starImageView.image=[UIImage imageNamed:@"Star-Unfilled"];
         
