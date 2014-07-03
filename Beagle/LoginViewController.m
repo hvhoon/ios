@@ -15,6 +15,7 @@
     __weak IBOutlet UIImageView *NextArrow;
     ServerManager *loginServerManager;
      NSMutableData *_data;
+    NSInteger test;
 }
 @property(nonatomic,strong)ServerManager *loginServerManager;
 @end
@@ -68,8 +69,47 @@
 -(void)facebookAccountNotSetup{
     
     
+    if(test==0){
+        test++;
+        
+        NSString *message = NSLocalizedString (@"Right now beagle requires facebook to login. Please setup your facebook account in Settings > Facebook",
+                                               @"No Facebook Account");
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Oops!"
+                                                        message:message
+                                                       delegate:self
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles: nil];
+        
+        [alert show];
+        
+        [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
+        [[NSUserDefaults standardUserDefaults]synchronize];
+        [activityIndicatorView stopAnimating];
+        [activityIndicatorView setHidden:YES];
+        [NextArrow setHidden:NO];
+
+
+        
+#if 0
+            SLComposeViewController *mySLComposerSheet = [[SLComposeViewController alloc] init];
+            
+            mySLComposerSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+            
+            [mySLComposerSheet setInitialText:@""];
+            
+            [mySLComposerSheet addImage:[UIImage imageNamed:@""]];
+            
+            [self presentViewController:mySLComposerSheet animated:YES completion:nil];
+            
+            
+#else
     dispatch_async(dispatch_get_main_queue(), ^{
         SLComposeViewController *controller = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+        [controller setInitialText:@""];
+        
+        [controller addImage:[UIImage imageNamed:@""]];
+
         controller.view.hidden = YES;
         [self presentViewController:controller animated:NO completion:^{
             [self dismissViewControllerAnimated:NO completion:nil];
@@ -81,7 +121,8 @@
 
         }];
     });
-    
+#endif
+    }
     
 }
 
