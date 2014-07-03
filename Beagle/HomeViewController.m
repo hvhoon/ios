@@ -743,7 +743,7 @@
                                                      attributes:attrs context:nil];
     
     if(play.activityType==2){
-        return rowHeight+(int)textRect.size.height+16+20+16;
+        return rowHeight+(int)textRect.size.height+23;
     }
     
     // If there are no participants, reduce the size of the card

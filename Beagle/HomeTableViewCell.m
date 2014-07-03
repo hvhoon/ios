@@ -61,20 +61,16 @@ static UIFont *forthTextFont = nil;
     
     if(self.bg_activity.activityType==2){
         
-        CGSize suggestedBySize = [@"SUGGESTED BY" boundingRectWithSize:CGSizeMake(288, r.size.height)
+        CGSize suggestedBySize = [@"SUGGESTED POST" boundingRectWithSize:CGSizeMake(288, r.size.height)
                                                                                                                                             options:NSStringDrawingUsesLineFragmentOrigin
                                                                                                                                          attributes:attrs
                                                                                                                                             context:nil].size;
         
         
-        [@"SUGGESTED BY" drawInRect:CGRectMake(16,10,suggestedBySize.width,suggestedBySize.height) withAttributes:attrs];
-        CGRect stripRect = {0, 10+suggestedBySize.height+9, 320, 1};
-        
-        CGContextSetRGBFillColor(context, 230.0/255.0, 230.0/255.0, 230.0/255.0, 1.0);
-        CGContextFillRect(context, stripRect);
+        [@"SUGGESTED POST" drawInRect:CGRectMake(16,10,suggestedBySize.width,suggestedBySize.height) withAttributes:attrs];
 
-        fromTheTop=fromTheTop+34;
-        organizerName_y=organizerName_y+34.0f;
+        fromTheTop += suggestedBySize.height+10;
+        organizerName_y=organizerName_y+suggestedBySize.height+10;
     }
     fromTheTop = fromTheTop+10;
 
@@ -184,11 +180,11 @@ static UIFont *forthTextFont = nil;
     if(self.bg_activity.activityType==2){
     UIBezierPath *bezierPath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(16, fromTheTop,
                                                                                   165,30) cornerRadius:25.0];
-    CGContextSetStrokeColorWithColor(context, [UIColor grayColor].CGColor);
+    CGContextSetStrokeColorWithColor(context, [BeagleUtilities returnBeagleColor:3].CGColor);
     [bezierPath stroke];
         attrs =[NSDictionary dictionaryWithObjectsAndKeys:
                 [UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0f], NSFontAttributeName,
-                [UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
+                [BeagleUtilities returnBeagleColor:3],NSForegroundColorAttributeName,
                 style, NSParagraphStyleAttributeName, nil];
 
         CGSize askFriendsNearbySize = [@"ASK FRIENDS NEARBY" boundingRectWithSize:CGSizeMake(288, r.size.height)
@@ -198,10 +194,7 @@ static UIFont *forthTextFont = nil;
         
         
         [@"ASK FRIENDS NEARBY" drawInRect:CGRectMake(32,fromTheTop+7.5,askFriendsNearbySize.width,askFriendsNearbySize.height) withAttributes:attrs];
-        
-        suggestedRect=CGRectMake(16, fromTheTop,
-                                 165,30);
-        fromTheTop = fromTheTop+46;
+        suggestedRect=CGRectMake(16, fromTheTop, 165,33);
     }
     else{
 
