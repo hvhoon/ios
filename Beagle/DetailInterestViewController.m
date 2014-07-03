@@ -389,8 +389,6 @@ else if(!notifObject.isOffline){
 - (void)show{
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStylePlain target:self action:@selector(doneButtonClicked:)];
     
-//    [self.navigationItem.leftBarButtonItem setEnabled:NO];
-    
     self.navigationItem.hidesBackButton = YES;
 }
 -(void)hide{
@@ -409,7 +407,6 @@ else if(!notifObject.isOffline){
 
 -(void)doneButtonClicked:(id)sender{
     [self.contentWrapper.inputView.textView resignFirstResponder];
-    // For dummyInputView.textView
     [self.view endEditing:YES];
     [self.contentWrapper textViewDidChange:self.contentWrapper.inputView.textView];
     
