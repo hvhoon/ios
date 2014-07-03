@@ -71,7 +71,7 @@
     
     if(test==0){
         test++;
-        
+#if 0
         NSString *message = NSLocalizedString (@"Right now beagle requires facebook to login. Please setup your facebook account in Settings > Facebook",
                                                @"No Facebook Account");
         
@@ -91,7 +91,7 @@
 
 
         
-#if 0
+
             SLComposeViewController *mySLComposerSheet = [[SLComposeViewController alloc] init];
             
             mySLComposerSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
@@ -106,13 +106,19 @@
 #else
     dispatch_async(dispatch_get_main_queue(), ^{
         SLComposeViewController *controller = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+        controller.view.hidden = YES;
         [controller setInitialText:@""];
         
         [controller addImage:[UIImage imageNamed:@""]];
 
-        controller.view.hidden = YES;
-        [self presentViewController:controller animated:NO completion:^{
-            [self dismissViewControllerAnimated:NO completion:nil];
+        [self.view.window.rootViewController presentViewController:controller animated:NO completion:^{
+            [self resignFirstResponder];
+//            [controller dismissViewControllerAnimated:NO completion:nil];
+            [[controller view] endEditing:YES];
+            test=0;
+//            [self.view.window.rootViewController dismissViewControllerAnimated:NO completion:nil];
+//            [self performSelector:@selector(test) withObject:nil afterDelay:2.0];
+//            [self dismissViewControllerAnimated:NO completion:nil];
             [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
             [[NSUserDefaults standardUserDefaults]synchronize];
             [activityIndicatorView stopAnimating];
@@ -126,7 +132,15 @@
     
 }
 
+-(void)test{
+//    [self dismissViewControllerAnimated:NO completion:nil];
+    [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
+    [[NSUserDefaults standardUserDefaults]synchronize];
+    [activityIndicatorView stopAnimating];
+    [activityIndicatorView setHidden:YES];
+    [NextArrow setHidden:NO];
 
+}
 -(void)pushToHomeScreen{
     
     [activityIndicatorView stopAnimating];
@@ -158,11 +172,12 @@
         [_loginServerManager releaseServerManager];
         _loginServerManager = nil;
 
+//        id message=nil;
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
+//            message=[response objectForKey:@"message"];
             
             id status=[response objectForKey:@"status"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
-            
             
             
             
@@ -195,6 +210,10 @@
         }
         }
         
+//        if (message != nil && [message class] != [NSNull class] && [message isEqualToString:@"Registered"]){
+//            
+//            // welcome to beagle after a new user is registered
+//        }else
             [self pushToHomeScreen];
     }
 }

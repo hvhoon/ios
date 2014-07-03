@@ -180,11 +180,11 @@ static UIFont *forthTextFont = nil;
     if(self.bg_activity.activityType==2){
     UIBezierPath *bezierPath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(16, fromTheTop,
                                                                                   165,30) cornerRadius:25.0];
-    CGContextSetStrokeColorWithColor(context, [BeagleUtilities returnBeagleColor:3].CGColor);
+    CGContextSetStrokeColorWithColor(context, [[BeagleManager SharedInstance] darkDominantColor].CGColor);
     [bezierPath stroke];
         attrs =[NSDictionary dictionaryWithObjectsAndKeys:
                 [UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0f], NSFontAttributeName,
-                [BeagleUtilities returnBeagleColor:3],NSForegroundColorAttributeName,
+                [[BeagleManager SharedInstance] darkDominantColor],NSForegroundColorAttributeName,
                 style, NSParagraphStyleAttributeName, nil];
 
         CGSize askFriendsNearbySize = [@"ASK FRIENDS NEARBY" boundingRectWithSize:CGSizeMake(288, r.size.height)
@@ -267,7 +267,8 @@ static UIFont *forthTextFont = nil;
         
     // Draw the Button
     UIBezierPath *bezierPath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(16, fromTheTop, 150, 33) cornerRadius:25.0];
-    UIColor *buttonColor = [BeagleUtilities returnBeagleColor:3];
+    UIColor *buttonColor = [[BeagleManager SharedInstance] mediumDominantColor];
+        
 
     // If you've already expressed interest, icons for 'Count me in' and 'Comments'
     if(self.bg_activity.isParticipant) {
@@ -275,7 +276,7 @@ static UIFont *forthTextFont = nil;
         [bezierPath fill];
     }
     else {
-        CGContextSetStrokeColorWithColor(context, buttonColor.CGColor);
+        CGContextSetStrokeColorWithColor(context, [[BeagleManager SharedInstance] darkDominantColor].CGColor);
         [bezierPath stroke];
     }
     

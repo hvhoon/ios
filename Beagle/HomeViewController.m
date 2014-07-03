@@ -512,8 +512,12 @@
             }
             
         // Color play :)
-        UIColor *dominantColor = nil;
-        dominantColor = [BeagleUtilities getDominantColor:flickrRequestInfo.photo];
+        UIColor *dominantColor = [BeagleUtilities getDominantColor:flickrRequestInfo.photo];
+            
+        BG.lightDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.9];
+        BG.mediumDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5];
+        BG.darkDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.4];
+            
         
         /*
         UIColor* filterViewColor = [dominantColor colorWithAlphaComponent:0.8];
