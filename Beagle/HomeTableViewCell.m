@@ -310,17 +310,18 @@ static UIFont *forthTextFont = nil;
                forthTextFont, NSFontAttributeName,
                [UIColor whiteColor],NSForegroundColorAttributeName,
                style, NSParagraphStyleAttributeName, nil];
+
     }
     // You are not the organizer and have not expressed interest
     else {
         expressInterestText = @"I'M INTERESTED";
         attrs=[NSDictionary dictionaryWithObjectsAndKeys:
                forthTextFont, NSFontAttributeName,
-               [BeagleUtilities returnBeagleColor:3],NSForegroundColorAttributeName,
+               buttonColor,NSForegroundColorAttributeName,
                style, NSParagraphStyleAttributeName, nil];
     }
     // Actually draw it now!
-    [expressInterestText drawInRect:CGRectMake(16, fromTheTop+10, 150, 33) withAttributes:attrs];
+    [expressInterestText drawInRect:CGRectMake(16, fromTheTop+9, 150, 33) withAttributes:attrs];
     
     }
     
