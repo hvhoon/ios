@@ -326,6 +326,16 @@
     return [UIColor colorWithRed:red/255.0f green:green/255.0f blue:blue/255.0f alpha:alpha];
 }
 
++(UIColor*)returnShadeOfColor:(UIColor*)inputColor withShade:(CGFloat)inputShade {
+    CGFloat hue, saturation, brightness, alpha;
+    
+    // Getting these values
+    if([inputColor getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha])
+        return [UIColor colorWithHue:hue saturation:saturation brightness:inputShade alpha:alpha];
+    
+    return [self returnBeagleColor:5];
+}
+
 // Determine the average color in an image!
 +(UIColor*)returnAverageColor:(UIImage*)image; {
     
