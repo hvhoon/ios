@@ -25,7 +25,7 @@
 #define REFRESH_HEADER_HEIGHT 70.0f
 #define stockCroppingCheck 0
 #define kTimerIntervalInSeconds 10
-#define rowHeight 142.0f
+#define rowHeight 164
 
 @interface HomeViewController ()<UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,HomeTableViewCellDelegate,ServerManagerDelegate,IconDownloaderDelegate,BlankHomePageViewDelegate,EventInterestFilterBlurViewDelegate,InAppNotificationViewDelegate>{
     UIView *topNavigationView;
@@ -520,7 +520,7 @@
             
         CGFloat hue, saturation, brightness, alpha, r, g, b, a;
         
-        CGFloat darkColor = 0.45;
+        CGFloat darkColor = 0.5;
         CGFloat lightColor = 0.9;
             
         UIColor *harishLightColor, *harishDarkColor;
@@ -535,7 +535,7 @@
         
                 }
             }
-            
+        /*
         // == TESTING OF COLOR PALETTE ==
         // Setup Canvas
         UIView* canvas = [[UIView alloc] initWithFrame:CGRectMake(0, 115, 320, 41)];
@@ -567,6 +567,7 @@
         darkSquare.backgroundColor = [BeagleUtilities darkerColorForColor:dominantColor];
         [self.view addSubview:darkSquare];
         // == END TESTING OF COLOR PALETTE
+         */
             
         // Add the city name and the filter pane to the top section
         [self addCityName:[BG.placemark.addressDictionary objectForKey:@"City"]];
@@ -742,13 +743,16 @@
                                                      attributes:attrs context:nil];
     
     if(play.activityType==2){
-        return rowHeight+textRect.size.height+16+18+16;
+        return rowHeight+(int)textRect.size.height+16+20+16;
     }
     
     // If there are no participants, reduce the size of the card
-    if (play.participantsCount==0) return rowHeight+textRect.size.height;
+    if (play.participantsCount==0) {
+        return rowHeight+(int)textRect.size.height;
+    }
     
-    return rowHeight+16+18+textRect.size.height;
+    return rowHeight+16+20+(int)textRect.size.height;
+
     
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{

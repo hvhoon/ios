@@ -22,7 +22,7 @@ static UIFont *forthTextFont = nil;
         firstTextFont=[UIFont fontWithName:@"HelveticaNeue" size:17.0f];
         secondTextFont=[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
         thirdTextFont=[UIFont fontWithName:@"HelveticaNeue-Medium" size:15.0f];
-        forthTextFont=[UIFont fontWithName:@"HelveticaNeue" size:15.0f];
+        forthTextFont=[UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0f];
         
     }
 }
@@ -269,71 +269,70 @@ static UIFont *forthTextFont = nil;
         }
 
         // Adding spacing after the Count section
-        fromTheTop = fromTheTop+participantsCountTextSize.height;
-        fromTheTop = fromTheTop+18; // Spacing after the count of people interested
+        fromTheTop += participantsCountTextSize.height+20;
     }
+        
+    // Draw the Button
+    UIBezierPath *bezierPath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(16, fromTheTop, 150, 33) cornerRadius:25.0];
+    UIColor *buttonColor = [BeagleUtilities returnBeagleColor:3];
 
     // If you've already expressed interest, icons for 'Count me in' and 'Comments'
-    if(self.bg_activity.isParticipant)
-        [[UIImage imageNamed:@"Star"] drawInRect:CGRectMake(16, fromTheTop, 19, 18)];
-    else
-        [[UIImage imageNamed:@"Star-Unfilled"] drawInRect:CGRectMake(16, fromTheTop, 19, 18)];
+    if(self.bg_activity.isParticipant) {
+        CGContextSetFillColorWithColor(context, buttonColor.CGColor);
+        [bezierPath fill];
+    }
+    else {
+        CGContextSetStrokeColorWithColor(context, buttonColor.CGColor);
+        [bezierPath stroke];
+    }
     
-    // Drawing the 'Count me in' text
+    // add the interested touchzone rectangle back!!
+    if(self.bg_activity.activityType==1)
+        interestedRect=CGRectMake(0, fromTheTop, 150, 33);
+    
     // Changing the text based on who is seeing this
     NSString* expressInterestText = nil;
-    
-    attrs=[NSDictionary dictionaryWithObjectsAndKeys:
-           forthTextFont, NSFontAttributeName,
-           [BeagleUtilities returnBeagleColor:1],NSForegroundColorAttributeName,
-           style, NSParagraphStyleAttributeName, nil];
-    
+    [style setAlignment:NSTextAlignmentCenter];
+        
     // If it's the organizer
     if (self.bg_activity.dosRelation==0) {
-        expressInterestText = @"Created by you";
+        expressInterestText = @"COMPLETED";
         attrs=[NSDictionary dictionaryWithObjectsAndKeys:
-               thirdTextFont, NSFontAttributeName,
-               [BeagleUtilities returnBeagleColor:1],NSForegroundColorAttributeName,
+               forthTextFont, NSFontAttributeName,
+               [UIColor whiteColor],NSForegroundColorAttributeName,
                style, NSParagraphStyleAttributeName, nil];
-    }
-    // If you are the first one to express interest
-    else if(self.bg_activity.dosRelation > 0 && self.bg_activity.participantsCount == 0) {
-        expressInterestText = @"Be the first to join";
     }
     // You are not the organizer and have already expressed interest
     else if(self.bg_activity.dosRelation > 0 && self.bg_activity.isParticipant)
     {
-        expressInterestText = @"Count me in";
+        expressInterestText = @"I'M INTERESTED";
         attrs=[NSDictionary dictionaryWithObjectsAndKeys:
-               thirdTextFont, NSFontAttributeName,
-               [BeagleUtilities returnBeagleColor:1],NSForegroundColorAttributeName,
+               forthTextFont, NSFontAttributeName,
+               [UIColor whiteColor],NSForegroundColorAttributeName,
                style, NSParagraphStyleAttributeName, nil];
     }
     // You are not the organizer and have not expressed interest
-    else
-        expressInterestText = @"Are you in?";
-    
+    else {
+        expressInterestText = @"I'M INTERESTED";
+        attrs=[NSDictionary dictionaryWithObjectsAndKeys:
+               forthTextFont, NSFontAttributeName,
+               [BeagleUtilities returnBeagleColor:3],NSForegroundColorAttributeName,
+               style, NSParagraphStyleAttributeName, nil];
+    }
     // Actually draw it now!
-    CGSize interestedSize = [expressInterestText boundingRectWithSize:CGSizeMake(288, r.size.height) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
-    [expressInterestText drawInRect:CGRectMake(16+19+5, fromTheTop, interestedSize.width, interestedSize.height) withAttributes:attrs];
+    [expressInterestText drawInRect:CGRectMake(16, fromTheTop+10, 150, 33) withAttributes:attrs];
     
-    fromTheTop = fromTheTop+3;
-        
-        fromTheTop = fromTheTop+16;
-        fromTheTop = fromTheTop+10;
-
     }
     
-    // Drawing the card seperator
-    CGRect stripRect = {0, fromTheTop, 320, 8};
+    // Space left after the button
+    fromTheTop += 33+20;
     
+    // Drawing the card seperator
+    CGRect stripRect = {0, fromTheTop, 320, 1};
     CGContextSetRGBFillColor(context, 230.0/255.0, 230.0/255.0, 230.0/255.0, 1.0);
     CGContextFillRect(context, stripRect);
     
-    // add the interested touchzone rectangle back!!
-    if(self.bg_activity.activityType==1)
-        interestedRect=CGRectMake(0, fromTheTop-8-35, 250, 35);
-    
+    fromTheTop += 1;
 
 }
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
