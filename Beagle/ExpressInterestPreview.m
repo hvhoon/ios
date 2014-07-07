@@ -40,7 +40,7 @@
         [spinningWheel startAnimating];
         NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
         
-        // Drawing the time label
+        // add the awesomeLabel 
         [style setAlignment:NSTextAlignmentLeft];
         NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                                [UIFont fontWithName:@"HelveticaNeue-Bold" size:18.0f], NSFontAttributeName,

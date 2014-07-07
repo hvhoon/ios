@@ -1285,7 +1285,7 @@
     ExpressInterestPreview *preview=[[ExpressInterestPreview alloc]initWithFrame:CGRectMake(0, 0, 320, play.heightRow) orgn:play.organizerName];
     preview.tag=1374;
     [cell insertSubview:preview aboveSubview:cell.contentView];
-    
+    self.tableView.scrollEnabled=NO;
 
 
 }
@@ -1587,8 +1587,8 @@
                     
                     HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
                     ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
-
                     [preview removeFromSuperview];
+                    self.tableView.scrollEnabled=YES;
                     NSString *message = NSLocalizedString (@"You have already joined.",
                                                            @"Already Joined");
                     BeagleAlertWithMessage(message);
@@ -1692,8 +1692,8 @@
     if(serverRequest==kServerCallParticipateInterest){
         HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
         ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
-        
         [preview removeFromSuperview];
+        self.tableView.scrollEnabled=YES;
 
     }
 }
@@ -1724,6 +1724,7 @@
         ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
         
         [preview removeFromSuperview];
+        self.tableView.scrollEnabled=YES;
         
     }
 
