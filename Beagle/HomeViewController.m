@@ -1293,6 +1293,7 @@
 -(void)hideView:(UIView*)pView{
     pView.alpha=0.0f;
    [pView removeFromSuperview];
+    self.tableView.scrollEnabled=YES;
     [self.tableView reloadData];
 }
 
