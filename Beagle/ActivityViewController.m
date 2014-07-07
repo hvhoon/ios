@@ -6,8 +6,6 @@
 //  Copyright (c) 2014 soclivity. All rights reserved.
 //
 
-//36e2980516d0e60864cd29c621a09722
-
 #import "ActivityViewController.h"
 #import "TimeFilterView.h"
 #import "BeagleActivityClass.h"
@@ -18,6 +16,9 @@
 #import "BeagleNotificationClass.h"
 #import "ASIHTTPRequest.h"
 #import "InterestInviteViewController.h"
+
+#define DISABLED_ALPHA 0.3f
+
 enum Weeks {
     SUNDAY = 1,
     MONDAY,
@@ -73,6 +74,8 @@ enum Weeks {
     [self.navigationController setNavigationBarHidden:NO];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
+    
+    [self.navigationController.navigationBar setTintColor:[[BeagleManager SharedInstance] darkDominantColor]];
     
     BeagleManager *BG=[BeagleManager SharedInstance];
     if(BG.activityDeleted){
@@ -146,7 +149,7 @@ enum Weeks {
         
     }else{
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Create" style:UIBarButtonItemStyleDone target:self action:@selector(createButtonClicked:)];
-        [self.navigationItem.rightBarButtonItem setTintColor:[UIColor darkGrayColor]];
+        [self.navigationItem.rightBarButtonItem setTintColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA]];
         self.navigationItem.rightBarButtonItem.enabled=NO;
         
     }
@@ -545,11 +548,11 @@ enum Weeks {
     
     if([[textView text]length]!=0){
         
-        [self.navigationItem.rightBarButtonItem setTintColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0]];
+        [self.navigationItem.rightBarButtonItem setTintColor:[[BeagleManager SharedInstance] darkDominantColor]];
         self.navigationItem.rightBarButtonItem.enabled=YES;
     }
     else {
-        [self.navigationItem.rightBarButtonItem setTintColor:[UIColor darkGrayColor]];
+        [self.navigationItem.rightBarButtonItem setTintColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA]];
         self.navigationItem.rightBarButtonItem.enabled=NO;
     }
 
