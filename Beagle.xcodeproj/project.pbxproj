@@ -49,6 +49,7 @@
 		18714B3B1940F268008F59DE /* PostSoundEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = 18714B3A1940F268008F59DE /* PostSoundEffect.m */; };
 		187808591954DEA8005E682F /* FriendsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 187808581954DEA8005E682F /* FriendsTableViewCell.m */; };
 		1889E5EC195A84F70079C3E9 /* InviteTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1889E5EB195A84F60079C3E9 /* InviteTableViewCell.m */; };
+		189EEBBE196B2A2B00681F04 /* ExpressInterestPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = 189EEBBD196B2A2B00681F04 /* ExpressInterestPreview.m */; };
 		18E7AF0918BBAA1700EBBDE2 /* FacebookLoginSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E7AF0818BBAA1700EBBDE2 /* FacebookLoginSession.m */; };
 		18E7AF0D18BBAA6600EBBDE2 /* BeagleUserClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E7AF0C18BBAA6600EBBDE2 /* BeagleUserClass.m */; };
 		18EBCFDB18CE350600FDC624 /* CustomPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EBCFD518CE350600FDC624 /* CustomPickerView.m */; };
@@ -226,6 +227,8 @@
 		187808581954DEA8005E682F /* FriendsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendsTableViewCell.m; sourceTree = "<group>"; };
 		1889E5EA195A84F50079C3E9 /* InviteTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteTableViewCell.h; sourceTree = "<group>"; };
 		1889E5EB195A84F60079C3E9 /* InviteTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteTableViewCell.m; sourceTree = "<group>"; };
+		189EEBBC196B2A2B00681F04 /* ExpressInterestPreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExpressInterestPreview.h; sourceTree = "<group>"; };
+		189EEBBD196B2A2B00681F04 /* ExpressInterestPreview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExpressInterestPreview.m; sourceTree = "<group>"; };
 		18E7AF0718BBAA1700EBBDE2 /* FacebookLoginSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookLoginSession.h; sourceTree = "<group>"; };
 		18E7AF0818BBAA1700EBBDE2 /* FacebookLoginSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookLoginSession.m; sourceTree = "<group>"; };
 		18E7AF0B18BBAA6600EBBDE2 /* BeagleUserClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeagleUserClass.h; sourceTree = "<group>"; };
@@ -470,6 +473,8 @@
 				18007F0A18C6567F00230C23 /* MBProgressHUD.m */,
 				18007EF518C6511000230C23 /* BeagleUtilities.h */,
 				18007EF618C6511000230C23 /* BeagleUtilities.m */,
+				189EEBBC196B2A2B00681F04 /* ExpressInterestPreview.h */,
+				189EEBBD196B2A2B00681F04 /* ExpressInterestPreview.m */,
 			);
 			name = Utilities;
 			sourceTree = "<group>";
@@ -1174,6 +1179,7 @@
 				18E7AF0D18BBAA6600EBBDE2 /* BeagleUserClass.m in Sources */,
 				18714B3B1940F268008F59DE /* PostSoundEffect.m in Sources */,
 				18F2B751191D3AF500245C5A /* EventTimeBlurView.m in Sources */,
+				189EEBBE196B2A2B00681F04 /* ExpressInterestPreview.m in Sources */,
 				18FADB9718B668A500A62287 /* UIImage+ImageWithUIView.m in Sources */,
 				180F60491923D1D800B3807F /* GooglePlacesPlaceDetailQuery.m in Sources */,
 				18F3CEFD1909774D00AE3C47 /* MessageKeyboardView.m in Sources */,

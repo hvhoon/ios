@@ -22,7 +22,7 @@ static UIFont *forthTextFont = nil;
         firstTextFont=[UIFont fontWithName:@"HelveticaNeue" size:17.0f];
         secondTextFont=[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
         thirdTextFont=[UIFont fontWithName:@"HelveticaNeue-Medium" size:15.0f];
-        forthTextFont=[UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0f];
+        forthTextFont=[UIFont fontWithName:@"HelveticaNeue" size:15.0f];
         
     }
 }
@@ -286,36 +286,46 @@ static UIFont *forthTextFont = nil;
     
     // Changing the text based on who is seeing this
     NSString* expressInterestText = nil;
-    [style setAlignment:NSTextAlignmentCenter];
+    [style setAlignment:NSTextAlignmentLeft];
         
     // If it's the organizer
     if (self.bg_activity.dosRelation==0) {
-        expressInterestText = @"COMPLETED";
+        expressInterestText = @"Completed";
         attrs=[NSDictionary dictionaryWithObjectsAndKeys:
                forthTextFont, NSFontAttributeName,
                [UIColor whiteColor],NSForegroundColorAttributeName,
                style, NSParagraphStyleAttributeName, nil];
+        [expressInterestText drawInRect:CGRectMake(52, fromTheTop+8, 150, 33) withAttributes:attrs];
+
     }
     // You are not the organizer and have already expressed interest
     else if(self.bg_activity.dosRelation > 0 && self.bg_activity.isParticipant)
     {
-        expressInterestText = @"I'M INTERESTED";
+        expressInterestText = @"I'm Interested";
         attrs=[NSDictionary dictionaryWithObjectsAndKeys:
                forthTextFont, NSFontAttributeName,
                [UIColor whiteColor],NSForegroundColorAttributeName,
                style, NSParagraphStyleAttributeName, nil];
+        
+        [[UIImage imageNamed:@"Star"] drawInRect:CGRectMake(32, fromTheTop+8, 16, 15)];
+        // Actually draw it now!
+
+        [expressInterestText drawInRect:CGRectMake(52, fromTheTop+8, 150, 33) withAttributes:attrs];
 
     }
     // You are not the organizer and have not expressed interest
     else {
-        expressInterestText = @"I'M INTERESTED";
+        expressInterestText = @"I'm Interested";
+        [style setAlignment:NSTextAlignmentCenter];
         attrs=[NSDictionary dictionaryWithObjectsAndKeys:
                forthTextFont, NSFontAttributeName,
                buttonColor,NSForegroundColorAttributeName,
                style, NSParagraphStyleAttributeName, nil];
+        // Actually draw it now!
+
+        [expressInterestText drawInRect:CGRectMake(16, fromTheTop+8, 150, 33) withAttributes:attrs];
+
     }
-    // Actually draw it now!
-    [expressInterestText drawInRect:CGRectMake(16, fromTheTop+9, 150, 33) withAttributes:attrs];
     
     }
     

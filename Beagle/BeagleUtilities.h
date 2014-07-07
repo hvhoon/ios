@@ -32,5 +32,4 @@
 +(void)updateBadgeInfoOnTheServer:(NSInteger)notificationId;
 +(UIImage*)imageNamed:(UIImage*)img withColor:(UIColor *)color;
 +(UIColor*)returnShadeOfColor:(UIColor*)inputColor withShade:(CGFloat)inputShade;
-
 @end

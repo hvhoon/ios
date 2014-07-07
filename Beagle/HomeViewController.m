@@ -22,10 +22,12 @@
 #import "EventInterestFilterBlurView.h"
 #import "BeagleNotificationClass.h"
 #import "FriendsViewController.h"
+#import "ExpressInterestPreview.h"
 #define REFRESH_HEADER_HEIGHT 70.0f
 #define stockCroppingCheck 0
 #define kTimerIntervalInSeconds 10
 #define rowHeight 164
+#define kLeaveInterest 23
 
 @interface HomeViewController ()<UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,HomeTableViewCellDelegate,ServerManagerDelegate,IconDownloaderDelegate,BlankHomePageViewDelegate,EventInterestFilterBlurViewDelegate,InAppNotificationViewDelegate>{
     UIView *topNavigationView;
@@ -761,14 +763,16 @@
                                                      attributes:attrs context:nil];
     
     if(play.activityType==2){
+        play.heightRow=rowHeight+(int)textRect.size.height+23;
         return rowHeight+(int)textRect.size.height+23;
     }
     
     // If there are no participants, reduce the size of the card
     if (play.participantsCount==0) {
+        play.heightRow=rowHeight+(int)textRect.size.height;
         return rowHeight+(int)textRect.size.height;
     }
-    
+    play.heightRow=rowHeight+16+20+(int)textRect.size.height;
     return rowHeight+16+20+(int)textRect.size.height;
 
     
@@ -1233,6 +1237,7 @@
 }
 
 -(void)updateInterestedStatus:(NSInteger)index {
+    
     BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:index];
     interestIndex=index;
     
@@ -1246,9 +1251,18 @@
     _interestUpdateManager.delegate=self;
     
     if (play.isParticipant) {
-        [_interestUpdateManager removeMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Are you sure you no longer want to do this?"
+                                                        message:nil
+                                                       delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No",nil];
+        alert.tag=kLeaveInterest;
+        [alert show];
+
+//        [_interestUpdateManager removeMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
     }
     else{
+        [self createAnOverlayOnAUITableViewCell:[NSIndexPath indexPathForRow:index inSection:0]];
+
         [_interestUpdateManager participateMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
     }
 }
@@ -1264,6 +1278,57 @@
     [self.navigationController pushViewController:viewController animated:YES];
 
 }
+
+-(void)createAnOverlayOnAUITableViewCell:(NSIndexPath*)indexpath{
+    BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexpath.row];
+    HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:indexpath];
+    ExpressInterestPreview *preview=[[ExpressInterestPreview alloc]initWithFrame:CGRectMake(0, 0, 320, play.heightRow) orgn:play.organizerName];
+    preview.tag=1374;
+    [cell insertSubview:preview aboveSubview:cell.contentView];
+    
+
+
+}
+
+-(void)hideView:(UIView*)pView{
+    pView.alpha=0.0f;
+   [pView removeFromSuperview];
+    [self.tableView reloadData];
+}
+
+#pragma mark -
+#pragma mark UIAlertView methods
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    
+    [alertView resignFirstResponder];
+    
+    if (buttonIndex == 0) {
+        
+        switch (alertView.tag) {
+            case kLeaveInterest:
+            {
+                if(_interestUpdateManager!=nil){
+                    _interestUpdateManager.delegate = nil;
+                    [_interestUpdateManager releaseServerManager];
+                    _interestUpdateManager = nil;
+                }
+                
+                _interestUpdateManager=[[ServerManager alloc]init];
+                _interestUpdateManager.delegate=self;
+                
+                BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:interestIndex];
+                [_interestUpdateManager removeMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
+            }
+                break;
+                
+        }
+    }
+    
+    else{
+        NSLog(@"Clicked Cancel Button");
+    }
+}
+
 #pragma mark - askNearbyFriendsToPartOfSuggestedPost call
 -(void)askNearbyFriendsToPartOfSuggestedPost:(NSInteger)index{
     
@@ -1520,6 +1585,10 @@
                 }
                 else if([message isEqualToString:@"Already Joined"]){
                     
+                    HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+                    ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
+
+                    [preview removeFromSuperview];
                     NSString *message = NSLocalizedString (@"You have already joined.",
                                                            @"Already Joined");
                     BeagleAlertWithMessage(message);
@@ -1535,7 +1604,16 @@
                 else{
                     play.isParticipant=TRUE;
                 }
-                [self.tableView reloadData];
+                if(play.isParticipant){
+                    HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+                    ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
+                    [preview ShowViewFromCell];
+                    [self performSelector:@selector(hideView:) withObject:preview afterDelay:2.0];
+
+                }else{
+                    [self.tableView reloadData];
+                    
+                }
             }
         }
         
@@ -1610,6 +1688,14 @@
     NSString *message = NSLocalizedString (@"Unable to initiate request.",
                                            @"NSURLConnection initialization method failed.");
     BeagleAlertWithMessage(message);
+    
+    if(serverRequest==kServerCallParticipateInterest){
+        HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+        ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
+        
+        [preview removeFromSuperview];
+
+    }
 }
 
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
@@ -1633,6 +1719,14 @@
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
     [alert show];
+    if(serverRequest==kServerCallParticipateInterest){
+        HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+        ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
+        
+        [preview removeFromSuperview];
+        
+    }
+
 }
 @end
 

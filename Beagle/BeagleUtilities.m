@@ -781,4 +781,14 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
     
 }
+
++(UIView*)getInterestedAnimationEffect:(CGFloat)ticketHeight orgName:(NSString*)orgName{
+    UIView *interestedAnimationView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, ticketHeight)];
+    interestedAnimationView.backgroundColor=[BeagleUtilities returnBeagleColor:13];
+    UIImageView *starImageView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Big-Star"]];
+    starImageView.frame=CGRectMake(0, 0, 89, 83);
+    
+    [interestedAnimationView addSubview:starImageView];
+    return interestedAnimationView;
+}
 @end
