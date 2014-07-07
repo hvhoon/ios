@@ -41,7 +41,7 @@
             
             if ([accounts count] > 0) {
                 ACAccountType *FBaccountType= [self.accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
-                NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:key,ACFacebookAppIdKey,[NSArray arrayWithObjects:@"friends_location",@"user_friends",@"publish_stream",@"xmpp_login",nil],ACFacebookPermissionsKey,ACFacebookAudienceEveryone,ACFacebookAudienceKey,nil];
+                NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:key,ACFacebookAppIdKey,[NSArray arrayWithObjects:@"friends_location",@"user_friends",@"xmpp_login",nil],ACFacebookPermissionsKey,ACFacebookAudienceEveryone,ACFacebookAudienceKey,nil];
 
                 
 
@@ -219,7 +219,7 @@
     
     NSDictionary *dictFB = [[NSDictionary alloc] initWithObjectsAndKeys:
                              (NSString *)ACFacebookAppIdKey,key,
-                            (NSString *)ACFacebookPermissionsKey,@[@"email", @"offline_access",@"read_stream",@"user_subscriptions", @"friends_subscriptions",@"friends_location",@"user_location", @"user_friends",@"publish_stream",@"xmpp_login"],
+                            (NSString *)ACFacebookPermissionsKey,@[@"friends_location",@"user_friends",@"xmpp_login"],
                              (NSString *)ACFacebookAudienceKey, ACFacebookAudienceEveryone,
                              nil];
     

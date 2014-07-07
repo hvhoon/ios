@@ -92,17 +92,6 @@
 
         
 
-            SLComposeViewController *mySLComposerSheet = [[SLComposeViewController alloc] init];
-            
-            mySLComposerSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
-            
-            [mySLComposerSheet setInitialText:@""];
-            
-            [mySLComposerSheet addImage:[UIImage imageNamed:@""]];
-            
-            [self presentViewController:mySLComposerSheet animated:YES completion:nil];
-            
-            
 #else
     dispatch_async(dispatch_get_main_queue(), ^{
         SLComposeViewController *controller = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
@@ -113,12 +102,8 @@
 
         [self.view.window.rootViewController presentViewController:controller animated:NO completion:^{
             [self resignFirstResponder];
-//            [controller dismissViewControllerAnimated:NO completion:nil];
             [[controller view] endEditing:YES];
             test=0;
-//            [self.view.window.rootViewController dismissViewControllerAnimated:NO completion:nil];
-//            [self performSelector:@selector(test) withObject:nil afterDelay:2.0];
-//            [self dismissViewControllerAnimated:NO completion:nil];
             [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
             [[NSUserDefaults standardUserDefaults]synchronize];
             [activityIndicatorView stopAnimating];
@@ -132,15 +117,6 @@
     
 }
 
--(void)test{
-//    [self dismissViewControllerAnimated:NO completion:nil];
-    [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
-    [[NSUserDefaults standardUserDefaults]synchronize];
-    [activityIndicatorView stopAnimating];
-    [activityIndicatorView setHidden:YES];
-    [NextArrow setHidden:NO];
-
-}
 -(void)pushToHomeScreen{
     
     [activityIndicatorView stopAnimating];
