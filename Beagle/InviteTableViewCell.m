@@ -28,7 +28,7 @@ static UIFont *secondTextFont = nil;
     UIColor *background;
     UIColor *backgroundColor;
     if(self.bgPlayer.isInvited)
-        background = [BeagleUtilities returnBeagleColor:5];
+        background = [[BeagleManager SharedInstance] lightDominantColor];
      else
         background = [UIColor whiteColor];
     backgroundColor = background;
@@ -102,26 +102,22 @@ static UIFont *secondTextFont = nil;
         UIButton *accesoryButton=[UIButton buttonWithType:UIButtonTypeCustom];
         accesoryButton.frame=CGRectMake(304-22, 10, 22, 22);
     if(bgPlayer.isInvited){
-            [accesoryButton setImage:[UIImage imageNamed:@"Checked"] forState:UIControlStateNormal];
+            [accesoryButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Checked"] withColor:[[BeagleManager SharedInstance] mediumDominantColor]] forState:UIControlStateNormal];
         [accesoryButton addTarget:self action:@selector(accessoryButtonClickedToUninvite:) forControlEvents:UIControlEventTouchUpInside];
         
     }
         else{
-            [accesoryButton setImage:[UIImage imageNamed:@"Add"] forState:UIControlStateNormal];
+            [accesoryButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Add"] withColor:[[BeagleManager SharedInstance] mediumDominantColor]] forState:UIControlStateNormal];
             [accesoryButton addTarget:self action:@selector(accessoryButtonClickedToInvite:) forControlEvents:UIControlEventTouchUpInside];
             
         }
     
         [self setAccessoryView:accesoryButton];
-        
-        
+
     CGRect seperatorRect = {16, 65, 288, 1};
-        if(self.bgPlayer.isInvited)
-    CGContextSetRGBFillColor(context, 0.0/255.0, 122.0/255.0, 255.0/255.0, 0.30);
-        else
     CGContextSetRGBFillColor(context, 230.0/255.0, 230.0/255.0, 230.0/255.0, 1.0);
     CGContextFillRect(context, seperatorRect);
-
+    
 }
 
 -(void)accessoryButtonClickedToInvite:(id)sender{
