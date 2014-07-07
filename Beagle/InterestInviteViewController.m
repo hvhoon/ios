@@ -55,8 +55,9 @@
     self.inviteTableView.bounds = newBounds;
     self.nameSearchBar.showsCancelButton=NO;
     
+    [self.navigationController.navigationBar setTintColor:[[BeagleManager SharedInstance] darkDominantColor]];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Create" style:UIBarButtonItemStyleDone target:self action:@selector(createButtonClicked:)];
-    [self.navigationItem.rightBarButtonItem setTintColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0]];
+    [self.navigationItem.rightBarButtonItem setTintColor:[[BeagleManager SharedInstance] darkDominantColor]];
     self.navigationItem.rightBarButtonItem.enabled=YES;
 
     self.inviteTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
@@ -234,16 +235,16 @@
     }
     }
     UIView *sectionHeaderview=[[UIView alloc]initWithFrame:CGRectMake(0,0,320,kSectionHeaderHeight)];
-    sectionHeaderview.backgroundColor=[UIColor clearColor];
+    sectionHeaderview.backgroundColor=[UIColor whiteColor];
     
     
     CGRect sectionLabelRect=CGRectMake(16,16,240,15);
     UILabel *sectionLabel=[[UILabel alloc] initWithFrame:sectionLabelRect];
     sectionLabel.textAlignment=NSTextAlignmentLeft;
     
-    sectionLabel.font=[UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f];
+    sectionLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0f];
     sectionLabel.textColor=[BeagleUtilities returnBeagleColor:12];
-    sectionLabel.backgroundColor=[UIColor clearColor];
+    sectionLabel.backgroundColor=[UIColor whiteColor];
     [sectionHeaderview addSubview:sectionLabel];
     
     
