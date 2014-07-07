@@ -17,7 +17,7 @@
 #import "ASIHTTPRequest.h"
 #import "InterestInviteViewController.h"
 
-#define DISABLED_ALPHA 0.3f
+#define DISABLED_ALPHA 0.5f
 
 enum Weeks {
     SUNDAY = 1,
@@ -134,8 +134,6 @@ enum Weeks {
         [self imageCircular:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
     }
     
-    
-    
 
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:248.0/255.0 green:248.0/255.0 blue:248.0/255.0 alpha:1.0]];
     [self.navigationController.navigationBar setTintColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0]];
@@ -144,7 +142,7 @@ enum Weeks {
     if(editState){
         
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleDone target:self action:@selector(createButtonClicked:)];
-    [self.navigationItem.rightBarButtonItem setTintColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0]];
+    [self.navigationItem.rightBarButtonItem setTintColor:[[BeagleManager SharedInstance] darkDominantColor]];
     self.navigationItem.rightBarButtonItem.enabled=YES;
         
     }else{
@@ -174,10 +172,25 @@ enum Weeks {
         [timeFilterButton setTitle:@"This Weekend" forState:UIControlStateNormal];
     }
     
+    // Setting the color for both the Visibility and Time filter button text and image
+    // Visibility text and image
+    [visibilityFilterButton setTitleColor:[[BeagleManager SharedInstance] darkDominantColor] forState:UIControlStateNormal];
+    [visibilityFilterButton setTitleColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
+    [visibilityFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Visibility"] withColor:[[BeagleManager SharedInstance] darkDominantColor]] forState:UIControlStateNormal];
+    [visibilityFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Visibility"] withColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+    
+    // Time text and image
+    [timeFilterButton setTitleColor:[[BeagleManager SharedInstance] darkDominantColor] forState:UIControlStateNormal];
+    [timeFilterButton setTitleColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
+    [timeFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Time"] withColor:[[BeagleManager SharedInstance] darkDominantColor]] forState:UIControlStateNormal];
+    [timeFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Time"] withColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+    
+    // Color the Background view appropriately
+    [backgroundView setBackgroundColor:[[BeagleManager SharedInstance] mediumDominantColor]];
     
     NSString *locationFilter=[NSString stringWithFormat:@"%@, %@",[[[BeagleManager SharedInstance]placemark].addressDictionary objectForKey:@"City"],[[BeagleManager SharedInstance]placemark].administrativeArea];
-    [locationFilterButton setTitle:locationFilter forState:UIControlStateNormal];
     
+    [locationFilterButton setTitle:locationFilter forState:UIControlStateNormal];
     [countTextLabel setTextAlignment:NSTextAlignmentRight];
     
     if(editState){

@@ -30,7 +30,7 @@
 +(BeagleNotificationClass*)getNotificationObject:(NSNotification*)object;
 +(BeagleNotificationClass*)getNotificationForInterestPost:(NSNotification*)object;
 +(void)updateBadgeInfoOnTheServer:(NSInteger)notificationId;
-+(UIImage*)imageNamed:(UIImage*)img withColor:(UIColor *)color;
++(UIImage*)colorImage:(UIImage*)img withColor:(UIColor *)color;
 +(UIColor*)returnShadeOfColor:(UIColor*)inputColor withShade:(CGFloat)inputShade;
 
 @end

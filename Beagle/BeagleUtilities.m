@@ -411,10 +411,10 @@
     
 }
 
-+ (UIImage *)imageNamed:(UIImage *)img withColor:(UIColor *)color {
++ (UIImage *)colorImage:(UIImage *)img withColor:(UIColor *)color {
     
-    // begin a new image context, to draw our colored image onto
-    UIGraphicsBeginImageContext(img.size);
+    // begin a new image context, to draw our colored image onto with the right scale
+    UIGraphicsBeginImageContextWithOptions(img.size, NO, [UIScreen mainScreen].scale);
     
     // get a reference to that context we created
     CGContextRef context = UIGraphicsGetCurrentContext();
@@ -426,13 +426,11 @@
     CGContextTranslateCTM(context, 0, img.size.height);
     CGContextScaleCTM(context, 1.0, -1.0);
     
-    // set the blend mode to color burn, and the original image
     CGContextSetBlendMode(context, kCGBlendModeColorBurn);
     CGRect rect = CGRectMake(0, 0, img.size.width, img.size.height);
     CGContextDrawImage(context, rect, img.CGImage);
     
-    // set a mask that matches the shape of the image, then draw (color burn) a colored rectangle
-    CGContextClipToMask(context, rect, img.CGImage);
+    CGContextSetBlendMode(context, kCGBlendModeSourceIn);
     CGContextAddRect(context, rect);
     CGContextDrawPath(context,kCGPathFill);
     
