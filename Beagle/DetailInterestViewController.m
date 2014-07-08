@@ -361,6 +361,7 @@ else if(!notifObject.isOffline){
     self.detailedInterestTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
     self.detailedInterestTableView.separatorInset = UIEdgeInsetsZero;
     self.detailedInterestTableView.delegate = self;
+    self.detailedInterestTableView.delaysContentTouches = NO;
     self.detailedInterestTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth
     |UIViewAutoresizingFlexibleHeight;
     [self.detailedInterestTableView setBackgroundColor:[BeagleUtilities returnBeagleColor:2]];
@@ -615,6 +616,7 @@ else if(!notifObject.isOffline){
     if(indexPath.row==0){
         // Let's begin spacing from the top
 
+
         CGFloat fromTheTop = 8.0f;
 
         static NSString *CellIdentifier = @"MediaTableCell";
@@ -623,6 +625,16 @@ else if(!notifObject.isOffline){
         cell =[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         cell.selectionStyle=UITableViewCellSelectionStyleNone;
         cell.separatorInset = UIEdgeInsetsZero;
+        
+        for (id obj in cell.subviews)
+        {
+            if ([NSStringFromClass([obj class]) isEqualToString:@"UITableViewCellScrollView"])
+            {
+                UIScrollView *scroll = (UIScrollView *) obj;
+                scroll.delaysContentTouches = NO;
+                break;
+            }
+        }
         
         NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
         [style setAlignment:NSTextAlignmentCenter];
@@ -938,6 +950,7 @@ else if(!notifObject.isOffline){
         _backgroundView.frame=CGRectMake(0, 0, 320, fromTheTop);
         [cell.contentView addSubview:_backgroundView];
         
+
         return cell;
     }
     
@@ -1082,7 +1095,6 @@ else if(!notifObject.isOffline){
     
     
 }
-
 - (void)appImageDidLoad:(NSIndexPath *)indexPath
 {
     IconDownloader *iconDownloader = [imageDownloadsInProgress objectForKey:indexPath];
