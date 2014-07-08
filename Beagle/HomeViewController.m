@@ -1298,20 +1298,35 @@
 
 }
 
--(void)hideView:(UIView*)pView{
+-(void)showView{
     
+    HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+    ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
+    [preview ShowViewFromCell];
+
+
     CATransition *animation = [CATransition animation];
     [animation setType:kCATransitionPush];
-    [animation setSubtype:kCATransitionFade];
+    animation.delegate=self;
+    [animation setSubtype:kCATransitionFromLeft];
     [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
     [animation setFillMode:kCAFillModeBoth];
-    [animation setDuration:.3];
-    [[pView layer] addAnimation:animation forKey:@"UITableViewReloadDataAnimationKey"];
+    [animation setDuration:2.3];
+    [[cell layer] addAnimation:animation forKey:@"UITableViewReloadDataAnimationKey"];
+     [self performSelector:@selector(hideView:) withObject:preview afterDelay:2.3];
+
+}
+-(void)hideView:(UIView*)pView{
     pView.alpha=0.0f;
     [pView removeFromSuperview];
-
     self.tableView.scrollEnabled=YES;
     [self.tableView reloadData];
+    
+}
+
+- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag
+{
+    //do what you need to do when animation ends...
 }
 
 #pragma mark -
@@ -1623,10 +1638,8 @@
                     play.isParticipant=TRUE;
                 }
                 if(play.isParticipant){
-                    HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
-                    ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
-                    [preview ShowViewFromCell];
-                    [self performSelector:@selector(hideView:) withObject:preview afterDelay:2.0];
+                    [self
+                     showView];
 
                 }else{
                     [self.tableView reloadData];
