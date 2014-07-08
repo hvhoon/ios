@@ -210,7 +210,7 @@
     
     _tableViewController.refreshControl = [UIRefreshControl new];
     [_tableViewController.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
-    
+    self.tableView.delaysContentTouches = NO;
     _tableViewController.tableView = self.tableView;
     
     // Setting up the table and the refresh animation
@@ -784,10 +784,21 @@
     
     
     HomeTableViewCell *cell = (HomeTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
+//    if (cell == nil) {
         cell =[[HomeTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         cell.selectionStyle=UITableViewCellSelectionStyleNone;
+//    }
+    
+    for (id obj in cell.subviews)
+    {
+        if ([NSStringFromClass([obj class]) isEqualToString:@"UITableViewCellScrollView"])
+        {
+            UIScrollView *scroll = (UIScrollView *) obj;
+            scroll.delaysContentTouches = NO;
+            break;
+        }
     }
+
     BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexPath.row];
     
     cell.delegate=self;
@@ -1324,9 +1335,9 @@
                          // Completion Block
                          [pView setAlpha:0.0];
                           [cell setAlpha:1.0];
-                         [pView removeFromSuperview];
                          self.tableView.scrollEnabled=YES;
                          [self.tableView reloadData];
+                         [pView removeFromSuperview];
 
                          
                      }];
