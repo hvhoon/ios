@@ -1286,15 +1286,6 @@
     preview.tag=1374;
     [cell insertSubview:preview aboveSubview:cell.contentView];
     self.tableView.scrollEnabled=NO;
-    
-    CATransition *animation = [CATransition animation];
-    [animation setType:kCATransitionPush];
-    [animation setSubtype:kCATransitionFromBottom];
-    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
-    [animation setFillMode:kCAFillModeBoth];
-    [animation setDuration:.3];
-    [[cell layer] addAnimation:animation forKey:@"UITableViewReloadDataAnimationKey"];
-
 
 }
 
@@ -1304,19 +1295,20 @@
     ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
     [preview ShowViewFromCell];
 
-
     CATransition *animation = [CATransition animation];
     [animation setType:kCATransitionPush];
     animation.delegate=self;
-    [animation setSubtype:kCATransitionFromLeft];
+    [animation setSubtype:kCATransitionFade];
     [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
     [animation setFillMode:kCAFillModeBoth];
-    [animation setDuration:2.3];
+    [animation setDuration:1.0];
     [[cell layer] addAnimation:animation forKey:@"UITableViewReloadDataAnimationKey"];
-     [self performSelector:@selector(hideView:) withObject:preview afterDelay:2.3];
+    
+    [self performSelector:@selector(hideView:) withObject:preview afterDelay:2];
 
 }
--(void)hideView:(UIView*)pView{
+-(void)hideView:(UIView*)pView {
+    
     pView.alpha=0.0f;
     [pView removeFromSuperview];
     self.tableView.scrollEnabled=YES;

@@ -21,8 +21,8 @@
     self = [super initWithFrame:frame];
     if (self) {
 		
-        self.backgroundColor=[BeagleUtilities returnBeagleColor:13];
-
+        self.backgroundColor=[[BeagleUtilities returnBeagleColor:13] colorWithAlphaComponent:0.9];
+        //self.backgroundColor=[[UIColor lightGrayColor] colorWithAlphaComponent:0.8];
 		
         // Initialization code.
 		UIImageView* bigStarImageView =[[UIImageView alloc]initWithFrame:CGRectMake((320-89)/2,(frame.size.height-83)/2-30,89,83)];
@@ -35,7 +35,7 @@
         spinningWheel.tag=kSpinningWheel;
         spinningWheel.hidesWhenStopped=YES;
         spinningWheel.transform=CGAffineTransformMakeScale(1.50f, 1.50f);
-        spinningWheel.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
+        spinningWheel.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
         [self addSubview:spinningWheel];
         [spinningWheel startAnimating];
         NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
@@ -99,7 +99,9 @@
 - (void) ShowViewFromCell
 {
 	
-	UIImageView* bigStarImageView = (UIImageView *)[self viewWithTag:kBigStarImageView];
+	self.backgroundColor = [BeagleUtilities returnBeagleColor:13];
+    
+    UIImageView* bigStarImageView = (UIImageView *)[self viewWithTag:kBigStarImageView];
 	[bigStarImageView setHidden:NO];
 	UIActivityIndicatorView *spinningWheel=(UIActivityIndicatorView*)[self viewWithTag:kSpinningWheel];
     [spinningWheel stopAnimating];
