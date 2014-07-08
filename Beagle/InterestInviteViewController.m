@@ -411,7 +411,7 @@
             }
             
         }
-        else if([self.nearbyFriendsArray count]>0){
+        else if([self.nearbyFriendsArray count]>0 &&[self.worldwideFriendsArray count]==0){
             for (NSIndexPath *indexPath in visiblePaths)
             {
                 BeagleUserClass *appRecord=(BeagleUserClass *)[self.nearbyFriendsArray objectAtIndex:indexPath.row];
@@ -422,7 +422,7 @@
             }
             
         }
-        else if ([self.worldwideFriendsArray count]>0){
+        else if ([self.worldwideFriendsArray count]>0&&[self.nearbyFriendsArray count]==0){
             {
                 for (NSIndexPath *indexPath in visiblePaths)
                 {

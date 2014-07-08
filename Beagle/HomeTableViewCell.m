@@ -326,6 +326,8 @@ static UIFont *forthTextFont = nil;
         [expressInterestText drawInRect:CGRectMake(16, fromTheTop+8, 150, 33) withAttributes:attrs];
 
     }
+        
+
     
     }
     

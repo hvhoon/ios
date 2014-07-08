@@ -592,6 +592,8 @@
         // Add the city name and the filter pane to the top section
         [self addCityName:[BG.placemark.addressDictionary objectForKey:@"City"]];
         _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
+            
+        [self.tableView reloadData];
     
         }];
     
@@ -1294,32 +1296,39 @@
     HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
     ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
     [preview ShowViewFromCell];
-
     CATransition *animation = [CATransition animation];
     [animation setType:kCATransitionPush];
-    animation.delegate=self;
     [animation setSubtype:kCATransitionFade];
     [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
     [animation setFillMode:kCAFillModeBoth];
     [animation setDuration:1.0];
     [[cell layer] addAnimation:animation forKey:@"UITableViewReloadDataAnimationKey"];
+
     
-    [self performSelector:@selector(hideView:) withObject:preview afterDelay:2];
+    [UIView animateWithDuration:1.5
+                          delay:1.0
+                        options:UIViewAnimationOptionTransitionCrossDissolve
+                     animations:^{
+                         [preview setAlpha:1.0];
+                     }
+                     completion:^(BOOL finished) {
+                         // Completion Block
+                         [preview setAlpha:0.0];
+                         [preview removeFromSuperview];
+                         [self performSelector:@selector(hideView) withObject:nil afterDelay:2];
+
+
+                     }];
+    
 
 }
--(void)hideView:(UIView*)pView {
-    
-    pView.alpha=0.0f;
-    [pView removeFromSuperview];
+-(void)hideView{
     self.tableView.scrollEnabled=YES;
     [self.tableView reloadData];
     
 }
 
-- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag
-{
-    //do what you need to do when animation ends...
-}
+
 
 #pragma mark -
 #pragma mark UIAlertView methods
