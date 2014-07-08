@@ -903,6 +903,7 @@ else if(!notifObject.isOffline){
         
         fromTheTop = fromTheTop + 3.0f; // buffer
         
+        /*
         // Adding the comments icon
         UIImageView *commentImageView = [[UIImageView alloc] initWithFrame:CGRectMake(304-21, fromTheTop, 21, 18)];
         [_backgroundView addSubview:commentImageView];
@@ -934,8 +935,9 @@ else if(!notifObject.isOffline){
         else
             commentImageView.image=[UIImage imageNamed:@"Add-Comment"];
         
-        fromTheTop = fromTheTop + 21.0f;
+        */
         
+        fromTheTop = fromTheTop + 21.0f;
         _backgroundView.frame=CGRectMake(0, 0, 320, fromTheTop);
         [cell.contentView addSubview:_backgroundView];
         

@@ -348,9 +348,9 @@
         g = g*255.0;
         b = b*255.0;
 
-        CGFloat newR = (255.0f - (255.0f - r)*multiplier);
-        CGFloat newG = (255.0f - (255.0f - g)*multiplier);
-        CGFloat newB = (255.0f - (255.0f - b)*multiplier);
+        CGFloat newR = (255.0f - (int)(255.0f - r)*multiplier);
+        CGFloat newG = (255.0f - (int)(255.0f - g)*multiplier);
+        CGFloat newB = (255.0f - (int)(255.0f - b)*multiplier);
         
         NSLog(@"Light Version = R: %i, G: %i, B: %i", (int)newR, (int)newG, (int)newB);
         return [UIColor colorWithRed:newR/255.0 green:newG/255.0 blue:newB/255.0 alpha:1.0];
