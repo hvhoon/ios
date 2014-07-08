@@ -29,7 +29,7 @@ static UIFont *forthTextFont = nil;
 
 - (void)drawContentView:(CGRect)r
 {
-	CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextRef context = UIGraphicsGetCurrentContext();
     
     UIColor *background;
     UIColor *backgroundColor;
@@ -326,6 +326,8 @@ static UIFont *forthTextFont = nil;
         [expressInterestText drawInRect:CGRectMake(16, fromTheTop+8, 150, 33) withAttributes:attrs];
 
     }
+        
+
     
     }
     
@@ -340,9 +342,13 @@ static UIFont *forthTextFont = nil;
     fromTheTop += 1;
 
 }
+
+
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
     UITouch *touch =[touches anyObject];
     CGPoint startPoint =[touch locationInView:self.contentView];
+    
+
     
     if(self.bg_activity.activityType==1){
     if(CGRectContainsPoint(interestedRect,startPoint)){
