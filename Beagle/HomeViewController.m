@@ -516,7 +516,7 @@
         // Color play :)
         UIColor *dominantColor = [BeagleUtilities getDominantColor:flickrRequestInfo.photo];
             
-        BG.lightDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.9];
+        BG.lightDominantColor=[BeagleUtilities returnLightColor:dominantColor withWhiteness:0.9];
         BG.mediumDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5];
         BG.darkDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.4];
             

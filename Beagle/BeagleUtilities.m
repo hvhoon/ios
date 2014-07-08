@@ -323,6 +323,7 @@
         
         free(pixels);
     }
+    NSLog(@"Dominant color = R: %i, G: %i, B: %i", (int)red, (int)green, (int)blue);
     return [UIColor colorWithRed:red/255.0f green:green/255.0f blue:blue/255.0f alpha:alpha];
 }
 
@@ -334,6 +335,27 @@
         return [UIColor colorWithHue:hue saturation:saturation brightness:inputShade alpha:alpha];
     
     return [self returnBeagleColor:5];
+}
+
+// Crazy function for mixing white into a color to make it light!
++(UIColor*)returnLightColor:(UIColor*)inputColor withWhiteness:(CGFloat)white {
+    CGFloat r, g, b, a;
+    CGFloat multiplier = 1 - white;
+    
+    // Getting these values
+    if([inputColor getRed:&r green:&g blue:&b alpha:&a]) {
+        r = r*255.0;
+        g = g*255.0;
+        b = b*255.0;
+
+        CGFloat newR = (255.0f - (255.0f - r)*multiplier);
+        CGFloat newG = (255.0f - (255.0f - g)*multiplier);
+        CGFloat newB = (255.0f - (255.0f - b)*multiplier);
+        
+        NSLog(@"Light Version = R: %i, G: %i, B: %i", (int)newR, (int)newG, (int)newB);
+        return [UIColor colorWithRed:newR/255.0 green:newG/255.0 blue:newB/255.0 alpha:1.0];
+    }
+    return [self returnBeagleColor:8];
 }
 
 // Determine the average color in an image!

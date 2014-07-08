@@ -64,6 +64,7 @@ static NSString * const CellIdentifier = @"cell";
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
 
     [self.navigationController setNavigationBarHidden:NO animated:YES];
+    [self.navigationController.navigationBar setTintColor:[[BeagleManager SharedInstance] darkDominantColor]];
     
     BeagleManager *BG=[BeagleManager SharedInstance];
     if(BG.activityDeleted){
@@ -74,7 +75,7 @@ static NSString * const CellIdentifier = @"cell";
     
     // Setup the progress indicator
     _sendMessage = [[UIProgressView alloc] initWithFrame:CGRectMake(0, 64, 320, 1)];
-    [_sendMessage setProgressTintColor:[BeagleUtilities returnBeagleColor:1]];
+    [_sendMessage setProgressTintColor:[BeagleUtilities returnBeagleColor:13]];
     [self.view addSubview:_sendMessage];
     [_sendMessage setHidden:YES];
     
@@ -956,7 +957,7 @@ else if(!notifObject.isOffline){
         static NSString *CellIdentifier = @"MediaTableCell2";
         UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
         cell  =[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-        cell.backgroundColor=[BeagleUtilities returnBeagleColor:5];
+        cell.backgroundColor=[[BeagleManager SharedInstance] lightDominantColor];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
         InterestChatClass *chatCell=[self.chatPostsArray objectAtIndex:indexPath.row-1];

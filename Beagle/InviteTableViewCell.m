@@ -28,7 +28,7 @@ static UIFont *secondTextFont = nil;
     UIColor *background;
     UIColor *backgroundColor;
     if(self.bgPlayer.isInvited)
-        background = [[[BeagleManager SharedInstance] lightDominantColor] colorWithAlphaComponent:0.2];
+        background = [[BeagleManager SharedInstance] lightDominantColor];
      else
         background = [UIColor whiteColor];
     backgroundColor = background;
