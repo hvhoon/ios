@@ -1170,7 +1170,7 @@
 		case kCLAuthorizationStatusDenied:
 			NSLog(@"kCLAuthorizationStatusDenied");
         {{
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Mobbin can’t access your current location.\n\nTo view nearby checkins at your current location, turn on access for Mobbin to your location in the Settings app under Location Services." message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Beagle can’t access your current location.\n\nTo view interests nearby, please turn on location services in  Settings under Location Services." message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
             [alertView show];
             // Disable the post button.
         }}

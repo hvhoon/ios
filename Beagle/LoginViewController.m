@@ -221,7 +221,7 @@
                 }else{
                     //first time user
                     // show an alert
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Welcome To Beagle" message:@"To make it easy we use facebook to login.We promise never to post publicly without permission.But we do need some info to get started...Ready to join the fun?" delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No",nil];
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Welcome To Beagle" message:@"To keep things simple we use Facebook to log you in. We promise never to post publicly without your permission but we do need some info to get started...Ready to join the fun?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"YES",nil];
                     alert.tag=kJoinBeagle;
                     [alert show];
                     
@@ -285,7 +285,7 @@
     
     [alertView resignFirstResponder];
     
-    if (buttonIndex == 0) {
+    if (buttonIndex == 1) {
         
         switch (alertView.tag) {
             case kJoinBeagle:
