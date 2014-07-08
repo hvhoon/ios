@@ -10,6 +10,7 @@
 #import "InitialSlidingViewController.h"
 #import "FacebookLoginSession.h"
 #import <Social/Social.h>
+#define kJoinBeagle 12
 @interface LoginViewController ()<FacebookLoginSessionDelegate,ServerManagerDelegate>{
     IBOutlet UIActivityIndicatorView *activityIndicatorView;
     __weak IBOutlet UIImageView *NextArrow;
@@ -17,11 +18,13 @@
      NSMutableData *_data;
     NSInteger test;
 }
+@property(nonatomic,strong)FacebookLoginSession *facebookSession;
 @property(nonatomic,strong)ServerManager *loginServerManager;
 @end
 
 @implementation LoginViewController
 @synthesize loginServerManager=_loginServerManager;
+@synthesize facebookSession=_facebookSession;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -44,9 +47,9 @@
     [activityIndicatorView startAnimating];
     
 
-    FacebookLoginSession *facebookSession=[[FacebookLoginSession alloc]init];
-    facebookSession.delegate=self;
-    [facebookSession getUserNativeFacebookSession];
+    _facebookSession=[[FacebookLoginSession alloc]init];
+    _facebookSession.delegate=self;
+    [_facebookSession getUserNativeFacebookSession];
 
     
 }
@@ -54,6 +57,18 @@
 #pragma mark -
 #pragma mark Delegate method From FacebookSession
 
+
+-(void)checkIfUserAlreadyExists:(NSString*)email{
+    if(_loginServerManager!=nil){
+        _loginServerManager.delegate = nil;
+        [_loginServerManager releaseServerManager];
+        _loginServerManager = nil;
+    }
+    _loginServerManager=[[ServerManager alloc]init];
+    _loginServerManager.delegate=self;
+    [_loginServerManager userInfoOnBeagle:email];
+    
+}
 -(void)successfulFacebookLogin:(BeagleUserClass*)data{
     
     if(_loginServerManager!=nil){
@@ -69,9 +84,9 @@
 -(void)facebookAccountNotSetup{
     
     
-    if(test==0){
-        test++;
-#if 0
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+#if 1
         NSString *message = NSLocalizedString (@"Right now beagle requires facebook to login. Please setup your facebook account in Settings > Facebook",
                                                @"No Facebook Account");
         
@@ -88,12 +103,9 @@
         [activityIndicatorView stopAnimating];
         [activityIndicatorView setHidden:YES];
         [NextArrow setHidden:NO];
-
-
-        
-
 #else
-    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        
         SLComposeViewController *controller = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
         controller.view.hidden = YES;
         [controller setInitialText:@""];
@@ -111,10 +123,18 @@
             [NextArrow setHidden:NO];
 
         }];
-    });
 #endif
-    }
+    });
     
+}
+
+-(void)permissionsError{
+    [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
+    [[NSUserDefaults standardUserDefaults]synchronize];
+    [activityIndicatorView stopAnimating];
+    [activityIndicatorView setHidden:YES];
+    [NextArrow setHidden:NO];
+
 }
 
 -(void)pushToHomeScreen{
@@ -148,9 +168,7 @@
         [_loginServerManager releaseServerManager];
         _loginServerManager = nil;
 
-//        id message=nil;
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
-//            message=[response objectForKey:@"message"];
             
             id status=[response objectForKey:@"status"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
@@ -186,18 +204,37 @@
         }
         }
         
-//        if (message != nil && [message class] != [NSNull class] && [message isEqualToString:@"Registered"]){
-//            
-//            // welcome to beagle after a new user is registered
-//        }else
             [self pushToHomeScreen];
+    }
+    else if ( serverRequest==kServerGetSignInInfo){
+        _loginServerManager.delegate = nil;
+        [_loginServerManager releaseServerManager];
+        _loginServerManager = nil;
+        
+        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
+            id  registered=[response objectForKey:@"registered"];
+            
+            id status=[response objectForKey:@"status"];
+            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
+                if (registered != nil && [status class] != [NSNull class] && [registered boolValue]){
+                    [_facebookSession requestAdditionalPermissions];
+                }else{
+                    //first time user
+                    // show an alert
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Welcome To Beagle" message:@"To make it easy we use facebook to login.We promise never to post publicly without permission.But we do need some info to get started...Ready to join the fun?" delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No",nil];
+                    alert.tag=kJoinBeagle;
+                    [alert show];
+                    
+                }
+            }
+        }
     }
 }
 
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {
 
-    if(serverRequest==kServerCallUserRegisteration)
+    if(serverRequest==kServerCallUserRegisteration|| serverRequest==kServerGetSignInInfo)
     {
         _loginServerManager.delegate = nil;
         [_loginServerManager releaseServerManager];
@@ -212,7 +249,7 @@
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
 {
     
-    if(serverRequest==kServerCallUserRegisteration)
+    if(serverRequest==kServerCallUserRegisteration|| serverRequest==kServerGetSignInInfo)
     {
         _loginServerManager.delegate = nil;
         [_loginServerManager releaseServerManager];
@@ -242,5 +279,30 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+#pragma mark -
+#pragma mark UIAlertView methods
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    
+    [alertView resignFirstResponder];
+    
+    if (buttonIndex == 0) {
+        
+        switch (alertView.tag) {
+            case kJoinBeagle:
+            {
+                [_facebookSession requestAdditionalPermissions];
+            }
+                break;
+                
+        }
+    }
+    
+    else{
+        NSLog(@"Clicked Cancel Button");
+          [_facebookSession get];
+
+    }
+}
+
 
 @end
