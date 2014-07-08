@@ -818,7 +818,6 @@
     }else{
         cell.photoImage = play.profilePhotoImage=checkImge;
     }
-
     [cell setNeedsDisplay];
     return cell;
 }

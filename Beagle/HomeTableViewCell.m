@@ -29,7 +29,7 @@ static UIFont *forthTextFont = nil;
 
 - (void)drawContentView:(CGRect)r
 {
-    context = UIGraphicsGetCurrentContext();
+    CGContextRef context = UIGraphicsGetCurrentContext();
     
     UIColor *background;
     UIColor *backgroundColor;
@@ -37,7 +37,7 @@ static UIFont *forthTextFont = nil;
     backgroundColor = background;
     
     // Start from the top and set the top padding to 8
-    fromTheTop = 0;
+    int fromTheTop = 0;
     CGFloat organizerName_y=60.0f;
     if(self.selected)
     {

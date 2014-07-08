@@ -388,15 +388,20 @@
 // this method is used in case the user scrolled into a set of cells that don't have their app icons yet
 - (void)loadImagesForOnscreenRows{
     
-    
-    if([self.nearbyFriendsArray count]>0 || [self.worldwideFriendsArray count]>0){
+    if (!isSearching){
+        
+    if([self.nearbyFriendsArray count]>0 || [self.worldwideFriendsArray count]>0 || [self.selectedFriendsArray count]>0){
         NSArray *visiblePaths = [self.inviteTableView indexPathsForVisibleRows];
-        if([self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0){
+        if([self.selectedFriendsArray count]>0 && [self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0){
             
             for (NSIndexPath *indexPath in visiblePaths)
             {
                 BeagleUserClass *appRecord=nil;
-                if(indexPath.section==0)
+                if(indexPath.section==0){
+                    appRecord = (BeagleUserClass *)[self.selectedFriendsArray objectAtIndex:indexPath.row];
+                    
+                }
+                else if(indexPath.section==1)
                     appRecord = (BeagleUserClass *)[self.nearbyFriendsArray objectAtIndex:indexPath.row];
                 else{
                     appRecord = (BeagleUserClass *)[self.worldwideFriendsArray objectAtIndex:indexPath.row];
@@ -411,10 +416,15 @@
             }
             
         }
-        else if([self.nearbyFriendsArray count]>0 &&[self.worldwideFriendsArray count]==0){
+        else if([self.selectedFriendsArray count]>0 && [self.nearbyFriendsArray count]>0 &&[self.worldwideFriendsArray count]==0){
             for (NSIndexPath *indexPath in visiblePaths)
             {
-                BeagleUserClass *appRecord=(BeagleUserClass *)[self.nearbyFriendsArray objectAtIndex:indexPath.row];
+                BeagleUserClass *appRecord=nil;
+                if(indexPath.section==0){
+                    appRecord = (BeagleUserClass *)[self.selectedFriendsArray objectAtIndex:indexPath.row];
+                    
+                }else
+                   appRecord=(BeagleUserClass *)[self.nearbyFriendsArray objectAtIndex:indexPath.row];
                 if (!appRecord.profileData) // avoid the app icon download if the app already has an icon
                 {
                     [self startIconDownload:appRecord forIndexPath:indexPath];
@@ -422,11 +432,16 @@
             }
             
         }
-        else if ([self.worldwideFriendsArray count]>0&&[self.nearbyFriendsArray count]==0){
+        else if ([self.selectedFriendsArray count]>0 && [self.worldwideFriendsArray count]>0&&[self.nearbyFriendsArray count]==0){
             {
                 for (NSIndexPath *indexPath in visiblePaths)
                 {
-                    BeagleUserClass *appRecord=(BeagleUserClass *)[self.worldwideFriendsArray objectAtIndex:indexPath.row];
+                    BeagleUserClass *appRecord=nil;
+                    if(indexPath.section==0){
+                        appRecord = (BeagleUserClass *)[self.selectedFriendsArray objectAtIndex:indexPath.row];
+                        
+                    }else
+                       appRecord=(BeagleUserClass *)[self.worldwideFriendsArray objectAtIndex:indexPath.row];
                     if (!appRecord.profileData) // avoid the app icon download if the app already has an icon
                     {
                         [self startIconDownload:appRecord forIndexPath:indexPath];
@@ -436,6 +451,57 @@
             }
             
         }
+        
+        
+        else if ([self.selectedFriendsArray count]>0 && [self.worldwideFriendsArray count]==0&&[self.nearbyFriendsArray count]==0){
+            
+                for (NSIndexPath *indexPath in visiblePaths)
+                {
+                    BeagleUserClass *appRecord = (BeagleUserClass *)[self.selectedFriendsArray objectAtIndex:indexPath.row];
+                        
+                    if (!appRecord.profileData) // avoid the app icon download if the app already has an icon
+                    {
+                        [self startIconDownload:appRecord forIndexPath:indexPath];
+                    }
+                }
+                
+            
+            
+        }
+        
+        else if ([self.selectedFriendsArray count]==0 && [self.worldwideFriendsArray count]>0&&[self.nearbyFriendsArray count]==0){
+            
+            for (NSIndexPath *indexPath in visiblePaths)
+            {
+                BeagleUserClass *appRecord = (BeagleUserClass *)[self.worldwideFriendsArray objectAtIndex:indexPath.row];
+                
+                if (!appRecord.profileData) // avoid the app icon download if the app already has an icon
+                {
+                    [self startIconDownload:appRecord forIndexPath:indexPath];
+                }
+            }
+            
+            
+            
+        }
+        
+        
+        else if ([self.selectedFriendsArray count]==0 && [self.worldwideFriendsArray count]==0&&[self.nearbyFriendsArray count]>0){
+            
+            for (NSIndexPath *indexPath in visiblePaths)
+            {
+                BeagleUserClass *appRecord = (BeagleUserClass *)[self.nearbyFriendsArray objectAtIndex:indexPath.row];
+                
+                if (!appRecord.profileData) // avoid the app icon download if the app already has an icon
+                {
+                    [self startIconDownload:appRecord forIndexPath:indexPath];
+                }
+            }
+            
+            
+            
+        }
+    }
     }
 }
 
