@@ -61,6 +61,8 @@
         [playerRegisteration setObject:data.email forKey:@"email"];
         [playerRegisteration setObject:data.profileImageUrl forKey:@"image_url"];
         [playerRegisteration setObject:[NSNumber numberWithInteger:data.fbuid] forKey:@"fbuid"];
+        [playerRegisteration setObject:[NSNumber numberWithBool:data.permissionsGranted] forKey:@"permissions"];
+
         [playerRegisteration setObject:data.access_token forKey:@"access_token"];
             if([data.location length]!=0)
             [playerRegisteration setObject:data.location forKey:@"location"];
@@ -502,6 +504,24 @@
                          method:@"PUT"
                          params:nil data:postData];
         
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+
+}
+
+-(void)userInfoOnBeagle:(NSString*)email{
+    _serverCallType=kServerGetSignInInfo;
+    if([self isInternetAvailable])
+    {
+        
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@signininfo.json", _serverUrl]
+                         method:@"GET"
+                         params:[NSDictionary dictionaryWithObjectsAndKeys:
+                                 email,@"email",
+                                 nil] data:nil];
     }
     else
     {
