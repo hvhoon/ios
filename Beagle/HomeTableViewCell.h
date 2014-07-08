@@ -24,6 +24,8 @@
    CGRect profileRect;
    CGRect nameRect;
    CGRect suggestedRect;
+    int fromTheTop;
+    CGContextRef context;
 }
 @property(nonatomic,strong)UIImage*photoImage;
 @property (nonatomic,weak)id <HomeTableViewCellDelegate> delegate;

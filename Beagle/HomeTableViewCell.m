@@ -29,7 +29,7 @@ static UIFont *forthTextFont = nil;
 
 - (void)drawContentView:(CGRect)r
 {
-	CGContextRef context = UIGraphicsGetCurrentContext();
+    context = UIGraphicsGetCurrentContext();
     
     UIColor *background;
     UIColor *backgroundColor;
@@ -37,7 +37,7 @@ static UIFont *forthTextFont = nil;
     backgroundColor = background;
     
     // Start from the top and set the top padding to 8
-    int fromTheTop = 0;
+    fromTheTop = 0;
     CGFloat organizerName_y=60.0f;
     if(self.selected)
     {
@@ -342,9 +342,13 @@ static UIFont *forthTextFont = nil;
     fromTheTop += 1;
 
 }
+
+
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
     UITouch *touch =[touches anyObject];
     CGPoint startPoint =[touch locationInView:self.contentView];
+    
+
     
     if(self.bg_activity.activityType==1){
     if(CGRectContainsPoint(interestedRect,startPoint)){

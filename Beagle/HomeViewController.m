@@ -1304,27 +1304,34 @@
     [animation setDuration:1.0];
     [[cell layer] addAnimation:animation forKey:@"UITableViewReloadDataAnimationKey"];
 
+    [self performSelector:@selector(hideView:) withObject:preview afterDelay:2];
+
     
-    [UIView animateWithDuration:1.5
-                          delay:1.0
-                        options:UIViewAnimationOptionTransitionCrossDissolve
-                     animations:^{
-                         [preview setAlpha:1.0];
-                     }
-                     completion:^(BOOL finished) {
-                         // Completion Block
-                         [preview setAlpha:0.0];
-                         [preview removeFromSuperview];
-                         [self performSelector:@selector(hideView) withObject:nil afterDelay:2];
-
-
-                     }];
     
 
 }
--(void)hideView{
-    self.tableView.scrollEnabled=YES;
-    [self.tableView reloadData];
+-(void)hideView:(UIView*)pView{
+    
+    HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+
+    [UIView animateWithDuration:1.5
+                          delay:0.0
+                        options:UIViewAnimationOptionTransitionCrossDissolve
+                     animations:^{
+                         [pView setAlpha:1.0];
+                         [cell setAlpha:0.5];
+                     }
+                     completion:^(BOOL finished) {
+                         // Completion Block
+                         [pView setAlpha:0.0];
+                          [cell setAlpha:1.0];
+                         [pView removeFromSuperview];
+                         self.tableView.scrollEnabled=YES;
+                         [self.tableView reloadData];
+
+                         
+                     }];
+
     
 }
 
