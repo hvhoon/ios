@@ -294,8 +294,8 @@
     __block UIImage *snapshot=[UIScreen screenshot];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        snapshot=[snapshot applyBlurWithRadius:12 tintColor:self.colorComponents.tintColor saturationDeltaFactor:1.8 maskImage:nil];
         
+        snapshot=[snapshot applyBlurWithRadius:8 tintColor:[[[BeagleManager SharedInstance] mediumDominantColor] colorWithAlphaComponent:0.75] saturationDeltaFactor:1.8 maskImage:nil];
 //        snapshot = [snapshot applyBlurWithCrop:CGRectMake(self.location.x, self.location.y, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame)) resize:CGSizeMake(CGRectGetWidth(self.frame), CGRectGetHeight(self.frame)) blurRadius:self.colorComponents.radius tintColor:self.colorComponents.tintColor saturationDeltaFactor:self.colorComponents.saturationDeltaFactor maskImage:self.colorComponents.maskImage];
         
         dispatch_sync(dispatch_get_main_queue(), ^{

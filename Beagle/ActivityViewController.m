@@ -174,15 +174,15 @@ enum Weeks {
     
     // Setting the color for both the Visibility and Time filter button text and image
     // Visibility text and image
-    [visibilityFilterButton setTitleColor:[[BeagleManager SharedInstance] darkDominantColor] forState:UIControlStateNormal];
+    [visibilityFilterButton setTitleColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateNormal];
     [visibilityFilterButton setTitleColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
-    [visibilityFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Visibility"] withColor:[[BeagleManager SharedInstance] darkDominantColor]] forState:UIControlStateNormal];
+    [visibilityFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Visibility"] withColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateNormal];
     [visibilityFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Visibility"] withColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
     
     // Time text and image
-    [timeFilterButton setTitleColor:[[BeagleManager SharedInstance] darkDominantColor] forState:UIControlStateNormal];
+    [timeFilterButton setTitleColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateNormal];
     [timeFilterButton setTitleColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
-    [timeFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Time"] withColor:[[BeagleManager SharedInstance] darkDominantColor]] forState:UIControlStateNormal];
+    [timeFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Time"] withColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateNormal];
     [timeFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Time"] withColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
     
     // Color the Background view appropriately
@@ -561,12 +561,31 @@ enum Weeks {
     
     if([[textView text]length]!=0){
         
-        [self.navigationItem.rightBarButtonItem setTintColor:[[BeagleManager SharedInstance] darkDominantColor]];
+        [self.navigationItem.rightBarButtonItem setTintColor:[BeagleUtilities returnBeagleColor:13]];
         self.navigationItem.rightBarButtonItem.enabled=YES;
+        
+        // Setting the color for both the Visibility and Time filter button text and image
+        // Visibility text and image
+        [visibilityFilterButton setTitleColor:[[BeagleManager SharedInstance] darkDominantColor] forState:UIControlStateNormal];
+        [visibilityFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Visibility"] withColor:[[BeagleManager SharedInstance] darkDominantColor]] forState:UIControlStateNormal];
+
+        // Time text and image
+        [timeFilterButton setTitleColor:[[BeagleManager SharedInstance] darkDominantColor] forState:UIControlStateNormal];
+        [timeFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Time"] withColor:[[BeagleManager SharedInstance] darkDominantColor]] forState:UIControlStateNormal];
+
     }
     else {
         [self.navigationItem.rightBarButtonItem setTintColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA]];
         self.navigationItem.rightBarButtonItem.enabled=NO;
+        
+        // Time
+        [timeFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Time"] withColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateNormal];
+        [timeFilterButton setTitleColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateNormal];
+        
+        // Visibility
+        [visibilityFilterButton setTitleColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateNormal];
+        [visibilityFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Visibility"] withColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateNormal];
+
     }
 
 }
