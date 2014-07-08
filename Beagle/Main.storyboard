@@ -479,7 +479,7 @@
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="15"/>
                                 <inset key="contentEdgeInsets" minX="16" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 <inset key="titleEdgeInsets" minX="5" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                <state key="normal" title="Next Weekend" image="Time"/>
+                                <state key="normal" title="Next Weekend"/>
                                 <state key="highlighted" image="Time-Highlighted"/>
                                 <connections>
                                     <action selector="timeFilter:" destination="S9M-sC-S9q" eventType="touchUpInside" id="PhX-Qx-jGt"/>
@@ -771,7 +771,6 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
         <image name="Notifications-Blank" width="149" height="84"/>
         <image name="Settings" width="44" height="44"/>
         <image name="Signout" width="25" height="25"/>
-        <image name="Time" width="16" height="16"/>
         <image name="Time-Highlighted" width="16" height="16"/>
         <image name="Welcome" width="320" height="568"/>
         <image name="beagle" width="182" height="56"/>
