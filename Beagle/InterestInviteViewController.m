@@ -57,7 +57,7 @@
     
     [self.navigationController.navigationBar setTintColor:[[BeagleManager SharedInstance] darkDominantColor]];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Create" style:UIBarButtonItemStyleDone target:self action:@selector(createButtonClicked:)];
-    [self.navigationItem.rightBarButtonItem setTintColor:[[BeagleManager SharedInstance] darkDominantColor]];
+    [self.navigationItem.rightBarButtonItem setTintColor:[BeagleUtilities returnBeagleColor:13]];
     self.navigationItem.rightBarButtonItem.enabled=YES;
 
     self.inviteTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
@@ -139,10 +139,9 @@
         return 1;
     }
     else{
-    if([self.selectedFriendsArray count]>0 && [self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0){
-        
+        if([self.selectedFriendsArray count]>0 && [self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0) {
         return 3;
-    }
+        }
     if(([self.selectedFriendsArray count]>0 && [self.nearbyFriendsArray count]>0)||([self.selectedFriendsArray count]>0 && [self.worldwideFriendsArray count]>0)||([self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0))
         return 2;
     else if([self.selectedFriendsArray count]>0||[self.nearbyFriendsArray count]>0 || [self.worldwideFriendsArray count]>0)
@@ -471,9 +470,7 @@
     
     searchBar.showsCancelButton=NO;
     isSearching=TRUE;
-    
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(doneButtonClicked:)];
-    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStylePlain target:self action:@selector(doneButtonClicked:)];
     self.navigationItem.hidesBackButton = YES;
 
     return YES;
@@ -485,9 +482,9 @@
     CGRect newBounds = self.inviteTableView.bounds;
     newBounds.origin.y = newBounds.origin.y + self.nameSearchBar.bounds.size.height;
     self.inviteTableView.bounds = newBounds;
-    self.nameSearchBar.showsCancelButton=YES;
-
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Create" style:UIBarButtonItemStylePlain target:self action:@selector(createButtonClicked:)];
+    self.nameSearchBar.text = @"";
+    self.nameSearchBar.showsCancelButton=NO;
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Create" style:UIBarButtonItemStyleDone target:self action:@selector(createButtonClicked:)];
     self.navigationItem.hidesBackButton = NO;
 
 }

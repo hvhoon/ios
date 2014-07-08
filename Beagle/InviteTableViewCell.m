@@ -28,7 +28,7 @@ static UIFont *secondTextFont = nil;
     UIColor *background;
     UIColor *backgroundColor;
     if(self.bgPlayer.isInvited)
-        background = [[BeagleManager SharedInstance] lightDominantColor];
+        background = [[[BeagleManager SharedInstance] lightDominantColor] colorWithAlphaComponent:0.2];
      else
         background = [UIColor whiteColor];
     backgroundColor = background;
@@ -115,7 +115,12 @@ static UIFont *secondTextFont = nil;
         [self setAccessoryView:accesoryButton];
 
     CGRect seperatorRect = {16, 65, 288, 1};
-    CGContextSetRGBFillColor(context, 230.0/255.0, 230.0/255.0, 230.0/255.0, 1.0);
+    
+    if (self.bgPlayer.isInvited)
+        CGContextSetRGBFillColor(context, 230.0/255.0, 230.0/255.0, 230.0/255.0, 0.0);
+    else
+        CGContextSetRGBFillColor(context, 230.0/255.0, 230.0/255.0, 230.0/255.0, 1.0);
+
     CGContextFillRect(context, seperatorRect);
     
 }
