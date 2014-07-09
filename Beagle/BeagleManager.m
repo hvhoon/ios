@@ -31,7 +31,7 @@
 -(id)init{
     
     if(self=[super init]){
-        lightDominantColor=[BeagleUtilities returnBeagleColor:5];
+        lightDominantColor=[BeagleUtilities returnBeagleColor:8];
         mediumDominantColor=[BeagleUtilities returnBeagleColor:3];
         darkDominantColor=[BeagleUtilities returnBeagleColor:4];
         
