@@ -95,6 +95,7 @@
     if([self isInternetAvailable]){
         
         
+        
         NSMutableDictionary* activityEvent =[[NSMutableDictionary alloc] init];
         [activityEvent setObject:[NSNumber numberWithInteger:1] forKey:@"atype"];
         [activityEvent setObject:data.startActivityDate forKey:@"start_when"];
@@ -102,6 +103,8 @@
         [activityEvent setObject:[NSNumber numberWithFloat:data.longitude] forKey:@"where_lng"];
         [activityEvent setObject:data.city forKey:@"where_city"];
         [activityEvent setObject:data.state  forKey:@"where_state"];
+        data.activityDesc = [[data.activityDesc componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] componentsJoinedByString:@" "];
+
         [activityEvent setObject:data.activityDesc forKey:@"what"];
         [activityEvent setObject:data.visibility forKey:@"access"];
         [activityEvent setObject:[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"] forKey:@"ownnerid"];
@@ -264,6 +267,8 @@
         [activityEvent setObject:[NSNumber numberWithFloat:data.longitude] forKey:@"where_lng"];
         [activityEvent setObject:data.city forKey:@"where_city"];
         [activityEvent setObject:data.state  forKey:@"where_state"];
+        data.activityDesc = [[data.activityDesc componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] componentsJoinedByString:@" "];
+
         [activityEvent setObject:data.activityDesc forKey:@"what"];
         [activityEvent setObject:data.visibility forKey:@"access"];
         [activityEvent setObject:[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"] forKey:@"ownnerid"];

@@ -599,11 +599,6 @@ enum Weeks {
 	BOOL flag = NO;
 	
 	
-	if ([text isEqualToString:@"\n"]){
-        [self createButtonClicked:self];
-        return NO;
-	}
-	
 	if([text length] == 0)
 	{
 		if([textView.text length] != 0)
