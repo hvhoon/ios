@@ -126,6 +126,7 @@
 		18FDA34F192BDD9A00D13667 /* TTTAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FDA34B192BDD9A00D13667 /* TTTAttributedLabel.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		18FDA350192BDD9A00D13667 /* AttributedTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FDA34C192BDD9A00D13667 /* AttributedTableViewCell.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		18FDA352192BDDE000D13667 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18FDA351192BDDE000D13667 /* CoreText.framework */; };
+		682455C3196DD6A800182F50 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 682455C2196DD6A800182F50 /* CoreMotion.framework */; };
 		6891059519632C1E00BE23B7 /* AboutUsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6891059419632C1E00BE23B7 /* AboutUsViewController.m */; };
 		68EDF869192AC578008ED9C1 /* Instabug.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 68EDF867192AC578008ED9C1 /* Instabug.bundle */; };
 		68EDF86A192AC578008ED9C1 /* Instabug.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68EDF868192AC578008ED9C1 /* Instabug.framework */; };
@@ -363,6 +364,7 @@
 		18FDA34D192BDD9A00D13667 /* AttributedTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AttributedTableViewCell.h; sourceTree = "<group>"; };
 		18FDA34E192BDD9A00D13667 /* TTTAttributedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTAttributedLabel.h; sourceTree = "<group>"; };
 		18FDA351192BDDE000D13667 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		682455C2196DD6A800182F50 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		6891059319632C1E00BE23B7 /* AboutUsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutUsViewController.h; sourceTree = "<group>"; };
 		6891059419632C1E00BE23B7 /* AboutUsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutUsViewController.m; sourceTree = "<group>"; };
 		68EDF867192AC578008ED9C1 /* Instabug.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Instabug.bundle; sourceTree = "<group>"; };
@@ -379,6 +381,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				682455C3196DD6A800182F50 /* CoreMotion.framework in Frameworks */,
 				182F0B9019630328001771AD /* MessageUI.framework in Frameworks */,
 				18FDA352192BDDE000D13667 /* CoreText.framework in Frameworks */,
 				68EDF874192AC7A0008ED9C1 /* CoreTelephony.framework in Frameworks */,
@@ -673,6 +676,7 @@
 		18EC229F18B5A0B400316B6E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				682455C2196DD6A800182F50 /* CoreMotion.framework */,
 				182F0B8F19630328001771AD /* MessageUI.framework */,
 				18FDA351192BDDE000D13667 /* CoreText.framework */,
 				68EDF873192AC7A0008ED9C1 /* CoreTelephony.framework */,
