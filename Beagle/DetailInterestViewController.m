@@ -176,15 +176,12 @@ static NSString * const CellIdentifier = @"cell";
 
         if(notifObject.dos1_relation==1){
             self.interestActivity.dos1count--;
-            NSString* relationship = nil;
+            NSString* relationship = @"Friend";
+            UILabel *friendCountTextLabel=(UILabel*)[self.view viewWithTag:348];
             
-            if(self.interestActivity.dos1count > 1)
-                relationship = @"Friends";
-            else
-                relationship = @"Friend";
-            
-            participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld %@ interested", (long)self.interestActivity.dos1count, relationship];
-
+            if(self.interestActivity.dos1count > 1) relationship = @"Friends";
+            participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested", (long)self.interestActivity.participantsCount];
+            friendCountTextLabel.text = [NSString stringWithFormat:@"%ld %@", (long)self.interestActivity.dos1count, relationship];
 
         }else{
             participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested",(long)self.interestActivity.participantsCount];
@@ -217,17 +214,12 @@ static NSString * const CellIdentifier = @"cell";
 
         if(notifObject.dos1_relation==1){
             self.interestActivity.dos1count++;
+            NSString* relationship = @"Friend";
+            UILabel *friendCountTextLabel=(UILabel*)[self.view viewWithTag:348];
             
-            NSString* relationship = nil;
-            
-            if(self.interestActivity.dos1count > 1)
-                relationship = @"Friends";
-            else
-                relationship = @"Friend";
-
-            
-            participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld %@ interested", (long)self.interestActivity.dos1count, relationship];
-
+            if(self.interestActivity.dos1count > 1) relationship = @"Friends";
+            participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested", (long)self.interestActivity.participantsCount];
+            friendCountTextLabel.text = [NSString stringWithFormat:@"%ld %@", (long)self.interestActivity.dos1count, relationship];
         }
         else{
             participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested",(long)self.interestActivity.participantsCount];
@@ -861,7 +853,7 @@ else if(!notifObject.isOffline){
         // Draw the Button
         UIButton *interestedButton = [UIButton buttonWithType:UIButtonTypeCustom];
         interestedButton.frame=CGRectMake(16, fromTheTop, 151, 34);
-        interestedButton.tag=346;
+        interestedButton.tag=345;
         UIColor *buttonColor = [[BeagleManager SharedInstance] mediumDominantColor];
         UIColor *outlineButtonColor = [[BeagleManager SharedInstance] darkDominantColor];
         UIFont *forthTextFont=[UIFont fontWithName:@"HelveticaNeue" size:15.0f];
@@ -1240,7 +1232,6 @@ else if(!notifObject.isOffline){
 
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
-            
             id status=[response objectForKey:@"status"];
             id message=[response objectForKey:@"message"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
@@ -1254,13 +1245,15 @@ else if(!notifObject.isOffline){
                     [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
                     
                 }
-                
+                // If Joined
                 UILabel *participantsCountTextLabel=(UILabel*)[self.view viewWithTag:347];
-                
                 if([message isEqualToString:@"Joined"]){
                     self.interestActivity.participantsCount++;
+                    if(self.interestActivity.dosRelation==1) self.interestActivity.dos1count++;
                     
-                }else if([message isEqualToString:@"Already Joined"]){
+                }
+                // If Already joined, do nothing
+                else if([message isEqualToString:@"Already Joined"]){
 
                     NSString *message = NSLocalizedString (@"You have already joined.",
                                                            @"Already Joined");
@@ -1268,20 +1261,44 @@ else if(!notifObject.isOffline){
                     return;
 
                 }
+                // If Left update counts
                 else {
                     self.interestActivity.participantsCount--;
+                    if(self.interestActivity.dosRelation==1) self.interestActivity.dos1count--;
                     
                 }
+                
+                // Updated labels accordingly as well
                 if(self.interestActivity.participantsCount>0 && self.interestActivity.dos1count>0){
+                    NSString *relationship = @"Friend";
+                    UILabel *friendsCountTextLabel=(UILabel*)[self.view viewWithTag:348];
+                    if (self.interestActivity.dos1count >1) relationship = @"Friends";
+
                     participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested",(long)self.interestActivity.participantsCount];
+                    friendsCountTextLabel.text = [NSString stringWithFormat:@"%ld %@",(long)self.interestActivity.dos1count, relationship];
+                    
                 }else{
                     participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested",(long)self.interestActivity.participantsCount];
                 }
-                UIImageView *starImageView=(UIImageView*)[self.view viewWithTag:345];
+                
+                // Updating the button and text too
+                UIButton *interestedButton=(UIButton*)[self.view viewWithTag:345];
+                UIColor *buttonColor = [[BeagleManager SharedInstance] mediumDominantColor];
+                UIColor *outlineButtonColor = [[BeagleManager SharedInstance] darkDominantColor];
                 
                 if(self.interestActivity.isParticipant){
                     self.interestActivity.isParticipant=FALSE;
-                    starImageView.image=[UIImage imageNamed:@"Star-Unfilled"];
+                    
+                    // Normal state
+                    [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button-Unfilled"] withColor:outlineButtonColor] forState:UIControlStateNormal];
+                    [interestedButton setTitleColor:outlineButtonColor forState:UIControlStateNormal];
+                    [interestedButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Star-Unfilled"] withColor:outlineButtonColor] forState:UIControlStateNormal];
+                    
+                    // Pressed state
+                    [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button-Unfilled"] withColor:[outlineButtonColor colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+                    [interestedButton setTitleColor:[outlineButtonColor colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
+                    [interestedButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Star-Unfilled"] withColor:[outlineButtonColor colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+                    
                     self.contentWrapper.interested=NO;
                     [self.contentWrapper _setInitialFrames];
                     
@@ -1301,7 +1318,17 @@ else if(!notifObject.isOffline){
                 }
                 else{
                     self.interestActivity.isParticipant=TRUE;
-                    starImageView.image=[UIImage imageNamed:@"Star"];
+
+                    // Normal state
+                    [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button"] withColor:buttonColor] forState:UIControlStateNormal];
+                    [interestedButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+                    [interestedButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Star"] withColor:[UIColor whiteColor]] forState:UIControlStateNormal];
+                    
+                    // Pressed state
+                    [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button"] withColor:[buttonColor colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+                    [interestedButton setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
+                    [interestedButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Star"] withColor:[[UIColor whiteColor] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+                    
                     NSMutableArray*interestArray=[NSMutableArray new];
                     
                     if([self.interestActivity.participantsArray count]!=0){
