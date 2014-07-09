@@ -509,9 +509,9 @@ enum Weeks {
 }
 #define kDeleteActivity 2
 -(IBAction)deleteButtonClicked:(id)sender{
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Are you sure you want to delete the Activity"
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Are you sure you no longer want to do this?"
                                                     message:nil
-                                                   delegate:self cancelButtonTitle:@"OK" otherButtonTitles:@"Cancel",nil];
+                                                   delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No",nil];
     alert.tag=kDeleteActivity;
     [alert show];
 
