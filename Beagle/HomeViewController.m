@@ -516,10 +516,9 @@
         // Color play :)
         UIColor *dominantColor = [BeagleUtilities getDominantColor:flickrRequestInfo.photo];
             
-        BG.lightDominantColor=[BeagleUtilities returnLightColor:dominantColor withWhiteness:0.9];
+        BG.lightDominantColor=[BeagleUtilities returnLightColor:[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.9] withWhiteness:0.7];
         BG.mediumDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5];
         BG.darkDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.4];
-            
         
         /*
         UIColor* filterViewColor = [dominantColor colorWithAlphaComponent:0.8];
@@ -1298,6 +1297,15 @@
     preview.tag=1374;
     [cell insertSubview:preview aboveSubview:cell.contentView];
     self.tableView.scrollEnabled=NO;
+    
+    // Animation
+    CATransition *animation = [CATransition animation];
+    [animation setType:kCATransitionPush];
+    [animation setSubtype:kCATransitionFade];
+    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+    [animation setFillMode:kCAFillModeBoth];
+    [animation setDuration:0.75];
+    [[cell layer] addAnimation:animation forKey:@"UITableViewReloadDataAnimationKey"];
 
 }
 
@@ -1306,15 +1314,17 @@
     HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
     ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
     [preview ShowViewFromCell];
+    
+    // Animation
     CATransition *animation = [CATransition animation];
     [animation setType:kCATransitionPush];
     [animation setSubtype:kCATransitionFade];
     [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
     [animation setFillMode:kCAFillModeBoth];
-    [animation setDuration:1.0];
+    [animation setDuration:0.75];
     [[cell layer] addAnimation:animation forKey:@"UITableViewReloadDataAnimationKey"];
 
-    [self performSelector:@selector(hideView:) withObject:preview afterDelay:2];
+    [self performSelector:@selector(hideView:) withObject:preview afterDelay:3];
 
     
     
@@ -1324,23 +1334,21 @@
     
     HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
 
-    [UIView animateWithDuration:1.5
+    [UIView animateWithDuration:0.5
                           delay:0.0
                         options:UIViewAnimationOptionTransitionCrossDissolve
                      animations:^{
-                         [pView setAlpha:1.0];
-                         [cell setAlpha:0.5];
+                         [pView setAlpha:0.0];
+                         [cell setAlpha:1.0];
                      }
                      completion:^(BOOL finished) {
                          // Completion Block
-                         [pView setAlpha:0.0];
-                          [cell setAlpha:1.0];
+
                          self.tableView.scrollEnabled=YES;
                          [self.tableView reloadData];
                          [pView removeFromSuperview];
-
                          
-                     }];
+    }];
 
     
 }

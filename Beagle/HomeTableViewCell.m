@@ -16,6 +16,7 @@ static UIFont *firstTextFont = nil;
 static UIFont *secondTextFont = nil;
 static UIFont *thirdTextFont = nil;
 static UIFont *forthTextFont = nil;
+#define DISABLED_ALPHA 0.5f
 + (void)initialize
 {
 	if(self == [HomeTableViewCell class]){
@@ -179,7 +180,7 @@ static UIFont *forthTextFont = nil;
     // Suggested post
     if(self.bg_activity.activityType==2){
     UIBezierPath *bezierPath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(16, fromTheTop,
-                                                                                  165,30) cornerRadius:25.0];
+                                                                                  165,33) cornerRadius:25.0];
     CGContextSetStrokeColorWithColor(context, [[BeagleManager SharedInstance] darkDominantColor].CGColor);
     [bezierPath stroke];
         attrs =[NSDictionary dictionaryWithObjectsAndKeys:
@@ -193,7 +194,7 @@ static UIFont *forthTextFont = nil;
                                                                context:nil].size;
         
         
-        [@"ASK FRIENDS NEARBY" drawInRect:CGRectMake(32,fromTheTop+7.5,askFriendsNearbySize.width,askFriendsNearbySize.height) withAttributes:attrs];
+        [@"ASK FRIENDS NEARBY" drawInRect:CGRectMake(32,fromTheTop+9,askFriendsNearbySize.width,askFriendsNearbySize.height) withAttributes:attrs];
         suggestedRect=CGRectMake(16, fromTheTop, 165,33);
     }
     else{
@@ -266,113 +267,87 @@ static UIFont *forthTextFont = nil;
     }
     // Draw the Button
     UIButton *interestedButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    interestedButton.layer.borderWidth = 0.5f;
-    interestedButton.layer.cornerRadius = 15.0f;
-//    [interestedButton setAdjustsImageWhenHighlighted:NO];
-    [interestedButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f)];
-    interestedButton.frame=CGRectMake(16, fromTheTop, 150, 33);
+    interestedButton.frame=CGRectMake(16, fromTheTop, 151, 34);
     interestedButton.tag=[[NSString stringWithFormat:@"333%ld",(long)cellIndex]integerValue];
-//    UIBezierPath *bezierPath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(16, fromTheTop, 150, 33) cornerRadius:25.0];
     UIColor *buttonColor = [[BeagleManager SharedInstance] mediumDominantColor];
+    UIColor *outlineButtonColor = [[BeagleManager SharedInstance] darkDominantColor];
         
     [self addSubview:interestedButton];
-
-    // If you've already expressed interest, icons for 'Count me in' and 'Comments'
-    if(self.bg_activity.isParticipant) {
-        interestedButton.backgroundColor = buttonColor;
-        [interestedButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-
-//        CGContextSetFillColorWithColor(context, buttonColor.CGColor);
-//        [bezierPath fill];
-    }
-    else {
-//        CGContextSetStrokeColorWithColor(context, [[BeagleManager SharedInstance] darkDominantColor].CGColor);
-//        [bezierPath stroke];
-        interestedButton.layer.borderColor = [[BeagleManager SharedInstance] darkDominantColor].CGColor;
-        [interestedButton setTitleColor:[UIColor blackColor] forState:UIControlStateHighlighted];
-
-    }
     
-    // add the interested touchzone rectangle back!!
         if(self.bg_activity.activityType==1){
-        interestedRect=CGRectMake(0, fromTheTop, 150, 33);
             [interestedButton addTarget:self action:@selector(interestedBtnPressed:) forControlEvents:UIControlEventTouchUpInside];
             [interestedButton setEnabled:YES];
         }
         else{
             [interestedButton setEnabled:NO];
         }
-    
-    // Changing the text based on who is seeing this
-//    NSString* expressInterestText = nil;
-//    [style setAlignment:NSTextAlignmentLeft];
         
     // If it's the organizer
     if (self.bg_activity.dosRelation==0) {
-//        expressInterestText = @"Completed";
-//        attrs=[NSDictionary dictionaryWithObjectsAndKeys:
-//               forthTextFont, NSFontAttributeName,
-//               [UIColor whiteColor],NSForegroundColorAttributeName,
-//               style, NSParagraphStyleAttributeName, nil];
-//        [expressInterestText drawInRect:CGRectMake(52, fromTheTop+8, 150, 33) withAttributes:attrs];
-        [interestedButton.titleLabel setTextAlignment:NSTextAlignmentCenter];
-        [interestedButton setTitle:@"Completed" forState:UIControlStateNormal];
-        [interestedButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [interestedButton setTitleColor:[UIColor blackColor] forState:UIControlStateHighlighted];
+
+        // Setup text
         [[interestedButton titleLabel]setFont:forthTextFont];
-        [interestedButton setTitleEdgeInsets:UIEdgeInsetsMake( 0.0f, 0.0f, 0.0f, 0.0f)];
-        [[interestedButton titleLabel] setShadowOffset:CGSizeMake( 0.0f, 1.0f)];
-        interestedButton.layer.borderColor = buttonColor.CGColor;
-
-
+        [interestedButton.titleLabel setTextAlignment:NSTextAlignmentCenter];
+        [interestedButton setTitle:@"Created by you" forState:UIControlStateNormal];
+        
+        // Normal state
+        [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button"] withColor:buttonColor] forState:UIControlStateNormal];
+        [interestedButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        
+        // Pressed state
+        [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button"] withColor:[buttonColor colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+        [interestedButton setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
+        
+        // Setting up alignments
+        [interestedButton setImageEdgeInsets:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f)];
+        [interestedButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f)];
     }
     // You are not the organizer and have already expressed interest
     else if(self.bg_activity.dosRelation > 0 && self.bg_activity.isParticipant)
     {
-//        expressInterestText = @"I'm Interested";
-//        attrs=[NSDictionary dictionaryWithObjectsAndKeys:
-//               forthTextFont, NSFontAttributeName,
-//               [UIColor whiteColor],NSForegroundColorAttributeName,
-//               style, NSParagraphStyleAttributeName, nil];
-        [interestedButton setImage:[UIImage imageNamed:@"Star"] forState:UIControlStateNormal];
-//        [[UIImage imageNamed:@"Star"] drawInRect:CGRectMake(32, fromTheTop+8, 16, 15)];
-        // Actually draw it now!
+        // Setup text
         [[interestedButton titleLabel]setFont:forthTextFont];
         [interestedButton.titleLabel setTextAlignment:NSTextAlignmentCenter];
         [interestedButton setTitle:@"I'm Interested" forState:UIControlStateNormal];
+        
+        // Normal state
+        [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button"] withColor:buttonColor] forState:UIControlStateNormal];
         [interestedButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [interestedButton setTitleColor:[UIColor blackColor] forState:UIControlStateHighlighted];
-        [interestedButton setImageEdgeInsets:UIEdgeInsetsMake( 0.0f, -1.0f, 0.0f, 0.0f)];
-        [interestedButton setTitleEdgeInsets:UIEdgeInsetsMake( 0.0f, 8.0f, 0.0f, 0.0f)];
-        [[interestedButton titleLabel] setShadowOffset:CGSizeMake( 0.0f, -1.0f)];
-
-
-
-//        [expressInterestText drawInRect:CGRectMake(52, fromTheTop+8, 150, 33) withAttributes:attrs];
-
+        [interestedButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Star"] withColor:[UIColor whiteColor]] forState:UIControlStateNormal];
+        
+        // Pressed state
+        [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button"] withColor:[buttonColor colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+        [interestedButton setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
+        [interestedButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Star"] withColor:[[UIColor whiteColor] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+        
+        // Setting up alignments
+        [interestedButton setImageEdgeInsets:UIEdgeInsetsMake(0.0f, -12.0f, 0.0f, 0.0f)];
+        [interestedButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f)];
     }
     // You are not the organizer and have not expressed interest
     else {
-//        expressInterestText = @"I'm Interested";
-//        [style setAlignment:NSTextAlignmentCenter];
-//        attrs=[NSDictionary dictionaryWithObjectsAndKeys:
-//               forthTextFont, NSFontAttributeName,
-//               buttonColor,NSForegroundColorAttributeName,
-//               style, NSParagraphStyleAttributeName, nil];
-        // Actually draw it now!
-
-//        [expressInterestText drawInRect:CGRectMake(16, fromTheTop+8, 150, 33) withAttributes:attrs];
         
+        // Setup text
         [[interestedButton titleLabel]setFont:forthTextFont];
         [interestedButton.titleLabel setTextAlignment:NSTextAlignmentCenter];
         [interestedButton setTitle:@"I'm Interested" forState:UIControlStateNormal];
-        [interestedButton setTitleColor:buttonColor forState:UIControlStateNormal];
-        [interestedButton setTitleColor:[[BeagleManager SharedInstance] darkDominantColor] forState:UIControlStateHighlighted];
-
+        
+        // Normal state
+        [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button-Unfilled"] withColor:outlineButtonColor] forState:UIControlStateNormal];
+        [interestedButton setTitleColor:outlineButtonColor forState:UIControlStateNormal];
+        [interestedButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Star-Unfilled"] withColor:outlineButtonColor] forState:UIControlStateNormal];
+        
+        // Pressed state
+        [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button-Unfilled"] withColor:[outlineButtonColor colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+        [interestedButton setTitleColor:[outlineButtonColor colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
+        [interestedButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Star-Unfilled"] withColor:[outlineButtonColor colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+        
+        // Setting up alignments
+        [interestedButton setImageEdgeInsets:UIEdgeInsetsMake(0.0f, -12.0f, 0.0f, 0.0f)];
+        [interestedButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f)];
         }
-    
     }
-    
+
     // Space left after the button
     fromTheTop += 33+20;
     

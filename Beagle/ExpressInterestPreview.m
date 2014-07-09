@@ -21,8 +21,7 @@
     self = [super initWithFrame:frame];
     if (self) {
 		
-        self.backgroundColor=[[BeagleUtilities returnBeagleColor:13] colorWithAlphaComponent:0.9];
-        //self.backgroundColor=[[UIColor lightGrayColor] colorWithAlphaComponent:0.8];
+        self.backgroundColor=[BeagleUtilities returnBeagleColor:13];
 		
         // Initialization code.
 		UIImageView* bigStarImageView =[[UIImageView alloc]initWithFrame:CGRectMake((320-89)/2,(frame.size.height-83)/2-30,89,83)];
@@ -31,11 +30,10 @@
 		[bigStarImageView setHidden:YES];
 		[self  addSubview:bigStarImageView];
         
-        UIActivityIndicatorView *spinningWheel = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake((320-90)/2, (frame.size.height-90)/2, 90, 90)];
+        UIActivityIndicatorView *spinningWheel = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
         spinningWheel.tag=kSpinningWheel;
+        spinningWheel.center = self.center;
         spinningWheel.hidesWhenStopped=YES;
-        spinningWheel.transform=CGAffineTransformMakeScale(1.50f, 1.50f);
-        spinningWheel.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
         [self addSubview:spinningWheel];
         [spinningWheel startAnimating];
         NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
@@ -61,20 +59,20 @@
 		awesomeLabel.tag = kAwesomeLabel;
 		[awesomeLabel setHidden:YES];
         awesomeLabel.text=@"Awesome";
-		awesomeLabel.font=[UIFont fontWithName:@"HelveticaNeue-Bold" size:18.0f];
+		awesomeLabel.font=[UIFont fontWithName:@"HelveticaNeue-Bold" size:17.0f];
 		awesomeLabel.textColor=[UIColor whiteColor];
 		awesomeLabel.backgroundColor=[UIColor clearColor];
         
 		[self addSubview:awesomeLabel];
         
         attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                 [UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0f], NSFontAttributeName,
+                 [UIFont fontWithName:@"HelveticaNeue-Light" size:17.0f], NSFontAttributeName,
                  [UIColor whiteColor],NSForegroundColorAttributeName,
                  style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
         
         CGSize maximumLabelSize = CGSizeMake(288,999);
         NSArray *firstName=[orgn componentsSeparatedByString:@" "];
-        NSString *infoString=[NSString stringWithFormat:@"We'll let %@ know \n you're interested!",[firstName objectAtIndex:0]];
+        NSString *infoString=[NSString stringWithFormat:@"We'll let %@ know you're interested!",[firstName objectAtIndex:0]];
         CGRect commentTextRect = [infoString boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
                                                                           attributes:attrs
                                                                              context:nil];
@@ -87,7 +85,7 @@
         infoLabel.numberOfLines=0;
 		[infoLabel setHidden:YES];
         infoLabel.text=infoString;
-		infoLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0f];
+		infoLabel.font=[UIFont fontWithName:@"HelveticaNeue-Light" size:17.0f];
 		infoLabel.textColor=[UIColor whiteColor];
 		infoLabel.backgroundColor=[UIColor clearColor];
         [self addSubview:infoLabel];
@@ -98,9 +96,7 @@
 
 - (void) ShowViewFromCell
 {
-	
-	self.backgroundColor = [BeagleUtilities returnBeagleColor:13];
-    
+	    
     UIImageView* bigStarImageView = (UIImageView *)[self viewWithTag:kBigStarImageView];
 	[bigStarImageView setHidden:NO];
 	UIActivityIndicatorView *spinningWheel=(UIActivityIndicatorView*)[self viewWithTag:kSpinningWheel];
