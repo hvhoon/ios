@@ -51,7 +51,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     [Instabug setEmailIsRequired:NO];
     [Instabug setWillShowEmailField:NO];
     [Instabug setButtonsFontColor:[UIColor colorWithRed:(255/255.0) green:(255/255.0) blue:(255/255.0) alpha:1.0]];
-    [Instabug setButtonsColor:[UIColor colorWithRed:(255/255.0) green:(149/255.0) blue:(0/255.0) alpha:1.0]];
+    [Instabug setButtonsColor:[UIColor colorWithRed:(255/255.0) green:(115/255.0) blue:(0/255.0) alpha:1.0]];
     [Instabug setHeaderFontColor:[UIColor colorWithRed:(255/255.0) green:(255/255.0) blue:(255/255.0) alpha:1.0]];
     [Instabug setHeaderColor:[UIColor colorWithRed:(255/255.0) green:(149/255.0) blue:(0/255.0) alpha:1.0]];
     [Instabug setTextFontColor:[UIColor colorWithRed:(82/255.0) green:(83/255.0) blue:(83/255.0) alpha:1.0]];
