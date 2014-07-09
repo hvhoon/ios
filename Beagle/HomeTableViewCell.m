@@ -175,8 +175,6 @@ static UIFont *forthTextFont = nil;
     fromTheTop = fromTheTop+locationTextSize.height;
     fromTheTop = fromTheTop+16; // Adding space after location
     
-    
-    
     // Suggested post
     if(self.bg_activity.activityType==2){
     UIBezierPath *bezierPath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(16, fromTheTop,
@@ -372,8 +370,6 @@ static UIFont *forthTextFont = nil;
     UITouch *touch =[touches anyObject];
     CGPoint startPoint =[touch locationInView:self.contentView];
     
-
-    
     if(self.bg_activity.activityType==1){
     if(CGRectContainsPoint(interestedRect,startPoint)){
         if(self.bg_activity.dosRelation!=0){
@@ -388,14 +384,11 @@ static UIFont *forthTextFont = nil;
         }else{
             if (self.delegate && [self.delegate respondsToSelector:@selector(detailedInterestScreenRedirect:)])
                 [self.delegate detailedInterestScreenRedirect:cellIndex];
-            
         }
-        
     }
     else {
         if (self.delegate && [self.delegate respondsToSelector:@selector(detailedInterestScreenRedirect:)])
             [self.delegate detailedInterestScreenRedirect:cellIndex];
-
     }
     }else{
         if(CGRectContainsPoint(suggestedRect,startPoint)){

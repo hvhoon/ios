@@ -20,6 +20,7 @@
 #import "ASIHTTPRequest.h"
 #import "FriendsViewController.h"
 #import "FeedbackReporting.h"
+#define DISABLED_ALPHA 0.5f
 static NSString * const CellIdentifier = @"cell";
 @interface DetailInterestViewController ()<BeaglePlayerScrollMenuDelegate,ServerManagerDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,IconDownloaderDelegate,InAppNotificationViewDelegate,UIAlertViewDelegate,MessageKeyboardViewDelegate,UIGestureRecognizerDelegate>{
     BOOL scrollViewResize;
@@ -28,7 +29,6 @@ static NSString * const CellIdentifier = @"cell";
 @property(nonatomic,strong)ServerManager*chatPostManager;
 @property(nonatomic,strong)NSMutableDictionary*imageDownloadsInProgress;
 @property (strong, nonatomic) UIImageView *profileImageView;
-@property (strong, nonatomic) UIImageView *triangle;
 @property (strong,nonatomic)BeaglePlayerScrollMenu *scrollMenu;
 @property(nonatomic,strong)ServerManager*interestUpdateManager;
 @property(nonatomic,strong)NSMutableArray *chatPostsArray;
@@ -330,11 +330,6 @@ else if(!notifObject.isOffline){
     [super viewDidLoad];
     self.navigationController.navigationBar.topItem.title = @"";
     
-    _triangle = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Triangle"]];
-    _triangle.hidden = YES;
-
-    
-//    self.navigationItem.leftBarButtonItem=self.navigationItem.backBarButtonItem;
     if(!isRedirected)
       [self createInterestInitialCard];
 
@@ -374,7 +369,7 @@ else if(!notifObject.isOffline){
     self.contentWrapper.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
     self.contentWrapper.delegate=self;
     [self.view addSubview:self.contentWrapper];
-    
+    self.contentWrapper.inputView.rightButton.tintColor = [BeagleUtilities returnBeagleColor:13];
     [self.contentWrapper.inputView.rightButton addTarget:self action:@selector(postClicked:) forControlEvents:UIControlEventTouchUpInside];
     
     if(!self.interestActivity.isParticipant){
@@ -466,7 +461,7 @@ else if(!notifObject.isOffline){
         
         // Gray out 'Post' button
         self.contentWrapper.inputView.rightButton.enabled = NO;
-        self.contentWrapper.inputView.rightButton.tintColor = [UIColor darkGrayColor];
+        self.contentWrapper.inputView.rightButton.tintColor = [[BeagleUtilities returnBeagleColor:13] colorWithAlphaComponent:DISABLED_ALPHA];
         
         // Show progress indicator
         [_sendMessage setProgress:0.0f];
@@ -519,7 +514,7 @@ else if(!notifObject.isOffline){
     [self performSelectorOnMainThread:@selector(imageCircular:) withObject:interestActivity.profilePhotoImage waitUntilDone:NO];
 }
 -(void)imageCircular:(UIImage*)image{
-    _profileImageView.image=[BeagleUtilities imageCircularBySize:image sqr:100.0f];
+    _profileImageView.image=[BeagleUtilities imageCircularBySize:image sqr:105.0f];
 }
 
 - (void)didReceiveMemoryWarning
@@ -565,7 +560,7 @@ else if(!notifObject.isOffline){
     
     // For the main card section
     if(indexPath.row==0) {
-        CGFloat cardHeight=0.0;
+        int cardHeight=0;
         
         NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
         [style setAlignment:NSTextAlignmentLeft];
@@ -580,9 +575,9 @@ else if(!notifObject.isOffline){
         CGRect textRect = [self.interestActivity.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
         
         if(self.interestActivity.participantsCount==0)
-            cardHeight=113.0+textRect.size.height;
+            cardHeight=136+(int)textRect.size.height;
         else
-            cardHeight=218.0+textRect.size.height;
+            cardHeight=241+(int)textRect.size.height;
         
         return cardHeight;
     }
@@ -618,15 +613,15 @@ else if(!notifObject.isOffline){
         // Let's begin spacing from the top
 
 
-        CGFloat fromTheTop = 8.0f;
+        int fromTheTop = 10;
 
         static NSString *CellIdentifier = @"MediaTableCell";
-        
         UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
         cell =[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         cell.selectionStyle=UITableViewCellSelectionStyleNone;
         cell.separatorInset = UIEdgeInsetsZero;
         
+        // Setup the scroll view
         for (id obj in cell.subviews)
         {
             if ([NSStringFromClass([obj class]) isEqualToString:@"UITableViewCellScrollView"])
@@ -637,13 +632,14 @@ else if(!notifObject.isOffline){
             }
         }
         
+        // Setting up the title of the screen
         NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
         [style setAlignment:NSTextAlignmentCenter];
         
         cell.backgroundColor = [UIColor whiteColor];
         NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                                [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f], NSFontAttributeName,
-                               [UIColor colorWithRed:75.0/255.0 green:75.0/255.0 blue:75.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
+                               [BeagleUtilities returnBeagleColor:4],NSForegroundColorAttributeName,
                                style, NSParagraphStyleAttributeName, nil];
         
         // Setting up the card (background)
@@ -651,7 +647,7 @@ else if(!notifObject.isOffline){
         _backgroundView.backgroundColor=[UIColor whiteColor];
         
         // Profile picture
-        _profileImageView=[[UIImageView alloc]initWithFrame:CGRectMake(16, fromTheTop, 50, 50)];
+        _profileImageView=[[UIImageView alloc]initWithFrame:CGRectMake(16, fromTheTop, 52.5, 52.5)];
         [_backgroundView addSubview:_profileImageView];
         
         if(self.interestActivity.dosRelation!=0){
@@ -660,11 +656,10 @@ else if(!notifObject.isOffline){
             [_profileImageView addGestureRecognizer:tapRecognizer];
             [_profileImageView setUserInteractionEnabled:YES];
         }
+        
+        // If there's no profile picture please get it
         if(interestActivity.profilePhotoImage==nil){
-            
             [self imageCircular:[UIImage imageNamed:@"picbox"]];
-            
-            
             NSOperationQueue *queue = [NSOperationQueue new];
             NSInvocationOperation *operation = [[NSInvocationOperation alloc]
                                                 initWithTarget:self
@@ -673,14 +668,12 @@ else if(!notifObject.isOffline){
             [queue addOperation:operation];
             
         }
-        else{
-            _profileImageView.image=[BeagleUtilities imageCircularBySize:interestActivity.profilePhotoImage sqr:100.0f];
-        }
-        
+        else
+            _profileImageView.image=[BeagleUtilities imageCircularBySize:interestActivity.profilePhotoImage sqr:105.0f];
         
         // Location information
         [style setAlignment:NSTextAlignmentRight];
-        UIColor *color=[UIColor colorWithRed:142.0/255.0 green:142.0/255.0 blue:142.0/255.0 alpha:1.0];
+        UIColor *color=[BeagleUtilities returnBeagleColor:4];
         attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                  [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f], NSFontAttributeName,
                  color,NSForegroundColorAttributeName,
@@ -692,7 +685,6 @@ else if(!notifObject.isOffline){
                                                                               context:nil].size;
         
         UILabel *locationLabel = [[UILabel alloc] initWithFrame:CGRectMake(304-locationTextSize.width, fromTheTop, locationTextSize.width, locationTextSize.height)];
-        
         locationLabel.backgroundColor = [UIColor clearColor];
         locationLabel.text = interestActivity.locationName;
         locationLabel.textColor = color;
@@ -704,7 +696,7 @@ else if(!notifObject.isOffline){
         [style setAlignment:NSTextAlignmentLeft];
         attrs=[NSDictionary dictionaryWithObjectsAndKeys:
                [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f], NSFontAttributeName,
-               [UIColor blackColor],NSForegroundColorAttributeName,
+               [BeagleUtilities returnBeagleColor:4],NSForegroundColorAttributeName,
                style, NSParagraphStyleAttributeName, nil];
         
         CGSize organizerNameSize=[interestActivity.organizerName boundingRectWithSize:CGSizeMake(300, 999)
@@ -712,15 +704,13 @@ else if(!notifObject.isOffline){
                                                                            attributes:attrs
                                                                               context:nil].size;
         
-        UILabel *organizerNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(75,55.5-organizerNameSize.height, organizerNameSize.width, organizerNameSize.height)];
-        
+        UILabel *organizerNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(75,60-organizerNameSize.height, organizerNameSize.width, organizerNameSize.height)];
         organizerNameLabel.backgroundColor = [UIColor clearColor];
         organizerNameLabel.text = interestActivity.organizerName;
-        organizerNameLabel.textColor = [UIColor blackColor];
+        organizerNameLabel.textColor = [BeagleUtilities returnBeagleColor:4];
         organizerNameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
         organizerNameLabel.textAlignment = NSTextAlignmentLeft;
         [_backgroundView addSubview:organizerNameLabel];
-        
         
         if(self.interestActivity.dosRelation!=0){
             UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(profileImageTapped:)];
@@ -732,18 +722,18 @@ else if(!notifObject.isOffline){
         
         // Adding the appropriate DOS icon
         if(self.interestActivity.dosRelation==1) {
-            UIImageView *dos1RelationImageView = [[UIImageView alloc] initWithFrame:CGRectMake(75+8+organizerNameSize.width, 38.5, 27, 15)];
+            UIImageView *dos1RelationImageView = [[UIImageView alloc] initWithFrame:CGRectMake(75+8+organizerNameSize.width, 43, 27, 15)];
             dos1RelationImageView.image = [UIImage imageNamed:@"DOS2"];
             [_backgroundView addSubview:dos1RelationImageView];
         }
         else if(self.interestActivity.dosRelation==2){
-            UIImageView *dos2RelationImageView = [[UIImageView alloc] initWithFrame:CGRectMake(75+8+organizerNameSize.width, 38.5, 32, 15)];
+            UIImageView *dos2RelationImageView = [[UIImageView alloc] initWithFrame:CGRectMake(75+8+organizerNameSize.width, 43, 32, 15)];
             dos2RelationImageView.image = [UIImage imageNamed:@"DOS3"];
             [_backgroundView addSubview:dos2RelationImageView];
         }
         
         // Adding the height of the profile picture
-        fromTheTop = fromTheTop+50.0f;
+        fromTheTop += 52.5;
         
         // Adding buffer below the top section with the profile picture
         fromTheTop = fromTheTop+8.0f;
@@ -772,23 +762,37 @@ else if(!notifObject.isOffline){
         
         fromTheTop = fromTheTop+commentTextRect.size.height;
         fromTheTop = fromTheTop+16.0f; // buffer after the description
-        
-        // Number of participants
-        
+
+        // Adding the counts panel here
         // If there is more than 1 participant
         if(self.interestActivity.participantsCount > 0) {
             attrs=[NSDictionary dictionaryWithObjectsAndKeys:
                    [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f], NSFontAttributeName,
-                   [UIColor blackColor],NSForegroundColorAttributeName,
+                   [BeagleUtilities returnBeagleColor:4],NSForegroundColorAttributeName,
                    style, NSParagraphStyleAttributeName, nil];
-            CGSize participantsCountTextSize;
             UILabel *participantsCountTextLabel = [[UILabel alloc] init];
-            
             participantsCountTextLabel.backgroundColor = [UIColor clearColor];
-            participantsCountTextLabel.textColor = [UIColor blackColor];
+            participantsCountTextLabel.textColor = [BeagleUtilities returnBeagleColor:4];
             participantsCountTextLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
             participantsCountTextLabel.textAlignment = NSTextAlignmentLeft;
             participantsCountTextLabel.tag=347;
+            
+            int countFromTheLeft = 0;
+            countFromTheLeft += 16;
+            
+            CGSize participantsCountTextSize = [[NSString stringWithFormat:@"%ld Interested", (long)self.interestActivity.participantsCount]  boundingRectWithSize:CGSizeMake(288, 999) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
+            
+            // Adding the Star image
+            UIImageView *starWireframe = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Star-Wireframe"]];
+            starWireframe.frame = CGRectMake(countFromTheLeft, fromTheTop, 17, 16);
+            [_backgroundView addSubview:starWireframe];
+            countFromTheLeft += 17+5;
+            
+            // Add the actual participant count
+            participantsCountTextLabel.frame=CGRectMake(countFromTheLeft, fromTheTop, participantsCountTextSize.width, participantsCountTextSize.height);
+            participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested", (long)self.interestActivity.participantsCount];
+            [_backgroundView addSubview:participantsCountTextLabel];
+            countFromTheLeft += participantsCountTextSize.width+16;
             
             // Are any of your friends participants?
             if (self.interestActivity.dos1count>0) {
@@ -800,33 +804,32 @@ else if(!notifObject.isOffline){
                 else
                     relationship = @"Friend";
 
-                participantsCountTextSize = [[NSString stringWithFormat:@"%ld %@ interested", (long)self.interestActivity.dos1count, relationship]  boundingRectWithSize:CGSizeMake(288, 999) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
+                CGSize friendCountTextSize = [[NSString stringWithFormat:@"%ld %@", (long)self.interestActivity.dos1count, relationship]  boundingRectWithSize:CGSizeMake(288, 999) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
                 
-                participantsCountTextLabel.frame=CGRectMake(16, fromTheTop, participantsCountTextSize.width, participantsCountTextSize.height);
+                // Adding the DOS2 image
+                UIImageView *DOS2Wireframe = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"DOS2-Wireframe"]];
+                DOS2Wireframe.frame = CGRectMake(countFromTheLeft, fromTheTop, 28, 16);
+                [_backgroundView addSubview:DOS2Wireframe];
+                countFromTheLeft += 28+5;
                 
-                participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld %@ interested", (long)self.interestActivity.dos1count, relationship];
-                
-                [_backgroundView addSubview:participantsCountTextLabel];
-            }
-            else {
-                participantsCountTextSize = [[NSString stringWithFormat:@"%ld Interested",(long)self.interestActivity.participantsCount]  boundingRectWithSize:CGSizeMake(288, 999) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
-                
-                participantsCountTextLabel.frame=CGRectMake(16, fromTheTop, participantsCountTextSize.width, participantsCountTextSize.height);
-                
-                participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested",(long)self.interestActivity.participantsCount];
-                
-                [_backgroundView addSubview:participantsCountTextLabel];
+                // Adding the Friend count label
+                UILabel *friendCountTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(countFromTheLeft, fromTheTop, friendCountTextSize.width, friendCountTextSize.height)];
+                friendCountTextLabel.textColor = [BeagleUtilities returnBeagleColor:4];
+                friendCountTextLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
+                friendCountTextLabel.textAlignment = NSTextAlignmentLeft;
+                friendCountTextLabel.text = [NSString stringWithFormat:@"%ld %@", (long)self.interestActivity.dos1count, relationship];
+                friendCountTextLabel.tag = 348;
+                [_backgroundView addSubview:friendCountTextLabel];
             }
             
             fromTheTop = fromTheTop + participantsCountTextSize.height;
             fromTheTop = fromTheTop + 16.0f; // Added buffer at the end of the participant count
             
-            
             // Setup the participants panel
             [style setAlignment:NSTextAlignmentLeft];
             attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                  [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f], NSFontAttributeName,
-                 [UIColor blackColor],NSForegroundColorAttributeName,
+                 [BeagleUtilities returnBeagleColor:4],NSForegroundColorAttributeName,
                  style, NSParagraphStyleAttributeName, nil];
         
             if(self.interestActivity.ownerid==[[[BeagleManager SharedInstance]beaglePlayer]beagleUserId]){
@@ -851,109 +854,99 @@ else if(!notifObject.isOffline){
                     [self setUpPlayerScroll:self.interestActivity.participantsArray];
                 }
             }
-            fromTheTop = fromTheTop + 55.0f;
-            fromTheTop = fromTheTop + 16.0f;
+            fromTheTop += 55;
+            fromTheTop += 16;
         }
-    
-        // Adding the star image
-        UIImageView *starImageView = [[UIImageView alloc] initWithFrame:CGRectMake(16, fromTheTop, 19, 18)];
-        starImageView.tag=345;
-        [_backgroundView addSubview:starImageView];
         
-        if(self.interestActivity.isParticipant) {
-            starImageView.image=[UIImage imageNamed:@"Star"];
-            starImageView.image = [starImageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-            [starImageView setTintColor:[BeagleUtilities returnBeagleColor:1]];
+        // Draw the Button
+        UIButton *interestedButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        interestedButton.frame=CGRectMake(16, fromTheTop, 151, 34);
+        interestedButton.tag=346;
+        UIColor *buttonColor = [[BeagleManager SharedInstance] mediumDominantColor];
+        UIColor *outlineButtonColor = [[BeagleManager SharedInstance] darkDominantColor];
+        UIFont *forthTextFont=[UIFont fontWithName:@"HelveticaNeue" size:15.0f];
+
+        [_backgroundView addSubview:interestedButton];
+        
+        if(self.interestActivity.activityType==1){
+            [interestedButton addTarget:self action:@selector(handleTapGestures:) forControlEvents:UIControlEventTouchUpInside];
+            [interestedButton setEnabled:YES];
         }
-        else
-            starImageView.image=[UIImage imageNamed:@"Star-Unfilled"];
-        
-        // Adding the interested text
-        
-        NSString *interestedText = nil;
-        
-        attrs=[NSDictionary dictionaryWithObjectsAndKeys:
-               [UIFont fontWithName:@"HelveticaNeue" size:15.0f], NSFontAttributeName,
-               [BeagleUtilities returnBeagleColor:1],NSForegroundColorAttributeName,
-               style, NSParagraphStyleAttributeName, nil];
-        
+        else{
+            [interestedButton setEnabled:NO];
+        }
+
         // If it's the organizer
         if (self.interestActivity.dosRelation==0) {
-            interestedText = @"Created by you";
-            attrs=[NSDictionary dictionaryWithObjectsAndKeys:
-                   [UIFont fontWithName:@"HelveticaNeue-Medium" size:15.0f], NSFontAttributeName, [BeagleUtilities returnBeagleColor:1], NSForegroundColorAttributeName, style, NSParagraphStyleAttributeName, nil];
-        }
-        // If you are the first one to express interest
-        else if(self.interestActivity.dosRelation > 0 && self.interestActivity.participantsCount == 0) {
-            interestedText = @"Be the first to join";
+            
+            // Setup text
+            [[interestedButton titleLabel] setFont:forthTextFont];
+            [interestedButton.titleLabel setTextAlignment:NSTextAlignmentCenter];
+            [interestedButton setTitle:@"Created by you" forState:UIControlStateNormal];
+            
+            // Normal state
+            [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button"] withColor:buttonColor] forState:UIControlStateNormal];
+            [interestedButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+            
+            // Pressed state
+            [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button"] withColor:[buttonColor colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+            [interestedButton setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
+            
+            // Setting up alignments
+            [interestedButton setImageEdgeInsets:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f)];
+            [interestedButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f)];
         }
         // You are not the organizer and have already expressed interest
         else if(self.interestActivity.dosRelation > 0 && self.interestActivity.isParticipant)
         {
-            interestedText = @"Count me in";
-            attrs=[NSDictionary dictionaryWithObjectsAndKeys:
-                   [UIFont fontWithName:@"HelveticaNeue-Medium" size:15.0f], NSFontAttributeName, [BeagleUtilities returnBeagleColor:1], NSForegroundColorAttributeName, style, NSParagraphStyleAttributeName, nil];
+            // Setup text
+            [[interestedButton titleLabel]setFont:forthTextFont];
+            [interestedButton.titleLabel setTextAlignment:NSTextAlignmentCenter];
+            [interestedButton setTitle:@"I'm Interested" forState:UIControlStateNormal];
+            
+            // Normal state
+            [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button"] withColor:buttonColor] forState:UIControlStateNormal];
+            [interestedButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+            [interestedButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Star"] withColor:[UIColor whiteColor]] forState:UIControlStateNormal];
+            
+            // Pressed state
+            [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button"] withColor:[buttonColor colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+            [interestedButton setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
+            [interestedButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Star"] withColor:[[UIColor whiteColor] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+            
+            // Setting up alignments
+            [interestedButton setImageEdgeInsets:UIEdgeInsetsMake(0.0f, -12.0f, 0.0f, 0.0f)];
+            [interestedButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f)];
         }
         // You are not the organizer and have not expressed interest
-        else
-            interestedText = @"Are you in?";
-        
-        CGSize interestedSize = [interestedText boundingRectWithSize:CGSizeMake(288, 999) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
-        
-        UILabel *interestedLabel = [[UILabel alloc] initWithFrame:CGRectMake(16+19+5, fromTheTop, interestedSize.width, interestedSize.height)];
-        interestedLabel.tag=346;
-        
-        //interestedLabel.text = interestedText;
-        interestedLabel.attributedText = [[NSAttributedString alloc] initWithString:interestedText attributes:attrs];
-        
-        [_backgroundView addSubview:interestedLabel];
-    
-        interestedLabel.userInteractionEnabled = YES;
-        UITapGestureRecognizer *tapGesture =
-        [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGestures:)];
-        [interestedLabel addGestureRecognizer:tapGesture];
-        
-        fromTheTop = fromTheTop + 3.0f; // buffer
-        
-        /*
-        // Adding the comments icon
-        UIImageView *commentImageView = [[UIImageView alloc] initWithFrame:CGRectMake(304-21, fromTheTop, 21, 18)];
-        [_backgroundView addSubview:commentImageView];
-        
-        // Are there comments already?
-        if(self.interestActivity.postCount>0) {
-            commentImageView.image=[UIImage imageNamed:@"Comment-Blue"];
+        else {
             
-            [style setAlignment:NSTextAlignmentLeft];
+            // Setup text
+            [[interestedButton titleLabel]setFont:forthTextFont];
+            [interestedButton.titleLabel setTextAlignment:NSTextAlignmentCenter];
+            [interestedButton setTitle:@"I'm Interested" forState:UIControlStateNormal];
             
-            attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                     [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f], NSFontAttributeName,
-                     [BeagleUtilities returnBeagleColor:1], NSForegroundColorAttributeName,
-                     style, NSParagraphStyleAttributeName, nil];
+            // Normal state
+            [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button-Unfilled"] withColor:outlineButtonColor] forState:UIControlStateNormal];
+            [interestedButton setTitleColor:outlineButtonColor forState:UIControlStateNormal];
+            [interestedButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Star-Unfilled"] withColor:outlineButtonColor] forState:UIControlStateNormal];
             
-            CGSize postCountTextSize = [[NSString stringWithFormat:@"%ld",(long)self.interestActivity.postCount]  boundingRectWithSize:CGSizeMake(288, 999) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
+            // Pressed state
+            [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button-Unfilled"] withColor:[outlineButtonColor colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+            [interestedButton setTitleColor:[outlineButtonColor colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
+            [interestedButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Star-Unfilled"] withColor:[outlineButtonColor colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
             
-            UILabel *postCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(301-21-postCountTextSize.width, fromTheTop-1, postCountTextSize.width, postCountTextSize.height)];
-            
-            postCountLabel.attributedText = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld",(long)self.interestActivity.postCount] attributes:attrs];
-            
-            _triangle.frame = CGRectMake(304-19, fromTheTop+21, 17, 9);
-            [_backgroundView addSubview:_triangle];
-            [_backgroundView addSubview:postCountLabel];
-            
-            fromTheTop = fromTheTop + 9.0f;
+            // Setting up alignments
+            [interestedButton setImageEdgeInsets:UIEdgeInsetsMake(0.0f, -12.0f, 0.0f, 0.0f)];
+            [interestedButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f)];
         }
-        // If no comments have been added yet
-        else
-            commentImageView.image=[UIImage imageNamed:@"Add-Comment"];
-        
-        */
-        
-        fromTheTop = fromTheTop + 21.0f;
+    
+        // Space left after the button
+        fromTheTop += 33+20;
+
+        // Add the view to the cell
         _backgroundView.frame=CGRectMake(0, 0, 320, fromTheTop);
         [cell.contentView addSubview:_backgroundView];
-        
-
         return cell;
     }
     
@@ -966,8 +959,6 @@ else if(!notifObject.isOffline){
             cellTop = 16.0f;
         else
             cellTop = 8.0f;
-        
-        [_triangle setHidden:NO];
         
         static NSString *CellIdentifier = @"MediaTableCell2";
         UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -1263,9 +1254,9 @@ else if(!notifObject.isOffline){
                     [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
                     
                 }
-
                 
                 UILabel *participantsCountTextLabel=(UILabel*)[self.view viewWithTag:347];
+                
                 if([message isEqualToString:@"Joined"]){
                     self.interestActivity.participantsCount++;
                     
@@ -1282,8 +1273,7 @@ else if(!notifObject.isOffline){
                     
                 }
                 if(self.interestActivity.participantsCount>0 && self.interestActivity.dos1count>0){
-                    
-                    participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested -  %ld Friends",(long)self.interestActivity.participantsCount,(long)self.interestActivity.dos1count];
+                    participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested",(long)self.interestActivity.participantsCount];
                 }else{
                     participantsCountTextLabel.text = [NSString stringWithFormat:@"%ld Interested",(long)self.interestActivity.participantsCount];
                 }
@@ -1405,7 +1395,7 @@ else if(!notifObject.isOffline){
         if(_sendMessage.progress == 1.0f) {
             [NSTimer scheduledTimerWithTimeInterval:.5 target:self selector:@selector(removeProgressIndicator) userInfo:nil repeats:NO];
             self.contentWrapper.inputView.rightButton.enabled = YES;
-            self.contentWrapper.inputView.rightButton.tintColor = [BeagleUtilities returnBeagleColor:1];
+            self.contentWrapper.inputView.rightButton.tintColor = [BeagleUtilities returnBeagleColor:13];
         }
         [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
 
@@ -1435,7 +1425,7 @@ else if(!notifObject.isOffline){
         [_sendMessage setHidden:YES];
         [_sendMessage setProgress:0.0];
         self.contentWrapper.inputView.rightButton.enabled = YES;
-        self.contentWrapper.inputView.rightButton.tintColor = [BeagleUtilities returnBeagleColor:1];
+        self.contentWrapper.inputView.rightButton.tintColor = [BeagleUtilities returnBeagleColor:13];
     }
     
     NSString *message = NSLocalizedString (@"Oops...something went wrong!",
@@ -1465,7 +1455,7 @@ else if(!notifObject.isOffline){
         [_sendMessage setHidden:YES];
         [_sendMessage setProgress:0.0];
         self.contentWrapper.inputView.rightButton.enabled = YES;
-        self.contentWrapper.inputView.rightButton.tintColor = [BeagleUtilities returnBeagleColor:1];
+        self.contentWrapper.inputView.rightButton.tintColor = [BeagleUtilities returnBeagleColor:13];
     }
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
     [alert show];
