@@ -444,10 +444,15 @@
                                     <action selector="locationFilter:" destination="S9M-sC-S9q" eventType="touchUpInside" id="G55-Qp-pDA"/>
                                 </connections>
                             </button>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BsK-la-ctD">
-                                <rect key="frame" x="284" y="278" width="16" height="22"/>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="bottom" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BsK-la-ctD">
+                                <rect key="frame" x="270" y="272" width="50" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" image="Delete">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="50" id="7yZ-fa-ihn"/>
+                                    <constraint firstAttribute="height" constant="40" id="Bc1-0N-YYz"/>
+                                </constraints>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="18" maxY="12"/>
+                                <state key="normal">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
@@ -496,9 +501,9 @@
                             <constraint firstItem="sqL-0B-EFK" firstAttribute="top" secondItem="NHs-Eo-wtu" secondAttribute="bottom" id="9va-Rp-OjH"/>
                             <constraint firstItem="hMI-Wc-Jow" firstAttribute="top" secondItem="sqL-0B-EFK" secondAttribute="bottom" constant="216" id="BnS-hb-wru"/>
                             <constraint firstItem="NHs-Eo-wtu" firstAttribute="top" secondItem="8k2-Wd-CIH" secondAttribute="bottom" id="Dm4-9p-ug2"/>
-                            <constraint firstItem="sqL-0B-EFK" firstAttribute="top" secondItem="BsK-la-ctD" secondAttribute="bottom" constant="12" id="EvX-L3-WNg"/>
+                            <constraint firstItem="sqL-0B-EFK" firstAttribute="top" secondItem="BsK-la-ctD" secondAttribute="bottom" id="EvX-L3-WNg"/>
                             <constraint firstItem="8k2-Wd-CIH" firstAttribute="top" secondItem="9iY-EO-BXw" secondAttribute="bottom" constant="10" id="Icc-VY-YpT"/>
-                            <constraint firstAttribute="trailing" secondItem="BsK-la-ctD" secondAttribute="trailing" constant="20" id="K1j-lJ-9xG"/>
+                            <constraint firstAttribute="trailing" secondItem="BsK-la-ctD" secondAttribute="trailing" id="K1j-lJ-9xG"/>
                             <constraint firstItem="5Kw-tX-RGq" firstAttribute="leading" secondItem="1A7-qG-45x" secondAttribute="trailing" id="PFb-og-YqP"/>
                             <constraint firstItem="hMI-Wc-Jow" firstAttribute="top" secondItem="5Kw-tX-RGq" secondAttribute="bottom" constant="228" id="QeU-h0-HHh"/>
                             <constraint firstAttribute="trailing" secondItem="3MQ-a9-lKU" secondAttribute="trailing" id="TwX-mk-TlV"/>
@@ -765,7 +770,6 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
     </scenes>
     <resources>
         <image name="Bell" width="14" height="15"/>
-        <image name="Delete" width="16" height="20"/>
         <image name="Facebook" width="28" height="28"/>
         <image name="Home" width="26" height="25"/>
         <image name="Info" width="25" height="25"/>

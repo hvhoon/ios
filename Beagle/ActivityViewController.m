@@ -142,7 +142,7 @@ enum Weeks {
     if(editState){
         
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleDone target:self action:@selector(createButtonClicked:)];
-    [self.navigationItem.rightBarButtonItem setTintColor:[[BeagleManager SharedInstance] darkDominantColor]];
+    [self.navigationItem.rightBarButtonItem setTintColor:[BeagleUtilities returnBeagleColor:13]];
     self.navigationItem.rightBarButtonItem.enabled=YES;
         
     }else{
@@ -172,30 +172,47 @@ enum Weeks {
         [timeFilterButton setTitle:@"This Weekend" forState:UIControlStateNormal];
     }
     
-    // Setting the color for both the Visibility and Time filter button text and image
+    
+    // Setting the color for he Visibility, Time filter and Delete buttons
     // Visibility text and image
-    [visibilityFilterButton setTitleColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateNormal];
-    [visibilityFilterButton setTitleColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
-    [visibilityFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Visibility"] withColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateNormal];
-    [visibilityFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Visibility"] withColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+    [visibilityFilterButton setTitleColor:[BeagleUtilities returnBeagleColor:13] forState:UIControlStateNormal];
+    [visibilityFilterButton setTitleColor:[[BeagleUtilities returnBeagleColor:13] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
+    [visibilityFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Visibility"] withColor:[BeagleUtilities returnBeagleColor:13]] forState:UIControlStateNormal];
+    [visibilityFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Visibility"] withColor:[[BeagleUtilities returnBeagleColor:13] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
     
     // Time text and image
-    [timeFilterButton setTitleColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateNormal];
-    [timeFilterButton setTitleColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
-    [timeFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Time"] withColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateNormal];
-    [timeFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Time"] withColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+    [timeFilterButton setTitleColor:[BeagleUtilities returnBeagleColor:13] forState:UIControlStateNormal];
+    [timeFilterButton setTitleColor:[[BeagleUtilities returnBeagleColor:13] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
+    [timeFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Time"] withColor:[BeagleUtilities returnBeagleColor:13]] forState:UIControlStateNormal];
+    [timeFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Time"] withColor:[[BeagleUtilities returnBeagleColor:13] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+    
+    // Delete button
+    [deleteButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Delete"] withColor:[BeagleUtilities returnBeagleColor:13]] forState:UIControlStateNormal];
+    [deleteButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Delete"] withColor:[[BeagleUtilities returnBeagleColor:13] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
     
     // Color the Background view appropriately
     [backgroundView setBackgroundColor:[[BeagleManager SharedInstance] mediumDominantColor]];
     
     NSString *locationFilter=[NSString stringWithFormat:@"%@, %@",[[[BeagleManager SharedInstance]placemark].addressDictionary objectForKey:@"City"],[[BeagleManager SharedInstance]placemark].administrativeArea];
-    
     [locationFilterButton setTitle:locationFilter forState:UIControlStateNormal];
+    
+    // Disable this location button for now!
+    locationFilterButton.enabled = NO;
     [countTextLabel setTextAlignment:NSTextAlignmentRight];
     
     if(editState){
         visibilityFilterButton.hidden=YES;
-        locationFilterButton.hidden=YES;
+        
+        NSString *visibilityText = nil;
+        // Setting up the correct privacy text
+        if([bg_activity.visibility isEqualToString:@"public"])
+            visibilityText = @"Visible to everybody";
+        else if([bg_activity.visibility isEqualToString:@"private"])
+            visibilityText = @"Visible to friends nearby";
+        else
+            visibilityText = @"Visible to select friends";
+        
+        [locationFilterButton setTitle:visibilityText forState:UIControlStateNormal];
         deleteButton.hidden=NO;
         visibilityImageView.hidden=YES;
     }
@@ -509,7 +526,7 @@ enum Weeks {
 }
 #define kDeleteActivity 2
 -(IBAction)deleteButtonClicked:(id)sender{
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Are you sure you no longer want to do this?"
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Are you sure you want to delete this activity?"
                                                     message:nil
                                                    delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No",nil];
     alert.tag=kDeleteActivity;
@@ -563,28 +580,11 @@ enum Weeks {
         
         [self.navigationItem.rightBarButtonItem setTintColor:[BeagleUtilities returnBeagleColor:13]];
         self.navigationItem.rightBarButtonItem.enabled=YES;
-        
-        // Setting the color for both the Visibility and Time filter button text and image
-        // Visibility text and image
-        [visibilityFilterButton setTitleColor:[[BeagleManager SharedInstance] darkDominantColor] forState:UIControlStateNormal];
-        [visibilityFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Visibility"] withColor:[[BeagleManager SharedInstance] darkDominantColor]] forState:UIControlStateNormal];
-
-        // Time text and image
-        [timeFilterButton setTitleColor:[[BeagleManager SharedInstance] darkDominantColor] forState:UIControlStateNormal];
-        [timeFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Time"] withColor:[[BeagleManager SharedInstance] darkDominantColor]] forState:UIControlStateNormal];
 
     }
     else {
         [self.navigationItem.rightBarButtonItem setTintColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA]];
         self.navigationItem.rightBarButtonItem.enabled=NO;
-        
-        // Time
-        [timeFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Time"] withColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateNormal];
-        [timeFilterButton setTitleColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateNormal];
-        
-        // Visibility
-        [visibilityFilterButton setTitleColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateNormal];
-        [visibilityFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Visibility"] withColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateNormal];
 
     }
 
