@@ -18,6 +18,7 @@
 }
 @property(nonatomic,strong)ServerManager*notificationsManager;
 @property(nonatomic,strong)NSArray *listArray;
+@property(nonatomic,weak)IBOutlet UIActivityIndicatorView*notificationSpinnerView;
 @property(nonatomic,weak)IBOutlet UIImageView*notification_BlankImageView;
 @property(nonatomic,strong)UITableView*notificationTableView;
 @property(nonatomic,strong)ServerManager*interestUpdateManager;
@@ -110,6 +111,9 @@
     _unreadUpdateView.layer.cornerRadius = 2.0f;
     _unreadUpdateView.layer.masksToBounds = YES;
     _unreadUpdateView.hidden=YES;
+    _notification_BlankImageView.hidden=YES;
+    
+    [_notificationSpinnerView startAnimating];
 	// Do any additional setup after loading the view.
     
 }
@@ -420,6 +424,7 @@
                 NSArray *notifications=[response objectForKey:@"notifications"];
                 if (notifications != nil && [notifications class] != [NSNull class] && [notifications count] !=0) {
                     
+                    [_notificationSpinnerView stopAnimating];
                     
                     NSMutableArray *notificationsArray=[[NSMutableArray alloc]init];
                     for(id el in notifications){
@@ -460,6 +465,7 @@
                 }
                 else{
                     //No notifications
+                    [_notificationSpinnerView stopAnimating];
                     _notificationTableView.hidden=YES;
                     _notification_BlankImageView.hidden=NO;
                     _unreadUpdateView.hidden=YES;

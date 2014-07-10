@@ -24,6 +24,8 @@
 static NSString * const CellIdentifier = @"cell";
 @interface DetailInterestViewController ()<BeaglePlayerScrollMenuDelegate,ServerManagerDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,IconDownloaderDelegate,InAppNotificationViewDelegate,UIAlertViewDelegate,MessageKeyboardViewDelegate,UIGestureRecognizerDelegate>{
     BOOL scrollViewResize;
+    UIActivityIndicatorView *activityIndicatorView;
+    BOOL postsLoadComplete;
 }
 
 @property(nonatomic,strong)ServerManager*chatPostManager;
@@ -939,6 +941,22 @@ else if(!notifObject.isOffline){
         // Add the view to the cell
         _backgroundView.frame=CGRectMake(0, 0, 320, fromTheTop);
         [cell.contentView addSubview:_backgroundView];
+        
+        if(!postsLoadComplete){
+        activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        activityIndicatorView.hidesWhenStopped=YES;
+             if(self.interestActivity.isParticipant)
+        activityIndicatorView.frame=CGRectMake(147.5, 64+fromTheTop-12.5+(self.view.frame.size.height-(64+47+fromTheTop))/2, 25, 25);
+             else{
+                 activityIndicatorView.frame=CGRectMake(147.5, 64+fromTheTop-12.5+(self.view.frame.size.height-(64+fromTheTop))/2, 25, 25);
+                 
+             }
+        [self.view insertSubview:activityIndicatorView aboveSubview:self.contentWrapper];
+        [activityIndicatorView startAnimating];
+
+        }else{
+             [activityIndicatorView stopAnimating];
+        }
         return cell;
     }
     
@@ -1187,7 +1205,8 @@ else if(!notifObject.isOffline){
                             self.chatPostsArray=[NSMutableArray arrayWithArray:chatsArray];
                         }
                     }
-                    
+                    postsLoadComplete=TRUE;
+                    [activityIndicatorView stopAnimating];
                 [self.detailedInterestTableView reloadData];
                     
                     if(toLastPost){
