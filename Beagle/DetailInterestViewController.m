@@ -945,10 +945,11 @@ else if(!notifObject.isOffline){
         if(!postsLoadComplete){
         activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         activityIndicatorView.hidesWhenStopped=YES;
+            activityIndicatorView.transform=CGAffineTransformMakeScale(1.35, 1.35);
              if(self.interestActivity.isParticipant)
-        activityIndicatorView.frame=CGRectMake(147.5, 64+fromTheTop-12.5+(self.view.frame.size.height-(64+47+fromTheTop))/2, 25, 25);
+        activityIndicatorView.frame=CGRectMake(135, 64+fromTheTop-25+(self.view.frame.size.height-(64+47+fromTheTop))/2, 50, 50);
              else{
-                 activityIndicatorView.frame=CGRectMake(147.5, 64+fromTheTop-12.5+(self.view.frame.size.height-(64+fromTheTop))/2, 25, 25);
+                 activityIndicatorView.frame=CGRectMake(135, 64+fromTheTop-25+(self.view.frame.size.height-(64+fromTheTop))/2, 50, 50);
                  
              }
         [self.view insertSubview:activityIndicatorView aboveSubview:self.contentWrapper];
@@ -1207,7 +1208,7 @@ else if(!notifObject.isOffline){
                     }
                     postsLoadComplete=TRUE;
                     [activityIndicatorView stopAnimating];
-                [self.detailedInterestTableView reloadData];
+                   [self.detailedInterestTableView reloadData];
                     
                     if(toLastPost){
                         
