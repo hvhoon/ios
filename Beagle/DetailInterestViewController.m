@@ -943,13 +943,14 @@ else if(!notifObject.isOffline){
         [cell.contentView addSubview:_backgroundView];
         
         if(!postsLoadComplete){
-        activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+
+        [activityIndicatorView setColor:[BeagleUtilities returnBeagleColor:12]];
         activityIndicatorView.hidesWhenStopped=YES;
-            activityIndicatorView.transform=CGAffineTransformMakeScale(1.35, 1.35);
              if(self.interestActivity.isParticipant)
-        activityIndicatorView.frame=CGRectMake(135, 64+fromTheTop-25+(self.view.frame.size.height-(64+47+fromTheTop))/2, 50, 50);
+                 activityIndicatorView.frame=CGRectMake(135, 64+fromTheTop-25+(self.view.frame.size.height-(64+47+fromTheTop))/2, 37, 37);
              else{
-                 activityIndicatorView.frame=CGRectMake(135, 64+fromTheTop-25+(self.view.frame.size.height-(64+fromTheTop))/2, 50, 50);
+                 activityIndicatorView.frame=CGRectMake(135, 64+fromTheTop-25+(self.view.frame.size.height-(64+fromTheTop))/2, 37, 37);
                  
              }
         [self.view insertSubview:activityIndicatorView aboveSubview:self.contentWrapper];
