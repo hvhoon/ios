@@ -17,7 +17,7 @@
 @end
 
 @implementation BeagleManager
-@synthesize beaglePlayer,currentLocation,placemark,weatherCondition,timeOfDay,photoId,activityDeleted,badgeCount;
+@synthesize beaglePlayer,currentLocation,placemark,weatherCondition,timeOfDay,photoId,activityDeleted,badgeCount,lightDominantColor,mediumDominantColor,darkDominantColor;
 @synthesize signInServerManager=_signInServerManager;
 + (id) SharedInstance {
 	static id sharedManager = nil;
@@ -31,6 +31,9 @@
 -(id)init{
     
     if(self=[super init]){
+        lightDominantColor=[BeagleUtilities returnBeagleColor:8];
+        mediumDominantColor=[BeagleUtilities returnBeagleColor:3];
+        darkDominantColor=[BeagleUtilities returnBeagleColor:4];
         
     }
     return self;

@@ -55,8 +55,9 @@
     self.inviteTableView.bounds = newBounds;
     self.nameSearchBar.showsCancelButton=NO;
     
+    [self.navigationController.navigationBar setTintColor:[[BeagleManager SharedInstance] darkDominantColor]];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Create" style:UIBarButtonItemStyleDone target:self action:@selector(createButtonClicked:)];
-    [self.navigationItem.rightBarButtonItem setTintColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0]];
+    [self.navigationItem.rightBarButtonItem setTintColor:[BeagleUtilities returnBeagleColor:13]];
     self.navigationItem.rightBarButtonItem.enabled=YES;
 
     self.inviteTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
@@ -138,10 +139,9 @@
         return 1;
     }
     else{
-    if([self.selectedFriendsArray count]>0 && [self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0){
-        
+        if([self.selectedFriendsArray count]>0 && [self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0) {
         return 3;
-    }
+        }
     if(([self.selectedFriendsArray count]>0 && [self.nearbyFriendsArray count]>0)||([self.selectedFriendsArray count]>0 && [self.worldwideFriendsArray count]>0)||([self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0))
         return 2;
     else if([self.selectedFriendsArray count]>0||[self.nearbyFriendsArray count]>0 || [self.worldwideFriendsArray count]>0)
@@ -234,16 +234,16 @@
     }
     }
     UIView *sectionHeaderview=[[UIView alloc]initWithFrame:CGRectMake(0,0,320,kSectionHeaderHeight)];
-    sectionHeaderview.backgroundColor=[UIColor clearColor];
+    sectionHeaderview.backgroundColor=[UIColor whiteColor];
     
     
     CGRect sectionLabelRect=CGRectMake(16,16,240,15);
     UILabel *sectionLabel=[[UILabel alloc] initWithFrame:sectionLabelRect];
     sectionLabel.textAlignment=NSTextAlignmentLeft;
     
-    sectionLabel.font=[UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f];
+    sectionLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0f];
     sectionLabel.textColor=[BeagleUtilities returnBeagleColor:12];
-    sectionLabel.backgroundColor=[UIColor clearColor];
+    sectionLabel.backgroundColor=[UIColor whiteColor];
     [sectionHeaderview addSubview:sectionLabel];
     
     
@@ -388,15 +388,20 @@
 // this method is used in case the user scrolled into a set of cells that don't have their app icons yet
 - (void)loadImagesForOnscreenRows{
     
-    
-    if([self.nearbyFriendsArray count]>0 || [self.worldwideFriendsArray count]>0){
+    if (!isSearching){
+        
+    if([self.nearbyFriendsArray count]>0 || [self.worldwideFriendsArray count]>0 || [self.selectedFriendsArray count]>0){
         NSArray *visiblePaths = [self.inviteTableView indexPathsForVisibleRows];
-        if([self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0){
+        if([self.selectedFriendsArray count]>0 && [self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0){
             
             for (NSIndexPath *indexPath in visiblePaths)
             {
                 BeagleUserClass *appRecord=nil;
-                if(indexPath.section==0)
+                if(indexPath.section==0){
+                    appRecord = (BeagleUserClass *)[self.selectedFriendsArray objectAtIndex:indexPath.row];
+                    
+                }
+                else if(indexPath.section==1)
                     appRecord = (BeagleUserClass *)[self.nearbyFriendsArray objectAtIndex:indexPath.row];
                 else{
                     appRecord = (BeagleUserClass *)[self.worldwideFriendsArray objectAtIndex:indexPath.row];
@@ -411,10 +416,15 @@
             }
             
         }
-        else if([self.nearbyFriendsArray count]>0){
+        else if([self.selectedFriendsArray count]>0 && [self.nearbyFriendsArray count]>0 &&[self.worldwideFriendsArray count]==0){
             for (NSIndexPath *indexPath in visiblePaths)
             {
-                BeagleUserClass *appRecord=(BeagleUserClass *)[self.nearbyFriendsArray objectAtIndex:indexPath.row];
+                BeagleUserClass *appRecord=nil;
+                if(indexPath.section==0){
+                    appRecord = (BeagleUserClass *)[self.selectedFriendsArray objectAtIndex:indexPath.row];
+                    
+                }else
+                   appRecord=(BeagleUserClass *)[self.nearbyFriendsArray objectAtIndex:indexPath.row];
                 if (!appRecord.profileData) // avoid the app icon download if the app already has an icon
                 {
                     [self startIconDownload:appRecord forIndexPath:indexPath];
@@ -422,11 +432,16 @@
             }
             
         }
-        else if ([self.worldwideFriendsArray count]>0){
+        else if ([self.selectedFriendsArray count]>0 && [self.worldwideFriendsArray count]>0&&[self.nearbyFriendsArray count]==0){
             {
                 for (NSIndexPath *indexPath in visiblePaths)
                 {
-                    BeagleUserClass *appRecord=(BeagleUserClass *)[self.worldwideFriendsArray objectAtIndex:indexPath.row];
+                    BeagleUserClass *appRecord=nil;
+                    if(indexPath.section==0){
+                        appRecord = (BeagleUserClass *)[self.selectedFriendsArray objectAtIndex:indexPath.row];
+                        
+                    }else
+                       appRecord=(BeagleUserClass *)[self.worldwideFriendsArray objectAtIndex:indexPath.row];
                     if (!appRecord.profileData) // avoid the app icon download if the app already has an icon
                     {
                         [self startIconDownload:appRecord forIndexPath:indexPath];
@@ -436,6 +451,57 @@
             }
             
         }
+        
+        
+        else if ([self.selectedFriendsArray count]>0 && [self.worldwideFriendsArray count]==0&&[self.nearbyFriendsArray count]==0){
+            
+                for (NSIndexPath *indexPath in visiblePaths)
+                {
+                    BeagleUserClass *appRecord = (BeagleUserClass *)[self.selectedFriendsArray objectAtIndex:indexPath.row];
+                        
+                    if (!appRecord.profileData) // avoid the app icon download if the app already has an icon
+                    {
+                        [self startIconDownload:appRecord forIndexPath:indexPath];
+                    }
+                }
+                
+            
+            
+        }
+        
+        else if ([self.selectedFriendsArray count]==0 && [self.worldwideFriendsArray count]>0&&[self.nearbyFriendsArray count]==0){
+            
+            for (NSIndexPath *indexPath in visiblePaths)
+            {
+                BeagleUserClass *appRecord = (BeagleUserClass *)[self.worldwideFriendsArray objectAtIndex:indexPath.row];
+                
+                if (!appRecord.profileData) // avoid the app icon download if the app already has an icon
+                {
+                    [self startIconDownload:appRecord forIndexPath:indexPath];
+                }
+            }
+            
+            
+            
+        }
+        
+        
+        else if ([self.selectedFriendsArray count]==0 && [self.worldwideFriendsArray count]==0&&[self.nearbyFriendsArray count]>0){
+            
+            for (NSIndexPath *indexPath in visiblePaths)
+            {
+                BeagleUserClass *appRecord = (BeagleUserClass *)[self.nearbyFriendsArray objectAtIndex:indexPath.row];
+                
+                if (!appRecord.profileData) // avoid the app icon download if the app already has an icon
+                {
+                    [self startIconDownload:appRecord forIndexPath:indexPath];
+                }
+            }
+            
+            
+            
+        }
+    }
     }
 }
 
@@ -470,9 +536,7 @@
     
     searchBar.showsCancelButton=NO;
     isSearching=TRUE;
-    
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(doneButtonClicked:)];
-    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStylePlain target:self action:@selector(doneButtonClicked:)];
     self.navigationItem.hidesBackButton = YES;
 
     return YES;
@@ -484,9 +548,9 @@
     CGRect newBounds = self.inviteTableView.bounds;
     newBounds.origin.y = newBounds.origin.y + self.nameSearchBar.bounds.size.height;
     self.inviteTableView.bounds = newBounds;
-    self.nameSearchBar.showsCancelButton=YES;
-
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Create" style:UIBarButtonItemStylePlain target:self action:@selector(createButtonClicked:)];
+    self.nameSearchBar.text = @"";
+    self.nameSearchBar.showsCancelButton=NO;
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Create" style:UIBarButtonItemStyleDone target:self action:@selector(createButtonClicked:)];
     self.navigationItem.hidesBackButton = NO;
 
 }

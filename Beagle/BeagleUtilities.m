@@ -276,7 +276,7 @@
     NSUInteger green = 0;
     NSUInteger blue = 0;
     
-    float alpha = 0.8f;
+    float alpha = 1.0f;
     
     // Allocate a buffer big enough to hold all the pixels
     
@@ -323,7 +323,39 @@
         
         free(pixels);
     }
+    NSLog(@"Dominant color = R: %i, G: %i, B: %i", (int)red, (int)green, (int)blue);
     return [UIColor colorWithRed:red/255.0f green:green/255.0f blue:blue/255.0f alpha:alpha];
+}
+
++(UIColor*)returnShadeOfColor:(UIColor*)inputColor withShade:(CGFloat)inputShade {
+    CGFloat hue, saturation, brightness, alpha;
+    
+    // Getting these values
+    if([inputColor getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha])
+        return [UIColor colorWithHue:hue saturation:saturation brightness:inputShade alpha:alpha];
+    
+    return [self returnBeagleColor:5];
+}
+
+// Crazy function for mixing white into a color to make it light!
++(UIColor*)returnLightColor:(UIColor*)inputColor withWhiteness:(CGFloat)white {
+    CGFloat r, g, b, a;
+    CGFloat multiplier = 1 - white;
+    
+    // Getting these values
+    if([inputColor getRed:&r green:&g blue:&b alpha:&a]) {
+        r = r*255.0;
+        g = g*255.0;
+        b = b*255.0;
+
+        CGFloat newR = (255.0f - (int)(255.0f - r)*multiplier);
+        CGFloat newG = (255.0f - (int)(255.0f - g)*multiplier);
+        CGFloat newB = (255.0f - (int)(255.0f - b)*multiplier);
+        
+        NSLog(@"Light Version = R: %i, G: %i, B: %i", (int)newR, (int)newG, (int)newB);
+        return [UIColor colorWithRed:newR/255.0 green:newG/255.0 blue:newB/255.0 alpha:1.0];
+    }
+    return [self returnBeagleColor:8];
 }
 
 // Determine the average color in an image!
@@ -400,6 +432,39 @@
     return image;
     
 }
+
++ (UIImage *)colorImage:(UIImage *)img withColor:(UIColor *)color {
+    
+    // begin a new image context, to draw our colored image onto with the right scale
+    UIGraphicsBeginImageContextWithOptions(img.size, NO, [UIScreen mainScreen].scale);
+    
+    // get a reference to that context we created
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    // set the fill color
+    [color setFill];
+    
+    // translate/flip the graphics context (for transforming from CG* coords to UI* coords
+    CGContextTranslateCTM(context, 0, img.size.height);
+    CGContextScaleCTM(context, 1.0, -1.0);
+    
+    CGContextSetBlendMode(context, kCGBlendModeColorBurn);
+    CGRect rect = CGRectMake(0, 0, img.size.width, img.size.height);
+    CGContextDrawImage(context, rect, img.CGImage);
+    
+    CGContextSetBlendMode(context, kCGBlendModeSourceIn);
+    CGContextAddRect(context, rect);
+    CGContextDrawPath(context,kCGPathFill);
+    
+    // generate a new UIImage from the graphics context we drew onto
+    UIImage *coloredImg = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    //return the color-burned image
+    return coloredImg;
+}
+
+
 #pragma mark -
 
 +(NSString*)activityTime:(NSString*)startDate endate:(NSString*)endDate{
@@ -428,17 +493,73 @@
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    [dateFormatter setPMSymbol:@"pm"];
+    [dateFormatter setAMSymbol:@"am"];
     
     NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
     [dateFormatter setTimeZone:utcTimeZone];
     NSDate *startActivityDate = [dateFormatter dateFromString:startDate];
-//    NSLog(@"startActivityDate=%@",startActivityDate);
     NSDate *endActivityDate = [dateFormatter dateFromString:endDate];
-//    NSLog(@"endActivityDate=%@",endActivityDate);
     
     NSTimeInterval Interval=[endActivityDate timeIntervalSinceDate:[NSDate date]];
     
-    // When is this activity?
+    // When pick a date option is selected
+    
+    if([startActivityDate timeIntervalSinceDate:endActivityDate]==0.0){
+        NSCalendar* calendar = [NSCalendar currentCalendar];
+        
+        NSString *eventDateString = [dateFormatter stringFromDate:startActivityDate];
+        NSDate *eventDate = [dateFormatter dateFromString:eventDateString];
+        NSString *todayDate = [dateFormatter stringFromDate:[NSDate date]];
+        NSDate *currentDate=[dateFormatter dateFromString:todayDate];
+        
+        
+        NSTimeZone* destinationTimeZone = [NSTimeZone systemTimeZone];
+        NSInteger destinationGMTOffset1 = [destinationTimeZone secondsFromGMTForDate:eventDate];
+        NSInteger destinationGMTOffset2 = [destinationTimeZone secondsFromGMTForDate:currentDate];
+        
+        NSTimeInterval interval2 = destinationGMTOffset1;
+        NSTimeInterval interval3 = destinationGMTOffset2;
+        
+        NSDate* destinationDate =[[NSDate alloc] initWithTimeInterval:interval2 sinceDate:eventDate];
+        NSDate* currentDateTime =[[NSDate alloc] initWithTimeInterval:interval3 sinceDate:currentDate];
+        
+        NSInteger differenceInDays =
+        [calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSEraCalendarUnit forDate:destinationDate]-
+        [calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSEraCalendarUnit forDate:currentDateTime];
+
+        
+        
+        if(differenceInDays==0){
+            NSDateFormatter *localDateFormatter = [[NSDateFormatter alloc] init];
+            localDateFormatter.dateFormat=@"h:mma";
+            [localDateFormatter setPMSymbol:@"pm"];
+            [localDateFormatter setAMSymbol:@"am"];
+            
+            return [NSString stringWithFormat:@"Today, %@",[localDateFormatter stringFromDate:startActivityDate]];
+            
+            //user has picked today
+        }else if(differenceInDays==1){
+            NSDateFormatter *localDateFormatter = [[NSDateFormatter alloc] init];
+            localDateFormatter.dateFormat=@"h:mma";
+            [localDateFormatter setPMSymbol:@"pm"];
+            [localDateFormatter setAMSymbol:@"am"];
+            
+            return [NSString stringWithFormat:@"Tomorrow, %@",[localDateFormatter stringFromDate:startActivityDate]];
+        }
+        else{
+            NSDateFormatter *localDateFormatter = [[NSDateFormatter alloc] init];
+            
+            localDateFormatter.dateFormat=@"EEE, MMM d, h:mma";
+            [localDateFormatter setPMSymbol:@"pm"];
+            [localDateFormatter setAMSymbol:@"am"];
+            [localDateFormatter setTimeZone:[NSTimeZone systemTimeZone]];
+            return [localDateFormatter stringFromDate:startActivityDate];
+            
+        }
+
+
+    }
     
     // Is it today?
     if([[NSDate date] timeIntervalSinceDate:startActivityDate]>0 && Interval>0 && Interval<=86400.00)
@@ -679,5 +800,15 @@
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
     
+}
+
++(UIView*)getInterestedAnimationEffect:(CGFloat)ticketHeight orgName:(NSString*)orgName{
+    UIView *interestedAnimationView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, ticketHeight)];
+    interestedAnimationView.backgroundColor=[BeagleUtilities returnBeagleColor:13];
+    UIImageView *starImageView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Big-Star"]];
+    starImageView.frame=CGRectMake(0, 0, 89, 83);
+    
+    [interestedAnimationView addSubview:starImageView];
+    return interestedAnimationView;
 }
 @end

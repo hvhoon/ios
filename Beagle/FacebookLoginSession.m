@@ -10,11 +10,11 @@
 #import <Social/Social.h>
 #import <Accounts/ACAccountType.h>
 #import <Accounts/ACAccountCredential.h>
+
 @implementation FacebookLoginSession
 @synthesize accountStore;
 @synthesize facebookAccount;
 @synthesize delegate;
-
 - (id)init
 {
     self = [super init];
@@ -30,55 +30,93 @@
     ACAccountType *FBaccountType= [self.accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
     
     NSString *key = @"500525846725031";
-    NSDictionary *dictFB = [NSDictionary dictionaryWithObjectsAndKeys:key,ACFacebookAppIdKey,@[@"email"],ACFacebookPermissionsKey,ACFacebookAudienceEveryone,ACFacebookAudienceKey,nil];
+    NSDictionary *dictFB = [NSDictionary dictionaryWithObjectsAndKeys:key,ACFacebookAppIdKey,@[@"email"],ACFacebookPermissionsKey,nil];
     
     
     
     
     [self.accountStore requestAccessToAccountsWithType:FBaccountType options:dictFB completion:^(BOOL granted, NSError *error) {
-        if (granted) {
-            NSArray *accounts = [self.accountStore accountsWithAccountType:FBaccountType];
+        if (granted && !error) {
             
+            NSArray *accounts = [self.accountStore accountsWithAccountType:FBaccountType];
+            self.facebookAccount = [accounts lastObject];
+            // first check if the user is logging for the first time
+
             if ([accounts count] > 0) {
-                ACAccountType *FBaccountType= [self.accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
-                NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:key,ACFacebookAppIdKey,[NSArray arrayWithObjects:@"friends_location",@"user_friends",@"publish_stream",@"xmpp_login",nil],ACFacebookPermissionsKey,ACFacebookAudienceEveryone,ACFacebookAudienceKey,nil];
-
                 
-
                 
-                [self.accountStore requestAccessToAccountsWithType:FBaccountType options:options completion:^(BOOL granted2, NSError *error) {
-                    if (granted2) {
-                        NSLog(@"granted")
-                        ;
-                        self.facebookAccount = [accounts lastObject];
-                        // NSLog(@"facebook account =%@",self.facebookAccount);
-                        [self get];
+                NSURL *requestURL = [NSURL URLWithString:@"https://graph.facebook.com/me"];
+                
+                SLRequest *request = [SLRequest requestForServiceType:SLServiceTypeFacebook
+                                                        requestMethod:SLRequestMethodGET
+                                                                  URL:requestURL
+                                                           parameters:nil];
+                request.account = self.facebookAccount;
+                
+                [request performRequestWithHandler:^(NSData *data,
+                                                     NSHTTPURLResponse *response,
+                                                     NSError *error) {
+                    
+                    if(!error)
+                    {
+                        list =[NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+                        
+                        if([list objectForKey:@"error"]!=nil)
+                        {
+                            [self attemptRenewCredentials];
+                        }
+                        dispatch_async(dispatch_get_main_queue(),^{
+                            
+                            id email = [list objectForKey:@"email"];
+                            if (email != nil && [email class] != [NSNull class]) {
+                                
+                                
+                                if (self.delegate && [self.delegate respondsToSelector:@selector(checkIfUserAlreadyExists:)])
+                                    [self.delegate checkIfUserAlreadyExists:email];
 
+
+                            }else{
+                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Privacy Setting" message:@"We are not able to retrieve your email from Facebook.Please check your settings" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
+                                [alert show];
+                                return ;
+
+                            }
+                            
+                        });
                     }
-                    else {
-                        NSLog(@" permission error: %@", [error localizedDescription]);
-                        [delegate facebookAccountNotSetup];
-                        //_publishPermissionsGranted = NO;
+                    else{
+                        //handle error gracefully
+                        NSLog(@"error=%@",error);
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[error localizedDescription] delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
+                        [alert show];
+                        
+                        if (self.delegate && [self.delegate respondsToSelector:@selector(permissionsError)])
+                            [self.delegate permissionsError];
+
+
+                        //attempt to revalidate credentials
+                        
+                        
+                        
                     }
                     
                 }];
+
+                
+
             }
         }
         else {
-            NSLog(@"Nope");
-            [delegate facebookAccountNotSetup];
-        }
-        
-        if (error) {
             if (error.code == 6) {
                 NSLog(@"FB Account doesn't exist");
             }
             NSLog(@"Error: %@", error.localizedDescription);
             
-            
-            [delegate facebookAccountNotSetup];
+            if (self.delegate && [self.delegate respondsToSelector:@selector(facebookAccountNotSetup)])
+                [self.delegate facebookAccountNotSetup];
 
         }
+        
     }];
     
     
@@ -86,7 +124,6 @@
     
 
 }
-
 -(void)get
 {
     
@@ -174,7 +211,6 @@
                 
                 
                 userObject.access_token = self.facebookAccount.credential.oauthToken;
-                //NSLog(@"accessToken=%@", userObject.access_token);
                 
                // userObject.profileImage=[UIImage imageWithData:facebookData];
                 
@@ -191,10 +227,13 @@
                     
                     userObject.email=email;
                 }
-                    
+                userObject.permissionsGranted=isGranted;
+                
                 BGM.beaglePlayer=userObject;
-                    
-                [delegate successfulFacebookLogin:userObject];
+                
+                if (self.delegate && [self.delegate respondsToSelector:@selector(successfulFacebookLogin:)])
+                    [self.delegate successfulFacebookLogin:userObject];
+
         
             });
         }
@@ -203,13 +242,13 @@
             NSLog(@"error=%@",error);
             //attempt to revalidate credentials
             
-            //[delegate facebookAccountNotSetup];
             
             
         }
         
     }];
-    
+
+#if 0
     self.accountStore = [[ACAccountStore alloc]init];
     ACAccountType *FBaccountType= [self.accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
     
@@ -219,7 +258,7 @@
     
     NSDictionary *dictFB = [[NSDictionary alloc] initWithObjectsAndKeys:
                              (NSString *)ACFacebookAppIdKey,key,
-                            (NSString *)ACFacebookPermissionsKey,@[@"email", @"offline_access",@"read_stream",@"user_subscriptions", @"friends_subscriptions",@"friends_location",@"user_location", @"user_friends",@"publish_stream",@"xmpp_login"],
+                            (NSString *)ACFacebookPermissionsKey,@[@"friends_location",@"user_friends",@"xmpp_login"],
                              (NSString *)ACFacebookAudienceKey, ACFacebookAudienceEveryone,
                              nil];
     
@@ -227,6 +266,8 @@
     
     [self.accountStore requestAccessToAccountsWithType:FBaccountType options:dictFB completion:
      ^(BOOL granted, NSError *e) {}];
+    
+#endif
     
 }
 
@@ -258,5 +299,40 @@
     
     
 }
+
+-(void)requestAdditionalPermissions{
+    
+        
+        ACAccountType *FBaccountType= [self.accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
+        
+        NSString *key = @"500525846725031";
+        
+        NSArray *accounts = [self.accountStore accountsWithAccountType:FBaccountType];
+        NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:key,ACFacebookAppIdKey,[NSArray arrayWithObjects:@"friends_location",@"user_friends",@"xmpp_login",nil],ACFacebookPermissionsKey,ACFacebookAudienceEveryone,ACFacebookAudienceKey,nil];
+        
+        
+        
+        
+        [self.accountStore requestAccessToAccountsWithType:FBaccountType options:options completion:^(BOOL granted, NSError *error) {
+            if (granted) {
+                NSLog(@"granted");
+                isGranted=TRUE;
+                self.facebookAccount = [accounts lastObject];
+                [self get];
+                
+            }
+            else {
+                //user does not accept the permissions
+                NSLog(@" permission error: %@", [error localizedDescription]);
+                
+                self.facebookAccount = [accounts lastObject];
+                isGranted=FALSE;
+                [self get];
+            }
+            
+        }];
+        
+}
+
 
 @end

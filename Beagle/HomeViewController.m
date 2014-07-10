@@ -22,10 +22,12 @@
 #import "EventInterestFilterBlurView.h"
 #import "BeagleNotificationClass.h"
 #import "FriendsViewController.h"
+#import "ExpressInterestPreview.h"
 #define REFRESH_HEADER_HEIGHT 70.0f
 #define stockCroppingCheck 0
 #define kTimerIntervalInSeconds 10
-#define rowHeight 142.0f
+#define rowHeight 164
+#define kLeaveInterest 23
 
 @interface HomeViewController ()<UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,HomeTableViewCellDelegate,ServerManagerDelegate,IconDownloaderDelegate,BlankHomePageViewDelegate,EventInterestFilterBlurViewDelegate,InAppNotificationViewDelegate>{
     UIView *topNavigationView;
@@ -208,7 +210,7 @@
     
     _tableViewController.refreshControl = [UIRefreshControl new];
     [_tableViewController.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
-    
+    self.tableView.delaysContentTouches = NO;
     _tableViewController.tableView = self.tableView;
     
     // Setting up the table and the refresh animation
@@ -510,15 +512,87 @@
                 [self.timer invalidate];
                 [self crossDissolvePhotos:flickrRequestInfo.photo withTitle:flickrRequestInfo.userInfo];
             }
-        
-        [self addCityName:[BG.placemark.addressDictionary objectForKey:@"City"]];
-        _filterView.backgroundColor = [BeagleUtilities getDominantColor:flickrRequestInfo.photo];
             
-        /* Test square for alternate algorithm to pull AVERAGE COLOR
-        UIView* testSquare = [[UIView alloc] initWithFrame:CGRectMake(16, 100, 50, 50)];
-        testSquare.backgroundColor = [BeagleUtilities returnAverageColor:flickrRequestInfo.photo];
-        [self.view addSubview:testSquare];
-         */
+        // Color play :)
+        UIColor *dominantColor = [BeagleUtilities getDominantColor:flickrRequestInfo.photo];
+            
+        BG.lightDominantColor=[BeagleUtilities returnLightColor:[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.9] withWhiteness:0.7];
+        BG.mediumDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5];
+        BG.darkDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.4];
+        
+        /*
+        UIColor* filterViewColor = [dominantColor colorWithAlphaComponent:0.8];
+            
+        CGFloat hue, saturation, brightness, alpha, r, g, b, a;
+        
+        CGFloat lowSaturation = 0.1;
+        CGFloat darkColor = 0.4;
+        CGFloat mediumColor = 0.5;
+        CGFloat lightColor = 0.9;
+        CGFloat veryLightColor = 0.9;
+            
+        UIColor *harishVeryLightColor, *harishLightColor, *harishDarkColor, *harishMediumColor;
+            
+            // Getting these values
+            if([dominantColor getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha]) {
+                harishVeryLightColor = ([UIColor colorWithHue:hue saturation:lowSaturation brightness:veryLightColor alpha:alpha]);
+                harishLightColor = ([UIColor colorWithHue:hue saturation:saturation brightness:lightColor alpha:alpha]);
+                harishDarkColor = ([UIColor colorWithHue:hue saturation:saturation brightness:darkColor alpha:alpha]);
+                harishMediumColor = ([UIColor colorWithHue:hue saturation:saturation brightness:mediumColor alpha:alpha]);
+                
+                if([dominantColor getRed:&r green:&g blue:&b alpha:&a]) {
+                    NSLog(@"Dominant Color = R:%i, G:%i, B:%i, Brightness:%f", (int)(r*255.0), (int)(g*255.0), (int)(b*255.0), brightness);
+        
+                }
+            }
+        // == TESTING OF COLOR PALETTE ==
+        // Setup Canvas
+        UIView* canvas = [[UIView alloc] initWithFrame:CGRectMake(0, 115, 320, 41)];
+        canvas.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.7];
+        [self.view addSubview:canvas];
+        
+        // Sample 1: Dominant Color
+        UIView* dominantSquare = [[UIView alloc] initWithFrame:CGRectMake(16, 123, 25, 25)];
+        dominantSquare.backgroundColor = dominantColor;
+        [self.view addSubview:dominantSquare];
+            
+        // Sample 2: Very light variation of Dominant color using Brightness
+        UIView* harishVeryLightSquare = [[UIView alloc] initWithFrame:CGRectMake(16+25+25, 123, 25, 25)];
+        harishVeryLightSquare.backgroundColor = harishVeryLightColor;
+        [self.view addSubview:harishVeryLightSquare];
+        
+        // Sample 3: Light variation of Dominant color using Brightness
+        UIView* harishLightSquare = [[UIView alloc] initWithFrame:CGRectMake(16+25+25+25+8, 123, 25, 25)];
+        harishLightSquare.backgroundColor = harishLightColor;
+        [self.view addSubview:harishLightSquare];
+            
+        // Sample 4: Medium variation of Dominant color using Brightness
+        UIView* harishMediumSquare = [[UIView alloc] initWithFrame:CGRectMake(16+25+25+25+8+25+8, 123, 25, 25)];
+        harishMediumSquare.backgroundColor = harishMediumColor;
+        [self.view addSubview:harishMediumSquare];
+        
+        // Sample 5: Dark variation of Dominant color using Brightness
+        UIView* harishDarkSquare = [[UIView alloc] initWithFrame:CGRectMake(16+25+25+25+8+25+8+25+8, 123, 25, 25)];
+        harishDarkSquare.backgroundColor = harishDarkColor;
+        [self.view addSubview:harishDarkSquare];
+        
+        // Sample 6: Light variation of Dominant color by modifying RGB values
+        UIView* lightSquare = [[UIView alloc] initWithFrame:CGRectMake(16+25+25+25+8+25+25+8+25+8+25+8, 123, 25, 25)];
+        lightSquare.backgroundColor = [BeagleUtilities lighterColorForColor:dominantColor];
+        [self.view addSubview:lightSquare];
+        
+        // Sample 7: Dark variation of Dominant color by modifying RBG values
+        UIView* darkSquare = [[UIView alloc] initWithFrame:CGRectMake(16+25+25+25+8+25+25+8+25+8+25+8+25+8, 123, 25, 25)];
+        darkSquare.backgroundColor = [BeagleUtilities darkerColorForColor:dominantColor];
+        [self.view addSubview:darkSquare];
+        // == END TESTING OF COLOR PALETTE
+        */
+        
+        // Add the city name and the filter pane to the top section
+        [self addCityName:[BG.placemark.addressDictionary objectForKey:@"City"]];
+        _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
+            
+        [self.tableView reloadData];
     
         }];
     
@@ -690,13 +764,18 @@
                                                      attributes:attrs context:nil];
     
     if(play.activityType==2){
-        return rowHeight+textRect.size.height+16+18+16;
+        play.heightRow=rowHeight+(int)textRect.size.height+23;
+        return rowHeight+(int)textRect.size.height+23;
     }
     
     // If there are no participants, reduce the size of the card
-    if (play.participantsCount==0) return rowHeight+textRect.size.height;
-    
-    return rowHeight+16+18+textRect.size.height;
+    if (play.participantsCount==0) {
+        play.heightRow=rowHeight+(int)textRect.size.height;
+        return rowHeight+(int)textRect.size.height;
+    }
+    play.heightRow=rowHeight+16+20+(int)textRect.size.height;
+    return rowHeight+16+20+(int)textRect.size.height;
+
     
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -704,10 +783,21 @@
     
     
     HomeTableViewCell *cell = (HomeTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
+//    if (cell == nil) {
         cell =[[HomeTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         cell.selectionStyle=UITableViewCellSelectionStyleNone;
+//    }
+    
+    for (id obj in cell.subviews)
+    {
+        if ([NSStringFromClass([obj class]) isEqualToString:@"UITableViewCellScrollView"])
+        {
+            UIScrollView *scroll = (UIScrollView *) obj;
+            scroll.delaysContentTouches = NO;
+            break;
+        }
     }
+
     BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexPath.row];
     
     cell.delegate=self;
@@ -738,7 +828,6 @@
     }else{
         cell.photoImage = play.profilePhotoImage=checkImge;
     }
-
     [cell setNeedsDisplay];
     return cell;
 }
@@ -1092,7 +1181,7 @@
 		case kCLAuthorizationStatusDenied:
 			NSLog(@"kCLAuthorizationStatusDenied");
         {{
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Mobbin can’t access your current location.\n\nTo view nearby checkins at your current location, turn on access for Mobbin to your location in the Settings app under Location Services." message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Beagle can’t access your current location.\n\nTo view interests nearby, please turn on location services in  Settings under Location Services." message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
             [alertView show];
             // Disable the post button.
         }}
@@ -1159,6 +1248,7 @@
 }
 
 -(void)updateInterestedStatus:(NSInteger)index {
+    
     BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:index];
     interestIndex=index;
     
@@ -1172,9 +1262,18 @@
     _interestUpdateManager.delegate=self;
     
     if (play.isParticipant) {
-        [_interestUpdateManager removeMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Are you sure you no longer want to do this?"
+                                                        message:nil
+                                                       delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No",nil];
+        alert.tag=kLeaveInterest;
+        [alert show];
+
+//        [_interestUpdateManager removeMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
     }
     else{
+        [self createAnOverlayOnAUITableViewCell:[NSIndexPath indexPathForRow:index inSection:0]];
+
         [_interestUpdateManager participateMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
     }
 }
@@ -1190,6 +1289,105 @@
     [self.navigationController pushViewController:viewController animated:YES];
 
 }
+
+-(void)createAnOverlayOnAUITableViewCell:(NSIndexPath*)indexpath{
+    BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexpath.row];
+    HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:indexpath];
+    ExpressInterestPreview *preview=[[ExpressInterestPreview alloc]initWithFrame:CGRectMake(0, 0, 320, play.heightRow) orgn:play.organizerName];
+    preview.tag=1374;
+    [cell insertSubview:preview aboveSubview:cell.contentView];
+    self.tableView.scrollEnabled=NO;
+    
+    // Animation
+    CATransition *animation = [CATransition animation];
+    [animation setType:kCATransitionPush];
+    [animation setSubtype:kCATransitionFade];
+    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+    [animation setFillMode:kCAFillModeBoth];
+    [animation setDuration:0.75];
+    [[cell layer] addAnimation:animation forKey:@"UITableViewReloadDataAnimationKey"];
+
+}
+
+-(void)showView{
+    
+    HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+    ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
+    [preview ShowViewFromCell];
+    
+    // Animation
+    CATransition *animation = [CATransition animation];
+    [animation setType:kCATransitionPush];
+    [animation setSubtype:kCATransitionFade];
+    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+    [animation setFillMode:kCAFillModeBoth];
+    [animation setDuration:0.75];
+    [[cell layer] addAnimation:animation forKey:@"UITableViewReloadDataAnimationKey"];
+
+    [self performSelector:@selector(hideView:) withObject:preview afterDelay:3];
+
+    
+    
+
+}
+-(void)hideView:(UIView*)pView{
+    
+    HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+
+    [UIView animateWithDuration:0.5
+                          delay:0.0
+                        options:UIViewAnimationOptionTransitionCrossDissolve
+                     animations:^{
+                         [pView setAlpha:0.0];
+                         [cell setAlpha:1.0];
+                     }
+                     completion:^(BOOL finished) {
+                         // Completion Block
+
+                         self.tableView.scrollEnabled=YES;
+                         [self.tableView reloadData];
+                         [pView removeFromSuperview];
+                         
+    }];
+
+    
+}
+
+
+
+#pragma mark -
+#pragma mark UIAlertView methods
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    
+    [alertView resignFirstResponder];
+    
+    if (buttonIndex == 0) {
+        
+        switch (alertView.tag) {
+            case kLeaveInterest:
+            {
+                if(_interestUpdateManager!=nil){
+                    _interestUpdateManager.delegate = nil;
+                    [_interestUpdateManager releaseServerManager];
+                    _interestUpdateManager = nil;
+                }
+                
+                _interestUpdateManager=[[ServerManager alloc]init];
+                _interestUpdateManager.delegate=self;
+                
+                BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:interestIndex];
+                [_interestUpdateManager removeMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
+            }
+                break;
+                
+        }
+    }
+    
+    else{
+        NSLog(@"Clicked Cancel Button");
+    }
+}
+
 #pragma mark - askNearbyFriendsToPartOfSuggestedPost call
 -(void)askNearbyFriendsToPartOfSuggestedPost:(NSInteger)index{
     
@@ -1446,6 +1644,10 @@
                 }
                 else if([message isEqualToString:@"Already Joined"]){
                     
+                    HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+                    ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
+                    [preview removeFromSuperview];
+                    self.tableView.scrollEnabled=YES;
                     NSString *message = NSLocalizedString (@"You have already joined.",
                                                            @"Already Joined");
                     BeagleAlertWithMessage(message);
@@ -1461,7 +1663,14 @@
                 else{
                     play.isParticipant=TRUE;
                 }
-                [self.tableView reloadData];
+                if(play.isParticipant){
+                    [self
+                     showView];
+
+                }else{
+                    [self.tableView reloadData];
+                    
+                }
             }
         }
         
@@ -1536,6 +1745,14 @@
     NSString *message = NSLocalizedString (@"Unable to initiate request.",
                                            @"NSURLConnection initialization method failed.");
     BeagleAlertWithMessage(message);
+    
+    if(serverRequest==kServerCallParticipateInterest){
+        HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+        ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
+        [preview removeFromSuperview];
+        self.tableView.scrollEnabled=YES;
+
+    }
 }
 
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
@@ -1559,6 +1776,15 @@
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
     [alert show];
+    if(serverRequest==kServerCallParticipateInterest){
+        HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+        ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
+        
+        [preview removeFromSuperview];
+        self.tableView.scrollEnabled=YES;
+        
+    }
+
 }
 @end
 

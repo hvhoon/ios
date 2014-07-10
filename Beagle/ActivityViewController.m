@@ -6,8 +6,6 @@
 //  Copyright (c) 2014 soclivity. All rights reserved.
 //
 
-//36e2980516d0e60864cd29c621a09722
-
 #import "ActivityViewController.h"
 #import "TimeFilterView.h"
 #import "BeagleActivityClass.h"
@@ -18,6 +16,9 @@
 #import "BeagleNotificationClass.h"
 #import "ASIHTTPRequest.h"
 #import "InterestInviteViewController.h"
+
+#define DISABLED_ALPHA 0.5f
+
 enum Weeks {
     SUNDAY = 1,
     MONDAY,
@@ -73,6 +74,8 @@ enum Weeks {
     [self.navigationController setNavigationBarHidden:NO];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
+    
+    [self.navigationController.navigationBar setTintColor:[[BeagleManager SharedInstance] darkDominantColor]];
     
     BeagleManager *BG=[BeagleManager SharedInstance];
     if(BG.activityDeleted){
@@ -131,8 +134,6 @@ enum Weeks {
         [self imageCircular:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
     }
     
-    
-    
 
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:248.0/255.0 green:248.0/255.0 blue:248.0/255.0 alpha:1.0]];
     [self.navigationController.navigationBar setTintColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0]];
@@ -141,12 +142,12 @@ enum Weeks {
     if(editState){
         
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleDone target:self action:@selector(createButtonClicked:)];
-    [self.navigationItem.rightBarButtonItem setTintColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0]];
+    [self.navigationItem.rightBarButtonItem setTintColor:[BeagleUtilities returnBeagleColor:13]];
     self.navigationItem.rightBarButtonItem.enabled=YES;
         
     }else{
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Create" style:UIBarButtonItemStyleDone target:self action:@selector(createButtonClicked:)];
-        [self.navigationItem.rightBarButtonItem setTintColor:[UIColor darkGrayColor]];
+        [self.navigationItem.rightBarButtonItem setTintColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA]];
         self.navigationItem.rightBarButtonItem.enabled=NO;
         
     }
@@ -172,14 +173,46 @@ enum Weeks {
     }
     
     
+    // Setting the color for he Visibility, Time filter and Delete buttons
+    // Visibility text and image
+    [visibilityFilterButton setTitleColor:[BeagleUtilities returnBeagleColor:13] forState:UIControlStateNormal];
+    [visibilityFilterButton setTitleColor:[[BeagleUtilities returnBeagleColor:13] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
+    [visibilityFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Visibility"] withColor:[BeagleUtilities returnBeagleColor:13]] forState:UIControlStateNormal];
+    [visibilityFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Visibility"] withColor:[[BeagleUtilities returnBeagleColor:13] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+    
+    // Time text and image
+    [timeFilterButton setTitleColor:[BeagleUtilities returnBeagleColor:13] forState:UIControlStateNormal];
+    [timeFilterButton setTitleColor:[[BeagleUtilities returnBeagleColor:13] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
+    [timeFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Time"] withColor:[BeagleUtilities returnBeagleColor:13]] forState:UIControlStateNormal];
+    [timeFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Time"] withColor:[[BeagleUtilities returnBeagleColor:13] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+    
+    // Delete button
+    [deleteButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Delete"] withColor:[BeagleUtilities returnBeagleColor:13]] forState:UIControlStateNormal];
+    [deleteButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Delete"] withColor:[[BeagleUtilities returnBeagleColor:13] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+    
+    // Color the Background view appropriately
+    [backgroundView setBackgroundColor:[[BeagleManager SharedInstance] mediumDominantColor]];
+    
     NSString *locationFilter=[NSString stringWithFormat:@"%@, %@",[[[BeagleManager SharedInstance]placemark].addressDictionary objectForKey:@"City"],[[BeagleManager SharedInstance]placemark].administrativeArea];
     [locationFilterButton setTitle:locationFilter forState:UIControlStateNormal];
     
+    // Disable this location button for now!
+    locationFilterButton.enabled = NO;
     [countTextLabel setTextAlignment:NSTextAlignmentRight];
     
     if(editState){
         visibilityFilterButton.hidden=YES;
-        locationFilterButton.hidden=YES;
+        
+        NSString *visibilityText = nil;
+        // Setting up the correct privacy text
+        if([bg_activity.visibility isEqualToString:@"public"])
+            visibilityText = @"Visible to everybody";
+        else if([bg_activity.visibility isEqualToString:@"private"])
+            visibilityText = @"Visible to friends nearby";
+        else
+            visibilityText = @"Visible to select friends";
+        
+        [locationFilterButton setTitle:visibilityText forState:UIControlStateNormal];
         deleteButton.hidden=NO;
         visibilityImageView.hidden=YES;
     }
@@ -493,9 +526,9 @@ enum Weeks {
 }
 #define kDeleteActivity 2
 -(IBAction)deleteButtonClicked:(id)sender{
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Are you sure you want to delete the Activity"
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Are you sure you want to delete this activity?"
                                                     message:nil
-                                                   delegate:self cancelButtonTitle:@"OK" otherButtonTitles:@"Cancel",nil];
+                                                   delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No",nil];
     alert.tag=kDeleteActivity;
     [alert show];
 
@@ -545,12 +578,14 @@ enum Weeks {
     
     if([[textView text]length]!=0){
         
-        [self.navigationItem.rightBarButtonItem setTintColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0]];
+        [self.navigationItem.rightBarButtonItem setTintColor:[BeagleUtilities returnBeagleColor:13]];
         self.navigationItem.rightBarButtonItem.enabled=YES;
+
     }
     else {
-        [self.navigationItem.rightBarButtonItem setTintColor:[UIColor darkGrayColor]];
+        [self.navigationItem.rightBarButtonItem setTintColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA]];
         self.navigationItem.rightBarButtonItem.enabled=NO;
+
     }
 
 }
@@ -558,14 +593,11 @@ enum Weeks {
 -(void)textViewDidBeginEditing:(UITextView *)textView{
     
 }
+
+
 -(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
 	BOOL flag = NO;
 	
-	
-	if ([text isEqualToString:@"\n"]){
-        [self createButtonClicked:self];
-        return NO;
-	}
 	
 	if([text length] == 0)
 	{
@@ -743,27 +775,60 @@ enum Weeks {
     timeIndex=8;
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    [dateFormatter setPMSymbol:@"pm"];
+    [dateFormatter setAMSymbol:@"am"];
     NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
     [dateFormatter setTimeZone:utcTimeZone];
     NSCalendar* calendar = [NSCalendar currentCalendar];
     
+    NSString *eventDateString = [dateFormatter stringFromDate:eventDate];
+
+    
+    NSDate *dateSelected = [dateFormatter dateFromString:eventDateString];//add the string
+    NSString *todayDate = [dateFormatter stringFromDate:[NSDate date]];
+    NSDate *currentDate=[dateFormatter dateFromString:todayDate];
+
+    
+    NSTimeZone* destinationTimeZone = [NSTimeZone systemTimeZone];
+    NSInteger destinationGMTOffset1 = [destinationTimeZone secondsFromGMTForDate:dateSelected];
+    NSInteger destinationGMTOffset2 = [destinationTimeZone secondsFromGMTForDate:currentDate];
+    
+    NSTimeInterval interval2 = destinationGMTOffset1;
+    NSTimeInterval interval3 = destinationGMTOffset2;
+    
+    NSDate* destinationDate =[[NSDate alloc] initWithTimeInterval:interval2 sinceDate:dateSelected];
+    NSDate* currentDateTime =[[NSDate alloc] initWithTimeInterval:interval3 sinceDate:currentDate];
+
     NSInteger differenceInDays =
-    [calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSEraCalendarUnit forDate:eventDate]-
-    [calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSEraCalendarUnit forDate:[NSDate date]];
+    [calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSEraCalendarUnit forDate:destinationDate]-
+    [calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSEraCalendarUnit forDate:currentDateTime];
 
     NSDateComponents*components = [calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit|NSHourCalendarUnit|NSSecondCalendarUnit|NSMinuteCalendarUnit
                                                 fromDate:eventDate];
 
-    if([eventDate timeIntervalSinceDate:[NSDate date]]<0 && differenceInDays==0){
-        [timeFilterButton setTitle:@"Later Today" forState:UIControlStateNormal];
+    if(differenceInDays==0){
+        NSDateFormatter *localDateFormatter = [[NSDateFormatter alloc] init];
+        localDateFormatter.dateFormat=@"h:mma";
+        [localDateFormatter setPMSymbol:@"pm"];
+        [localDateFormatter setAMSymbol:@"am"];
+
+        [timeFilterButton setTitle:[NSString stringWithFormat:@"Today, %@",[localDateFormatter stringFromDate:eventDate]] forState:UIControlStateNormal];
 
         //user has picked today
     }else if(differenceInDays==1){
-        [timeFilterButton setTitle:@"Tommorow" forState:UIControlStateNormal];
+        NSDateFormatter *localDateFormatter = [[NSDateFormatter alloc] init];
+        localDateFormatter.dateFormat=@"h:mma";
+        [localDateFormatter setPMSymbol:@"pm"];
+        [localDateFormatter setAMSymbol:@"am"];
+        
+        [timeFilterButton setTitle:[NSString stringWithFormat:@"Tomorrow, %@",[localDateFormatter stringFromDate:eventDate]] forState:UIControlStateNormal];
     }
     else{
         NSDateFormatter *localDateFormatter = [[NSDateFormatter alloc] init];
-        [localDateFormatter setDateFormat:@"EEE, MMM d"];
+        
+        localDateFormatter.dateFormat=@"EEE, MMM d, h:mma";
+        [localDateFormatter setPMSymbol:@"pm"];
+        [localDateFormatter setAMSymbol:@"am"];
         [localDateFormatter setTimeZone:[NSTimeZone systemTimeZone]];
         NSString *formattedDateString = [localDateFormatter stringFromDate:eventDate];
         [timeFilterButton setTitle:formattedDateString forState:UIControlStateNormal];

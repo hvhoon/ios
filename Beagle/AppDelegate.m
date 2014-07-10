@@ -47,16 +47,21 @@ void uncaughtExceptionHandler(NSException *exception) {
     [self registerForNotifications];
     
     // Instabug integration
-    [Instabug KickOffWithToken:@"0fe55a803d01c2d223d89b450dcae674" CaptureSource:InstabugCaptureSourceUIKit FeedbackEvent:InstabugFeedbackEventShake IsTrackingLocation:YES];
-    [Instabug setShowEmail:NO];
-    [Instabug setShowStartAlert:NO];
+    [Instabug startWithToken:@"0fe55a803d01c2d223d89b450dcae674" captureSource:IBGCaptureSourceUIKit invocationEvent:IBGInvocationEventShake];
+    [Instabug setEmailIsRequired:NO];
+    [Instabug setWillShowEmailField:NO];
+    [Instabug setButtonsFontColor:[UIColor colorWithRed:(255/255.0) green:(255/255.0) blue:(255/255.0) alpha:1.0]];
+    [Instabug setButtonsColor:[UIColor colorWithRed:(255/255.0) green:(115/255.0) blue:(0/255.0) alpha:1.0]];
+    [Instabug setHeaderFontColor:[UIColor colorWithRed:(255/255.0) green:(255/255.0) blue:(255/255.0) alpha:1.0]];
+    [Instabug setHeaderColor:[UIColor colorWithRed:(255/255.0) green:(149/255.0) blue:(0/255.0) alpha:1.0]];
+    [Instabug setTextFontColor:[UIColor colorWithRed:(82/255.0) green:(83/255.0) blue:(83/255.0) alpha:1.0]];
+    [Instabug setTextBackgroundColor:[UIColor colorWithRed:(249/255.0) green:(249/255.0) blue:(249/255.0) alpha:1.0]];
     
     if([[NSUserDefaults standardUserDefaults]valueForKey:@"HourlyUpdate"]==nil){
         [[NSUserDefaults standardUserDefaults]setValue:[NSDate date] forKey:@"HourlyUpdate"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
     }
-
     
     if([[NSUserDefaults standardUserDefaults]valueForKey:@"LastLocationLat"]==nil){
         [[NSUserDefaults standardUserDefaults]setDouble:0.0f  forKey:@"LastLocationLat"];

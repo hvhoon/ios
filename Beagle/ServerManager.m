@@ -61,6 +61,8 @@
         [playerRegisteration setObject:data.email forKey:@"email"];
         [playerRegisteration setObject:data.profileImageUrl forKey:@"image_url"];
         [playerRegisteration setObject:[NSNumber numberWithInteger:data.fbuid] forKey:@"fbuid"];
+        [playerRegisteration setObject:[NSNumber numberWithBool:data.permissionsGranted] forKey:@"permissions"];
+
         [playerRegisteration setObject:data.access_token forKey:@"access_token"];
             if([data.location length]!=0)
             [playerRegisteration setObject:data.location forKey:@"location"];
@@ -93,6 +95,7 @@
     if([self isInternetAvailable]){
         
         
+        
         NSMutableDictionary* activityEvent =[[NSMutableDictionary alloc] init];
         [activityEvent setObject:[NSNumber numberWithInteger:1] forKey:@"atype"];
         [activityEvent setObject:data.startActivityDate forKey:@"start_when"];
@@ -100,6 +103,8 @@
         [activityEvent setObject:[NSNumber numberWithFloat:data.longitude] forKey:@"where_lng"];
         [activityEvent setObject:data.city forKey:@"where_city"];
         [activityEvent setObject:data.state  forKey:@"where_state"];
+        data.activityDesc = [[data.activityDesc componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] componentsJoinedByString:@" "];
+
         [activityEvent setObject:data.activityDesc forKey:@"what"];
         [activityEvent setObject:data.visibility forKey:@"access"];
         [activityEvent setObject:[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"] forKey:@"ownnerid"];
@@ -262,6 +267,8 @@
         [activityEvent setObject:[NSNumber numberWithFloat:data.longitude] forKey:@"where_lng"];
         [activityEvent setObject:data.city forKey:@"where_city"];
         [activityEvent setObject:data.state  forKey:@"where_state"];
+        data.activityDesc = [[data.activityDesc componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] componentsJoinedByString:@" "];
+
         [activityEvent setObject:data.activityDesc forKey:@"what"];
         [activityEvent setObject:data.visibility forKey:@"access"];
         [activityEvent setObject:[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"] forKey:@"ownnerid"];
@@ -502,6 +509,24 @@
                          method:@"PUT"
                          params:nil data:postData];
         
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+
+}
+
+-(void)userInfoOnBeagle:(NSString*)email{
+    _serverCallType=kServerGetSignInInfo;
+    if([self isInternetAvailable])
+    {
+        
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@signininfo.json", _serverUrl]
+                         method:@"GET"
+                         params:[NSDictionary dictionaryWithObjectsAndKeys:
+                                 email,@"email",
+                                 nil] data:nil];
     }
     else
     {

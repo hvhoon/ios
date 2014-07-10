@@ -10,6 +10,7 @@
 #import "FriendsViewController.h"
 #import "FeedbackReporting.h"
 #import "AboutUsViewController.h"
+#import <Instabug/Instabug.h>
 
 @interface SettingsViewController ()<ServerManagerDelegate>
 @property(nonatomic,strong)ServerManager*updateFBTickerManager;
@@ -94,18 +95,7 @@
 
         case 4:
         {
-            if ([[FeedbackReporting sharedInstance] canSendFeedback]) {
-                UINavigationController* shareFeedbackController = [[FeedbackReporting sharedInstance] shareFeedbackController];
-
-                [self presentViewController:shareFeedbackController animated:YES completion:Nil];
-            }
-            else{
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Please setup your email account" message:nil
-                                                               delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-                
-                [alert show];
-                
-            }
+            [Instabug showFeedbackFormWithScreenshotAnnotation:NO];
             return;
 
         }

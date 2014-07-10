@@ -13,6 +13,9 @@
    
     BeagleUserClass *beaglePlayer;
 }
+@property (nonatomic,strong)UIColor *lightDominantColor;
+@property (nonatomic,strong)UIColor *mediumDominantColor;
+@property (nonatomic,strong)UIColor *darkDominantColor;
 @property (nonatomic,strong)CLLocation *currentLocation;
 @property(nonatomic,strong)BeagleUserClass*beaglePlayer;
 @property(nonatomic,strong)CLPlacemark *placemark;

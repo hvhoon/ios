@@ -47,8 +47,9 @@ static FeedbackReporting *sharedInstance = nil;
 - (MFMailComposeViewController *)flagAnActivityController:(NSString*)flagMessage {
     MFMailComposeViewController *picker = [[MFMailComposeViewController alloc] init];
     picker.mailComposeDelegate = self;
+    [picker.navigationBar setTintColor:[BeagleUtilities returnBeagleColor:13]];
     
-    NSArray *toRecipients = [NSArray arrayWithObject:@"flagged@mybeagleapp.com"];
+    NSArray *toRecipients = [NSArray arrayWithObject:@"flag@mybeagleapp.com"];
     
     [picker setSubject:@"Flag Activity"];
     [picker setToRecipients:toRecipients];

@@ -1,5 +1,6 @@
 
 #import "MessageKeyboardView.h"
+#import "BeagleUtilities.h"
 
 
 static BOOL RDRKeyboardSizeEqualsInputViewSize(CGRect keyboardFrame,
@@ -182,7 +183,7 @@ static inline UIViewAnimationOptions RDRAnimationOptionsForCurve(UIViewAnimation
     
     _rightButton = [UIButton buttonWithType:UIButtonTypeSystem];
     _rightButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f];
-    _rightButton.titleLabel.textColor=[UIColor colorWithRed:0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0];
+    _rightButton.titleLabel.textColor=[BeagleUtilities returnBeagleColor:13];
     [_rightButton setTitle:NSLocalizedString(@"Post", nil)
                   forState:UIControlStateNormal];
     

@@ -324,8 +324,8 @@
                                 <rect key="frame" x="204" y="30" width="50" height="20"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="2 NEW" textAlignment="center" lineBreakMode="tailTruncation" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fo1-Tr-13q">
-                                        <rect key="frame" x="6" y="3" width="38" height="14"/>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="4 NEW" textAlignment="center" lineBreakMode="tailTruncation" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fo1-Tr-13q">
+                                        <rect key="frame" x="4" y="3" width="42" height="14"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="11"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -342,14 +342,21 @@
                                     <constraint firstAttribute="width" constant="149" id="eef-rj-Xnu"/>
                                 </constraints>
                             </imageView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="GqQ-4M-5Oh">
+                                <rect key="frame" x="116" y="265" width="37" height="37"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" red="0.21520465353260865" green="0.21520465353260865" blue="0.21520465353260865" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="dR7-UU-LV5" firstAttribute="leading" secondItem="90f-oJ-SVu" secondAttribute="leading" constant="60" id="Kwj-y3-X8t"/>
+                            <constraint firstItem="GqQ-4M-5Oh" firstAttribute="top" secondItem="90f-oJ-SVu" secondAttribute="top" constant="265" id="WaL-4d-sji"/>
+                            <constraint firstItem="GqQ-4M-5Oh" firstAttribute="leading" secondItem="90f-oJ-SVu" secondAttribute="leading" constant="116" id="cb1-PZ-Vb5"/>
                             <constraint firstItem="dR7-UU-LV5" firstAttribute="top" secondItem="90f-oJ-SVu" secondAttribute="top" constant="242" id="fxf-U9-Q1d"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="notificationSpinnerView" destination="GqQ-4M-5Oh" id="TVI-C9-C1h"/>
                         <outlet property="notification_BlankImageView" destination="dR7-UU-LV5" id="UQt-kE-MbI"/>
                         <outlet property="topSpacingForBlankImage" destination="fxf-U9-Q1d" id="ocD-LL-bzL"/>
                         <outlet property="unreadCountLabel" destination="fo1-Tr-13q" id="f4z-xQ-5Zh"/>
@@ -402,7 +409,7 @@
                                     <constraint firstAttribute="width" constant="248" id="fHD-yn-82s"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences" autocorrectionType="yes" returnKeyType="done"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences" autocorrectionType="yes"/>
                                 <connections>
                                     <outlet property="delegate" destination="S9M-sC-S9q" id="X7F-em-ybp"/>
                                 </connections>
@@ -410,7 +417,6 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="sqL-0B-EFK">
                                 <rect key="frame" x="0.0" y="312" width="320" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="0.55686274509803924" green="0.55686274509803924" blue="0.55686274509803924" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="3UA-ns-Ilm"/>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="40" id="Jkj-AJ-HY1"/>
@@ -445,10 +451,15 @@
                                     <action selector="locationFilter:" destination="S9M-sC-S9q" eventType="touchUpInside" id="G55-Qp-pDA"/>
                                 </connections>
                             </button>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BsK-la-ctD">
-                                <rect key="frame" x="284" y="278" width="16" height="22"/>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="bottom" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BsK-la-ctD">
+                                <rect key="frame" x="270" y="272" width="50" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" image="Delete">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="50" id="7yZ-fa-ihn"/>
+                                    <constraint firstAttribute="height" constant="40" id="Bc1-0N-YYz"/>
+                                </constraints>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="18" maxY="12"/>
+                                <state key="normal">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
@@ -465,12 +476,7 @@
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="15"/>
                                 <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="16" maxY="0.0"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="5" maxY="0.0"/>
-                                <state key="normal" title="Friends Nearby" image="Visibility">
-                                    <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                </state>
-                                <state key="highlighted" image="Visibility-Highlighted">
-                                    <color key="titleColor" red="0.0" green="0.47843137254901957" blue="1" alpha="0.33000000000000002" colorSpace="calibratedRGB"/>
-                                </state>
+                                <state key="normal" title="Friends Nearby"/>
                                 <connections>
                                     <action selector="visibilityFilter:" destination="S9M-sC-S9q" eventType="touchUpInside" id="sZA-4p-Shw"/>
                                 </connections>
@@ -485,12 +491,8 @@
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="15"/>
                                 <inset key="contentEdgeInsets" minX="16" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 <inset key="titleEdgeInsets" minX="5" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                <state key="normal" title="Next Weekend" image="Time">
-                                    <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                </state>
-                                <state key="highlighted" image="Time-Highlighted">
-                                    <color key="titleColor" red="0.0" green="0.47843137254901957" blue="1" alpha="0.33000000000000002" colorSpace="calibratedRGB"/>
-                                </state>
+                                <state key="normal" title="Next Weekend"/>
+                                <state key="highlighted" image="Time-Highlighted"/>
                                 <connections>
                                     <action selector="timeFilter:" destination="S9M-sC-S9q" eventType="touchUpInside" id="PhX-Qx-jGt"/>
                                 </connections>
@@ -506,9 +508,9 @@
                             <constraint firstItem="sqL-0B-EFK" firstAttribute="top" secondItem="NHs-Eo-wtu" secondAttribute="bottom" id="9va-Rp-OjH"/>
                             <constraint firstItem="hMI-Wc-Jow" firstAttribute="top" secondItem="sqL-0B-EFK" secondAttribute="bottom" constant="216" id="BnS-hb-wru"/>
                             <constraint firstItem="NHs-Eo-wtu" firstAttribute="top" secondItem="8k2-Wd-CIH" secondAttribute="bottom" id="Dm4-9p-ug2"/>
-                            <constraint firstItem="sqL-0B-EFK" firstAttribute="top" secondItem="BsK-la-ctD" secondAttribute="bottom" constant="12" id="EvX-L3-WNg"/>
+                            <constraint firstItem="sqL-0B-EFK" firstAttribute="top" secondItem="BsK-la-ctD" secondAttribute="bottom" id="EvX-L3-WNg"/>
                             <constraint firstItem="8k2-Wd-CIH" firstAttribute="top" secondItem="9iY-EO-BXw" secondAttribute="bottom" constant="10" id="Icc-VY-YpT"/>
-                            <constraint firstAttribute="trailing" secondItem="BsK-la-ctD" secondAttribute="trailing" constant="20" id="K1j-lJ-9xG"/>
+                            <constraint firstAttribute="trailing" secondItem="BsK-la-ctD" secondAttribute="trailing" id="K1j-lJ-9xG"/>
                             <constraint firstItem="5Kw-tX-RGq" firstAttribute="leading" secondItem="1A7-qG-45x" secondAttribute="trailing" id="PFb-og-YqP"/>
                             <constraint firstItem="hMI-Wc-Jow" firstAttribute="top" secondItem="5Kw-tX-RGq" secondAttribute="bottom" constant="228" id="QeU-h0-HHh"/>
                             <constraint firstAttribute="trailing" secondItem="3MQ-a9-lKU" secondAttribute="trailing" id="TwX-mk-TlV"/>
@@ -562,6 +564,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" red="0.90196078431372551" green="0.90196078431372551" blue="0.90196078431372551" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="tintColor" red="1" green="0.58431372549019611" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nhd-l8-IhT" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -647,37 +650,7 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2cm-y2-oJv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1419" y="756"/>
-        </scene>
-        <!--Activity Time View Controller-->
-        <scene sceneID="8WL-83-2g6">
-            <objects>
-                <viewController storyboardIdentifier="activityTimeScreen" id="Wug-Er-QES" customClass="ActivityTimeViewController" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="DEl-US-R13"/>
-                        <viewControllerLayoutGuide type="bottom" id="thn-PE-0vl"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="Ksk-di-7SS">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3wn-xz-CfD">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <connections>
-                                    <outlet property="delegate" destination="Wug-Er-QES" id="XCO-Ek-us4"/>
-                                </connections>
-                            </scrollView>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                    </view>
-                    <connections>
-                        <outlet property="scrollView" destination="3wn-xz-CfD" id="LCz-pM-KY1"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="maS-t9-Rzt" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
+            <point key="canvasLocation" x="1419" y="1471"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="Yrh-qH-9XY">
@@ -746,8 +719,11 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
                                 <searchBar key="tableHeaderView" contentMode="redraw" placeholder="Search for people" id="c5W-Y0-h92">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                    <color key="barTintColor" red="0.90196078431372551" green="0.90196078431372551" blue="0.90196078431372551" alpha="1" colorSpace="calibratedRGB"/>
                                     <textInputTraits key="textInputTraits"/>
+                                    <scopeButtonTitles>
+                                        <string>Title</string>
+                                        <string>Title</string>
+                                    </scopeButtonTitles>
                                     <connections>
                                         <outlet property="delegate" destination="F0j-Xp-e2F" id="ucz-Ov-hbs"/>
                                     </connections>
@@ -771,7 +747,6 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
     </scenes>
     <resources>
         <image name="Bell" width="14" height="15"/>
-        <image name="Delete" width="16" height="20"/>
         <image name="Facebook" width="28" height="28"/>
         <image name="Home" width="26" height="25"/>
         <image name="Info" width="25" height="25"/>
@@ -781,10 +756,7 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
         <image name="Notifications-Blank" width="149" height="84"/>
         <image name="Settings" width="44" height="44"/>
         <image name="Signout" width="25" height="25"/>
-        <image name="Time" width="16" height="16"/>
         <image name="Time-Highlighted" width="16" height="16"/>
-        <image name="Visibility" width="20" height="12"/>
-        <image name="Visibility-Highlighted" width="20" height="12"/>
         <image name="Welcome" width="320" height="568"/>
         <image name="beagle" width="182" height="56"/>
     </resources>
