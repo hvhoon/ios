@@ -212,7 +212,7 @@
     
     _tableViewController.refreshControl = [UIRefreshControl new];
     [_tableViewController.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
-    self.tableView.delaysContentTouches = NO;
+   // self.tableView.delaysContentTouches = NO;
     _tableViewController.tableView = self.tableView;
     
     // Setting up the table and the refresh animation
