@@ -793,7 +793,7 @@
 //    [interestedBtn removeFromSuperview];
     
 
-    cell.bg_delaysContentTouches = NO;
+//    cell.bg_delaysContentTouches = NO;
     BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexPath.row];
     
     cell.delegate=self;

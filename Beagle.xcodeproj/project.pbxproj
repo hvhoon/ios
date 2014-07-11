@@ -746,6 +746,7 @@
 				18007F0418C6542000230C23 /* Categories */,
 				18FADB8A18B6625A00A62287 /* Login Screen */,
 				18EC232918B5A43700316B6E /* Web Services */,
+				18EC234018B5A71000316B6E /* Storyboard */,
 				18EC22AF18B5A0B400316B6E /* AppDelegate.h */,
 				18EC22B018B5A0B400316B6E /* AppDelegate.m */,
 				18EC22B218B5A0B400316B6E /* Images.xcassets */,
@@ -933,7 +934,6 @@
 			isa = PBXGroup;
 			children = (
 				18FADB8B18B662A000A62287 /* LoginViewController.h */,
-				18EC234018B5A71000316B6E /* Storyboard */,
 				18FADB8C18B662A000A62287 /* LoginViewController.m */,
 			);
 			name = "Login Screen";
@@ -1330,6 +1330,7 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Beagle/Beagle-Prefix.pch";
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "Beagle/Beagle-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1351,6 +1352,7 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Beagle/Beagle-Prefix.pch";
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "Beagle/Beagle-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";

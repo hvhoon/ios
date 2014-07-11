@@ -360,7 +360,7 @@ else if(!notifObject.isOffline){
     self.detailedInterestTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
     self.detailedInterestTableView.separatorInset = UIEdgeInsetsZero;
     self.detailedInterestTableView.delegate = self;
-    self.detailedInterestTableView.delaysContentTouches = NO;
+//    self.detailedInterestTableView.delaysContentTouches = NO;
     self.detailedInterestTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth
     |UIViewAutoresizingFlexibleHeight;
     [self.detailedInterestTableView setBackgroundColor:[BeagleUtilities returnBeagleColor:2]];
@@ -642,15 +642,15 @@ else if(!notifObject.isOffline){
         cell.separatorInset = UIEdgeInsetsZero;
         
         // Setup the scroll view
-        for (id obj in cell.subviews)
-        {
-            if ([NSStringFromClass([obj class]) isEqualToString:@"UITableViewCellScrollView"])
-            {
-                UIScrollView *scroll = (UIScrollView *) obj;
-                scroll.delaysContentTouches = NO;
-                break;
-            }
-        }
+//        for (id obj in cell.subviews)
+//        {
+//            if ([NSStringFromClass([obj class]) isEqualToString:@"UITableViewCellScrollView"])
+//            {
+//                UIScrollView *scroll = (UIScrollView *) obj;
+//                scroll.delaysContentTouches = NO;
+//                break;
+//            }
+//        }
         
         // Setting up the title of the screen
         NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
