@@ -126,6 +126,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addADelay) name:kNotificationHomeAutoRefresh object:Nil];
 
     categoryFilterType=1;
@@ -787,9 +788,19 @@
         cell =[[HomeTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         cell.selectionStyle=UITableViewCellSelectionStyleNone;
 //    }
+//    UIButton *interestedBtn=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)indexPath.row]integerValue]];
+//    [interestedBtn removeFromSuperview];
     
+#if 1
     for (id obj in cell.subviews)
     {
+        
+//        if( [[obj class]isKindOfClass:[UIButton class]]){
+//            UIButton *btn=(UIButton*)obj;
+//            if(btn.tag==[[NSString stringWithFormat:@"333%ld",(long)indexPath.row]integerValue]){
+//                [obj removeFromSuperview];
+//            }
+//        }
         if ([NSStringFromClass([obj class]) isEqualToString:@"UITableViewCellScrollView"])
         {
             UIScrollView *scroll = (UIScrollView *) obj;
@@ -797,7 +808,7 @@
             break;
         }
     }
-
+#endif
     BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexPath.row];
     
     cell.delegate=self;

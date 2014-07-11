@@ -16,7 +16,7 @@
 #import "BeagleNotificationClass.h"
 #import "ASIHTTPRequest.h"
 #import "InterestInviteViewController.h"
-
+#import "CreateAnimationBlurView.h"
 #define DISABLED_ALPHA 0.5f
 
 enum Weeks {
@@ -28,7 +28,7 @@ enum Weeks {
     FRIDAY,
     SATURDAY
 };
-@interface ActivityViewController ()<UITextViewDelegate,ServerManagerDelegate,EventTimeBlurViewDelegate,EventVisibilityBlurViewDelegate,LocationBlurViewDelegate,InAppNotificationViewDelegate>{
+@interface ActivityViewController ()<UITextViewDelegate,ServerManagerDelegate,EventTimeBlurViewDelegate,EventVisibilityBlurViewDelegate,LocationBlurViewDelegate,InAppNotificationViewDelegate,CreateAnimationBlurViewDelegate>{
     IBOutlet UIImageView *profileImageView;
     IBOutlet UITextView *descriptionTextView;
     UILabel *placeholderLabel;
@@ -48,6 +48,7 @@ enum Weeks {
 @property(nonatomic, strong) EventTimeBlurView *blrTimeView;
 @property(nonatomic, strong) EventVisibilityBlurView *blrVisbilityView;
 @property(nonatomic, strong) LocationBlurView *blrLocationView;
+@property(nonatomic,strong)CreateAnimationBlurView *animationBlurView;
 @property(nonatomic,strong)ServerManager *activityServerManager;
 @property(nonatomic,strong)ServerManager *deleteActivityManager;
 @end
@@ -102,6 +103,9 @@ enum Weeks {
     self.blrTimeView.delegate=self;
     [self.blrVisbilityView updateConstraints];
     
+    self.animationBlurView=[CreateAnimationBlurView loadCreateAnimationView:self.view];
+    self.animationBlurView.delegate=self;
+    
     self.blrLocationView=[LocationBlurView loadLocationFilter:self.view];
     self.blrLocationView.delegate=self;
     if(!editState){
@@ -132,6 +136,7 @@ enum Weeks {
     }
     else{
         [self imageCircular:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
+        [self.animationBlurView loadAnimationView:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
     }
     
 
@@ -305,6 +310,8 @@ enum Weeks {
     BeagleManager *BG=[BeagleManager SharedInstance];
     NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:url]];
     BG.beaglePlayer.profileData=imageData;
+    [self.animationBlurView loadAnimationView:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
+
     UIImage* image =[[UIImage alloc] initWithData:imageData];
     [self performSelectorOnMainThread:@selector(imageCircular:) withObject:image waitUntilDone:NO];
 }
@@ -519,6 +526,13 @@ enum Weeks {
     if(editState)
     [self.activityServerManager updateActivityOnBeagle:bg_activity];
     else{
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
+        
+        [self.animationBlurView blurWithColor];
+        [self.animationBlurView crossDissolveShow];
+        UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
+        [keyboard addSubview:self.animationBlurView];
+
        [self.activityServerManager createActivityOnBeagle:bg_activity];
     }
 
@@ -904,8 +918,12 @@ enum Weeks {
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 if(serverRequest==kServerCallCreateActivity){
                     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+                    
+                    [self.animationBlurView show];
+                    [self performSelector:@selector(hideCreateOverlay) withObject:nil afterDelay:5.0f];
+                }else if (serverRequest==kServerCallEditActivity){
+                     [self.navigationController dismissViewControllerAnimated:YES completion:Nil];   
                 }
-                [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
 
             }
         }
@@ -941,6 +959,10 @@ enum Weeks {
         self.activityServerManager.delegate = nil;
         [self.activityServerManager releaseServerManager];
         self.activityServerManager = nil;
+        if(serverRequest==kServerCallCreateActivity){
+            [self.animationBlurView crossDissolveHide];
+        }
+
     }
     else if (serverRequest==kServerCallDeleteActivity){
         
@@ -962,6 +984,9 @@ enum Weeks {
         self.activityServerManager.delegate = nil;
         [self.activityServerManager releaseServerManager];
         self.activityServerManager = nil;
+        if(serverRequest==kServerCallCreateActivity){
+                [self.animationBlurView crossDissolveHide];
+        }
     }
     else if (serverRequest==kServerCallDeleteActivity){
         
@@ -972,5 +997,11 @@ enum Weeks {
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
     [alert show];
 }
+-(void)hideCreateOverlay{
+    [self.animationBlurView crossDissolveHide];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
 
+    [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
+
+}
 @end

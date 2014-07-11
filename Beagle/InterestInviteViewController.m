@@ -12,7 +12,8 @@
 #import "IconDownloader.h"
 #import "BeagleActivityClass.h"
 #import "JSON.h"
-@interface InterestInviteViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,InviteTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate,UISearchBarDelegate>{
+#import "CreateAnimationBlurView.h"
+@interface InterestInviteViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,InviteTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate,UISearchBarDelegate,CreateAnimationBlurViewDelegate>{
     BOOL isSearching;
 }
 @property(nonatomic,strong)ServerManager*inviteManager;
@@ -23,6 +24,7 @@
 @property(nonatomic,strong)IBOutlet UITableView*inviteTableView;
 @property(nonatomic,strong)NSMutableDictionary*imageDownloadsInProgress;
 @property(nonatomic,strong)IBOutlet UISearchBar *nameSearchBar;
+@property(nonatomic,strong)CreateAnimationBlurView *animationBlurView;
 @end
 
 @implementation InterestInviteViewController
@@ -47,6 +49,11 @@
 {
     [super viewDidLoad];
     
+    self.animationBlurView=[CreateAnimationBlurView loadCreateAnimationView:self.view];
+    self.animationBlurView.delegate=self;
+
+    [self.animationBlurView loadCustomAnimationView:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
+
     _nearbyFriendsArray=[NSMutableArray new];
     _selectedFriendsArray=[NSMutableArray new];
     _worldwideFriendsArray=[NSMutableArray new];
@@ -124,6 +131,13 @@
     }
       interestDetail.requestString =[jsonContentArray JSONRepresentation];
     }
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
+    
+    [self.animationBlurView blurWithColor];
+    [self.animationBlurView crossDissolveShow];
+    UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
+    [keyboard addSubview:self.animationBlurView];
+
     [self.inviteManager createActivityOnBeagle:interestDetail];
 
 }
@@ -703,9 +717,11 @@
                     BeagleManager *BG=[BeagleManager SharedInstance];
                     BG.activityDeleted=TRUE;
                     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+                    [self.animationBlurView show];
+                    [self performSelector:@selector(hideCreateOverlay) withObject:nil afterDelay:5.0f];
+
 
                 }
-                [self.navigationController popViewControllerAnimated:YES];
                 
             }
         }
@@ -715,11 +731,14 @@
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {
     
-    if(serverRequest==kServerCallgetNearbyAndWorldWideFriends)
+    if(serverRequest==kServerCallgetNearbyAndWorldWideFriends||serverRequest==kServerCallCreateActivity)
     {
         _inviteManager.delegate = nil;
         [_inviteManager releaseServerManager];
         _inviteManager = nil;
+        if(serverRequest==kServerCallCreateActivity){
+                [self.animationBlurView crossDissolveHide];
+        }
     }
     
     NSString *message = NSLocalizedString (@"Unable to initiate request.",
@@ -730,11 +749,15 @@
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
 {
     
-    if(serverRequest==kServerCallgetNearbyAndWorldWideFriends)
+    if(serverRequest==kServerCallgetNearbyAndWorldWideFriends||serverRequest==kServerCallCreateActivity)
     {
         _inviteManager.delegate = nil;
         [_inviteManager releaseServerManager];
         _inviteManager = nil;
+        if(serverRequest==kServerCallCreateActivity){
+            [self.animationBlurView crossDissolveHide];
+        }
+
     }
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
@@ -781,6 +804,16 @@
 }
 
 
+-(void)hideCreateOverlay{
+    [self.animationBlurView crossDissolveHide];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
+    [self.navigationController popViewControllerAnimated:YES];
+
+    
+}
+- (void)dismissEventFilter{
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
+}
 
 /*
 #pragma mark - Navigation
