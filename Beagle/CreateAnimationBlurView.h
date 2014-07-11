@@ -10,7 +10,7 @@
 
 @protocol CreateAnimationBlurViewDelegate <NSObject>
 @optional
--(void)changeVisibilityFilter:(NSInteger)index;
+-(void)dismissCreateAnimationBlurView;
 - (void)dismissEventFilter;
 @end
 
@@ -19,8 +19,9 @@
 
 typedef enum {
     
-	InterestCreate,
-	InterestInvite
+	InterestCreateNearbyOrPublic,
+    InterestSelectFriends,
+	InterestJoin
     
 } BlurViewType;
 @property(nonatomic,assign)BlurViewType blurType;
@@ -31,6 +32,7 @@ typedef enum {
 - (void) crossDissolveHide;
 - (void) blurWithColor;
 -(void)show;
+-(void)hide;
 -(void)loadDetailedInterestAnimationView:(NSString*)name;
 -(void)loadCustomAnimationView:(UIImage*)pImage;
 -(void)loadAnimationView:(UIImage*)pImage;

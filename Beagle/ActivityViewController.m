@@ -43,6 +43,7 @@ enum Weeks {
     IBOutlet UIImageView *visibilityImageView;
     NSInteger timeIndex;
     NSInteger visibilityIndex;
+    NSTimer *timer;
 }
 @property (nonatomic, strong) NSMutableIndexSet *optionIndices;
 @property(nonatomic, strong) EventTimeBlurView *blrTimeView;
@@ -920,7 +921,11 @@ enum Weeks {
                     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
                     
                     [self.animationBlurView show];
-                    [self performSelector:@selector(hideCreateOverlay) withObject:nil afterDelay:5.0f];
+                    timer = [NSTimer scheduledTimerWithTimeInterval: 5.0
+                                                             target: self
+                                                           selector:@selector(hideCreateOverlay)
+                                                           userInfo: nil repeats:NO];
+
                 }else if (serverRequest==kServerCallEditActivity){
                      [self.navigationController dismissViewControllerAnimated:YES completion:Nil];   
                 }
@@ -960,7 +965,7 @@ enum Weeks {
         [self.activityServerManager releaseServerManager];
         self.activityServerManager = nil;
         if(serverRequest==kServerCallCreateActivity){
-            [self.animationBlurView crossDissolveHide];
+            [self.animationBlurView hide];
         }
 
     }
@@ -985,7 +990,7 @@ enum Weeks {
         [self.activityServerManager releaseServerManager];
         self.activityServerManager = nil;
         if(serverRequest==kServerCallCreateActivity){
-                [self.animationBlurView crossDissolveHide];
+                [self.animationBlurView hide];
         }
     }
     else if (serverRequest==kServerCallDeleteActivity){
@@ -998,10 +1003,18 @@ enum Weeks {
     [alert show];
 }
 -(void)hideCreateOverlay{
-    [self.animationBlurView crossDissolveHide];
+    [timer invalidate];
+    [self.animationBlurView hide];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
 
     [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
 
+}
+-(void)dismissCreateAnimationBlurView{
+    [timer invalidate];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
+    
+    [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
+    
 }
 @end

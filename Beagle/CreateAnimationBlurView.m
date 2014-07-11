@@ -36,17 +36,13 @@
     
     if (self) {
         
-        UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
-        // make your gesture recognizer priority
-        singleTap.numberOfTapsRequired = 1;
-        [self addGestureRecognizer:singleTap];
         
     }
     
     return self;
 }
 -(void)loadAnimationView:(UIImage*)pImage{
-    _blurType=InterestCreate;
+    _blurType=InterestCreateNearbyOrPublic;
     
     _profileImageView.image=[BeagleUtilities imageCircularBySize:pImage sqr:210.0f];
     [_profileImageView setHidden:YES];
@@ -58,8 +54,8 @@
 }
 
 -(void)loadCustomAnimationView:(UIImage*)pImage{
-        _blurType=InterestCreate;
-    _friendsNotifyLabel.text=@"Now let us tell the friends               you selected about your post";
+        _blurType=InterestSelectFriends;
+    _friendsNotifyLabel.text=@"Now let us tell the friends \n you selected about your post";
     _profileImageView.image=[BeagleUtilities imageCircularBySize:pImage sqr:210.0f];
     [_profileImageView setHidden:YES];
     [_superstarTextLabel setHidden:YES];
@@ -71,7 +67,7 @@
 
 -(void)loadDetailedInterestAnimationView:(NSString*)name{
     
-        _blurType=InterestInvite;
+        _blurType=InterestJoin;
     _superstarTextLabel.text=@"Awesome";
     _friendsNotifyLabel.text=[NSString stringWithFormat:@"We'll let %@ know you're interested!",[[name componentsSeparatedByString:@" "] objectAtIndex:0]];
     _joinChatInfoLabel.text=@"Post a chat message,join in the planning,or just have some fun";
@@ -153,14 +149,20 @@
 }
 
 -(void)show{
-    if(_blurType==InterestCreate){
-        [_loadingIndicatorView stopAnimating];
-        [_profileImageView setHidden:NO];
-    }else if (_blurType==InterestInvite){
+    
+    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
+    singleTap.numberOfTapsRequired = 1;
+    [self addGestureRecognizer:singleTap];
+
+    if (_blurType==InterestJoin){
             [_bigStarImageView setHidden:NO];
             [_loadingIndicatorView stopAnimating];
             [_profileImageView setHidden:YES];
 
+    }
+    else{
+        [_loadingIndicatorView stopAnimating];
+        [_profileImageView setHidden:NO];
     }
     [_superstarTextLabel setHidden:NO];
     [_friendsNotifyLabel setHidden:NO];
@@ -168,12 +170,7 @@
 
 }
 
-- (void) crossDissolveHide {
-    
-    if (self.delegate && [self.delegate respondsToSelector:@selector(dismissEventFilter)])
-        [self.delegate dismissEventFilter];
-    
-    
+-(void)hide{
     if(self.timer != nil) {
         
         dispatch_source_cancel(self.timer);
@@ -187,6 +184,33 @@
         self.alpha =0.0f;
     } completion:^(BOOL finished) {
         
+    }];
+   
+}
+- (void) crossDissolveHide {
+    
+        if(_blurType==InterestCreateNearbyOrPublic){
+    if (self.delegate && [self.delegate respondsToSelector:@selector(dismissCreateAnimationBlurView)])
+        [self.delegate dismissCreateAnimationBlurView];
+        }else{
+            if (self.delegate && [self.delegate respondsToSelector:@selector(dismissEventFilter)])
+                [self.delegate dismissEventFilter];
+            
+        }
+    
+    if(self.timer != nil) {
+        
+        dispatch_source_cancel(self.timer);
+        self.timer = nil;
+    }
+    self.frame = CGRectMake(self.location.x, -(self.frame.size.height + self.location.y), self.frame.size.width, self.frame.size.height);
+    
+    
+    [UIView transitionWithView:self duration:0.2 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+        
+        self.alpha =0.0f;
+    } completion:^(BOOL finished) {
+
     }];
     
     

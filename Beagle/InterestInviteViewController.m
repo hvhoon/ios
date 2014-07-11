@@ -15,6 +15,7 @@
 #import "CreateAnimationBlurView.h"
 @interface InterestInviteViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,InviteTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate,UISearchBarDelegate,CreateAnimationBlurViewDelegate>{
     BOOL isSearching;
+    NSTimer *timer;
 }
 @property(nonatomic,strong)ServerManager*inviteManager;
 @property(nonatomic,strong)NSMutableArray *nearbyFriendsArray;
@@ -717,8 +718,14 @@
                     BeagleManager *BG=[BeagleManager SharedInstance];
                     BG.activityDeleted=TRUE;
                     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+                    
                     [self.animationBlurView show];
-                    [self performSelector:@selector(hideCreateOverlay) withObject:nil afterDelay:5.0f];
+                    
+                    timer = [NSTimer scheduledTimerWithTimeInterval: 5.0
+                                                                  target: self
+                                                                selector:@selector(hideCreateOverlay)
+                                                                userInfo: nil repeats:NO];
+                    
 
 
                 }
@@ -737,7 +744,7 @@
         [_inviteManager releaseServerManager];
         _inviteManager = nil;
         if(serverRequest==kServerCallCreateActivity){
-                [self.animationBlurView crossDissolveHide];
+                [self.animationBlurView hide];
         }
     }
     
@@ -755,7 +762,7 @@
         [_inviteManager releaseServerManager];
         _inviteManager = nil;
         if(serverRequest==kServerCallCreateActivity){
-            [self.animationBlurView crossDissolveHide];
+            [self.animationBlurView hide];
         }
 
     }
@@ -805,14 +812,17 @@
 
 
 -(void)hideCreateOverlay{
-    [self.animationBlurView crossDissolveHide];
+    [timer invalidate];
+    [self.animationBlurView hide];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
     [self.navigationController popViewControllerAnimated:YES];
 
     
 }
 - (void)dismissEventFilter{
+    [timer invalidate];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 /*

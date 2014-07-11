@@ -28,6 +28,7 @@ static NSString * const CellIdentifier = @"cell";
     BOOL scrollViewResize;
     UIActivityIndicatorView *activityIndicatorView;
     BOOL postsLoadComplete;
+    NSTimer *timer;
 }
 
 @property(nonatomic,strong)ServerManager*chatPostManager;
@@ -1301,7 +1302,7 @@ else if(!notifObject.isOffline){
                 // If Already joined, do nothing
                 else if([message isEqualToString:@"Already Joined"]){
 
-                    [self.animationBlurView crossDissolveHide];
+                    [self.animationBlurView hide];
                     NSString *message = NSLocalizedString (@"You have already joined.",
                                                            @"Already Joined");
                     BeagleAlertWithMessage(message);
@@ -1372,7 +1373,11 @@ else if(!notifObject.isOffline){
                     
                     
                     [self.animationBlurView show];
-                    [self performSelector:@selector(hideInterestOverlay) withObject:nil afterDelay:5.0f];
+                    
+                    timer = [NSTimer scheduledTimerWithTimeInterval: 5.0
+                                                             target: self
+                                                           selector:@selector(hideInterestOverlay)
+                                                           userInfo: nil repeats:NO];
 
 
                     
@@ -1473,7 +1478,7 @@ else if(!notifObject.isOffline){
         [_interestUpdateManager releaseServerManager];
         _interestUpdateManager = nil;
         if(serverRequest==kServerCallParticipateInterest){
-            [self.animationBlurView crossDissolveHide];
+            [self.animationBlurView hide];
 
         }
     }
@@ -1507,7 +1512,7 @@ else if(!notifObject.isOffline){
         [_interestUpdateManager releaseServerManager];
         _interestUpdateManager = nil;
         if(serverRequest==kServerCallParticipateInterest){
-            [self.animationBlurView crossDissolveHide];
+            [self.animationBlurView hide];
             
         }
 
@@ -1578,47 +1583,53 @@ else if(!notifObject.isOffline){
 }
 
 -(void)hideInterestOverlay{
-    [self.animationBlurView crossDissolveHide];
+    [timer invalidate];
+    [self.animationBlurView hide];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
 
-    UIButton *interestedButton=(UIButton*)[self.view viewWithTag:345];
-    UIColor *buttonColor = [[BeagleManager SharedInstance] mediumDominantColor];
-        // Normal state
-        [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button"] withColor:buttonColor] forState:UIControlStateNormal];
-        [interestedButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [interestedButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Star"] withColor:[UIColor whiteColor]] forState:UIControlStateNormal];
-        
-        // Pressed state
-        [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button"] withColor:[buttonColor colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
-        [interestedButton setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
-        [interestedButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Star"] withColor:[[UIColor whiteColor] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
-        
-        NSMutableArray*interestArray=[NSMutableArray new];
-        
-        if([self.interestActivity.participantsArray count]!=0){
-            [interestArray addObject:[[BeagleManager SharedInstance]beaglePlayer]];
-            [interestArray addObjectsFromArray:self.interestActivity.participantsArray];
-            self.interestActivity.participantsArray=interestArray;
-        }else{
-            [interestArray addObject:[[BeagleManager SharedInstance]beaglePlayer]];
-            self.interestActivity.participantsArray=interestArray;
-        }
-        self.contentWrapper.interested=YES;
-        [self.contentWrapper _setInitialFrames];
-        [self.contentWrapper.inputView setHidden:NO];
-        [self.contentWrapper.dummyInputView setHidden:NO];
-        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
-        
-        [self.detailedInterestTableView reloadData];
-
+    [self updateMembershipView];
 }
 
 - (void)dismissEventFilter{
+    [timer invalidate];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
+    [self updateMembershipView];
     
 }
 
+-(void)updateMembershipView{
+    UIButton *interestedButton=(UIButton*)[self.view viewWithTag:345];
+    UIColor *buttonColor = [[BeagleManager SharedInstance] mediumDominantColor];
+    // Normal state
+    [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button"] withColor:buttonColor] forState:UIControlStateNormal];
+    [interestedButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [interestedButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Star"] withColor:[UIColor whiteColor]] forState:UIControlStateNormal];
+    
+    // Pressed state
+    [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button"] withColor:[buttonColor colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+    [interestedButton setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
+    [interestedButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Star"] withColor:[[UIColor whiteColor] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+    
+    NSMutableArray*interestArray=[NSMutableArray new];
+    
+    if([self.interestActivity.participantsArray count]!=0){
+        [interestArray addObject:[[BeagleManager SharedInstance]beaglePlayer]];
+        [interestArray addObjectsFromArray:self.interestActivity.participantsArray];
+        self.interestActivity.participantsArray=interestArray;
+    }else{
+        [interestArray addObject:[[BeagleManager SharedInstance]beaglePlayer]];
+        self.interestActivity.participantsArray=interestArray;
+    }
+    self.contentWrapper.interested=YES;
+    [self.contentWrapper _setInitialFrames];
+    [self.contentWrapper.inputView setHidden:NO];
+    [self.contentWrapper.dummyInputView setHidden:NO];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+    
+    [self.detailedInterestTableView reloadData];
+    
 
+}
 /*
 #pragma mark - Navigation
 
