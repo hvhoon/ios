@@ -269,8 +269,9 @@ static UIFont *forthTextFont = nil;
     interestedButton.tag=[[NSString stringWithFormat:@"333%ld",(long)cellIndex]integerValue];
     UIColor *buttonColor = [[BeagleManager SharedInstance] mediumDominantColor];
     UIColor *outlineButtonColor = [[BeagleManager SharedInstance] darkDominantColor];
-        
+    [interestedButton.titleLabel setUserInteractionEnabled: NO];
     [self addSubview:interestedButton];
+    [self bringSubviewToFront:interestedButton];
     
         if(self.bg_activity.activityType==1){
             [interestedButton addTarget:self action:@selector(interestedBtnPressed:) forControlEvents:UIControlEventTouchUpInside];

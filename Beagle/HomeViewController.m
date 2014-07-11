@@ -23,6 +23,7 @@
 #import "BeagleNotificationClass.h"
 #import "FriendsViewController.h"
 #import "ExpressInterestPreview.h"
+#import "UITableViewCell+BG_delaysContentTouches.h"
 #define REFRESH_HEADER_HEIGHT 70.0f
 #define stockCroppingCheck 0
 #define kTimerIntervalInSeconds 10
@@ -791,24 +792,8 @@
 //    UIButton *interestedBtn=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)indexPath.row]integerValue]];
 //    [interestedBtn removeFromSuperview];
     
-#if 1
-    for (id obj in cell.subviews)
-    {
-        
-//        if( [[obj class]isKindOfClass:[UIButton class]]){
-//            UIButton *btn=(UIButton*)obj;
-//            if(btn.tag==[[NSString stringWithFormat:@"333%ld",(long)indexPath.row]integerValue]){
-//                [obj removeFromSuperview];
-//            }
-//        }
-        if ([NSStringFromClass([obj class]) isEqualToString:@"UITableViewCellScrollView"])
-        {
-            UIScrollView *scroll = (UIScrollView *) obj;
-            scroll.delaysContentTouches = NO;
-            break;
-        }
-    }
-#endif
+
+    cell.bg_delaysContentTouches = NO;
     BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexPath.row];
     
     cell.delegate=self;
@@ -840,6 +825,24 @@
         cell.photoImage = play.profilePhotoImage=checkImge;
     }
     [cell setNeedsDisplay];
+#if 0
+    for (id obj in cell.subviews)
+    {
+        
+        //        if( [[obj class]isKindOfClass:[UIButton class]]){
+        //            UIButton *btn=(UIButton*)obj;
+        //            if(btn.tag==[[NSString stringWithFormat:@"333%ld",(long)indexPath.row]integerValue]){
+        //                [obj removeFromSuperview];
+        //            }
+        //        }
+        if ([NSStringFromClass([obj class]) isEqualToString:@"UITableViewCellScrollView"])
+        {
+            UIScrollView *scroll = (UIScrollView *) obj;
+            scroll.delaysContentTouches = NO;
+            break;
+        }
+    }
+#endif
     return cell;
 }
 - (void)startIconDownload:(BeagleActivityClass*)appRecord forIndexPath:(NSIndexPath *)indexPath{
