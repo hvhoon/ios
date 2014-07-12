@@ -45,29 +45,28 @@
 -(void)loadAnimationView:(UIImage*)pImage{
     _blurType=InterestCreateNearbyOrPublic;
     
-    _profileImageView.layer.borderWidth = 2.5f;
-    _profileImageView.layer.borderColor = [UIColor whiteColor].CGColor;
     _profileImageView.image=[BeagleUtilities imageCircularBySize:pImage sqr:200.0f];
-    _profileImageView.layer.masksToBounds = YES;
 
     [_profileImageView setHidden:YES];
     [_superstarTextLabel setHidden:YES];
     [_friendsNotifyLabel setHidden:YES];
     [_joinChatInfoLabel setHidden:YES];
-    //_loadingIndicatorView.transform=CGAffineTransformMakeScale(1.35, 1.35);
 
 }
 // Create animation screen (custom)
 -(void)loadCustomAnimationView:(UIImage*)pImage{
         _blurType=InterestSelectFriends;
     _friendsNotifyLabel.text=@"Now let us tell the friends \n you selected about your post";
-    _profileImageView.image=[BeagleUtilities imageCircularBySize:pImage sqr:210.0f];
+    _profileImageView.image=[BeagleUtilities imageCircularBySize:pImage sqr:200.0f];
+    _profileImageView.layer.cornerRadius = _profileImageView.frame.size.width/2;
+    _profileImageView.clipsToBounds = YES;
+    _profileImageView.layer.borderWidth = 3.0f;
+    _profileImageView.layer.borderColor = [UIColor whiteColor].CGColor;
+    
     [_profileImageView setHidden:YES];
     [_superstarTextLabel setHidden:YES];
     [_friendsNotifyLabel setHidden:YES];
     [_joinChatInfoLabel setHidden:YES];
-    //_loadingIndicatorView.transform=CGAffineTransformMakeScale(1.35, 1.35);
-    
 }
 
 -(void)loadDetailedInterestAnimationView:(NSString*)name{
@@ -80,9 +79,7 @@
     [_profileImageView setHidden:YES];
     [_superstarTextLabel setHidden:YES];
     [_friendsNotifyLabel setHidden:YES];
-    [_joinChatInfoLabel setHidden:YES];
-    //_loadingIndicatorView.transform=CGAffineTransformMakeScale(1.35, 1.35);
-    
+    [_joinChatInfoLabel setHidden:YES];    
 }
 
 -(void)handleSingleTap:(UITapGestureRecognizer*)sender{
@@ -128,7 +125,7 @@
         ;
         
         dispatch_sync(dispatch_get_main_queue(), ^{
-            self.backgroundColor = [[UIColor colorWithPatternImage:[UIImage imageNamed:@"Welcome"]] colorWithAlphaComponent:0.97];
+            self.backgroundColor = [[UIColor colorWithPatternImage:[UIImage imageNamed:@"Welcome"]] colorWithAlphaComponent:0.95];
         });
     });
 }
