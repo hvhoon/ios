@@ -14,5 +14,4 @@
 +(CGFloat)heightForNotificationText:(NSString *)text;
 +(CGFloat)heightForNewInterestText:(NSString*)what;
 +(CGFloat)heightForTimeStampText:(NSString*)when;
-
 @end

@@ -46,6 +46,10 @@
     _blurType=InterestCreateNearbyOrPublic;
     
     _profileImageView.image=[BeagleUtilities imageCircularBySize:pImage sqr:200.0f];
+    _profileImageView.layer.cornerRadius = _profileImageView.frame.size.width/2;
+    _profileImageView.clipsToBounds = YES;
+    _profileImageView.layer.borderWidth = 3.0f;
+    _profileImageView.layer.borderColor = [UIColor whiteColor].CGColor;
 
     [_profileImageView setHidden:YES];
     [_superstarTextLabel setHidden:YES];

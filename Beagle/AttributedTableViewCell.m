@@ -44,6 +44,7 @@ static inline NSRegularExpression * NameRegularExpression() {
 
         [self.contentView addSubview:self.lbltime];
         [self.contentView addSubview:self.summaryLabel];
+        
     }
     return self;
 }
@@ -124,6 +125,7 @@ static inline NSRegularExpression * NameRegularExpression() {
     return height;
 }
 
+
 #pragma mark - UIView
 
 - (void)layoutSubviews {
@@ -139,7 +141,7 @@ static inline NSRegularExpression * NameRegularExpression() {
     if(self.isANewNotification){
         UIImageView *actionImageView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"New-Notification"]];
         actionImageView.frame=CGRectMake(self.lbltime.frame.size.width+58+5, 12+self.summaryLabel.frame.size.height+6, 9, 9);
-        [self addSubview:actionImageView];
+        [self.contentView addSubview:actionImageView];
 
     }
 }
