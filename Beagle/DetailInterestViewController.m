@@ -360,7 +360,6 @@ else if(!notifObject.isOffline){
     self.detailedInterestTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
     self.detailedInterestTableView.separatorInset = UIEdgeInsetsZero;
     self.detailedInterestTableView.delegate = self;
-//    self.detailedInterestTableView.delaysContentTouches = NO;
     self.detailedInterestTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth
     |UIViewAutoresizingFlexibleHeight;
     [self.detailedInterestTableView setBackgroundColor:[BeagleUtilities returnBeagleColor:2]];
@@ -631,26 +630,12 @@ else if(!notifObject.isOffline){
     // For the INFO part of the card
     if(indexPath.row==0){
         // Let's begin spacing from the top
-
-
         int fromTheTop = 10;
 
         static NSString *CellIdentifier = @"MediaTableCell";
-        UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-        cell =[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         cell.selectionStyle=UITableViewCellSelectionStyleNone;
         cell.separatorInset = UIEdgeInsetsZero;
-        
-        // Setup the scroll view
-//        for (id obj in cell.subviews)
-//        {
-//            if ([NSStringFromClass([obj class]) isEqualToString:@"UITableViewCellScrollView"])
-//            {
-//                UIScrollView *scroll = (UIScrollView *) obj;
-//                scroll.delaysContentTouches = NO;
-//                break;
-//            }
-//        }
         
         // Setting up the title of the screen
         NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
@@ -999,8 +984,8 @@ else if(!notifObject.isOffline){
             cellTop = 8.0f;
         
         static NSString *CellIdentifier = @"MediaTableCell2";
-        UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-        cell  =[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+
+        UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         cell.backgroundColor=[[BeagleManager SharedInstance] lightDominantColor];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         

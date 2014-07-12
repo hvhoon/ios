@@ -40,13 +40,8 @@ static UIFont *forthTextFont = nil;
     // Start from the top and set the top padding to 8
     int fromTheTop = 0;
     CGFloat organizerName_y=60.0f;
-    if(self.selected)
-    {
-        backgroundColor = background;
-    }
     
     [backgroundColor set];
-    
     
     CGContextFillRect(context, r);
     

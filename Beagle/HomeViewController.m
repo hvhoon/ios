@@ -783,17 +783,10 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *CellIdentifier = @"MediaTableCell";
     
-    
-    HomeTableViewCell *cell = (HomeTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-//    if (cell == nil) {
-        cell =[[HomeTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-        cell.selectionStyle=UITableViewCellSelectionStyleNone;
-//    }
-//    UIButton *interestedBtn=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)indexPath.row]integerValue]];
-//    [interestedBtn removeFromSuperview];
-    
+    HomeTableViewCell *cell = [[HomeTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+    cell =[[HomeTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+    cell.selectionStyle=UITableViewCellEditingStyleNone;
 
-//    cell.bg_delaysContentTouches = NO;
     BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexPath.row];
     
     cell.delegate=self;

@@ -316,11 +316,8 @@
     static NSString *CellIdentifier = @"MediaTableCell";
     
     
-    FriendsTableViewCell *cell = (FriendsTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    //if (cell == nil) {
-        cell =[[FriendsTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-        cell.selectionStyle=UITableViewCellSelectionStyleNone;
-    //}
+    FriendsTableViewCell *cell = [[FriendsTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+    cell.selectionStyle=UITableViewCellSelectionStyleNone;
     
     BeagleUserClass *player=nil;
 

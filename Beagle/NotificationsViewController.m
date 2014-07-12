@@ -184,9 +184,9 @@
     BeagleNotificationClass *play = (BeagleNotificationClass *)[self.listArray objectAtIndex:indexPath.row];
     
     AttributedTableViewCell *cell = (AttributedTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    //if (cell == nil) {
-    cell = [[AttributedTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-    //}
+    if (cell == nil)
+        cell = [[AttributedTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+    
     cell.isANewNotification=!play.isRead;
     cell.selectionStyle=UITableViewCellSelectionStyleNone;
     cell.notificationType=play.notificationType;
@@ -280,7 +280,7 @@
         [cell.contentView addSubview:seperatorLineView];
     }
 
-    [cell setNeedsDisplay];
+    //[cell setNeedsDisplay];
 
     return cell;
 }

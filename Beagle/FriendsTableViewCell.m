@@ -112,7 +112,7 @@ static UIFont *secondTextFont = nil;
         [inviteStatusButton addTarget:self action:@selector(inviteButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
         }
         [self addSubview:inviteStatusButton];
-        
+    
     }
 }
 
