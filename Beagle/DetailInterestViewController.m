@@ -633,7 +633,9 @@ else if(!notifObject.isOffline){
         int fromTheTop = 10;
 
         static NSString *CellIdentifier = @"MediaTableCell";
+        
         UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        
         cell.selectionStyle=UITableViewCellSelectionStyleNone;
         cell.separatorInset = UIEdgeInsetsZero;
         
@@ -870,8 +872,6 @@ else if(!notifObject.isOffline){
         UIColor *buttonColor = [[BeagleManager SharedInstance] mediumDominantColor];
         UIColor *outlineButtonColor = [[BeagleManager SharedInstance] darkDominantColor];
         UIFont *forthTextFont=[UIFont fontWithName:@"HelveticaNeue" size:15.0f];
-
-        [_backgroundView addSubview:interestedButton];
         
         if(self.interestActivity.activityType==1){
             [interestedButton addTarget:self action:@selector(handleTapGestures:) forControlEvents:UIControlEventTouchUpInside];
@@ -888,6 +888,7 @@ else if(!notifObject.isOffline){
             [[interestedButton titleLabel] setFont:forthTextFont];
             [interestedButton.titleLabel setTextAlignment:NSTextAlignmentCenter];
             [interestedButton setTitle:@"Created by you" forState:UIControlStateNormal];
+            
             
             // Normal state
             [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button"] withColor:buttonColor] forState:UIControlStateNormal];
@@ -945,6 +946,9 @@ else if(!notifObject.isOffline){
             [interestedButton setImageEdgeInsets:UIEdgeInsetsMake(0.0f, -12.0f, 0.0f, 0.0f)];
             [interestedButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f)];
         }
+        
+        // Add button
+        [_backgroundView addSubview:interestedButton];
     
         // Space left after the button
         fromTheTop += 33+20;
@@ -984,7 +988,7 @@ else if(!notifObject.isOffline){
             cellTop = 8.0f;
         
         static NSString *CellIdentifier = @"MediaTableCell2";
-
+        
         UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         cell.backgroundColor=[[BeagleManager SharedInstance] lightDominantColor];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
