@@ -269,7 +269,7 @@
     
 }
 
-#define kSectionHeaderHeight    28.0
+#define kSectionHeaderHeight 32.0
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     return kSectionHeaderHeight;
 }
@@ -277,40 +277,39 @@
 {
     
     UIView *sectionHeaderview=[[UIView alloc]initWithFrame:CGRectMake(0,0,320,kSectionHeaderHeight)];
-    sectionHeaderview.backgroundColor=[BeagleUtilities returnBeagleColor:2];
+    sectionHeaderview.backgroundColor=[UIColor whiteColor];
     
-    
-    CGRect sectionLabelRect=CGRectMake(8,6.5,240,15);
+    CGRect sectionLabelRect=CGRectMake(16,16,240,15);
     UILabel *sectionLabel=[[UILabel alloc] initWithFrame:sectionLabelRect];
     sectionLabel.textAlignment=NSTextAlignmentLeft;
     
-    sectionLabel.font=[UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f];
-    sectionLabel.textColor=[BeagleUtilities returnBeagleColor:4];
-    sectionLabel.backgroundColor=[UIColor clearColor];
+    sectionLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0f];
+    sectionLabel.textColor=[BeagleUtilities returnBeagleColor:12];
+    sectionLabel.backgroundColor=[UIColor whiteColor];
     [sectionHeaderview addSubview:sectionLabel];
 
     
     if([self.beagleFriendsArray count]>0 && [self.facebookFriendsArray count]>0){
         if(section==0)
-            sectionLabel.text=[NSString stringWithFormat:@"%ld ALREADY ON BEAGLE",(unsigned long)[self.beagleFriendsArray count]];
+            sectionLabel.text=[NSString stringWithFormat:@"%ld FRIENDS ON BEAGLE",(unsigned long)[self.beagleFriendsArray count]];
         else{
-            sectionLabel.text=[NSString stringWithFormat:@"%ld POOR SOULS ARE MISSING OUT",(unsigned long)[self.facebookFriendsArray count]];
+            sectionLabel.text=[NSString stringWithFormat:@"INVITE %ld FRIENDS TO JOIN THE FUN",(unsigned long)[self.facebookFriendsArray count]];
         }
         
     }
     else if([self.beagleFriendsArray count]>0){
-        sectionLabel.text=[NSString stringWithFormat:@"%ld ALREADY ON BEAGLE",(unsigned long)[self.beagleFriendsArray count]];
+        sectionLabel.text=[NSString stringWithFormat:@"%ld FRIENDS ON BEAGLE",(unsigned long)[self.beagleFriendsArray count]];
         
     }
     else if ([self.facebookFriendsArray count]>0)
-        sectionLabel.text=[NSString stringWithFormat:@"%ld POOR SOULS ARE MISSING OUT",(unsigned long)[self.facebookFriendsArray count]];
+        sectionLabel.text=[NSString stringWithFormat:@"INVITE %ld FRIENDS TO JOIN THE FUN",(unsigned long)[self.facebookFriendsArray count]];
 
      return sectionHeaderview;
     
 }
 -(CGFloat)tableView:(UITableView*)tableView heightForRowAtIndexPath:(NSIndexPath*)indexPath {
     
-    return 51.0f;
+    return 66.0f;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *CellIdentifier = @"MediaTableCell";

@@ -47,10 +47,9 @@ static UIFont *secondTextFont = nil;
     // Draw the original image at the origin
     UIImage *newImage = [BeagleUtilities imageCircularBySize:originalImage sqr:70.0f];
     
-    fromTheTop = 10; // top spacing
-    
+    fromTheTop = 16; // top spacing
     //Draw the scaled and cropped image
-    CGRect thisRect = CGRectMake(24, fromTheTop, 35, 35);
+    CGRect thisRect = CGRectMake(16, fromTheTop, 35, 35);
     [newImage drawInRect:thisRect];
     
     profileRect=thisRect;
@@ -72,7 +71,7 @@ static UIFont *secondTextFont = nil;
                                                                      options:NSStringDrawingUsesLineFragmentOrigin
                                                                   attributes:attrs
                                                                      context:nil].size;
-    nameRect=CGRectMake(75, fromTheTop+4, organizerNameSize.width, organizerNameSize.height);
+    nameRect=CGRectMake(67, fromTheTop+4, organizerNameSize.width, organizerNameSize.height);
     
     [self.bgPlayer.fullName drawInRect:nameRect withAttributes:attrs];
     
@@ -94,12 +93,12 @@ static UIFont *secondTextFont = nil;
                                                                          context:nil];
     
     if([self.bgPlayer.location length]!=0){
-        [self.bgPlayer.location drawInRect:CGRectMake(75, fromTheTop, locationTextRect.size.width,locationTextRect.size.height) withAttributes:attrs];
+        [self.bgPlayer.location drawInRect:CGRectMake(67, fromTheTop, locationTextRect.size.width,locationTextRect.size.height) withAttributes:attrs];
     }
     
     if(self.bgPlayer.beagleUserId==0){
         UIButton *inviteStatusButton=[UIButton buttonWithType:UIButtonTypeCustom];
-        inviteStatusButton.frame=CGRectMake(304-53, 10, 53, 25);
+        inviteStatusButton.frame=CGRectMake(304-52, 20, 52, 24);
         if(self.bgPlayer.isInvited){
             inviteStatusButton.titleLabel.backgroundColor=[UIColor clearColor];
             inviteStatusButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -114,6 +113,10 @@ static UIFont *secondTextFont = nil;
         [self addSubview:inviteStatusButton];
     
     }
+    
+    UIView* lineSeparator = [[UIView alloc] initWithFrame:CGRectMake(16, 65, 288, 1)];
+    lineSeparator.backgroundColor = [BeagleUtilities returnBeagleColor:2];
+    [self addSubview:lineSeparator];
 }
 
 
