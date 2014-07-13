@@ -9,7 +9,6 @@
 #import "AboutUsViewController.h"
 
 @interface AboutUsViewController ()
-@property (weak, nonatomic) IBOutlet UILabel *buildText;
 @property (weak, nonatomic) IBOutlet UIButton *backButton;
 
 @end
@@ -32,13 +31,6 @@
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Welcome"]];
     // Do any additional setup after loading the view.
     
-    // Extract App Name
-    NSDictionary *appMetaData = [[NSBundle mainBundle] infoDictionary];
-    NSString* bundleName = [appMetaData objectForKey:@"CFBundleShortVersionString"];
-    NSString* buildNumber = [appMetaData objectForKey:@"CFBundleVersion"];
-    
-    // Build text
-    _buildText.text = [NSString stringWithFormat:@"%@ (%@)", bundleName, buildNumber];
 }
 
 - (void)didReceiveMemoryWarning
