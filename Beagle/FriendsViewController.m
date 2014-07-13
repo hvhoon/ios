@@ -21,6 +21,8 @@
 @property(nonatomic,strong)NSArray *facebookFriendsArray;
 @property(nonatomic,strong)IBOutlet UITableView*friendsTableView;
 @property(nonatomic,strong)NSMutableDictionary*imageDownloadsInProgress;
+@property (weak, nonatomic) IBOutlet UIButton *profileLabel;
+@property (weak, nonatomic) IBOutlet UILabel *inviteLabel;
 @property(strong, nonatomic) IBOutlet UIImageView *profileImageView;
 @end
 
@@ -82,9 +84,18 @@
      else
        [_friendsManager getMutualFriendsNetwork:self.friendBeagle.beagleUserId];
     
-    UIView*navigationProfileView=[[UIView alloc]init];
+    // Setup class variables
+    [_profileLabel setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [_inviteLabel setTextColor:[UIColor whiteColor]];
+    [_profileLabel setHidden:YES];
+    [_inviteLabel setHidden:YES];
     
+    // If this is a friend (profile screen)
     if(!inviteFriends){
+        
+        [_profileLabel setHidden:NO];
+        [_profileLabel setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"DOS2"] withColor:[UIColor whiteColor]] forState:UIControlStateNormal];
+        [_profileLabel setTitle:@"Mutual Friends" forState:UIControlStateNormal];
         
         // Setting up the image
         [self imageCircular:[UIImage imageNamed:@"picbox"]];
@@ -101,78 +112,31 @@
                                             selector:@selector(loadProfileImage:)
                                             object:[self.friendBeagle profileImageUrl]];
         [queue addOperation:operation];
-    
-    NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-    [style setAlignment:NSTextAlignmentLeft];
-
-    NSDictionary *attrs=[NSDictionary dictionaryWithObjectsAndKeys:
-           [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f], NSFontAttributeName,
-                         [BeagleUtilities returnBeagleColor:4],NSForegroundColorAttributeName,
-           style, NSParagraphStyleAttributeName, nil];
-    
-    CGSize friendNameSize=[self.friendBeagle.fullName boundingRectWithSize:CGSizeMake(300, 44)
-                                                                          options:NSStringDrawingUsesLineFragmentOrigin
-                                                                       attributes:attrs
-                                                                          context:nil].size;
-    
-    UILabel *friendNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(40,0,friendNameSize.width, friendNameSize.height)];
-    
-    friendNameLabel.backgroundColor = [UIColor clearColor];
-    friendNameLabel.text = self.friendBeagle.fullName;
-    friendNameLabel.textColor = [BeagleUtilities returnBeagleColor:4];
-    friendNameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f];
-    friendNameLabel.textAlignment = NSTextAlignmentLeft;
-    [navigationProfileView addSubview:friendNameLabel];
-    
-    
-    attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-             [UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f], NSFontAttributeName,
-             [BeagleUtilities returnBeagleColor:4],NSForegroundColorAttributeName,
-             style, NSParagraphStyleAttributeName, nil];
-    
-    CGSize maximumLabelSize = CGSizeMake(288,999);
-    
-    CGRect mutualFriendsTextRect = [@"0 Mutual Friends" boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
-                                                                           attributes:attrs
-                                                                              context:nil];
-    
-    UILabel *mutualFriendsTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(40,friendNameSize.height+1,260,mutualFriendsTextRect.size.height)];
-    mutualFriendsTextLabel.backgroundColor = [UIColor clearColor];
-    mutualFriendsTextLabel.text = @"0 Mutual Friends";
-    mutualFriendsTextLabel.textColor = [BeagleUtilities returnBeagleColor:4];
-    mutualFriendsTextLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f];
-    mutualFriendsTextLabel.textAlignment = NSTextAlignmentLeft;
-    [navigationProfileView addSubview:mutualFriendsTextLabel];
-    mutualFriendsTextLabel.tag=654;
-
-    navigationProfileView.frame=CGRectMake(0, 4.5, friendNameSize.width+35+19, 35);
-    self.navigationItem.titleView=navigationProfileView;
-    }else{
-        NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-        [style setAlignment:NSTextAlignmentLeft];
         
-        NSDictionary *attrs=[NSDictionary dictionaryWithObjectsAndKeys:
-                             [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f], NSFontAttributeName,
-                             [BeagleUtilities returnBeagleColor:4],NSForegroundColorAttributeName,
-                             style, NSParagraphStyleAttributeName, nil];
+    
+    }
+    // If this is YOU! (invite screen)
+    else{
         
-        CGSize maximumLabelSize = CGSizeMake(288,999);
+        BeagleManager *tempBG = [BeagleManager SharedInstance];
         
-        CGRect inviteFriendsTextRect = [@"Invite Friends" boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
-                                                                      attributes:attrs
-                                                                         context:nil];
+        [_inviteLabel setHidden:NO];
+        // Setting up the image
+        [self imageCircular:[UIImage imageNamed:@"picbox"]];
         
-        UILabel *inviteFriendsTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,0,inviteFriendsTextRect.size.width,inviteFriendsTextRect.size.height)];
-        inviteFriendsTextLabel.backgroundColor = [UIColor clearColor];
-        inviteFriendsTextLabel.text = @"Invite Friends";
-        inviteFriendsTextLabel.textColor = [BeagleUtilities returnBeagleColor:4];
-        inviteFriendsTextLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f];
-        inviteFriendsTextLabel.textAlignment = NSTextAlignmentLeft;
-        self.navigationItem.titleView=inviteFriendsTextLabel;
+        // Setting the frame
+        _profileImageView.layer.cornerRadius = _profileImageView.frame.size.width/2;
+        _profileImageView.clipsToBounds = YES;
+        _profileImageView.layer.borderWidth = 4.0f;
+        _profileImageView.layer.borderColor = [UIColor whiteColor].CGColor;
         
-//        [self.view addGestureRecognizer:self.slidingViewController.panGesture];
-
-
+        NSOperationQueue *queue = [NSOperationQueue new];
+        NSInvocationOperation *operation = [[NSInvocationOperation alloc]
+                                            initWithTarget:self
+                                            selector:@selector(loadProfileImage:)
+                                            object:[tempBG.beaglePlayer profileImageUrl]];
+        [queue addOperation:operation];
+        [_inviteLabel setText:[NSString stringWithFormat:@"Rediscover %@ with your friends", [tempBG.placemark.addressDictionary objectForKey:@"City"]]];
     }
 
     // Do any additional setup after loading the view.
@@ -591,8 +555,8 @@
                     
                 }
                 if(!inviteFriends){
-                UILabel* mutualCountLabel=(UILabel*)[[self.navigationController navigationBar]viewWithTag:654];
-                mutualCountLabel.text=[NSString stringWithFormat:@"%ld Mutual Friends",(long)[self.beagleFriendsArray count]+[self.facebookFriendsArray count]];
+                    [_profileLabel setTitle:[NSString stringWithFormat:@"%ld Mutual Friends",(long)[self.beagleFriendsArray count]+[self.facebookFriendsArray count]] forState:UIControlStateNormal];
+                    NSLog(@"%ld Mutual Friends",(long)[self.beagleFriendsArray count]+[self.facebookFriendsArray count]);
                 }
                 [_friendsTableView reloadData];
             }

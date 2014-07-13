@@ -22,7 +22,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KPf-fX-njk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-122" y="-714"/>
+            <point key="canvasLocation" x="-335" y="-707"/>
         </scene>
         <!--Login View Controller-->
         <scene sceneID="68F-zi-rSI">
@@ -722,7 +722,7 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Gwl-Sb-fan" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
         </scene>
-        <!--Friends View Controller - Title-->
+        <!--Friends View Controller-->
         <scene sceneID="otk-gN-0g1">
             <objects>
                 <viewController storyboardIdentifier="profileScreen" id="C0I-BK-P16" customClass="FriendsViewController" sceneMemberID="viewController">
@@ -770,6 +770,22 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
                                     <action selector="settingsButtonPressed:" destination="C0I-BK-P16" eventType="touchUpInside" id="zyb-df-FnR"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jDX-tR-tNd">
+                                <rect key="frame" x="16" y="156" width="288" height="22"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                <inset key="imageEdgeInsets" minX="-10" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                <state key="normal">
+                                    <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                            </button>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Rediscover New York with your friends " textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="220" translatesAutoresizingMaskIntoConstraints="NO" id="MCX-jm-2QR">
+                                <rect key="frame" x="50" y="150" width="220" height="39"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
@@ -781,11 +797,12 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
                             <constraint firstAttribute="centerX" secondItem="6LM-iL-5zX" secondAttribute="centerX" id="poI-n5-IXv"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Title" id="5lJ-au-h8N"/>
                     <nil key="simulatedStatusBarMetrics"/>
                     <connections>
                         <outlet property="friendsTableView" destination="gYY-S2-Laa" id="eQG-Ub-mMk"/>
+                        <outlet property="inviteLabel" destination="MCX-jm-2QR" id="740-Y0-3SD"/>
                         <outlet property="profileImageView" destination="6LM-iL-5zX" id="s46-UW-imB"/>
+                        <outlet property="profileLabel" destination="jDX-tR-tNd" id="rae-G0-TEa"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oUe-ro-x3f" userLabel="First Responder" sceneMemberID="firstResponder"/>
