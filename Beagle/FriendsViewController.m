@@ -136,7 +136,14 @@
                                             selector:@selector(loadProfileImage:)
                                             object:[tempBG.beaglePlayer profileImageUrl]];
         [queue addOperation:operation];
-        [_inviteLabel setText:[NSString stringWithFormat:@"Rediscover %@ with your friends", [tempBG.placemark.addressDictionary objectForKey:@"City"]]];
+        
+        NSString *yourCity = [tempBG.placemark.addressDictionary objectForKey:@"City"];
+        
+        // error checking
+        if(yourCity==nil)
+            yourCity = @"your city";
+        
+        [_inviteLabel setText:[NSString stringWithFormat:@"Rediscover %@ with your friends", yourCity]];
     }
 
     // Do any additional setup after loading the view.
