@@ -630,10 +630,15 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="632-KC-6sK">
-                                <rect key="frame" x="0.0" y="0.0" width="44" height="44"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="632-KC-6sK">
+                                <rect key="frame" x="0.0" y="8" width="44" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" image="Settings">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="44" id="mtA-l2-Y0b"/>
+                                    <constraint firstAttribute="height" constant="44" id="r8E-cR-A7D"/>
+                                </constraints>
+                                <inset key="contentEdgeInsets" minX="16" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                <state key="normal" image="Back-icon">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
@@ -642,6 +647,10 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="0.58431372550000005" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="632-KC-6sK" firstAttribute="leading" secondItem="IJw-qU-tbf" secondAttribute="leading" id="C66-se-8qv"/>
+                            <constraint firstItem="632-KC-6sK" firstAttribute="top" secondItem="IJw-qU-tbf" secondAttribute="top" constant="8" id="nJW-gy-DAb"/>
+                        </constraints>
                     </view>
                     <connections>
                         <outlet property="backButton" destination="632-KC-6sK" id="RZP-rM-qvP"/>
@@ -650,7 +659,7 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2cm-y2-oJv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1419" y="1471"/>
+            <point key="canvasLocation" x="1111" y="807"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="Yrh-qH-9XY">
@@ -669,7 +678,7 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Gwl-Sb-fan" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
         </scene>
-        <!--Friends View Controller-->
+        <!--Friends View Controller - Title-->
         <scene sceneID="otk-gN-0g1">
             <objects>
                 <viewController storyboardIdentifier="profileScreen" id="C0I-BK-P16" customClass="FriendsViewController" sceneMemberID="viewController">
@@ -681,9 +690,13 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6LM-iL-5zX">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="6LM-iL-5zX">
                                 <rect key="frame" x="110" y="44" width="100" height="100"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="7CI-pr-Tz7"/>
+                                    <constraint firstAttribute="width" constant="100" id="arA-PY-CUb"/>
+                                </constraints>
                             </imageView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="gYY-S2-Laa">
                                 <rect key="frame" x="0.0" y="200" width="320" height="368"/>
@@ -698,13 +711,33 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
                                     <outlet property="delegate" destination="C0I-BK-P16" id="aOW-1X-ROX"/>
                                 </connections>
                             </tableView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="t72-YL-qgA">
+                                <rect key="frame" x="0.0" y="8" width="44" height="44"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="7Go-yP-X66"/>
+                                    <constraint firstAttribute="width" constant="44" id="k7F-Ge-whR"/>
+                                </constraints>
+                                <inset key="contentEdgeInsets" minX="16" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                <state key="normal" image="Back-icon">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="settingsButtonPressed:" destination="C0I-BK-P16" eventType="touchUpInside" id="zyb-df-FnR"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="t72-YL-qgA" firstAttribute="leading" secondItem="oeL-fM-YwJ" secondAttribute="leading" id="Aa3-U3-xBL"/>
+                            <constraint firstItem="6LM-iL-5zX" firstAttribute="top" secondItem="grI-4m-J2y" secondAttribute="bottom" constant="44" id="N6Q-fH-ZqU"/>
                             <constraint firstItem="gYY-S2-Laa" firstAttribute="top" secondItem="grI-4m-J2y" secondAttribute="bottom" constant="200" id="Vvz-AC-4an"/>
                             <constraint firstItem="gYY-S2-Laa" firstAttribute="leading" secondItem="oeL-fM-YwJ" secondAttribute="leading" id="d8K-O5-eNn"/>
+                            <constraint firstItem="t72-YL-qgA" firstAttribute="top" secondItem="grI-4m-J2y" secondAttribute="bottom" constant="8" id="hVx-Sr-UpQ"/>
+                            <constraint firstAttribute="centerX" secondItem="6LM-iL-5zX" secondAttribute="centerX" id="poI-n5-IXv"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" title="Title" id="5lJ-au-h8N"/>
                     <nil key="simulatedStatusBarMetrics"/>
                     <connections>
                         <outlet property="friendsTableView" destination="gYY-S2-Laa" id="eQG-Ub-mMk"/>
@@ -760,6 +793,7 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
         </scene>
     </scenes>
     <resources>
+        <image name="Back-icon" width="12" height="21"/>
         <image name="Bell" width="14" height="15"/>
         <image name="Facebook" width="28" height="28"/>
         <image name="Home" width="26" height="25"/>
@@ -768,7 +802,6 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
         <image name="Megaphone" width="27" height="19"/>
         <image name="Next-Arrow" width="67" height="79"/>
         <image name="Notifications-Blank" width="149" height="84"/>
-        <image name="Settings" width="44" height="44"/>
         <image name="Signout" width="25" height="25"/>
         <image name="Time-Highlighted" width="16" height="16"/>
         <image name="Welcome" width="320" height="568"/>
