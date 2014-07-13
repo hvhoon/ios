@@ -9,6 +9,7 @@
 #import "AboutUsViewController.h"
 
 @interface AboutUsViewController ()
+@property (weak, nonatomic) IBOutlet UITextView *aboutUS;
 @property (weak, nonatomic) IBOutlet UIButton *backButton;
 
 @end
@@ -28,7 +29,8 @@
 {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Welcome"]];
+    self.view.backgroundColor = [[BeagleManager SharedInstance] mediumDominantColor];
+    [_aboutUS setTextColor:[[BeagleManager SharedInstance] lightDominantColor]];
     // Do any additional setup after loading the view.
     
 }

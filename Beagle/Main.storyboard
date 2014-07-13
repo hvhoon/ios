@@ -641,7 +641,7 @@
                                 <rect key="frame" x="20" y="110" width="280" height="438"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <mutableString key="text">LICENSED APPLICATION END USER LICENSE AGREEMENT
+                                <string key="text">LICENSED APPLICATION END USER LICENSE AGREEMENT
 
 The Products transacted through the Service are licensed, not sold, to You for use only under the terms of this license, unless a Product is accompanied by a separate license agreement, in which case the terms of that separate license agreement will govern, subject to Your prior acceptance of that separate license agreement. The licensor (“Application Provider”) reserves all rights not expressly granted to You. The Product that is subject to this license is referred to in this license as the “Licensed Application.”
 
@@ -669,7 +669,7 @@ g. You may not use or otherwise export or re-export the Licensed Application exc
 
 h. The Licensed Application and related documentation are "Commercial Items", as that term is defined at 48 C.F.R. §2.101, consisting of "Commercial Computer Software" and "Commercial Computer Software Documentation", as such terms are used in 48 C.F.R. §12.212 or 48 C.F.R. §227.7202, as applicable. Consistent with 48 C.F.R. §12.212 or 48 C.F.R. §227.7202-1 through 227.7202-4, as applicable, the Commercial Computer Software and Commercial Computer Software Documentation are being licensed to U.S. Government end users (a) only as Commercial Items and (b) with only those rights as are granted to all other end users pursuant to the terms and conditions herein. Unpublished-rights reserved under the copyright laws of the United States.
 
-i. The laws of the State of California, excluding its conflicts of law rules, govern this license and your use of the Licensed Application. Your use of the Licensed Application may also be subject to other local, state, national, or international laws.</mutableString>
+i. The laws of the State of California, excluding its conflicts of law rules, govern this license and your use of the Licensed Application. Your use of the Licensed Application may also be subject to other local, state, national, or international laws.</string>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -690,13 +690,14 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
                                 </connections>
                             </button>
                         </subviews>
-                        <color key="backgroundColor" red="1" green="0.58431372550000005" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
                         <constraints>
                             <constraint firstItem="632-KC-6sK" firstAttribute="leading" secondItem="IJw-qU-tbf" secondAttribute="leading" id="C66-se-8qv"/>
                             <constraint firstItem="632-KC-6sK" firstAttribute="top" secondItem="IJw-qU-tbf" secondAttribute="top" constant="8" id="nJW-gy-DAb"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="aboutUS" destination="CLd-Bp-XYt" id="ABj-eJ-Uq9"/>
                         <outlet property="backButton" destination="632-KC-6sK" id="RZP-rM-qvP"/>
                     </connections>
                 </viewController>

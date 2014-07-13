@@ -60,8 +60,8 @@
 {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Profile"]];
-    
+    self.view.backgroundColor = [[BeagleManager SharedInstance] mediumDominantColor];
+
     self.friendsTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
     self.friendsTableView.separatorInset = UIEdgeInsetsZero;
     self.friendsTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth
