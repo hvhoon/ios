@@ -47,7 +47,7 @@ static UIFont *secondTextFont = nil;
     // Draw the original image at the origin
     UIImage *newImage = [BeagleUtilities imageCircularBySize:originalImage sqr:70.0f];
     
-    fromTheTop = 16; // top spacing
+    fromTheTop = 8; // top spacing
     //Draw the scaled and cropped image
     CGRect thisRect = CGRectMake(16, fromTheTop, 35, 35);
     [newImage drawInRect:thisRect];
@@ -98,7 +98,7 @@ static UIFont *secondTextFont = nil;
     
     if(self.bgPlayer.beagleUserId==0){
         UIButton *inviteStatusButton=[UIButton buttonWithType:UIButtonTypeCustom];
-        inviteStatusButton.frame=CGRectMake(304-52, 20, 52, 24);
+        inviteStatusButton.frame=CGRectMake(304-52, 16, 52, 24);
         if(self.bgPlayer.isInvited){
             inviteStatusButton.titleLabel.backgroundColor=[UIColor clearColor];
             inviteStatusButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -114,7 +114,8 @@ static UIFont *secondTextFont = nil;
     
     }
     
-    UIView* lineSeparator = [[UIView alloc] initWithFrame:CGRectMake(16, 65, 288, 1)];
+    
+    UIView* lineSeparator = [[UIView alloc] initWithFrame:CGRectMake(16, 60, 288, 1)];
     lineSeparator.backgroundColor = [BeagleUtilities returnBeagleColor:2];
     [self addSubview:lineSeparator];
 }

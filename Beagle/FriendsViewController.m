@@ -21,6 +21,7 @@
 @property(nonatomic,strong)NSArray *facebookFriendsArray;
 @property(nonatomic,strong)IBOutlet UITableView*friendsTableView;
 @property(nonatomic,strong)NSMutableDictionary*imageDownloadsInProgress;
+@property(strong, nonatomic) IBOutlet UIImageView *profileImageView;
 @end
 
 @implementation FriendsViewController
@@ -46,8 +47,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBackgroundInNotification:) name:kRemoteNotificationReceivedNotification object:Nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(postInAppNotification:) name:kNotificationForInterestPost object:Nil];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
-    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
-    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
 
 }
 -(void)viewDidDisappear:(BOOL)animated{
@@ -59,14 +60,14 @@
 {
     [super viewDidLoad];
     
+    self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Profile"]];
+    
     self.friendsTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
     self.friendsTableView.separatorInset = UIEdgeInsetsZero;
     self.friendsTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth
     |UIViewAutoresizingFlexibleHeight;
     [self.friendsTableView setBackgroundColor:[BeagleUtilities returnBeagleColor:2]];
-
     imageDownloadsInProgress=[NSMutableDictionary new];
-    self.navigationController.navigationBar.topItem.title = @"";
 
     if(_friendsManager!=nil){
         _friendsManager.delegate = nil;
@@ -81,12 +82,25 @@
      else
        [_friendsManager getMutualFriendsNetwork:self.friendBeagle.beagleUserId];
     
-    if(!inviteFriends){
     UIView*navigationProfileView=[[UIView alloc]init];
     
-    UIImageView *imageView=[[UIImageView alloc]initWithImage:[BeagleUtilities imageCircularBySize:[UIImage imageWithData:self.friendBeagle.profileData] sqr:70.0f]];
-    imageView.frame=CGRectMake(0, 0, 35, 35);
-    [navigationProfileView addSubview:imageView];
+    if(!inviteFriends){
+        
+        // Setting up the image
+        [self imageCircular:[UIImage imageNamed:@"picbox"]];
+        
+        // Setting the frame
+        _profileImageView.layer.cornerRadius = _profileImageView.frame.size.width/2;
+        _profileImageView.clipsToBounds = YES;
+        _profileImageView.layer.borderWidth = 4.0f;
+        _profileImageView.layer.borderColor = [UIColor whiteColor].CGColor;
+        
+        NSOperationQueue *queue = [NSOperationQueue new];
+        NSInvocationOperation *operation = [[NSInvocationOperation alloc]
+                                            initWithTarget:self
+                                            selector:@selector(loadProfileImage:)
+                                            object:[self.friendBeagle profileImageUrl]];
+        [queue addOperation:operation];
     
     NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     [style setAlignment:NSTextAlignmentLeft];
@@ -163,7 +177,15 @@
 
     // Do any additional setup after loading the view.
 }
-
+- (void)loadProfileImage:(NSString*)url {
+    NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:url]];
+    UIImage* image =[[UIImage alloc] initWithData:imageData];
+    [self performSelectorOnMainThread:@selector(imageCircular:) withObject:image waitUntilDone:NO];
+}
+-(void)imageCircular:(UIImage*)image{
+    
+    _profileImageView.image=[BeagleUtilities imageCircularBySize:image sqr:200.0f];
+}
 
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
 
@@ -269,7 +291,7 @@
     
 }
 
-#define kSectionHeaderHeight 32.0
+#define kSectionHeaderHeight 36.0
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     return kSectionHeaderHeight;
 }
@@ -279,13 +301,13 @@
     UIView *sectionHeaderview=[[UIView alloc]initWithFrame:CGRectMake(0,0,320,kSectionHeaderHeight)];
     sectionHeaderview.backgroundColor=[UIColor whiteColor];
     
-    CGRect sectionLabelRect=CGRectMake(16,16,240,15);
+    CGRect sectionLabelRect=CGRectMake(16,12,240,15);
     UILabel *sectionLabel=[[UILabel alloc] initWithFrame:sectionLabelRect];
     sectionLabel.textAlignment=NSTextAlignmentLeft;
     
     sectionLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0f];
     sectionLabel.textColor=[BeagleUtilities returnBeagleColor:12];
-    sectionLabel.backgroundColor=[UIColor whiteColor];
+    sectionLabel.backgroundColor=[UIColor clearColor];
     [sectionHeaderview addSubview:sectionLabel];
 
     
