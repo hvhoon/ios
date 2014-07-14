@@ -1,20 +1,9 @@
 {
   "images" : [
     {
-      "resizing" : {
-        "mode" : "3-part-vertical",
-        "center" : {
-          "mode" : "fill",
-          "height" : 1
-        },
-        "capInsets" : {
-          "top" : 24,
-          "bottom" : 25
-        }
-      },
       "idiom" : "universal",
-      "filename" : "picbox.png",
-      "scale" : "1x"
+      "scale" : "1x",
+      "filename" : "picbox.png"
     },
     {
       "idiom" : "universal",
