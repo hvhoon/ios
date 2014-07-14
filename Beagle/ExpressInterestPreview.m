@@ -47,7 +47,7 @@
         
         
         
-       CGSize textSize = [@"Awesome" boundingRectWithSize:CGSizeMake(320, frame.size.height)
+       CGSize textSize = [@"Awesome!" boundingRectWithSize:CGSizeMake(320, frame.size.height)
                                                                      options:NSStringDrawingUsesLineFragmentOrigin
                                                                   attributes:attrs
                                                                      context:nil].size;
