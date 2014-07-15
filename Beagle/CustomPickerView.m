@@ -54,7 +54,7 @@
 //    [pickerTransformView addSubview:pickerView];
 //    [self addSubview:pickerTransformView];
 //
-    
+/*
     _topDistanceContainerView.constant =
     [UIScreen mainScreen].bounds.size.height > 480.0f ? 144 : 100;
     
@@ -77,7 +77,7 @@
 
     _pickDateSpacingFromTop.constant =
     [UIScreen mainScreen].bounds.size.height > 480.0f ? 385 : 341;
-
+*/
     
 
 
@@ -101,7 +101,7 @@
     NSCalendar* calendar = [NSCalendar currentCalendar];
     NSDateComponents* components = [calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:currentDate]; // Get necessary date components
     
-    pickerView.transform = CGAffineTransformMakeScale(0.85f, 0.85f);
+    pickerView.transform = CGAffineTransformMakeScale(0.8f, 0.8f);
     [pickerView addTarget:self
                    action:@selector(dateChange:)
          forControlEvents:UIControlEventValueChanged];
