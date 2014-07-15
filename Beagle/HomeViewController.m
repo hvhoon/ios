@@ -54,6 +54,7 @@
 @property (strong,nonatomic) NSMutableArray *filteredCandyArray;
 @property(strong,nonatomic)ServerManager *homeActivityManager;
 @property(strong,nonatomic)ServerManager *interestUpdateManager;
+@property(strong,nonatomic)UIView *topSection;
 @end
 
 @implementation HomeViewController
@@ -171,29 +172,30 @@
     [self.view addSubview:bottomNavigationView];
 
 #else
-    UIImageView* stockImageView= [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 320, 200)];
+    _topSection = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)];
+    [self.view addSubview:_topSection];
+    
+    UIImageView *stockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)];
     stockImageView.backgroundColor = [UIColor grayColor];
     stockImageView.tag=3456;
-    [self.view addSubview:stockImageView];
-    
+    [_topSection addSubview:stockImageView];
+     
     UIImageView *topGradient=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"gradient"]];
     topGradient.frame = CGRectMake(0, 0, 320, 64);
-    [stockImageView addSubview:topGradient];
+    [_topSection addSubview:topGradient];
     
 #endif
 
     [self addCityName:@"Hello"];
     UIButton *eventButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [eventButton setBackgroundImage:[UIImage imageNamed:@"add"] forState:UIControlStateNormal];
-    
     [eventButton addTarget:self action:@selector(createANewActivity:)forControlEvents:UIControlEventTouchUpInside];
-
     eventButton.frame = CGRectMake(263.0, 0.0, 57.0, 57.0);
     
 #if stockCroppingCheck
     [topNavigationView addSubview:eventButton];
 #else
-    [self.view addSubview:eventButton];
+    [_topSection addSubview:eventButton];
 #endif
     
     // Setting up the filter pane
@@ -204,7 +206,7 @@
 #else
     _filterView = [[UIView alloc] initWithFrame:CGRectMake(0, 156, 320, 44)];
     [_filterView addSubview:[self renderFilterHeaderView]];
-    [self.view addSubview:_filterView];
+    [_topSection addSubview:_filterView];
 #endif
     
     _tableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStylePlain];
@@ -392,7 +394,7 @@
 
 -(void)addCityName:(NSString*)name{
     
-    UILabel *textLabel=(UILabel*)[self.view viewWithTag:1234];
+    UILabel *textLabel=(UILabel*)[_topSection viewWithTag:1234];
     if(textLabel!=nil){
         [textLabel removeFromSuperview];
     }
@@ -414,8 +416,8 @@
     [topNavigationView addSubview:fromLabel];
 #else
     
-    [UIView transitionWithView:self.view duration:1.0f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
-        [self.view addSubview:fromLabel];
+    [UIView transitionWithView:_topSection duration:1.0f options:(UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionAllowUserInteraction) animations:^{
+        [_topSection addSubview:fromLabel];
         
     } completion:NULL];
     
@@ -593,7 +595,6 @@
         // Add the city name and the filter pane to the top section
         [self addCityName:[BG.placemark.addressDictionary objectForKey:@"City"]];
         _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
-            
         [self.tableView reloadData];
     
         }];
@@ -610,7 +611,7 @@
     
 }
 - (void) crossDissolvePhotos:(UIImage *) photo withTitle:(NSString *) title {
-    [UIView transitionWithView:self.view duration:1.0f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+    [UIView transitionWithView:_topSection duration:1.0f options:(UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionAllowUserInteraction) animations:^{
         
 #if stockCroppingCheck
 
@@ -626,7 +627,7 @@
         UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
         stockImageView.image=photo;
         [stockImageView setContentMode:UIViewContentModeScaleAspectFit];
-
+        _topSection.backgroundColor = [UIColor colorWithPatternImage:photo];
         
 #endif
          
@@ -783,17 +784,9 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *CellIdentifier = @"MediaTableCell";
     
-    
-    HomeTableViewCell *cell = (HomeTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell =[[HomeTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-        cell.selectionStyle=UITableViewCellSelectionStyleNone;
-    }
-//    UIButton *interestedBtn=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)indexPath.row]integerValue]];
-//    [interestedBtn removeFromSuperview];
-    
+    HomeTableViewCell *cell = [[HomeTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+    cell.selectionStyle=UITableViewCellEditingStyleNone;
 
-//    cell.bg_delaysContentTouches = NO;
     BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexPath.row];
     
     cell.delegate=self;

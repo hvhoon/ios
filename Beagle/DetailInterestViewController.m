@@ -360,7 +360,6 @@ else if(!notifObject.isOffline){
     self.detailedInterestTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
     self.detailedInterestTableView.separatorInset = UIEdgeInsetsZero;
     self.detailedInterestTableView.delegate = self;
-//    self.detailedInterestTableView.delaysContentTouches = NO;
     self.detailedInterestTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth
     |UIViewAutoresizingFlexibleHeight;
     [self.detailedInterestTableView setBackgroundColor:[BeagleUtilities returnBeagleColor:2]];
@@ -631,26 +630,14 @@ else if(!notifObject.isOffline){
     // For the INFO part of the card
     if(indexPath.row==0){
         // Let's begin spacing from the top
-
-
         int fromTheTop = 10;
 
         static NSString *CellIdentifier = @"MediaTableCell";
-        UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-        cell =[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        
+        UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        
         cell.selectionStyle=UITableViewCellSelectionStyleNone;
         cell.separatorInset = UIEdgeInsetsZero;
-        
-        // Setup the scroll view
-//        for (id obj in cell.subviews)
-//        {
-//            if ([NSStringFromClass([obj class]) isEqualToString:@"UITableViewCellScrollView"])
-//            {
-//                UIScrollView *scroll = (UIScrollView *) obj;
-//                scroll.delaysContentTouches = NO;
-//                break;
-//            }
-//        }
         
         // Setting up the title of the screen
         NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
@@ -885,8 +872,6 @@ else if(!notifObject.isOffline){
         UIColor *buttonColor = [[BeagleManager SharedInstance] mediumDominantColor];
         UIColor *outlineButtonColor = [[BeagleManager SharedInstance] darkDominantColor];
         UIFont *forthTextFont=[UIFont fontWithName:@"HelveticaNeue" size:15.0f];
-
-        [_backgroundView addSubview:interestedButton];
         
         if(self.interestActivity.activityType==1){
             [interestedButton addTarget:self action:@selector(handleTapGestures:) forControlEvents:UIControlEventTouchUpInside];
@@ -903,6 +888,7 @@ else if(!notifObject.isOffline){
             [[interestedButton titleLabel] setFont:forthTextFont];
             [interestedButton.titleLabel setTextAlignment:NSTextAlignmentCenter];
             [interestedButton setTitle:@"Created by you" forState:UIControlStateNormal];
+            
             
             // Normal state
             [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button"] withColor:buttonColor] forState:UIControlStateNormal];
@@ -960,6 +946,9 @@ else if(!notifObject.isOffline){
             [interestedButton setImageEdgeInsets:UIEdgeInsetsMake(0.0f, -12.0f, 0.0f, 0.0f)];
             [interestedButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f)];
         }
+        
+        // Add button
+        [_backgroundView addSubview:interestedButton];
     
         // Space left after the button
         fromTheTop += 33+20;
@@ -974,9 +963,9 @@ else if(!notifObject.isOffline){
         [activityIndicatorView setColor:[BeagleUtilities returnBeagleColor:12]];
         activityIndicatorView.hidesWhenStopped=YES;
              if(self.interestActivity.isParticipant)
-                 activityIndicatorView.frame=CGRectMake(135, 64+fromTheTop-25+(self.view.frame.size.height-(64+47+fromTheTop))/2, 37, 37);
+                 activityIndicatorView.frame=CGRectMake(141.5, 64+fromTheTop-25+(self.view.frame.size.height-(64+47+fromTheTop))/2, 37, 37);
              else{
-                 activityIndicatorView.frame=CGRectMake(135, 64+fromTheTop-25+(self.view.frame.size.height-(64+fromTheTop))/2, 37, 37);
+                 activityIndicatorView.frame=CGRectMake(141.5, 64+fromTheTop-25+(self.view.frame.size.height-(64+fromTheTop))/2, 37, 37);
                  
              }
         [self.view insertSubview:activityIndicatorView aboveSubview:self.contentWrapper];
@@ -999,8 +988,8 @@ else if(!notifObject.isOffline){
             cellTop = 8.0f;
         
         static NSString *CellIdentifier = @"MediaTableCell2";
-        UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-        cell  =[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        
+        UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         cell.backgroundColor=[[BeagleManager SharedInstance] lightDominantColor];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         

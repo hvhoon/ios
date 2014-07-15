@@ -181,12 +181,13 @@
     float fromTheTop = 0.0f; // height from the top of the cell
     fromTheTop += 12.5;
     
+    UIImageView *cellImageView=[[UIImageView alloc]initWithFrame:CGRectMake(fromTheTop, 12, 35, 35)];
     BeagleNotificationClass *play = (BeagleNotificationClass *)[self.listArray objectAtIndex:indexPath.row];
+
+    //AttributedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    //if (cell == nil)
+    AttributedTableViewCell *cell = [[AttributedTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     
-    AttributedTableViewCell *cell = (AttributedTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    //if (cell == nil) {
-    cell = [[AttributedTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-    //}
     cell.isANewNotification=!play.isRead;
     cell.selectionStyle=UITableViewCellSelectionStyleNone;
     cell.notificationType=play.notificationType;
@@ -199,8 +200,6 @@
     
     cell.lbltime.userInteractionEnabled = YES;
     cell.lbltime.backgroundColor=[UIColor clearColor];
-
-    UIImageView *cellImageView=[[UIImageView alloc]initWithFrame:CGRectMake(fromTheTop, 12, 35, 35)];
     
     UIImage*checkImage= [BeagleUtilities loadImage:play.referredId];
     if(checkImage==nil|| play.referredId==0 || play.activityType==2){
@@ -280,7 +279,7 @@
         [cell.contentView addSubview:seperatorLineView];
     }
 
-    [cell setNeedsDisplay];
+    //[cell setNeedsDisplay];
 
     return cell;
 }

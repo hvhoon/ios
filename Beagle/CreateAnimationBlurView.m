@@ -41,43 +41,49 @@
     
     return self;
 }
+// Create animation screen (friends only & public)
 -(void)loadAnimationView:(UIImage*)pImage{
     _blurType=InterestCreateNearbyOrPublic;
     
-    _profileImageView.image=[BeagleUtilities imageCircularBySize:pImage sqr:210.0f];
+    _profileImageView.image=[BeagleUtilities imageCircularBySize:pImage sqr:200.0f];
+    _profileImageView.layer.cornerRadius = _profileImageView.frame.size.width/2;
+    _profileImageView.clipsToBounds = YES;
+    _profileImageView.layer.borderWidth = 3.0f;
+    _profileImageView.layer.borderColor = [UIColor whiteColor].CGColor;
+
     [_profileImageView setHidden:YES];
     [_superstarTextLabel setHidden:YES];
     [_friendsNotifyLabel setHidden:YES];
     [_joinChatInfoLabel setHidden:YES];
-    _loadingIndicatorView.transform=CGAffineTransformMakeScale(1.35, 1.35);
 
 }
-
+// Create animation screen (custom)
 -(void)loadCustomAnimationView:(UIImage*)pImage{
         _blurType=InterestSelectFriends;
     _friendsNotifyLabel.text=@"Now let us tell the friends \n you selected about your post";
-    _profileImageView.image=[BeagleUtilities imageCircularBySize:pImage sqr:210.0f];
+    _profileImageView.image=[BeagleUtilities imageCircularBySize:pImage sqr:200.0f];
+    _profileImageView.layer.cornerRadius = _profileImageView.frame.size.width/2;
+    _profileImageView.clipsToBounds = YES;
+    _profileImageView.layer.borderWidth = 3.0f;
+    _profileImageView.layer.borderColor = [UIColor whiteColor].CGColor;
+    
     [_profileImageView setHidden:YES];
     [_superstarTextLabel setHidden:YES];
     [_friendsNotifyLabel setHidden:YES];
     [_joinChatInfoLabel setHidden:YES];
-    _loadingIndicatorView.transform=CGAffineTransformMakeScale(1.35, 1.35);
-    
 }
 
 -(void)loadDetailedInterestAnimationView:(NSString*)name{
     
         _blurType=InterestJoin;
-    _superstarTextLabel.text=@"Awesome";
-    _friendsNotifyLabel.text=[NSString stringWithFormat:@"We'll let %@ know you're interested!",[[name componentsSeparatedByString:@" "] objectAtIndex:0]];
-    _joinChatInfoLabel.text=@"Post a chat message,join in the planning,or just have some fun";
+    _superstarTextLabel.text=@"Awesome!";
+    _friendsNotifyLabel.text=[NSString stringWithFormat:@"We'll let %@ know you're interested",[[name componentsSeparatedByString:@" "] objectAtIndex:0]];
+    _joinChatInfoLabel.text=@"Post a chat message, join in the planning, or just have some fun!";
     [_bigStarImageView setHidden:YES];
     [_profileImageView setHidden:YES];
     [_superstarTextLabel setHidden:YES];
     [_friendsNotifyLabel setHidden:YES];
-    [_joinChatInfoLabel setHidden:YES];
-    _loadingIndicatorView.transform=CGAffineTransformMakeScale(1.35, 1.35);
-    
+    [_joinChatInfoLabel setHidden:YES];    
 }
 
 -(void)handleSingleTap:(UITapGestureRecognizer*)sender{
@@ -114,16 +120,16 @@
     
     [self.parent drawViewHierarchyInRect:CGRectMake(0, 0, CGRectGetWidth(self.parent.frame), CGRectGetHeight(self.parent.frame)) afterScreenUpdates:YES];
     
-    
     UIGraphicsEndImageContext();
     
-    __block UIImage *snapshot=[UIScreen screenshot];
+    //__block UIImage *snapshot=[UIScreen screenshot];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        snapshot=[snapshot applyBlurWithRadius:8 tintColor:[[BeagleUtilities returnBeagleColor:13] colorWithAlphaComponent:0.75] saturationDeltaFactor:1.8 maskImage:nil];
+        //snapshot=[snapshot applyBlurWithRadius:8 tintColor:[UIColor clearColor] saturationDeltaFactor:1.8 maskImage:nil];
+        ;
         
         dispatch_sync(dispatch_get_main_queue(), ^{
-            self.backgroundColor=[UIColor colorWithPatternImage:snapshot];
+            self.backgroundColor = [[UIColor colorWithPatternImage:[UIImage imageNamed:@"Welcome"]] colorWithAlphaComponent:0.95];
         });
     });
 }

@@ -98,31 +98,61 @@ enum Weeks {
 {
     [super viewDidLoad];
     
+    // All the variables we need to present this screen correctly
     self.blrTimeView=[[EventTimeBlurView alloc]initWithFrame:self.view.frame parentView:self.view];
     self.blrVisbilityView=[EventVisibilityBlurView loadVisibilityFilter:self.view];
     self.blrVisbilityView.delegate=self;
     self.blrTimeView.delegate=self;
+    NSString *visibilityText = nil;
     [self.blrVisbilityView updateConstraints];
+    UIColor* clickable = [[BeagleManager SharedInstance] darkDominantColor];
     
     self.animationBlurView=[CreateAnimationBlurView loadCreateAnimationView:self.view];
     self.animationBlurView.delegate=self;
     
     self.blrLocationView=[LocationBlurView loadLocationFilter:self.view];
     self.blrLocationView.delegate=self;
+    
+    // Not giving the user the ability to change the location yet!
+    locationFilterButton.userInteractionEnabled = NO;
+    
+    // Setting the color for he Visibility, Time filter and Delete buttons
+    // Visibility text and image
+    [visibilityFilterButton setTitleColor:clickable forState:UIControlStateNormal];
+    [visibilityFilterButton setTitleColor:[clickable colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
+    [visibilityFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Visibility"] withColor:clickable] forState:UIControlStateNormal];
+    [visibilityFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Visibility"] withColor:[clickable colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+    
+    // Time text and image
+    [timeFilterButton setTitleColor:clickable forState:UIControlStateNormal];
+    [timeFilterButton setTitleColor:[clickable colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
+    [timeFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Time"] withColor:clickable] forState:UIControlStateNormal];
+    [timeFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Time"] withColor:[clickable colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+    
+    // Delete button
+    [deleteButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Delete"] withColor:clickable] forState:UIControlStateNormal];
+    [deleteButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Delete"] withColor:[clickable colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+    
+    // Color the Background view appropriately
+    [backgroundView setBackgroundColor:[[BeagleManager SharedInstance] mediumDominantColor]];
+    
+    // If we are in CREATE mode
     if(!editState){
         bg_activity=[[BeagleActivityClass alloc]init];
-    
-    
-    bg_activity.state=[[BeagleManager SharedInstance]placemark].administrativeArea;
-    bg_activity.city=[[[BeagleManager SharedInstance]placemark].addressDictionary objectForKey:@"City"];
-    
-    bg_activity.latitude=[[BeagleManager SharedInstance]currentLocation].coordinate.latitude;
-    bg_activity.longitude=[[BeagleManager SharedInstance]currentLocation].coordinate.longitude;
-
+        bg_activity.state=[[BeagleManager SharedInstance]placemark].administrativeArea;
+        bg_activity.city=[[[BeagleManager SharedInstance]placemark].addressDictionary objectForKey:@"City"];
+        bg_activity.latitude=[[BeagleManager SharedInstance]currentLocation].coordinate.latitude;
+        bg_activity.longitude=[[BeagleManager SharedInstance]currentLocation].coordinate.longitude;
     }
     self.optionIndices = [NSMutableIndexSet indexSetWithIndex:1];
     
+    NSString *location = bg_activity.city;
     
+    // Error handling
+    if(location==nil)
+        location = @"your city";
+    
+    // Add your profile image regardless of state!
     if([[[BeagleManager SharedInstance]beaglePlayer]profileData]==nil){
         
         [self imageCircular:[UIImage imageNamed:@"picbox"]];
@@ -140,92 +170,73 @@ enum Weeks {
         [self.animationBlurView loadAnimationView:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
     }
     
-
+    // Setup the navigation controller
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:248.0/255.0 green:248.0/255.0 blue:248.0/255.0 alpha:1.0]];
-    [self.navigationController.navigationBar setTintColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0]];
+    [self.navigationController.navigationBar setTintColor:clickable];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(cancelButtonClicked:)];
     
+    // Either way update the count given the text in the description field
+    countTextLabel.text= [[NSString alloc] initWithFormat:@"%lu",(unsigned long)140-[descriptionTextView.text length]];
+    [countTextLabel setTextAlignment:NSTextAlignmentRight];
+    
+    // We are SAVING if the activity has already been created
     if(editState){
+        // Setup the navigation bar
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleDone target:self action:@selector(createButtonClicked:)];
+        [self.navigationItem.rightBarButtonItem setTintColor:[BeagleUtilities returnBeagleColor:13]];
+        self.navigationItem.rightBarButtonItem.enabled=YES;
         
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleDone target:self action:@selector(createButtonClicked:)];
-    [self.navigationItem.rightBarButtonItem setTintColor:[BeagleUtilities returnBeagleColor:13]];
-    self.navigationItem.rightBarButtonItem.enabled=YES;
+        // Add the description field and populate it
+        descriptionTextView.text=self.bg_activity.activityDesc;
         
-    }else{
+        // Setup the labels appropriately
+        timeIndex=-1;
+        visibilityIndex=-1;
+        [visibilityFilterButton setTitle:self.bg_activity.visibility forState:UIControlStateNormal];
+        [timeFilterButton setTitle:[BeagleUtilities activityTime:self.bg_activity.startActivityDate endate:self.bg_activity.endActivityDate] forState:UIControlStateNormal];
+        visibilityFilterButton.hidden=YES;
+        deleteButton.hidden=NO;
+        visibilityImageView.hidden=YES;
+        
+        // Setting up the correct privacy text
+        if([bg_activity.visibility isEqualToString:@"public"])
+            visibilityText = [NSString stringWithFormat:@"Visible to everybody in %@", location];
+        else if([bg_activity.visibility isEqualToString:@"private"])
+            visibilityText = [NSString stringWithFormat:@"Visible to friends in %@", location];
+        else
+            visibilityText = @"Visible to select friends";
+    }
+    // Or we are simply CREATING a new activity
+    else{
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Create" style:UIBarButtonItemStyleDone target:self action:@selector(createButtonClicked:)];
         [self.navigationItem.rightBarButtonItem setTintColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA]];
         self.navigationItem.rightBarButtonItem.enabled=NO;
         
-    }
-    #if 1
-    if(editState){
-        descriptionTextView.text=self.bg_activity.activityDesc;
-    }
-    countTextLabel.text= [[NSString alloc] initWithFormat:@"%lu",(unsigned long)140-[descriptionTextView.text length]];
-
-
-    
-    if(editState){
-        timeIndex=-1;
-        visibilityIndex=-1;
-    [visibilityFilterButton setTitle:self.bg_activity.visibility forState:UIControlStateNormal];
-    [timeFilterButton setTitle:[BeagleUtilities activityTime:self.bg_activity.startActivityDate endate:self.bg_activity.endActivityDate] forState:UIControlStateNormal];
-    }
-    else{
-         timeIndex=6;
+        // Setting up the labels for a new activity
+        timeIndex=6;
         visibilityIndex=2;
-        [visibilityFilterButton setTitle:@"Friends Nearby" forState:UIControlStateNormal];
+        [visibilityFilterButton setTitle:@"Friends" forState:UIControlStateNormal];
         [timeFilterButton setTitle:@"This Weekend" forState:UIControlStateNormal];
+        
+        // Setting the visibility label
+        switch (visibilityIndex) {
+            case 2:
+                visibilityText = [NSString stringWithFormat:@"We'll tell your friends in %@", location];
+                break;
+            case 3:
+                visibilityText = @"We'll tell the friends you selected";
+            default:
+                visibilityText = [NSString stringWithFormat:@"We'll tell your friends in %@", location];
+                break;
+        }
     }
     
-    
-    // Setting the color for he Visibility, Time filter and Delete buttons
-    // Visibility text and image
-    [visibilityFilterButton setTitleColor:[BeagleUtilities returnBeagleColor:13] forState:UIControlStateNormal];
-    [visibilityFilterButton setTitleColor:[[BeagleUtilities returnBeagleColor:13] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
-    [visibilityFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Visibility"] withColor:[BeagleUtilities returnBeagleColor:13]] forState:UIControlStateNormal];
-    [visibilityFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Visibility"] withColor:[[BeagleUtilities returnBeagleColor:13] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
-    
-    // Time text and image
-    [timeFilterButton setTitleColor:[BeagleUtilities returnBeagleColor:13] forState:UIControlStateNormal];
-    [timeFilterButton setTitleColor:[[BeagleUtilities returnBeagleColor:13] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
-    [timeFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Time"] withColor:[BeagleUtilities returnBeagleColor:13]] forState:UIControlStateNormal];
-    [timeFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Time"] withColor:[[BeagleUtilities returnBeagleColor:13] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
-    
-    // Delete button
-    [deleteButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Delete"] withColor:[BeagleUtilities returnBeagleColor:13]] forState:UIControlStateNormal];
-    [deleteButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Delete"] withColor:[[BeagleUtilities returnBeagleColor:13] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
-    
-    // Color the Background view appropriately
-    [backgroundView setBackgroundColor:[[BeagleManager SharedInstance] mediumDominantColor]];
-    
-    NSString *locationFilter=[NSString stringWithFormat:@"%@, %@",[[[BeagleManager SharedInstance]placemark].addressDictionary objectForKey:@"City"],[[BeagleManager SharedInstance]placemark].administrativeArea];
-    [locationFilterButton setTitle:locationFilter forState:UIControlStateNormal];
-    
-    // Disable this location button for now!
-    locationFilterButton.enabled = NO;
-    [countTextLabel setTextAlignment:NSTextAlignmentRight];
-    
-    if(editState){
-        visibilityFilterButton.hidden=YES;
-        
-        NSString *visibilityText = nil;
-        // Setting up the correct privacy text
-        if([bg_activity.visibility isEqualToString:@"public"])
-            visibilityText = @"Visible to everybody";
-        else if([bg_activity.visibility isEqualToString:@"private"])
-            visibilityText = @"Visible to friends nearby";
-        else
-            visibilityText = @"Visible to select friends";
-        
-        [locationFilterButton setTitle:visibilityText forState:UIControlStateNormal];
-        deleteButton.hidden=NO;
-        visibilityImageView.hidden=YES;
-    }
-	// Do any additional setup after loading the view.
-    
-#endif
+    // Setting the visibility text all the way at the end
+    [locationFilterButton setTitle:visibilityText forState:UIControlStateNormal];
+
 }
+	// Do any additional setup after loading the view.
+
 -(void)viewDidDisappear:(BOOL)animated{
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kRemoteNotificationReceivedNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationForInterestPost object:nil];
@@ -865,32 +876,36 @@ enum Weeks {
 -(void)changeVisibilityFilter:(NSInteger)index{
     visibilityIndex=index;
     [self.navigationItem.rightBarButtonItem setTitle:@"Create"];
+    
+    NSString *location = bg_activity.city;
+    
+    if(location == nil)
+        location = @"your city";
+    
     switch (index) {
         case 1:
         {
-            
             [visibilityFilterButton setTitle:@"Public" forState:UIControlStateNormal];
+            [locationFilterButton setTitle:[NSString stringWithFormat:@"We'll tell your friends in %@", location] forState:UIControlStateNormal];
         }
             break;
             
         case 2:
         {
-            [visibilityFilterButton setTitle:@"Friends Nearby" forState:UIControlStateNormal];
+            [visibilityFilterButton setTitle:@"Friends" forState:UIControlStateNormal];
+            [locationFilterButton setTitle:[NSString stringWithFormat:@"We'll tell your friends in %@", location] forState:UIControlStateNormal];
+
         }
             break;
-            
-            
         case 3:
         {
-            [visibilityFilterButton setTitle:@"Custom" forState:UIControlStateNormal];
+            [visibilityFilterButton setTitle:@"Private" forState:UIControlStateNormal];
+            [locationFilterButton setTitle:[NSString stringWithFormat:@"We'll tell the friends you selected"] forState:UIControlStateNormal];
             [self.navigationItem.rightBarButtonItem setTitle:@"Select"];
 
 
         }
             break;
-            
-            
-            
     }
 }
 

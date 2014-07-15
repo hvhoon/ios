@@ -22,32 +22,30 @@ static inline NSRegularExpression * NameRegularExpression() {
 @synthesize lbltime,timeText,notificationType,isANewNotification;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (!self) {
-        return nil; 
-    }
     
-    self.layer.shouldRasterize = YES;
-    self.layer.rasterizationScale = [[UIScreen mainScreen] scale];
+    if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
     
-    self.summaryLabel = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
-    self.summaryLabel.textColor= [BeagleUtilities returnBeagleColor:2];
-    self.summaryLabel.numberOfLines = 2;
-    self.summaryLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-    self.summaryLabel.font=[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
-    self.summaryLabel.highlightedTextColor = [UIColor whiteColor];
-    self.summaryLabel.verticalAlignment = TTTAttributedLabelVerticalAlignmentTop;
+        self.layer.shouldRasterize = YES;
+        self.layer.rasterizationScale = [[UIScreen mainScreen] scale];
+        self.summaryLabel = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
+        self.summaryLabel.textColor= [BeagleUtilities returnBeagleColor:2];
+        self.summaryLabel.numberOfLines = 2;
+        self.summaryLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+        self.summaryLabel.font=[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
+        self.summaryLabel.highlightedTextColor = [UIColor whiteColor];
+        self.summaryLabel.verticalAlignment = TTTAttributedLabelVerticalAlignmentTop;
     
-    self.lbltime=[[UILabel alloc] init];
-    self.lbltime.textColor=[BeagleUtilities returnBeagleColor:6];
-    self.lbltime.font =[UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f];
-    self.lbltime.lineBreakMode = UILineBreakModeWordWrap;
-    self.lbltime.numberOfLines = 0;
-    self.lbltime.highlightedTextColor = [BeagleUtilities returnBeagleColor:6];
+        self.lbltime=[[UILabel alloc] init];
+        self.lbltime.textColor=[BeagleUtilities returnBeagleColor:6];
+        self.lbltime.font =[UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f];
+        self.lbltime.lineBreakMode = UILineBreakModeWordWrap;
+        self.lbltime.numberOfLines = 0;
+        self.lbltime.highlightedTextColor = [BeagleUtilities returnBeagleColor:6];
 
-    [self.contentView addSubview:self.lbltime];
-    [self.contentView addSubview:self.summaryLabel];
-    
+        [self.contentView addSubview:self.lbltime];
+        [self.contentView addSubview:self.summaryLabel];
+        
+    }
     return self;
 }
 
@@ -127,6 +125,7 @@ static inline NSRegularExpression * NameRegularExpression() {
     return height;
 }
 
+
 #pragma mark - UIView
 
 - (void)layoutSubviews {
@@ -134,7 +133,7 @@ static inline NSRegularExpression * NameRegularExpression() {
     self.textLabel.hidden = YES;
     self.detailTextLabel.hidden = YES;
     
-    self.summaryLabel.frame=CGRectMake(58, 12, ceilf([self.summaryText sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f] constrainedToSize:CGSizeMake(195, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].width), [AttributedTableViewCell heightForNotificationText:self.summaryText]);
+    self.summaryLabel.frame=CGRectMake(58, 12, ceilf([self.summaryText sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f] constrainedToSize:CGSizeMake(195, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].width),[AttributedTableViewCell heightForNotificationText:self.summaryText]);
         
     self.lbltime.frame=CGRectMake(58, 12+self.summaryLabel.frame.size.height+2, ceilf([self.lbltime.text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f] constrainedToSize:CGSizeMake(195, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].width), 15);
     
@@ -142,7 +141,7 @@ static inline NSRegularExpression * NameRegularExpression() {
     if(self.isANewNotification){
         UIImageView *actionImageView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"New-Notification"]];
         actionImageView.frame=CGRectMake(self.lbltime.frame.size.width+58+5, 12+self.summaryLabel.frame.size.height+6, 9, 9);
-        [self addSubview:actionImageView];
+        [self.contentView addSubview:actionImageView];
 
     }
 }

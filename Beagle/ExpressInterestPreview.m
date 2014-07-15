@@ -47,7 +47,7 @@
         
         
         
-       CGSize textSize = [@"Awesome" boundingRectWithSize:CGSizeMake(320, frame.size.height)
+       CGSize textSize = [@"Awesome!" boundingRectWithSize:CGSizeMake(320, frame.size.height)
                                                                      options:NSStringDrawingUsesLineFragmentOrigin
                                                                   attributes:attrs
                                                                      context:nil].size;
@@ -58,7 +58,7 @@
 		awesomeLabel.textAlignment=NSTextAlignmentCenter;
 		awesomeLabel.tag = kAwesomeLabel;
 		[awesomeLabel setHidden:YES];
-        awesomeLabel.text=@"Awesome";
+        awesomeLabel.text=@"Awesome!";
 		awesomeLabel.font=[UIFont fontWithName:@"HelveticaNeue-Bold" size:17.0f];
 		awesomeLabel.textColor=[UIColor whiteColor];
 		awesomeLabel.backgroundColor=[UIColor clearColor];
@@ -72,7 +72,7 @@
         
         CGSize maximumLabelSize = CGSizeMake(288,999);
         NSArray *firstName=[orgn componentsSeparatedByString:@" "];
-        NSString *infoString=[NSString stringWithFormat:@"We'll let %@ know you're interested!",[firstName objectAtIndex:0]];
+        NSString *infoString=[NSString stringWithFormat:@"We'll let %@ know you're interested",[firstName objectAtIndex:0]];
         CGRect commentTextRect = [infoString boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
                                                                           attributes:attrs
                                                                              context:nil];
