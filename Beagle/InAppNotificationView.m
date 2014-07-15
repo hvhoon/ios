@@ -98,7 +98,6 @@ static inline NSRegularExpression * NameRegularExpression() {
     [UIView animateWithDuration:0.7 delay:0.0f options:UIViewAnimationOptionCurveEaseIn animations:^{
         self.frame = popupStartRect;
     } completion:^(BOOL finished) {
-        [[UIApplication sharedApplication] setStatusBarHidden:NO];
         self.alpha = 0.0f;
     }];
     
@@ -144,7 +143,7 @@ static inline NSRegularExpression * NameRegularExpression() {
     
     if (inAppNotif.backgroundTap && inAppNotif.notificationType!=CANCEL_ACTIVITY_TYPE) {
         
-        [self HideNotification];
+           [self HideNotification];
         if (self.delegate && [self.delegate respondsToSelector:@selector(backgroundTapToPush:)])
             if(inAppNotif.activityId!=0){
                 [self.delegate backgroundTapToPush:inAppNotif];

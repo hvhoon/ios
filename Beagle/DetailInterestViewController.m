@@ -408,6 +408,8 @@ else if(!notifObject.isOffline){
     [self.contentWrapper.inputView.textView resignFirstResponder];
     [self.view endEditing:YES];
     [self.contentWrapper textViewDidChange:self.contentWrapper.inputView.textView];
+    if(self.contentWrapper.inputView.textView.text.length==0)
+        self.contentWrapper.dummyInputView.textView.text=@"Join the conversation";
     
     UIEdgeInsets contentInset = self.contentWrapper.scrollView.contentInset;
     contentInset.bottom = 0;
@@ -517,6 +519,9 @@ else if(!notifObject.isOffline){
             [self.animationBlurView crossDissolveShow];
             UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
             [keyboard addSubview:self.animationBlurView];
+            
+            UIButton *interestedButton=(UIButton*)[self.view viewWithTag:345];
+            [interestedButton setEnabled:NO];
 
             [_interestUpdateManager participateMembership:self.interestActivity.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
         }
@@ -1290,6 +1295,8 @@ else if(!notifObject.isOffline){
                 }
                 // If Already joined, do nothing
                 else if([message isEqualToString:@"Already Joined"]){
+                    UIButton *interestedButton=(UIButton*)[self.view viewWithTag:345];
+                    [interestedButton setEnabled:YES];
 
                     [self.animationBlurView hide];
                     NSString *message = NSLocalizedString (@"You have already joined.",
@@ -1326,6 +1333,8 @@ else if(!notifObject.isOffline){
                 if(self.interestActivity.isParticipant){
                     self.interestActivity.isParticipant=FALSE;
                     
+                    [interestedButton setEnabled:YES];
+
                     // Normal state
                     [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button-Unfilled"] withColor:outlineButtonColor] forState:UIControlStateNormal];
                     [interestedButton setTitleColor:outlineButtonColor forState:UIControlStateNormal];
@@ -1466,7 +1475,11 @@ else if(!notifObject.isOffline){
         _interestUpdateManager.delegate = nil;
         [_interestUpdateManager releaseServerManager];
         _interestUpdateManager = nil;
+        UIButton *interestedButton=(UIButton*)[self.view viewWithTag:345];
+        [interestedButton setEnabled:YES];
+
         if(serverRequest==kServerCallParticipateInterest){
+
             [self.animationBlurView hide];
 
         }
@@ -1500,7 +1513,11 @@ else if(!notifObject.isOffline){
         _interestUpdateManager.delegate = nil;
         [_interestUpdateManager releaseServerManager];
         _interestUpdateManager = nil;
+        UIButton *interestedButton=(UIButton*)[self.view viewWithTag:345];
+        [interestedButton setEnabled:YES];
+
         if(serverRequest==kServerCallParticipateInterest){
+
             [self.animationBlurView hide];
             
         }
@@ -1551,7 +1568,10 @@ else if(!notifObject.isOffline){
                 
                 _interestUpdateManager=[[ServerManager alloc]init];
                 _interestUpdateManager.delegate=self;
-                
+        
+                UIButton *interestedButton=(UIButton*)[self.view viewWithTag:345];
+                [interestedButton setEnabled:NO];
+
                 [_interestUpdateManager removeMembership:self.interestActivity.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
         }
     else{
@@ -1588,6 +1608,8 @@ else if(!notifObject.isOffline){
 
 -(void)updateMembershipView{
     UIButton *interestedButton=(UIButton*)[self.view viewWithTag:345];
+    [interestedButton setEnabled:YES];
+
     UIColor *buttonColor = [[BeagleManager SharedInstance] mediumDominantColor];
     // Normal state
     [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button"] withColor:buttonColor] forState:UIControlStateNormal];
