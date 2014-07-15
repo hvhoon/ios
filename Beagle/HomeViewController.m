@@ -54,6 +54,7 @@
 @property (strong,nonatomic) NSMutableArray *filteredCandyArray;
 @property(strong,nonatomic)ServerManager *homeActivityManager;
 @property(strong,nonatomic)ServerManager *interestUpdateManager;
+@property(strong,nonatomic)UIView *topSection;
 @end
 
 @implementation HomeViewController
@@ -171,10 +172,13 @@
     [self.view addSubview:bottomNavigationView];
 
 #else
-    UIImageView* stockImageView= [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 320, 200)];
+    _topSection = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)];
+    [self.view addSubview:_topSection];
+    
+    UIImageView *stockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)];
     stockImageView.backgroundColor = [UIColor grayColor];
     stockImageView.tag=3456;
-    [self.view addSubview:stockImageView];
+    [_topSection addSubview:stockImageView];
     
     UIImageView *topGradient=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"gradient"]];
     topGradient.frame = CGRectMake(0, 0, 320, 64);
@@ -185,9 +189,7 @@
     [self addCityName:@"Hello"];
     UIButton *eventButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [eventButton setBackgroundImage:[UIImage imageNamed:@"add"] forState:UIControlStateNormal];
-    
     [eventButton addTarget:self action:@selector(createANewActivity:)forControlEvents:UIControlEventTouchUpInside];
-
     eventButton.frame = CGRectMake(263.0, 0.0, 57.0, 57.0);
     
 #if stockCroppingCheck
@@ -204,7 +206,7 @@
 #else
     _filterView = [[UIView alloc] initWithFrame:CGRectMake(0, 156, 320, 44)];
     [_filterView addSubview:[self renderFilterHeaderView]];
-    [self.view addSubview:_filterView];
+    [_topSection addSubview:_filterView];
 #endif
     
     _tableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStylePlain];
@@ -392,7 +394,7 @@
 
 -(void)addCityName:(NSString*)name{
     
-    UILabel *textLabel=(UILabel*)[self.view viewWithTag:1234];
+    UILabel *textLabel=(UILabel*)[_topSection viewWithTag:1234];
     if(textLabel!=nil){
         [textLabel removeFromSuperview];
     }
@@ -414,8 +416,8 @@
     [topNavigationView addSubview:fromLabel];
 #else
     
-    [UIView transitionWithView:self.view duration:1.0f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
-        [self.view addSubview:fromLabel];
+    [UIView transitionWithView:_topSection duration:1.0f options:(UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionAllowUserInteraction) animations:^{
+        [_topSection addSubview:fromLabel];
         
     } completion:NULL];
     
@@ -593,7 +595,6 @@
         // Add the city name and the filter pane to the top section
         [self addCityName:[BG.placemark.addressDictionary objectForKey:@"City"]];
         _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
-            
         [self.tableView reloadData];
     
         }];
@@ -610,7 +611,7 @@
     
 }
 - (void) crossDissolvePhotos:(UIImage *) photo withTitle:(NSString *) title {
-    [UIView transitionWithView:self.view duration:1.0f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+    [UIView transitionWithView:_topSection duration:1.0f options:(UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionAllowUserInteraction) animations:^{
         
 #if stockCroppingCheck
 
