@@ -408,6 +408,8 @@ else if(!notifObject.isOffline){
     [self.contentWrapper.inputView.textView resignFirstResponder];
     [self.view endEditing:YES];
     [self.contentWrapper textViewDidChange:self.contentWrapper.inputView.textView];
+    if(self.contentWrapper.inputView.textView.text.length==0)
+        self.contentWrapper.dummyInputView.textView.text=@"Join the conversation";
     
     UIEdgeInsets contentInset = self.contentWrapper.scrollView.contentInset;
     contentInset.bottom = 0;

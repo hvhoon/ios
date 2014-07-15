@@ -23,7 +23,6 @@
 #import "BeagleNotificationClass.h"
 #import "FriendsViewController.h"
 #import "ExpressInterestPreview.h"
-#import "UITableViewCell+BG_delaysContentTouches.h"
 #define REFRESH_HEADER_HEIGHT 70.0f
 #define stockCroppingCheck 0
 #define kTimerIntervalInSeconds 10
