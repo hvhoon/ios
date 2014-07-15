@@ -43,7 +43,6 @@
 		1832F9C51953838000B271DB /* FriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1832F9C41953838000B271DB /* FriendsViewController.m */; };
 		183DFEAB19493D76008A556A /* UILabel+WhiteUIDatePickerLabels.m in Sources */ = {isa = PBXBuildFile; fileRef = 183DFEAA19493D76008A556A /* UILabel+WhiteUIDatePickerLabels.m */; };
 		1849D6B0192FCC540068BEDE /* InAppNotificationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1849D6AF192FCC540068BEDE /* InAppNotificationView.m */; };
-		18531A3919704C6A00C713B9 /* UITableViewCell+BG_delaysContentTouches.m in Sources */ = {isa = PBXBuildFile; fileRef = 18531A3819704C6A00C713B9 /* UITableViewCell+BG_delaysContentTouches.m */; };
 		1854293B196F962E00B1D777 /* CreateAnimationBlurView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1854293A196F962E00B1D777 /* CreateAnimationBlurView.m */; };
 		1854293D196F965000B1D777 /* CreateAnimationBlurView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1854293C196F965000B1D777 /* CreateAnimationBlurView.xib */; };
 		186B11FA1958E02D00FF5A4D /* InterestInviteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 186B11F91958E02D00FF5A4D /* InterestInviteViewController.m */; };
@@ -221,8 +220,6 @@
 		183DFEAA19493D76008A556A /* UILabel+WhiteUIDatePickerLabels.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UILabel+WhiteUIDatePickerLabels.m"; sourceTree = "<group>"; };
 		1849D6AE192FCC540068BEDE /* InAppNotificationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InAppNotificationView.h; sourceTree = "<group>"; };
 		1849D6AF192FCC540068BEDE /* InAppNotificationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InAppNotificationView.m; sourceTree = "<group>"; };
-		18531A3719704C6A00C713B9 /* UITableViewCell+BG_delaysContentTouches.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableViewCell+BG_delaysContentTouches.h"; sourceTree = "<group>"; };
-		18531A3819704C6A00C713B9 /* UITableViewCell+BG_delaysContentTouches.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableViewCell+BG_delaysContentTouches.m"; sourceTree = "<group>"; };
 		18542939196F962E00B1D777 /* CreateAnimationBlurView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateAnimationBlurView.h; sourceTree = "<group>"; };
 		1854293A196F962E00B1D777 /* CreateAnimationBlurView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateAnimationBlurView.m; sourceTree = "<group>"; };
 		1854293C196F965000B1D777 /* CreateAnimationBlurView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CreateAnimationBlurView.xib; sourceTree = "<group>"; };
@@ -577,8 +574,6 @@
 				187808581954DEA8005E682F /* FriendsTableViewCell.m */,
 				1889E5EA195A84F50079C3E9 /* InviteTableViewCell.h */,
 				1889E5EB195A84F60079C3E9 /* InviteTableViewCell.m */,
-				18531A3719704C6A00C713B9 /* UITableViewCell+BG_delaysContentTouches.h */,
-				18531A3819704C6A00C713B9 /* UITableViewCell+BG_delaysContentTouches.m */,
 			);
 			name = "Table View Cell";
 			sourceTree = "<group>";
@@ -1162,7 +1157,6 @@
 				186B11FA1958E02D00FF5A4D /* InterestInviteViewController.m in Sources */,
 				18EC231A18B5A42D00316B6E /* ASICloudFilesCDNRequest.m in Sources */,
 				18EC232418B5A42D00316B6E /* NSString+SBJSON.m in Sources */,
-				18531A3919704C6A00C713B9 /* UITableViewCell+BG_delaysContentTouches.m in Sources */,
 				18FADBA318B66A8D00A62287 /* NotificationsViewController.m in Sources */,
 				18EC232018B5A42D00316B6E /* ASICloudFilesRequest.m in Sources */,
 				18EC231C18B5A42D00316B6E /* ASICloudFilesContainerRequest.m in Sources */,
