@@ -1279,6 +1279,9 @@
     }
     else{
         [self createAnOverlayOnAUITableViewCell:[NSIndexPath indexPathForRow:index inSection:0]];
+        HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+        UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)index]integerValue]];
+        [button setEnabled:NO];
 
         [_interestUpdateManager participateMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
     }
@@ -1318,6 +1321,9 @@
 -(void)showView{
     
     HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+    UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)interestIndex]integerValue]];
+    [button setEnabled:YES];
+
     ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
     [preview ShowViewFromCell];
     
@@ -1382,6 +1388,10 @@
                 _interestUpdateManager.delegate=self;
                 
                 BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:interestIndex];
+                HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+                UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)interestIndex]integerValue]];
+                [button setEnabled:NO];
+
                 [_interestUpdateManager removeMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
             }
                 break;
@@ -1651,6 +1661,9 @@
                 else if([message isEqualToString:@"Already Joined"]){
                     
                     HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+                    UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)interestIndex]integerValue]];
+                    [button setEnabled:YES];
+
                     ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
                     [preview removeFromSuperview];
                     self.tableView.scrollEnabled=YES;
@@ -1752,12 +1765,17 @@
                                            @"NSURLConnection initialization method failed.");
     BeagleAlertWithMessage(message);
     
-    if(serverRequest==kServerCallParticipateInterest){
+    if(serverRequest==kServerCallParticipateInterest||serverRequest==kServerCallLeaveInterest){
         HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
-        ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
-        [preview removeFromSuperview];
-        self.tableView.scrollEnabled=YES;
-
+        UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)interestIndex]integerValue]];
+        [button setEnabled:YES];
+        if(serverRequest==kServerCallParticipateInterest){
+            
+            ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
+            
+            [preview removeFromSuperview];
+            self.tableView.scrollEnabled=YES;
+        }
     }
 }
 
@@ -1782,13 +1800,17 @@
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
     [alert show];
-    if(serverRequest==kServerCallParticipateInterest){
+    if(serverRequest==kServerCallParticipateInterest||serverRequest==kServerCallLeaveInterest){
         HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+        UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)interestIndex]integerValue]];
+        [button setEnabled:YES];
+        if(serverRequest==kServerCallParticipateInterest){
+
         ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
         
         [preview removeFromSuperview];
         self.tableView.scrollEnabled=YES;
-        
+        }
     }
 
 }
