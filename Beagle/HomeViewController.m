@@ -133,7 +133,13 @@
     categoryFilterType=1;
     self.filterBlurView = [EventInterestFilterBlurView loadEventInterestFilter:self.view];
     self.filterBlurView.delegate=self;
-    [self.filterBlurView updateConstraints];
+    
+    // If it's a 3.5" screen use the bounds below
+    self.filterBlurView.frame=CGRectMake(0, 0, 320, 480);
+    
+    // Else use these bounds for the 4" screen
+    if([UIScreen mainScreen].bounds.size.height > 480.0f)
+        self.filterBlurView.frame=CGRectMake(0, 0, 320, 568);
 
     if([[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"]){
         [[BeagleManager SharedInstance]getUserObjectInAutoSignInMode];
@@ -1113,9 +1119,16 @@
         
         NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"BlankHomePageView" owner:self options:nil];
         BlankHomePageView *blankHomePageView=[nib objectAtIndex:0];
-        blankHomePageView.frame=CGRectMake(0, 200, 320, 400);
+        
+        // If it's a 3.5" screen use the bounds below
+        blankHomePageView.frame=CGRectMake(0, 200, 320, 280);
+        
+        // Else use these bounds for the 4" screen
+        if([UIScreen mainScreen].bounds.size.height > 480.0f)
+            blankHomePageView.frame=CGRectMake(0, 200, 320, 368);
+        
         blankHomePageView.delegate=self;
-        [blankHomePageView updateViewConstraints];
+        //[blankHomePageView updateViewConstraints];
         blankHomePageView.userInteractionEnabled=YES;
         blankHomePageView.tag=1245;
         [self.view addSubview:blankHomePageView];

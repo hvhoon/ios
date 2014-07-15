@@ -15,5 +15,4 @@
 
 @interface BlankHomePageView : UIView
 @property(nonatomic,strong)id<BlankHomePageViewDelegate>delegate;
-- (void)updateViewConstraints;
 @end
