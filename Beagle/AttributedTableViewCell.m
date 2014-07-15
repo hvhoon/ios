@@ -34,7 +34,7 @@ static inline NSRegularExpression * NameRegularExpression() {
         self.summaryLabel.font=[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
         self.summaryLabel.highlightedTextColor = [UIColor whiteColor];
         self.summaryLabel.verticalAlignment = TTTAttributedLabelVerticalAlignmentTop;
-    
+        self.summaryLabel.tag=567;
         self.lbltime=[[UILabel alloc] init];
         self.lbltime.textColor=[BeagleUtilities returnBeagleColor:6];
         self.lbltime.font =[UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f];
@@ -137,7 +137,7 @@ static inline NSRegularExpression * NameRegularExpression() {
         
     self.lbltime.frame=CGRectMake(58, 12+self.summaryLabel.frame.size.height+2, ceilf([self.lbltime.text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f] constrainedToSize:CGSizeMake(195, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].width), 15);
     
-    // show the lil yellow dot if this is a new notification!
+    // show the lil red dot if this is a new notification!
     if(self.isANewNotification){
         UIImageView *actionImageView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"New-Notification"]];
         actionImageView.frame=CGRectMake(self.lbltime.frame.size.width+58+5, 12+self.summaryLabel.frame.size.height+6, 9, 9);

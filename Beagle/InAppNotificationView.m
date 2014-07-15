@@ -74,7 +74,6 @@ static inline NSRegularExpression * NameRegularExpression() {
         
         [UIView animateWithDuration:0.35 delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
             self.frame = popupEndRect;
-            [[UIApplication sharedApplication] setStatusBarHidden:YES];
         } completion:^(BOOL finished) {
         }];
     }
