@@ -179,10 +179,10 @@
     stockImageView.backgroundColor = [UIColor grayColor];
     stockImageView.tag=3456;
     [_topSection addSubview:stockImageView];
-    
+     
     UIImageView *topGradient=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"gradient"]];
     topGradient.frame = CGRectMake(0, 0, 320, 64);
-    [stockImageView addSubview:topGradient];
+    [_topSection addSubview:topGradient];
     
 #endif
 
@@ -195,7 +195,7 @@
 #if stockCroppingCheck
     [topNavigationView addSubview:eventButton];
 #else
-    [self.view addSubview:eventButton];
+    [_topSection addSubview:eventButton];
 #endif
     
     // Setting up the filter pane
@@ -627,7 +627,7 @@
         UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
         stockImageView.image=photo;
         [stockImageView setContentMode:UIViewContentModeScaleAspectFit];
-
+        _topSection.backgroundColor = [UIColor colorWithPatternImage:photo];
         
 #endif
          
