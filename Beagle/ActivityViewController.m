@@ -902,6 +902,10 @@ enum Weeks {
             [visibilityFilterButton setTitle:@"Private" forState:UIControlStateNormal];
             [locationFilterButton setTitle:[NSString stringWithFormat:@"We'll tell the friends you selected"] forState:UIControlStateNormal];
             [self.navigationItem.rightBarButtonItem setTitle:@"Select"];
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+            InterestInviteViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestInvite"];
+            viewController.interestDetail=bg_activity;
+            [self.navigationController pushViewController:viewController animated:YES];
 
 
         }

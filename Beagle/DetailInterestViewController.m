@@ -126,6 +126,8 @@ static NSString * const CellIdentifier = @"cell";
     
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
     if(notifObject.activityId==self.interestActivity.activityId && (notifObject.notificationType==WHAT_CHANGE_TYPE || notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==CANCEL_ACTIVITY_TYPE)){
+        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+
         //do the description and text update
         if(notifObject.notificationType!=CANCEL_ACTIVITY_TYPE){
  
@@ -135,7 +137,6 @@ static NSString * const CellIdentifier = @"cell";
         UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
         [keyboard addSubview:notifView];
             }
-        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
         self.interestActivity.startActivityDate=notifObject.activityStartTime;
         self.interestActivity.endActivityDate=notifObject.activityEndTime;
         NSString* screenTitle = [BeagleUtilities activityTime:notifObject.activityStartTime endate:notifObject.activityEndTime];
@@ -144,7 +145,6 @@ static NSString * const CellIdentifier = @"cell";
         [self.detailedInterestTableView reloadData];
         }else{
 
-            [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
             NSString *message = NSLocalizedString (@"'This activity has been cancelled, let's show you what else is happening around you'",
                                                    @"Cancel Activity Type");
 

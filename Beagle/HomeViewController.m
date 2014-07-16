@@ -92,7 +92,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(disableInAppNotification) name:@"ECSlidingViewTopDidAnchorLeft" object:Nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableInAppNotification) name:@"ECSlidingViewTopDidAnchorRight" object:Nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh) name:@"HomeViewRefresh" object:Nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (UpdateBadgeCount) name:kBeagleBadgeCount object:nil];
 
     if(self.tableView!=nil){
         [self.tableView reloadData];
@@ -128,6 +127,8 @@
 {
     [super viewDidLoad];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (UpdateBadgeCount) name:kBeagleBadgeCount object:nil];
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addADelay) name:kNotificationHomeAutoRefresh object:Nil];
 
     categoryFilterType=1;
@@ -256,11 +257,15 @@
 
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"HomeViewRefresh" object:nil];
 
-//    [[NSNotificationCenter defaultCenter] removeObserver:self name:kBeagleBadgeCount object:nil];
-
     
 }
+-(void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kBeagleBadgeCount object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"AutoRefreshEvents" object:nil];
 
+    
+
+}
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
 
@@ -270,6 +275,7 @@
     notifView.delegate=self;
     UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
      [keyboard addSubview:notifView];
+    [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
 
     }else if(!hideInAppNotification && notifObject.isOffline && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE) && notifObject.activityId!=0){
         [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
@@ -390,10 +396,6 @@
 //    }
 //    }
 
-}
-
--(void)dealloc{
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"AutoRefreshEvents" object:nil];
 }
 
 

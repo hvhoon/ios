@@ -15,6 +15,7 @@
 #import "CreateAnimationBlurView.h"
 #import "DetailInterestViewController.h"
 #import "BeagleNotificationClass.h"
+#define  kDescriptionMissing 12
 @interface InterestInviteViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,InviteTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate,UISearchBarDelegate,CreateAnimationBlurViewDelegate,InAppNotificationViewDelegate>{
     BOOL isSearching;
     NSTimer *timer;
@@ -68,8 +69,12 @@
 
     [self.animationBlurView loadCustomAnimationView:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
 
+    if([self.interestDetail.participantsArray count]==0)
+        _selectedFriendsArray=[NSMutableArray new];
+    else{
+        _selectedFriendsArray=[NSMutableArray arrayWithArray:self.interestDetail.participantsArray];
+    }
     _nearbyFriendsArray=[NSMutableArray new];
-    _selectedFriendsArray=[NSMutableArray new];
     _worldwideFriendsArray=[NSMutableArray new];
     CGRect newBounds = self.inviteTableView.bounds;
     newBounds.origin.y = newBounds.origin.y + self.nameSearchBar.bounds.size.height;
@@ -199,6 +204,25 @@
 
 -(void)createButtonClicked:(id)sender{
     
+    
+    if([self.interestDetail.activityDesc length]==0){
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Missing Description"
+                                                        message:@"Your interest must have a description."
+                                                       delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
+        alert.tag=kDescriptionMissing;
+        [alert show];
+        return;
+    }
+    
+    if([self.selectedFriendsArray count]==0){
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Missing Partcipants"
+                                                        message:@"Please invite at least one friend to your interest"
+                                                       delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
+        [alert show];
+        return;
+        
+        
+    }
     if(self.inviteManager!=nil){
         self.inviteManager.delegate = nil;
         [self.inviteManager releaseServerManager];
@@ -699,6 +723,8 @@
     if(isSearching){
         [self filterContentForSearchText:self.nameSearchBar.text];
     }
+    
+    self.interestDetail.participantsArray=self.selectedFriendsArray;
 
 }
 
@@ -720,6 +746,8 @@
     if(isSearching){
         [self filterContentForSearchText:self.nameSearchBar.text];
     }
+    
+    self.interestDetail.participantsArray=self.selectedFriendsArray;
 }
 
 #pragma mark - server calls
@@ -775,7 +803,32 @@
                         
                         
                     }
-                    
+                    if([self.nearbyFriendsArray count]>0 && [self.selectedFriendsArray count]>0){
+                        NSMutableArray *testArray=[NSMutableArray new];
+                        for(BeagleUserClass *obj in self.selectedFriendsArray){
+                            
+                            for(BeagleUserClass*user in self.nearbyFriendsArray){
+                                if(user.fbuid!=obj.fbuid)
+                                    [testArray addObject:obj];
+                                
+                            }
+                            
+                        }
+                    self.nearbyFriendsArray=testArray;
+                    }
+                    if([self.worldwideFriendsArray count]>0 && [self.selectedFriendsArray count]>0){
+                        NSMutableArray *testArray=[NSMutableArray new];
+                        for(BeagleUserClass *obj in self.selectedFriendsArray){
+                            
+                            for(BeagleUserClass*user in self.worldwideFriendsArray){
+                                if(user.fbuid!=obj.fbuid)
+                                    [testArray addObject:obj];
+                                
+                            }
+                            
+                        }
+                        self.worldwideFriendsArray=testArray;
+                    }
                     
                     
                 }
@@ -905,6 +958,24 @@
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
     [self.navigationController popViewControllerAnimated:YES];
 }
+
+#pragma mark -
+#pragma mark UIAlertView methods
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    
+     if(alertView.tag==kDescriptionMissing){
+        if (buttonIndex == 0) {
+            
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+        else{
+            NSLog(@"Clicked Cancel Button");
+        }
+    }
+    
+    
+}
+
 
 /*
 #pragma mark - Navigation
