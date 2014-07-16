@@ -105,6 +105,7 @@ static NSString * const CellIdentifier = @"cell";
     [self.contentWrapper _unregisterForNotifications];
 }
 -(void)getPostsUpdateInBackground{
+    
     if(_chatPostManager!=nil){
         _chatPostManager.delegate = nil;
         [_chatPostManager releaseServerManager];
@@ -1428,7 +1429,23 @@ else if(!notifObject.isOffline){
                     }
                     for(id chatPost in activity_chats){
                         InterestChatClass *chatClass=[[InterestChatClass alloc]initWithDictionary:chatPost];
-                        [self.chatPostsArray addObject:chatClass];
+                        if([self.chatPostsArray count]>0){
+                            BOOL isFound=FALSE;
+                            for(InterestChatClass *chat in self.chatPostsArray){
+                                if(chat.chat_id==chatClass.chat_id){
+                                    isFound=TRUE;
+                                    break;
+                                }
+                                else{
+                                    isFound=FALSE;
+                                }
+                            }
+                            if(!isFound){
+                               [self.chatPostsArray addObject:chatClass];
+                            }
+                        }
+                        else
+                            [self.chatPostsArray addObject:chatClass];
                         self.interestActivity.postCount=[self.chatPostsArray count];
                     }
                     
