@@ -262,10 +262,12 @@ enum Weeks {
         viewController.isRedirected=TRUE;
         viewController.toLastPost=TRUE;
         viewController.inappNotification=YES;
-        [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
         
         UINavigationController *activityNavigationController=[[UINavigationController alloc]initWithRootViewController:viewController];
-        [self presentViewController:activityNavigationController animated:YES completion:nil];
+        [self presentViewController:activityNavigationController animated:YES completion:^{
+            [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
+            
+        }];
         
     }
     else if (notifObject.isOffline && notifObject.notificationType==CANCEL_ACTIVITY_TYPE){
@@ -297,10 +299,12 @@ enum Weeks {
         viewController.isRedirected=TRUE;
         viewController.toLastPost=TRUE;
         viewController.inappNotification=YES;
-        [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
         
         UINavigationController *activityNavigationController=[[UINavigationController alloc]initWithRootViewController:viewController];
-        [self presentViewController:activityNavigationController animated:YES completion:nil];
+        [self presentViewController:activityNavigationController animated:YES completion:^{
+            [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
+
+        }];
 
         
     }
@@ -318,10 +322,12 @@ enum Weeks {
     viewController.inappNotification=YES;
     if(notification.notificationType==CHAT_TYPE)
         viewController.toLastPost=TRUE;
-    [viewController.interestServerManager getDetailedInterest:notification.activityId];
     
     UINavigationController *activityNavigationController=[[UINavigationController alloc]initWithRootViewController:viewController];
-    [self presentViewController:activityNavigationController animated:YES completion:nil];
+    [self presentViewController:activityNavigationController animated:YES completion:^{
+        [viewController.interestServerManager getDetailedInterest:notification.activityId];
+        
+    }];
 
 }
 
