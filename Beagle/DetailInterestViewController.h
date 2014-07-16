@@ -13,4 +13,5 @@
 @property(nonatomic,strong)ServerManager*interestServerManager;
 @property(nonatomic,assign)BOOL isRedirected;
 @property(nonatomic,assign)BOOL toLastPost;
+@property(nonatomic,assign)BOOL inappNotification;
 @end

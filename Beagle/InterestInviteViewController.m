@@ -805,27 +805,43 @@
                     }
                     if([self.nearbyFriendsArray count]>0 && [self.selectedFriendsArray count]>0){
                         NSMutableArray *testArray=[NSMutableArray new];
-                        for(BeagleUserClass *obj in self.selectedFriendsArray){
+                        for(BeagleUserClass *obj in self.nearbyFriendsArray){
+                            BOOL isFound=FALSE;
                             
-                            for(BeagleUserClass*user in self.nearbyFriendsArray){
-                                if(user.fbuid!=obj.fbuid)
-                                    [testArray addObject:obj];
+                            for(BeagleUserClass*user in self.selectedFriendsArray){
+                                
+                                if(user.beagleUserId==obj.beagleUserId){
+                                    isFound=TRUE;
+                                    break;
+                            }else{
+                                isFound=FALSE;
                                 
                             }
-                            
+                          }
+                            if(!isFound){
+                                [testArray addObject:obj];
+                            }
                         }
                     self.nearbyFriendsArray=testArray;
                     }
                     if([self.worldwideFriendsArray count]>0 && [self.selectedFriendsArray count]>0){
                         NSMutableArray *testArray=[NSMutableArray new];
-                        for(BeagleUserClass *obj in self.selectedFriendsArray){
+                        for(BeagleUserClass *obj in self.worldwideFriendsArray){
+                            BOOL isFound=FALSE;
                             
-                            for(BeagleUserClass*user in self.worldwideFriendsArray){
-                                if(user.fbuid!=obj.fbuid)
-                                    [testArray addObject:obj];
+                            for(BeagleUserClass*user in self.selectedFriendsArray){
                                 
+                                if(user.beagleUserId==obj.beagleUserId){
+                                    isFound=TRUE;
+                                    break;
+                                }else{
+                                    isFound=FALSE;
+                                    
+                                }
                             }
-                            
+                            if(!isFound){
+                                [testArray addObject:obj];
+                            }
                         }
                         self.worldwideFriendsArray=testArray;
                     }

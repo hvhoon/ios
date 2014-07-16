@@ -261,9 +261,11 @@ enum Weeks {
         viewController.interestServerManager.delegate=viewController;
         viewController.isRedirected=TRUE;
         viewController.toLastPost=TRUE;
+        viewController.inappNotification=YES;
         [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
-        [self.navigationController presentViewController:viewController animated:YES completion:nil];
         
+        UINavigationController *activityNavigationController=[[UINavigationController alloc]initWithRootViewController:viewController];
+        [self presentViewController:activityNavigationController animated:YES completion:nil];
         
     }
     else if (notifObject.isOffline && notifObject.notificationType==CANCEL_ACTIVITY_TYPE){
@@ -294,8 +296,11 @@ enum Weeks {
         viewController.interestServerManager.delegate=viewController;
         viewController.isRedirected=TRUE;
         viewController.toLastPost=TRUE;
+        viewController.inappNotification=YES;
         [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
-        [self.navigationController presentViewController:viewController animated:YES completion:nil];
+        
+        UINavigationController *activityNavigationController=[[UINavigationController alloc]initWithRootViewController:viewController];
+        [self presentViewController:activityNavigationController animated:YES completion:nil];
 
         
     }
@@ -310,12 +315,14 @@ enum Weeks {
     viewController.interestServerManager=[[ServerManager alloc]init];
     viewController.interestServerManager.delegate=viewController;
     viewController.isRedirected=TRUE;
+    viewController.inappNotification=YES;
     if(notification.notificationType==CHAT_TYPE)
         viewController.toLastPost=TRUE;
-
     [viewController.interestServerManager getDetailedInterest:notification.activityId];
-    [self.navigationController presentViewController:viewController animated:YES completion:nil];
     
+    UINavigationController *activityNavigationController=[[UINavigationController alloc]initWithRootViewController:viewController];
+    [self presentViewController:activityNavigationController animated:YES completion:nil];
+
 }
 
 - (void)loadProfileImage:(NSString*)url {

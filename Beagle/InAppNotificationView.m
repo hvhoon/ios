@@ -142,12 +142,13 @@ static inline NSRegularExpression * NameRegularExpression() {
     
     if (inAppNotif.backgroundTap && inAppNotif.notificationType!=CANCEL_ACTIVITY_TYPE) {
         
-           [self HideNotification];
+
         if (self.delegate && [self.delegate respondsToSelector:@selector(backgroundTapToPush:)])
             if(inAppNotif.activityId!=0){
                 [self.delegate backgroundTapToPush:inAppNotif];
                 
             }
+                [self HideNotification];
 
     }
     

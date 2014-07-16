@@ -51,7 +51,7 @@ static NSString * const CellIdentifier = @"cell";
 @synthesize profileImageView=_profileImageView;
 @synthesize chatPostManager=_chatPostManager;
 @synthesize chatPostsArray;
-@synthesize isRedirected,toLastPost;
+@synthesize isRedirected,toLastPost,inappNotification;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -314,14 +314,19 @@ else if(!notifObject.isOffline){
 }
 
 -(void)backButtonClicked:(id)sender{
-    //[self.contentWrapper _unregisterForNotifications];
     [self.contentWrapper.inputView.textView resignFirstResponder];
-    // For dummyInputView.textView
     [self.view endEditing:YES];
     [self.contentWrapper.inputView.textView setText:nil];
-        //[self.contentWrapper textViewDidChange:self.contentWrapper.inputView.textView];
     [self.contentWrapper.dummyInputView.textView setText:nil];
     [self.navigationController popViewControllerAnimated:YES];
+}
+-(void)cancelButtonClicked:(id)sender{
+    [self.contentWrapper.inputView.textView resignFirstResponder];
+    [self.view endEditing:YES];
+    [self.contentWrapper.inputView.textView setText:nil];
+    [self.contentWrapper.dummyInputView.textView setText:nil];
+    [self dismissViewControllerAnimated:YES completion:Nil];
+    
 }
 - (void)viewDidLoad
 {
@@ -347,7 +352,14 @@ else if(!notifObject.isOffline){
         
     }
     
-    
+    if(inappNotification){
+        
+//        self.navigationController.navigationBar.topItem.title = @"";
+//        [self.navigationController.navigationBar.backItem setHidesBackButton:NO];
+//        self.navigationItem.hidesBackButton = NO;
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(cancelButtonClicked:)];
+        
+    }
     // Set the screen title.
     NSString* screenTitle = [BeagleUtilities activityTime:self.interestActivity.startActivityDate endate:self.interestActivity.endActivityDate];
     self.navigationItem.title = screenTitle;
