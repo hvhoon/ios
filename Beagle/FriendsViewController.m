@@ -24,6 +24,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *profileLabel;
 @property (weak, nonatomic) IBOutlet UILabel *inviteLabel;
 @property(strong, nonatomic) IBOutlet UIImageView *profileImageView;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *loadingAnimation;
 @end
 
 @implementation FriendsViewController
@@ -63,11 +64,16 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [[BeagleManager SharedInstance] mediumDominantColor];
-
+    
     self.friendsTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
     self.friendsTableView.separatorInset = UIEdgeInsetsZero;
-    self.friendsTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth
-    |UIViewAutoresizingFlexibleHeight;
+    self.friendsTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    
+    [self.loadingAnimation setColor:[BeagleUtilities returnBeagleColor:12]];
+    [self.loadingAnimation setHidden:NO];
+    [self.loadingAnimation setHidesWhenStopped:YES];
+    [self.loadingAnimation startAnimating];
+     
     [self.friendsTableView setBackgroundColor:[BeagleUtilities returnBeagleColor:2]];
     imageDownloadsInProgress=[NSMutableDictionary new];
 
@@ -499,6 +505,9 @@
 
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
     
+    // Stop the animation
+    [self.loadingAnimation stopAnimating];
+    
     if(serverRequest==kServerCallGetProfileMutualFriends||serverRequest==kServerCallGetDOS1Friends){
         
         _friendsManager.delegate = nil;
@@ -565,7 +574,7 @@
                     [_profileLabel setTitle:[NSString stringWithFormat:@"%ld Mutual Friends",(long)[self.beagleFriendsArray count]+[self.facebookFriendsArray count]] forState:UIControlStateNormal];
                     NSLog(@"%ld Mutual Friends",(long)[self.beagleFriendsArray count]+[self.facebookFriendsArray count]);
                 }
-                [_friendsTableView reloadData];
+                [self.friendsTableView reloadData];
             }
         }
         
@@ -614,6 +623,8 @@
 
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {
+    // Stop the animation
+    [self.loadingAnimation stopAnimating];
     
     if(serverRequest==kServerCallGetProfileMutualFriends||serverRequest==kServerCallGetDOS1Friends)
     {
@@ -635,6 +646,8 @@
 
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
 {
+    // Stop the animation
+    [self.loadingAnimation stopAnimating];
     
     if(serverRequest==kServerCallGetProfileMutualFriends||serverRequest==kServerCallGetDOS1Friends)
     {

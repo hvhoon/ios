@@ -65,6 +65,10 @@
     }
     else{
         _profileImageView.image=[BeagleUtilities imageCircularBySize:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]] sqr:200.0f];
+        _profileImageView.layer.cornerRadius = _profileImageView.frame.size.width/2;
+        _profileImageView.clipsToBounds = YES;
+        _profileImageView.layer.borderColor = [UIColor whiteColor].CGColor;
+        _profileImageView.layer.borderWidth = 3.0f;
     }
     
     if([[[[BeagleManager SharedInstance]beaglePlayer]last_name]length]!=0)

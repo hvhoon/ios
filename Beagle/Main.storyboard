@@ -786,21 +786,32 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="Iee-i6-3dL">
+                                <rect key="frame" x="0.0" y="266" width="320" height="37"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="320" id="bUF-vM-kiu"/>
+                                    <constraint firstAttribute="height" constant="37" id="rsh-wA-HxS"/>
+                                </constraints>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="t72-YL-qgA" firstAttribute="leading" secondItem="oeL-fM-YwJ" secondAttribute="leading" id="Aa3-U3-xBL"/>
                             <constraint firstItem="6LM-iL-5zX" firstAttribute="top" secondItem="grI-4m-J2y" secondAttribute="bottom" constant="44" id="N6Q-fH-ZqU"/>
                             <constraint firstItem="gYY-S2-Laa" firstAttribute="top" secondItem="grI-4m-J2y" secondAttribute="bottom" constant="200" id="Vvz-AC-4an"/>
+                            <constraint firstAttribute="centerY" secondItem="Iee-i6-3dL" secondAttribute="centerY" constant="-0.5" id="W8p-T7-qO0"/>
                             <constraint firstItem="gYY-S2-Laa" firstAttribute="leading" secondItem="oeL-fM-YwJ" secondAttribute="leading" id="d8K-O5-eNn"/>
                             <constraint firstItem="t72-YL-qgA" firstAttribute="top" secondItem="grI-4m-J2y" secondAttribute="bottom" constant="8" id="hVx-Sr-UpQ"/>
                             <constraint firstAttribute="centerX" secondItem="6LM-iL-5zX" secondAttribute="centerX" id="poI-n5-IXv"/>
+                            <constraint firstAttribute="centerX" secondItem="Iee-i6-3dL" secondAttribute="centerX" id="sV1-Ka-Jzx"/>
                         </constraints>
                     </view>
                     <nil key="simulatedStatusBarMetrics"/>
                     <connections>
                         <outlet property="friendsTableView" destination="gYY-S2-Laa" id="eQG-Ub-mMk"/>
                         <outlet property="inviteLabel" destination="MCX-jm-2QR" id="740-Y0-3SD"/>
+                        <outlet property="loadingAnimation" destination="Iee-i6-3dL" id="r6P-ca-mFg"/>
                         <outlet property="profileImageView" destination="6LM-iL-5zX" id="s46-UW-imB"/>
                         <outlet property="profileLabel" destination="jDX-tR-tNd" id="rae-G0-TEa"/>
                     </connections>
