@@ -15,7 +15,6 @@
 #import "CreateAnimationBlurView.h"
 #import "DetailInterestViewController.h"
 #import "BeagleNotificationClass.h"
-#define  kDescriptionMissing 12
 @interface InterestInviteViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,InviteTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate,UISearchBarDelegate,CreateAnimationBlurViewDelegate,InAppNotificationViewDelegate>{
     BOOL isSearching;
     NSTimer *timer;
@@ -80,11 +79,16 @@
     newBounds.origin.y = newBounds.origin.y + self.nameSearchBar.bounds.size.height;
     self.inviteTableView.bounds = newBounds;
     self.nameSearchBar.showsCancelButton=NO;
-    
+
     [self.navigationController.navigationBar setTintColor:[[BeagleManager SharedInstance] darkDominantColor]];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Create" style:UIBarButtonItemStyleDone target:self action:@selector(createButtonClicked:)];
     [self.navigationItem.rightBarButtonItem setTintColor:[BeagleUtilities returnBeagleColor:13]];
-    self.navigationItem.rightBarButtonItem.enabled=YES;
+    self.navigationItem.rightBarButtonItem.enabled=NO;
+
+    if([self.interestDetail.activityDesc length]!=0 && [self.interestDetail.participantsArray count]>0){
+        self.navigationItem.rightBarButtonItem.enabled=YES;
+
+    }
 
     self.inviteTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
     self.inviteTableView.separatorInset = UIEdgeInsetsZero;
@@ -204,25 +208,6 @@
 
 -(void)createButtonClicked:(id)sender{
     
-    
-    if([self.interestDetail.activityDesc length]==0){
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Missing Description"
-                                                        message:@"Your interest must have a description."
-                                                       delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
-        alert.tag=kDescriptionMissing;
-        [alert show];
-        return;
-    }
-    
-    if([self.selectedFriendsArray count]==0){
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Missing Partcipants"
-                                                        message:@"Please invite at least one friend to your interest"
-                                                       delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
-        [alert show];
-        return;
-        
-        
-    }
     if(self.inviteManager!=nil){
         self.inviteManager.delegate = nil;
         [self.inviteManager releaseServerManager];
@@ -725,6 +710,12 @@
     }
     
     self.interestDetail.participantsArray=self.selectedFriendsArray;
+    
+    if([self.interestDetail.participantsArray count]>0 && [self.interestDetail.activityDesc length]!=0){
+        self.navigationItem.rightBarButtonItem.enabled=YES;
+    }else{
+        self.navigationItem.rightBarButtonItem.enabled=NO;
+    }
 
 }
 
@@ -748,6 +739,12 @@
     }
     
     self.interestDetail.participantsArray=self.selectedFriendsArray;
+    if([self.interestDetail.participantsArray count]>0 && [self.interestDetail.activityDesc length]!=0){
+        self.navigationItem.rightBarButtonItem.enabled=YES;
+    }else{
+        self.navigationItem.rightBarButtonItem.enabled=NO;
+    }
+
 }
 
 #pragma mark - server calls
@@ -974,24 +971,6 @@
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
     [self.navigationController popViewControllerAnimated:YES];
 }
-
-#pragma mark -
-#pragma mark UIAlertView methods
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
-    
-     if(alertView.tag==kDescriptionMissing){
-        if (buttonIndex == 0) {
-            
-            [self.navigationController popViewControllerAnimated:YES];
-        }
-        else{
-            NSLog(@"Clicked Cancel Button");
-        }
-    }
-    
-    
-}
-
 
 /*
 #pragma mark - Navigation

@@ -917,6 +917,7 @@ enum Weeks {
             [self.navigationItem.rightBarButtonItem setTitle:@"Select"];
             UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
             InterestInviteViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestInvite"];
+            bg_activity.activityDesc=descriptionTextView.text;
             viewController.interestDetail=bg_activity;
             [self.navigationController pushViewController:viewController animated:YES];
 
