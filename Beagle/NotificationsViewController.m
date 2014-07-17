@@ -223,7 +223,7 @@
         play.profileImage=checkImage;
         cellImageView.image = [BeagleUtilities imageCircularBySize:checkImage sqr:70.0f];
     }
-    cellImageView.tag=[[NSString stringWithFormat:@"111%li",(long)indexPath.row]integerValue];
+    cellImageView.tag=[[NSString stringWithFormat:@"555%li",(long)indexPath.row]integerValue];
     [cell.contentView addSubview:cellImageView];
     
 
@@ -293,6 +293,11 @@
     
     UIImageView *cellImageView=[[UIImageView alloc]initWithFrame:CGRectMake(fromTheTop, 12, 35, 35)];
     BeagleNotificationClass *play = (BeagleNotificationClass *)[self.listArray objectAtIndex:indexPath.row];
+    fromTheTop += [AttributedTableViewCell heightForNotificationText:play.notificationString];
+    fromTheTop += 2; // adding buffer below the notification text
+    
+    fromTheTop += [AttributedTableViewCell heightForTimeStampText:[BeagleUtilities calculateChatTimestamp:play.timeOfNotification]];
+
     NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     [style setAlignment:NSTextAlignmentLeft];
     
@@ -304,25 +309,15 @@
     CGSize maximumLabelSize = CGSizeMake(238,999);
     
     CGRect whatTextRect = [play.activityWhat boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
-    
-    fromTheTop += [AttributedTableViewCell heightForNotificationText:play.notificationString];
-    fromTheTop += 2; // adding buffer below the notification text
-    
-    fromTheTop += [AttributedTableViewCell heightForTimeStampText:[BeagleUtilities calculateChatTimestamp:play.timeOfNotification]];
-    
+
     AttributedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil){
         cell = [[AttributedTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-        
-        
-        
-        
-        
         if(play.notificationType==ACTIVITY_CREATION_TYPE||play.notificationType==JOINED_ACTIVITY_TYPE){
             
             if(play.notificationType!=JOINED_ACTIVITY_TYPE){
                 fromTheTop += 8; // adding buffer above the interest text
-                
+
                 
                 UILabel *whatLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, fromTheTop, whatTextRect.size.width, whatTextRect.size.height)];
                 whatLabel.attributedText = [[NSAttributedString alloc] initWithString:play.activityWhat attributes:attrs];
@@ -359,14 +354,17 @@
         
         
     }else{
+        
+        
         if(play.notificationType==ACTIVITY_CREATION_TYPE||play.notificationType==JOINED_ACTIVITY_TYPE){
             
             if(play.notificationType!=JOINED_ACTIVITY_TYPE){
                 fromTheTop += 8; // adding buffer above the interest text
-                
+
                 UILabel *whatLabel=(UILabel*)[cell viewWithTag:[[NSString stringWithFormat:@"111%ld",(long)indexPath.row]integerValue]];
                 whatLabel.text=play.activityWhat;
                 [cell.contentView addSubview:whatLabel];
+                
                 fromTheTop += whatTextRect.size.height;
             }
             fromTheTop += 8; // buffer below interest text
@@ -378,6 +376,7 @@
             
         }
         cell.summaryLabel=(TTTAttributedLabel*)[cell viewWithTag:567];
+        cell.lbltime=(UILabel*)[cell viewWithTag:568];
         fromTheTop += 12; // buffer below the items on top
         // Add line seperator
         if(indexPath.row!=[self.listArray count]) {
@@ -391,20 +390,6 @@
     
     
     
-    
-    cell.summaryText =play.notificationString;
-    cell.summaryLabel.delegate = self;
-    cell.summaryLabel.userInteractionEnabled = YES;
-    cell.summaryLabel.backgroundColor=[UIColor clearColor];
-    
-    cell.isANewNotification=!play.isRead;
-    cell.selectionStyle=UITableViewCellSelectionStyleNone;
-    cell.notificationType=play.notificationType;
-    cell.backgroundColor=[UIColor clearColor];
-    cell.TimeText =[BeagleUtilities calculateChatTimestamp:play.timeOfNotification];
-    
-    cell.lbltime.userInteractionEnabled = YES;
-    cell.lbltime.backgroundColor=[UIColor clearColor];
     
     UIImage*checkImage= [BeagleUtilities loadImage:play.referredId];
     if(checkImage==nil|| play.referredId==0 || play.activityType==2){
@@ -427,10 +412,24 @@
         play.profileImage=checkImage;
         cellImageView.image = [BeagleUtilities imageCircularBySize:checkImage sqr:70.0f];
     }
-    cellImageView.tag=[[NSString stringWithFormat:@"111%li",(long)indexPath.row]integerValue];
+    cellImageView.tag=[[NSString stringWithFormat:@"555%li",(long)indexPath.row]integerValue];
     [cell.contentView addSubview:cellImageView];
+    cell.summaryText =play.notificationString;
+    cell.summaryLabel.delegate = self;
+    cell.summaryLabel.userInteractionEnabled = YES;
+    cell.summaryLabel.backgroundColor=[UIColor clearColor];
     
-    [cell setNeedsDisplay];
+    cell.isANewNotification=!play.isRead;
+    cell.selectionStyle=UITableViewCellSelectionStyleNone;
+    cell.notificationType=play.notificationType;
+    cell.backgroundColor=[UIColor clearColor];
+    cell.TimeText =[BeagleUtilities calculateChatTimestamp:play.timeOfNotification];
+    
+    cell.lbltime.userInteractionEnabled = YES;
+    cell.lbltime.backgroundColor=[UIColor clearColor];
+    
+    
+   // [cell setNeedsDisplay];
     
     return cell;
 }
@@ -520,7 +519,7 @@
         AttributedTableViewCell *cell = (AttributedTableViewCell*)[_notificationTableView cellForRowAtIndexPath:iconDownloader.indexPathInTableView];
         BeagleNotificationClass *play = (BeagleNotificationClass *)[self.listArray objectAtIndex:indexPath.row];
 
-        UIImageView *cellImageView=(UIImageView*)[cell viewWithTag:[[NSString stringWithFormat:@"111%ld",(long)indexPath.row]integerValue]];
+        UIImageView *cellImageView=(UIImageView*)[cell viewWithTag:[[NSString stringWithFormat:@"555%ld",(long)indexPath.row]integerValue]];
         // Display the newly loaded image
         play.profileImage=iconDownloader.notificationRecord.profileImage;
         cellImageView.image =[BeagleUtilities imageCircularBySize:iconDownloader.notificationRecord.profileImage sqr:70.0f] ;

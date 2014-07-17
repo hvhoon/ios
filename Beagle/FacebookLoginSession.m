@@ -272,6 +272,7 @@
 }
 
 -(void)attemptRenewCredentials{
+    
     [self.accountStore renewCredentialsForAccount:(ACAccount *)self.facebookAccount completion:^(ACAccountCredentialRenewResult renewResult, NSError *error){
         if(!error)
         {

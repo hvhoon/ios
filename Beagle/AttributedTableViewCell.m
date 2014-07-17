@@ -41,7 +41,7 @@ static inline NSRegularExpression * NameRegularExpression() {
         self.lbltime.lineBreakMode = UILineBreakModeWordWrap;
         self.lbltime.numberOfLines = 0;
         self.lbltime.highlightedTextColor = [BeagleUtilities returnBeagleColor:6];
-
+        self.lbltime.tag = 568;
         [self.contentView addSubview:self.lbltime];
         [self.contentView addSubview:self.summaryLabel];
         

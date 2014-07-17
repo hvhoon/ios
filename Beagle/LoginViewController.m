@@ -92,7 +92,7 @@
         
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Oops!"
                                                         message:message
-                                                       delegate:self
+                                                       delegate:nil
                                               cancelButtonTitle:@"OK"
                                               otherButtonTitles: nil];
         
@@ -285,23 +285,17 @@
     
     [alertView resignFirstResponder];
     
+    if(alertView.tag==kJoinBeagle){
     if (buttonIndex == 1) {
         
-        switch (alertView.tag) {
-            case kJoinBeagle:
-            {
-                [_facebookSession requestAdditionalPermissions];
-            }
-                break;
-                
-        }
+         [_facebookSession requestAdditionalPermissions];
     }
     
     else{
-        NSLog(@"Clicked Cancel Button");
           [_facebookSession get];
 
     }
+  }
 }
 
 
