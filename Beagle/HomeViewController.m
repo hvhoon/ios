@@ -263,6 +263,12 @@
 -(void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kBeagleBadgeCount object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"AutoRefreshEvents" object:nil];
+    self.imageDownloadsInProgress=nil;
+    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
+    {
+        [req cancel];
+        [req setDelegate:nil];
+    }
 
     
 
@@ -1854,5 +1860,6 @@
     }
 
 }
+
 @end
 

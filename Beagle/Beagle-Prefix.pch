@@ -21,4 +21,5 @@
     #import "BeagleManager.h"
     #import "BeagleUserClass.h"
     #import "InAppNotificationView.h"
+    #import "ASIHTTPRequest.h"
 #endif

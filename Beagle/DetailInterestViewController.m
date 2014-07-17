@@ -1613,12 +1613,14 @@ else if(!notifObject.isOffline){
 
 -(void)dealloc{
     
+    self.imageDownloadsInProgress=nil;
     for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
     {
         [req cancel];
         [req setDelegate:nil];
     }
 }
+
 
 -(void)hideInterestOverlay{
     [timer invalidate];

@@ -12,6 +12,7 @@
 #import "IconDownloader.h"
 #import "BeagleNotificationClass.h"
 #import "DetailInterestViewController.h"
+#import "ASIHTTPRequest.h"
 @interface FriendsViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,FriendsTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate>{
     NSInteger inviteIndex;
 }
@@ -665,6 +666,17 @@
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
     [alert show];
 }
+
+-(void)dealloc{
+    
+    self.imageDownloadsInProgress=nil;
+    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
+    {
+        [req cancel];
+        [req setDelegate:nil];
+    }
+}
+
 - (IBAction)settingsButtonPressed:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
 }
