@@ -41,6 +41,7 @@
     NSInteger categoryFilterType;
     NSMutableDictionary *filterActivitiesOnHomeScreen;
     BOOL hideInAppNotification;
+    NSInteger attempts;
 }
 @property(nonatomic,strong)EventInterestFilterBlurView*filterBlurView;
 @property(nonatomic, strong)UIView *filterView;
@@ -1143,7 +1144,16 @@
     switch (index) {
         case 0:
         {
-            [self refresh];
+            if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
+                
+                [self refresh];
+                
+                
+            }
+            else{
+                [self startStandardUpdates];
+            }
+
         }
             break;
         case 1:
@@ -1182,7 +1192,7 @@
 	locationManager.desiredAccuracy = kCLLocationAccuracyBest;
     
 	// Set a movement threshold for new events.
-	locationManager.distanceFilter = kCLLocationAccuracyNearestTenMeters;
+	locationManager.distanceFilter = kCLLocationAccuracyThreeKilometers;
     
 	[locationManager startUpdatingLocation];
     
@@ -1200,11 +1210,11 @@
 			break;
 		case kCLAuthorizationStatusDenied:
 			NSLog(@"kCLAuthorizationStatusDenied");
-        {{
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Beagle can’t access your current location.\n\nTo view interests nearby, please turn on location services in  Settings under Location Services." message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        {
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Oops!!!" message:@"Beagle can’t access your current location.\nTo view interests nearby, please turn on location services in  Settings under Location Services." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
             [alertView show];
             // Disable the post button.
-        }}
+        }
 			break;
 		case kCLAuthorizationStatusNotDetermined:
 			NSLog(@"kCLAuthorizationStatusNotDetermined");
@@ -1222,6 +1232,7 @@
     
     self.currentLocation=newLocation;
 }
+#define kLocationFetchTimeout 5
 - (void)locationManager:(CLLocationManager *)manager
        didFailWithError:(NSError *)error {
 	NSLog(@"%s", __PRETTY_FUNCTION__);
@@ -1229,9 +1240,20 @@
     
 	if (error.code == kCLErrorDenied) {
 		[locationManager stopUpdatingLocation];
+        [self refresh];
 	} else if (error.code == kCLErrorLocationUnknown) {
 		// todo: retry?
 		// set a timer for five seconds to cycle location, and if it fails again, bail and tell the user.
+        
+        if(attempts!=3){
+            attempts++;
+        [self performSelector:@selector(timeoutLocationFetch) withObject:nil afterDelay:kLocationFetchTimeout];
+        [locationManager startUpdatingLocation];
+        }else{
+            attempts=0;
+            [locationManager stopUpdatingLocation];
+            [self refresh];
+        }
 	} else {
 		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error retrieving location"
 		                                                message:[error description]
@@ -1252,6 +1274,11 @@
         
         [self LocationAcquired];
 	});
+}
+
+- (void) timeoutLocationFetch {
+    NSLog(@"LocationService:timeout");
+    [locationManager stopUpdatingLocation];
 }
 #pragma mark - detail Interest Selected 
 
@@ -1768,6 +1795,7 @@
         _homeActivityManager.delegate = nil;
         [_homeActivityManager releaseServerManager];
         _homeActivityManager = nil;
+        [self filterByCategoryType:categoryFilterType];
     }
     else if(serverRequest==kServerCallLeaveInterest ||serverRequest==kServerCallParticipateInterest||serverRequest==kServerCallSuggestedPostMembership||serverRequest==kServerCallCreateActivity){
         _interestUpdateManager.delegate = nil;
@@ -1804,6 +1832,7 @@
         _homeActivityManager.delegate = nil;
         [_homeActivityManager releaseServerManager];
         _homeActivityManager = nil;
+        [self filterByCategoryType:categoryFilterType];
     }
     else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest||serverRequest==kServerCallSuggestedPostMembership||serverRequest==kServerCallCreateActivity){
         _interestUpdateManager.delegate = nil;
