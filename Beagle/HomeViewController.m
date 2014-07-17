@@ -473,9 +473,15 @@
         }
         else{
             NSLog(@"reverseGeocodeLocation: %@", error.description);
+            [self performSelector:@selector(defaultLocalImage) withObject:nil afterDelay:20.0f];
+
         }
     }];
     
+}
+-(void)defaultLocalImage{
+    
+    [self performSelector:@selector(crossDissolvePhotos:withTitle:) withObject:[UIImage imageNamed:@"defaultLocation"] withObject:nil];
 }
 -(void)createANewActivity:(id)sender{
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -1241,9 +1247,12 @@
 	NSLog(@"%s", __PRETTY_FUNCTION__);
 	NSLog(@"Error: %@", [error description]);
     
+    
 	if (error.code == kCLErrorDenied) {
 		[locationManager stopUpdatingLocation];
         [self refresh];
+        [self performSelector:@selector(defaultLocalImage) withObject:nil afterDelay:20.0f];
+
 	} else if (error.code == kCLErrorLocationUnknown) {
 		// todo: retry?
 		// set a timer for five seconds to cycle location, and if it fails again, bail and tell the user.
@@ -1256,6 +1265,7 @@
             attempts=0;
             [locationManager stopUpdatingLocation];
             [self refresh];
+            [self performSelector:@selector(defaultLocalImage) withObject:nil afterDelay:20.0f];
         }
 	} else {
 		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error retrieving location"
