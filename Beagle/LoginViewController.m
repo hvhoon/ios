@@ -128,13 +128,35 @@
     
 }
 
--(void)permissionsError{
-    [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
-    [[NSUserDefaults standardUserDefaults]synchronize];
-    [activityIndicatorView stopAnimating];
-    [activityIndicatorView setHidden:YES];
-    [NextArrow setHidden:NO];
-
+-(void)permissionsError:(NSError*)e{
+    
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            NSString *message=nil;
+            if(e!=nil){
+                message=[e localizedDescription];
+            }else{
+                
+                message = NSLocalizedString (@"We are not able to retrieve your email from Facebook.Please check your privacy settings",
+                                                       @"No Facebook Account");
+            }
+            
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Oops!"
+                                                            message:message
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles: nil];
+            
+            [alert show];
+            
+            [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
+            [[NSUserDefaults standardUserDefaults]synchronize];
+            [activityIndicatorView stopAnimating];
+            [activityIndicatorView setHidden:YES];
+            [NextArrow setHidden:NO];
+        });
+        
 }
 
 -(void)pushToHomeScreen{

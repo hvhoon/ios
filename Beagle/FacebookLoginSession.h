@@ -16,7 +16,7 @@
 -(void)successfulFacebookLogin:(BeagleUserClass*)data;
 -(void)facebookAccountNotSetup;
 -(void)checkIfUserAlreadyExists:(NSString*)email;
--(void)permissionsError;
+-(void)permissionsError:(NSError*)e;
 @end
 
 
