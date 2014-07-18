@@ -546,28 +546,23 @@
                             [beagleFriendsArray addObject:userClass];
                         }
                         
-                        // same city(distance less than 50 miles)
-                        NSMutableArray *friendsInCityArray=[NSMutableArray new];
-                        for(BeagleUserClass *user in beagleFriendsArray){
-                            if(user.distance <=50.0f && user.location.length!=0){
-                                [friendsInCityArray addObject:user];
-                            }
-                        }
-                        for(BeagleUserClass *user in friendsInCityArray){
-                            [beagleFriendsArray removeObjectIdenticalTo:user];
+                        
+                        
+                        
+                        NSArray *friendsInCityArray=[NSArray arrayWithArray:beagleFriendsArray];
+                        
+                        friendsInCityArray = [friendsInCityArray sortedArrayUsingComparator: ^(BeagleUserClass *a, BeagleUserClass *b) {
                             
-                        }
-                        NSMutableArray *sortedArray=[NSMutableArray arrayWithArray:friendsInCityArray];
+                            
+                            NSNumber *s1 = [NSNumber numberWithFloat:a.distance];//add the string
+                            NSNumber *s2 = [NSNumber numberWithFloat:b.distance];
+                            
+                            return [s1 compare:s2];
+                        }];
 
-                        if([beagleFriendsArray count]!=0){
-                        NSArray *friendsSortedAlphabetically=[NSArray arrayWithArray:beagleFriendsArray];
-                        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"fullName" ascending:YES];
-                        friendsSortedAlphabetically=[friendsSortedAlphabetically sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
-                            [sortedArray addObjectsFromArray:friendsSortedAlphabetically];
-
-                        }
-                        if([sortedArray count]!=0){
-                            self.beagleFriendsArray=[NSArray arrayWithArray:sortedArray];
+                        
+                        if([friendsInCityArray count]!=0){
+                            self.beagleFriendsArray=[NSArray arrayWithArray:friendsInCityArray];
                         }
                         
                     }

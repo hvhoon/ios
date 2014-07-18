@@ -807,9 +807,20 @@
                             BeagleUserClass *userClass=[[BeagleUserClass alloc]initWithProfileDictionary:el];
                             [nearbyFriendsArray addObject:userClass];
                         }
+                        NSArray *friendsInCityArray=[NSArray arrayWithArray:nearbyFriendsArray];
+
                         
-                        if([nearbyFriendsArray count]!=0){
-                            [self.nearbyFriendsArray addObjectsFromArray:nearbyFriendsArray];
+                        friendsInCityArray = [friendsInCityArray sortedArrayUsingComparator: ^(BeagleUserClass *a, BeagleUserClass *b) {
+                            
+                            
+                            NSNumber *s1 = [NSNumber numberWithFloat:a.distance];//add the string
+                            NSNumber *s2 = [NSNumber numberWithFloat:b.distance];
+                            
+                            return [s1 compare:s2];
+                        }];
+
+                        if([friendsInCityArray count]!=0){
+                            [self.nearbyFriendsArray addObjectsFromArray:friendsInCityArray];
                         }
                         
                     }
@@ -822,17 +833,21 @@
                             [worldwideFriendsArray addObject:userClass];
                         }
                         
-                        NSArray *friendsSortedAlphabetically=[NSArray arrayWithArray:worldwideFriendsArray];
-                        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"fullName" ascending:YES];
-                        friendsSortedAlphabetically=[friendsSortedAlphabetically sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
+                        NSArray *friendsSorted=[NSArray arrayWithArray:worldwideFriendsArray];
                         
-                        NSMutableArray *sortedArray=[NSMutableArray arrayWithArray:friendsSortedAlphabetically];
                         
-                        if([sortedArray count]!=0){
-                            [self.worldwideFriendsArray addObjectsFromArray:sortedArray];
+                        friendsSorted = [friendsSorted sortedArrayUsingComparator: ^(BeagleUserClass *a, BeagleUserClass *b) {
+                            
+                            
+                            NSNumber *s1 = [NSNumber numberWithFloat:a.distance];//add the string
+                            NSNumber *s2 = [NSNumber numberWithFloat:b.distance];
+                            
+                            return [s1 compare:s2];
+                        }];
+                        
+                        if([friendsSorted count]!=0){
+                            [self.worldwideFriendsArray addObjectsFromArray:friendsSorted];
                         }
-                        
-                        
                         
                     }
                     if([self.nearbyFriendsArray count]>0 && [self.selectedFriendsArray count]>0){
