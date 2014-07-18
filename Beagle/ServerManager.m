@@ -385,6 +385,8 @@
     NSDate *lastDate = [dateFormatter dateFromString:lastChatPost.timestamp];
     NSDate *updatedDate=[lastDate dateByAddingTimeInterval:5];
     NSLog(@"updatedDate=%@",updatedDate);
+    
+
 
     if([self isInternetAvailable])
     {

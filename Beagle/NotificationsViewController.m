@@ -175,18 +175,20 @@
     
     return height;
 }
+#if 1
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *CellIdentifier = @"MediaTableCell";
     
     float fromTheTop = 0.0f; // height from the top of the cell
     fromTheTop += 12.5;
     
+    UIImageView *cellImageView=[[UIImageView alloc]initWithFrame:CGRectMake(fromTheTop, 12, 35, 35)];
     BeagleNotificationClass *play = (BeagleNotificationClass *)[self.listArray objectAtIndex:indexPath.row];
+
+    //AttributedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    //if (cell == nil)
+    AttributedTableViewCell *cell = [[AttributedTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     
-    AttributedTableViewCell *cell = (AttributedTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    //if (cell == nil) {
-    cell = [[AttributedTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-    //}
     cell.isANewNotification=!play.isRead;
     cell.selectionStyle=UITableViewCellSelectionStyleNone;
     cell.notificationType=play.notificationType;
@@ -199,8 +201,6 @@
     
     cell.lbltime.userInteractionEnabled = YES;
     cell.lbltime.backgroundColor=[UIColor clearColor];
-
-    UIImageView *cellImageView=[[UIImageView alloc]initWithFrame:CGRectMake(fromTheTop, 12, 35, 35)];
     
     UIImage*checkImage= [BeagleUtilities loadImage:play.referredId];
     if(checkImage==nil|| play.referredId==0 || play.activityType==2){
@@ -223,7 +223,7 @@
         play.profileImage=checkImage;
         cellImageView.image = [BeagleUtilities imageCircularBySize:checkImage sqr:70.0f];
     }
-    cellImageView.tag=[[NSString stringWithFormat:@"111%li",(long)indexPath.row]integerValue];
+    cellImageView.tag=[[NSString stringWithFormat:@"555%li",(long)indexPath.row]integerValue];
     [cell.contentView addSubview:cellImageView];
     
 
@@ -280,10 +280,160 @@
         [cell.contentView addSubview:seperatorLineView];
     }
 
-    [cell setNeedsDisplay];
+    //[cell setNeedsDisplay];
 
     return cell;
 }
+#else
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    static NSString *CellIdentifier = @"MediaTableCell";
+    
+    float fromTheTop = 0.0f; // height from the top of the cell
+    fromTheTop += 12.5;
+    
+    UIImageView *cellImageView=[[UIImageView alloc]initWithFrame:CGRectMake(fromTheTop, 12, 35, 35)];
+    BeagleNotificationClass *play = (BeagleNotificationClass *)[self.listArray objectAtIndex:indexPath.row];
+    fromTheTop += [AttributedTableViewCell heightForNotificationText:play.notificationString];
+    fromTheTop += 2; // adding buffer below the notification text
+    
+    fromTheTop += [AttributedTableViewCell heightForTimeStampText:[BeagleUtilities calculateChatTimestamp:play.timeOfNotification]];
+
+    NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+    [style setAlignment:NSTextAlignmentLeft];
+    
+    NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+                           [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0f], NSFontAttributeName,
+                           [BeagleUtilities returnBeagleColor:2],NSForegroundColorAttributeName,
+                           style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
+    
+    CGSize maximumLabelSize = CGSizeMake(238,999);
+    
+    CGRect whatTextRect = [play.activityWhat boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
+
+    AttributedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil){
+        cell = [[AttributedTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        if(play.notificationType==ACTIVITY_CREATION_TYPE||play.notificationType==JOINED_ACTIVITY_TYPE){
+            
+            if(play.notificationType!=JOINED_ACTIVITY_TYPE){
+                fromTheTop += 8; // adding buffer above the interest text
+
+                
+                UILabel *whatLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, fromTheTop, whatTextRect.size.width, whatTextRect.size.height)];
+                whatLabel.attributedText = [[NSAttributedString alloc] initWithString:play.activityWhat attributes:attrs];
+                whatLabel.numberOfLines=0;
+                whatLabel.tag=[[NSString stringWithFormat:@"111%ld",(long)indexPath.row]integerValue];
+                whatLabel.backgroundColor = [UIColor clearColor];
+                [cell.contentView addSubview:whatLabel];
+                
+                fromTheTop += whatTextRect.size.height;
+            }
+            fromTheTop += 8; // buffer below interest text
+            
+            UIButton *interestButton=[UIButton buttonWithType:UIButtonTypeCustom];
+            interestButton.frame=CGRectMake(16, fromTheTop, 102, 25);
+            [interestButton setBackgroundImage:[UIImage imageNamed:@"Action"] forState:UIControlStateNormal];
+            interestButton.tag=[[NSString stringWithFormat:@"222%ld",(long)indexPath.row]integerValue];
+            [interestButton addTarget:self action:@selector(interestButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+            [cell.contentView addSubview:interestButton];
+            
+            fromTheTop += interestButton.frame.size.height;
+        }
+        fromTheTop += 12; // buffer below the items on top
+        
+        // Add line seperator
+        if(indexPath.row!=[self.listArray count]) {
+            
+            UIView *seperatorLineView=[[UIView alloc]initWithFrame:CGRectMake(0, fromTheTop, 270, 0.5)];
+            seperatorLineView.alpha=1.0;
+            seperatorLineView.tag=[[NSString stringWithFormat:@"333%ld",(long)indexPath.row]integerValue];
+            [seperatorLineView setBackgroundColor:[BeagleUtilities returnBeagleColor:10]];
+            [cell.contentView addSubview:seperatorLineView];
+        }
+        
+        
+        
+    }else{
+        
+        
+        if(play.notificationType==ACTIVITY_CREATION_TYPE||play.notificationType==JOINED_ACTIVITY_TYPE){
+            
+            if(play.notificationType!=JOINED_ACTIVITY_TYPE){
+                fromTheTop += 8; // adding buffer above the interest text
+
+                UILabel *whatLabel=(UILabel*)[cell viewWithTag:[[NSString stringWithFormat:@"111%ld",(long)indexPath.row]integerValue]];
+                whatLabel.text=play.activityWhat;
+                [cell.contentView addSubview:whatLabel];
+                
+                fromTheTop += whatTextRect.size.height;
+            }
+            fromTheTop += 8; // buffer below interest text
+            UIButton *interestButton=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"222%ld",(long)indexPath.row]integerValue]];
+            [cell.contentView addSubview:interestButton];
+            
+            fromTheTop += interestButton.frame.size.height;
+            
+            
+        }
+        cell.summaryLabel=(TTTAttributedLabel*)[cell viewWithTag:567];
+        cell.lbltime=(UILabel*)[cell viewWithTag:568];
+        fromTheTop += 12; // buffer below the items on top
+        // Add line seperator
+        if(indexPath.row!=[self.listArray count]) {
+            
+            UIView *seperatorLineView=(UIView*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)indexPath.row]integerValue]];
+            [cell.contentView addSubview:seperatorLineView];
+        }
+        
+        
+    }
+    
+    
+    
+    
+    UIImage*checkImage= [BeagleUtilities loadImage:play.referredId];
+    if(checkImage==nil|| play.referredId==0 || play.activityType==2){
+        if (!play.profileImage)
+        {
+            if (tableView.dragging == NO && tableView.decelerating == NO)
+            {
+                [self startIconDownload:play forIndexPath:indexPath];
+            }
+            // if a download is deferred or in progress, return a placeholder image
+            cellImageView.image = [BeagleUtilities imageCircularBySize:[UIImage imageNamed:@"picbox.png"] sqr:70.0f];
+            
+        }
+        else
+        {
+            cellImageView.image = [BeagleUtilities imageCircularBySize:play.profileImage sqr:70.0f];
+            
+        }
+    }else{
+        play.profileImage=checkImage;
+        cellImageView.image = [BeagleUtilities imageCircularBySize:checkImage sqr:70.0f];
+    }
+    cellImageView.tag=[[NSString stringWithFormat:@"555%li",(long)indexPath.row]integerValue];
+    [cell.contentView addSubview:cellImageView];
+    cell.summaryText =play.notificationString;
+    cell.summaryLabel.delegate = self;
+    cell.summaryLabel.userInteractionEnabled = YES;
+    cell.summaryLabel.backgroundColor=[UIColor clearColor];
+    
+    cell.isANewNotification=!play.isRead;
+    cell.selectionStyle=UITableViewCellSelectionStyleNone;
+    cell.notificationType=play.notificationType;
+    cell.backgroundColor=[UIColor clearColor];
+    cell.TimeText =[BeagleUtilities calculateChatTimestamp:play.timeOfNotification];
+    
+    cell.lbltime.userInteractionEnabled = YES;
+    cell.lbltime.backgroundColor=[UIColor clearColor];
+    
+    
+   // [cell setNeedsDisplay];
+    
+    return cell;
+}
+#endif
 -(void)interestButtonClicked:(id)sender{
     UIButton *button=(UIButton*)sender;
     BeagleNotificationClass *play = (BeagleNotificationClass *)[self.listArray objectAtIndex:button.tag];
@@ -369,7 +519,7 @@
         AttributedTableViewCell *cell = (AttributedTableViewCell*)[_notificationTableView cellForRowAtIndexPath:iconDownloader.indexPathInTableView];
         BeagleNotificationClass *play = (BeagleNotificationClass *)[self.listArray objectAtIndex:indexPath.row];
 
-        UIImageView *cellImageView=(UIImageView*)[cell viewWithTag:[[NSString stringWithFormat:@"111%ld",(long)indexPath.row]integerValue]];
+        UIImageView *cellImageView=(UIImageView*)[cell viewWithTag:[[NSString stringWithFormat:@"555%ld",(long)indexPath.row]integerValue]];
         // Display the newly loaded image
         play.profileImage=iconDownloader.notificationRecord.profileImage;
         cellImageView.image =[BeagleUtilities imageCircularBySize:iconDownloader.notificationRecord.profileImage sqr:70.0f] ;
@@ -520,7 +670,7 @@
         _interestUpdateManager = nil;
     }
 
-    NSString *message = NSLocalizedString (@"Unable to initiate request.",
+    NSString *message = NSLocalizedString (@"Unfortunately we can't show you how popular you are right. Please try again.",
                                            @"NSURLConnection initialization method failed.");
     BeagleAlertWithMessage(message);
 }
@@ -543,4 +693,18 @@
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
     [alert show];
 }
+-(void)dealloc{
+    for (NSIndexPath *indexPath in [imageDownloadsInProgress allKeys]) {
+        IconDownloader *d = [imageDownloadsInProgress objectForKey:indexPath];
+        [d cancelDownload];
+    }
+
+    self.imageDownloadsInProgress=nil;
+    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
+    {
+        [req cancel];
+        [req setDelegate:nil];
+    }
+}
+
 @end

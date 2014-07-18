@@ -92,7 +92,7 @@
         
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Oops!"
                                                         message:message
-                                                       delegate:self
+                                                       delegate:nil
                                               cancelButtonTitle:@"OK"
                                               otherButtonTitles: nil];
         
@@ -128,13 +128,35 @@
     
 }
 
--(void)permissionsError{
-    [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
-    [[NSUserDefaults standardUserDefaults]synchronize];
-    [activityIndicatorView stopAnimating];
-    [activityIndicatorView setHidden:YES];
-    [NextArrow setHidden:NO];
-
+-(void)permissionsError:(NSError*)e{
+    
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            NSString *message=nil;
+            if(e!=nil){
+                message=[e localizedDescription];
+            }else{
+                
+                message = NSLocalizedString (@"We are not able to retrieve your email from Facebook.Please check your privacy settings",
+                                                       @"No Facebook Account");
+            }
+            
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Oops!"
+                                                            message:message
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles: nil];
+            
+            [alert show];
+            
+            [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
+            [[NSUserDefaults standardUserDefaults]synchronize];
+            [activityIndicatorView stopAnimating];
+            [activityIndicatorView setHidden:YES];
+            [NextArrow setHidden:NO];
+        });
+        
 }
 
 -(void)pushToHomeScreen{
@@ -241,7 +263,7 @@
         _loginServerManager = nil;
     }
 
-      NSString *message = NSLocalizedString (@"Unable to initiate request.",
+      NSString *message = NSLocalizedString (@"Well this is embarrassing. Please try again in a bit.",
                                            @"NSURLConnection initialization method failed.");
       BeagleAlertWithMessage(message);
 }
@@ -259,6 +281,16 @@
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
     [alert show];
 }
+
+-(void)dealloc{
+    
+    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
+    {
+        [req cancel];
+        [req setDelegate:nil];
+    }
+}
+
 
 #pragma mark - NSURLConnectionDataDelegate
 
@@ -285,23 +317,17 @@
     
     [alertView resignFirstResponder];
     
+    if(alertView.tag==kJoinBeagle){
     if (buttonIndex == 1) {
         
-        switch (alertView.tag) {
-            case kJoinBeagle:
-            {
-                [_facebookSession requestAdditionalPermissions];
-            }
-                break;
-                
-        }
+         [_facebookSession requestAdditionalPermissions];
     }
     
     else{
-        NSLog(@"Clicked Cancel Button");
           [_facebookSession get];
 
     }
+  }
 }
 
 

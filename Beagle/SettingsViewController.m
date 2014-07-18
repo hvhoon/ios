@@ -17,6 +17,7 @@
 @property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
 @property (weak, nonatomic) IBOutlet UILabel *profileNameLabel;
 @property (weak, nonatomic) IBOutlet UISwitch *fbTickerSwitch;
+@property (weak, nonatomic) IBOutlet UILabel *version;
 @end
 
 @implementation SettingsViewController
@@ -36,10 +37,24 @@
     [self.slidingViewController setAnchorRightRevealAmount:270.0f];
      self.slidingViewController.underLeftWidthLayout = ECFullWidth;
     
+    // Extract App Name
+    NSDictionary *appMetaData = [[NSBundle mainBundle] infoDictionary];
+    NSString* bundleName = [appMetaData objectForKey:@"CFBundleShortVersionString"];
+    NSString* buildNumber = [appMetaData objectForKey:@"CFBundleVersion"];
+    
+    [_version setTextColor:[BeagleUtilities returnBeagleColor:3]];
+    
+    // Build text
+    _version.text = [NSString stringWithFormat:@"Beagle v%@ (%@)", bundleName, buildNumber];
+    
     if([[[BeagleManager SharedInstance]beaglePlayer]profileData]==nil){
         
         [self imageCircular:[UIImage imageNamed:@"picbox"]];
-        
+        _profileImageView.layer.cornerRadius = _profileImageView.frame.size.width/2;
+        _profileImageView.clipsToBounds = YES;
+        _profileImageView.layer.borderColor = [UIColor whiteColor].CGColor;
+        _profileImageView.layer.borderWidth = 3.0f;
+
         
         NSOperationQueue *queue = [NSOperationQueue new];
         NSInvocationOperation *operation = [[NSInvocationOperation alloc]
@@ -50,8 +65,13 @@
         
     }
     else{
-        _profileImageView.image=[BeagleUtilities imageCircularBySize:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]] sqr:100.0f];
+        _profileImageView.image=[BeagleUtilities imageCircularBySize:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]] sqr:200.0f];
+        _profileImageView.layer.cornerRadius = _profileImageView.frame.size.width/2;
+        _profileImageView.clipsToBounds = YES;
+        _profileImageView.layer.borderColor = [UIColor whiteColor].CGColor;
+        _profileImageView.layer.borderWidth = 3.0f;
     }
+    
     
     if([[[[BeagleManager SharedInstance]beaglePlayer]last_name]length]!=0)
         _profileNameLabel.text =[NSString stringWithFormat:@"%@ %@",[[[BeagleManager SharedInstance]beaglePlayer]first_name],[[[BeagleManager SharedInstance]beaglePlayer]last_name]];
@@ -71,11 +91,11 @@
     NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:url]];
     BG.beaglePlayer.profileData=imageData;
     UIImage* image =[[UIImage alloc] initWithData:imageData];
-    [self performSelectorOnMainThread:@selector(imageCircular:) withObject:image waitUntilDone:NO];
+    if (image)
+        [self performSelectorOnMainThread:@selector(imageCircular:) withObject:image waitUntilDone:NO];
 }
 -(void)imageCircular:(UIImage*)image{
-    
-    _profileImageView.image=[BeagleUtilities imageCircularBySize:image sqr:100.0f];
+    _profileImageView.image=[BeagleUtilities imageCircularBySize:image sqr:200.0f];
 }
 - (IBAction)sliderButtonClicked:(id)sender{
     NSString *identifier = [NSString stringWithFormat:@"mainScreen"];
@@ -213,7 +233,7 @@
     
     [_fbTickerSwitch setOn:player.fb_ticker animated:YES];
 
-    NSString *message = NSLocalizedString (@"Unable to initiate request.",
+    NSString *message = NSLocalizedString (@"You shouldn't be doing stuff on Facebook anyways.",
                                            @"NSURLConnection initialization method failed.");
     BeagleAlertWithMessage(message);
 }

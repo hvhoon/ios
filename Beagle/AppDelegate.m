@@ -50,6 +50,10 @@ void uncaughtExceptionHandler(NSException *exception) {
     [Instabug startWithToken:@"0fe55a803d01c2d223d89b450dcae674" captureSource:IBGCaptureSourceUIKit invocationEvent:IBGInvocationEventShake];
     [Instabug setEmailIsRequired:NO];
     [Instabug setWillShowEmailField:NO];
+    
+    [Instabug setWillShowTutorialAlert:NO];
+    [Instabug setWillShowStartAlert:NO];
+    
     [Instabug setButtonsFontColor:[UIColor colorWithRed:(255/255.0) green:(255/255.0) blue:(255/255.0) alpha:1.0]];
     [Instabug setButtonsColor:[UIColor colorWithRed:(255/255.0) green:(115/255.0) blue:(0/255.0) alpha:1.0]];
     [Instabug setHeaderFontColor:[UIColor colorWithRed:(255/255.0) green:(255/255.0) blue:(255/255.0) alpha:1.0]];

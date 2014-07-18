@@ -10,7 +10,6 @@
 #import <Crashlytics/Crashlytics.h>
 #import "Constants.h"
 #import "BGFlickrManager.h"
-#import "ASIHTTPRequest.h"
 #import "ActivityViewController.h"
 #import "UIView+HidingView.h"
 #import "BlankHomePageView.h"
@@ -28,6 +27,7 @@
 #define kTimerIntervalInSeconds 10
 #define rowHeight 164
 #define kLeaveInterest 23
+#define waitBeforeLoadingDefaultImage 0.0f
 
 @interface HomeViewController ()<UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,HomeTableViewCellDelegate,ServerManagerDelegate,IconDownloaderDelegate,BlankHomePageViewDelegate,EventInterestFilterBlurViewDelegate,InAppNotificationViewDelegate>{
     UIView *topNavigationView;
@@ -41,6 +41,7 @@
     NSInteger categoryFilterType;
     NSMutableDictionary *filterActivitiesOnHomeScreen;
     BOOL hideInAppNotification;
+    NSInteger attempts;
 }
 @property(nonatomic,strong)EventInterestFilterBlurView*filterBlurView;
 @property(nonatomic, strong)UIView *filterView;
@@ -53,6 +54,7 @@
 @property (strong,nonatomic) NSMutableArray *filteredCandyArray;
 @property(strong,nonatomic)ServerManager *homeActivityManager;
 @property(strong,nonatomic)ServerManager *interestUpdateManager;
+@property(strong,nonatomic)UIView *topSection;
 @end
 
 @implementation HomeViewController
@@ -91,7 +93,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(disableInAppNotification) name:@"ECSlidingViewTopDidAnchorLeft" object:Nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableInAppNotification) name:@"ECSlidingViewTopDidAnchorRight" object:Nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh) name:@"HomeViewRefresh" object:Nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (UpdateBadgeCount) name:kBeagleBadgeCount object:nil];
 
     if(self.tableView!=nil){
         [self.tableView reloadData];
@@ -107,9 +108,7 @@
 }
 -(void)updateHomeScreen{
     if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
-        
         [self refresh];
-        
     }
     else{
         [self startStandardUpdates];
@@ -126,12 +125,21 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (UpdateBadgeCount) name:kBeagleBadgeCount object:nil];
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addADelay) name:kNotificationHomeAutoRefresh object:Nil];
 
     categoryFilterType=1;
     self.filterBlurView = [EventInterestFilterBlurView loadEventInterestFilter:self.view];
     self.filterBlurView.delegate=self;
-    [self.filterBlurView updateConstraints];
+    
+    // If it's a 3.5" screen use the bounds below
+    self.filterBlurView.frame=CGRectMake(0, 0, 320, 480);
+    
+    // Else use these bounds for the 4" screen
+    if([UIScreen mainScreen].bounds.size.height > 480.0f)
+        self.filterBlurView.frame=CGRectMake(0, 0, 320, 568);
 
     if([[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"]){
         [[BeagleManager SharedInstance]getUserObjectInAutoSignInMode];
@@ -169,29 +177,30 @@
     [self.view addSubview:bottomNavigationView];
 
 #else
-    UIImageView* stockImageView= [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 320, 200)];
+    _topSection = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)];
+    [self.view addSubview:_topSection];
+    
+    UIImageView *stockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)];
     stockImageView.backgroundColor = [UIColor grayColor];
     stockImageView.tag=3456;
-    [self.view addSubview:stockImageView];
-    
+    [_topSection addSubview:stockImageView];
+     
     UIImageView *topGradient=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"gradient"]];
     topGradient.frame = CGRectMake(0, 0, 320, 64);
-    [stockImageView addSubview:topGradient];
+    [_topSection addSubview:topGradient];
     
 #endif
 
     [self addCityName:@"Hello"];
     UIButton *eventButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [eventButton setBackgroundImage:[UIImage imageNamed:@"add"] forState:UIControlStateNormal];
-    
     [eventButton addTarget:self action:@selector(createANewActivity:)forControlEvents:UIControlEventTouchUpInside];
-
     eventButton.frame = CGRectMake(263.0, 0.0, 57.0, 57.0);
     
 #if stockCroppingCheck
     [topNavigationView addSubview:eventButton];
 #else
-    [self.view addSubview:eventButton];
+    [_topSection addSubview:eventButton];
 #endif
     
     // Setting up the filter pane
@@ -202,7 +211,7 @@
 #else
     _filterView = [[UIView alloc] initWithFrame:CGRectMake(0, 156, 320, 44)];
     [_filterView addSubview:[self renderFilterHeaderView]];
-    [self.view addSubview:_filterView];
+    [_topSection addSubview:_filterView];
 #endif
     
     _tableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStylePlain];
@@ -210,7 +219,7 @@
     
     _tableViewController.refreshControl = [UIRefreshControl new];
     [_tableViewController.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
-    self.tableView.delaysContentTouches = NO;
+   // self.tableView.delaysContentTouches = NO;
     _tableViewController.tableView = self.tableView;
     
     // Setting up the table and the refresh animation
@@ -219,10 +228,7 @@
 
     
     if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
-        
         [self LocationAcquired];
-        
-        
     }
     else{
         [self startStandardUpdates];
@@ -247,11 +253,18 @@
 
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"HomeViewRefresh" object:nil];
 
-//    [[NSNotificationCenter defaultCenter] removeObserver:self name:kBeagleBadgeCount object:nil];
-
     
 }
-
+-(void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kBeagleBadgeCount object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"AutoRefreshEvents" object:nil];
+    
+    for (NSIndexPath *indexPath in [imageDownloadsInProgress allKeys]) {
+        IconDownloader *d = [imageDownloadsInProgress objectForKey:indexPath];
+        [d cancelDownload];
+    }
+    self.imageDownloadsInProgress=nil;
+}
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
 
@@ -261,6 +274,7 @@
     notifView.delegate=self;
     UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
      [keyboard addSubview:notifView];
+    [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
 
     }else if(!hideInAppNotification && notifObject.isOffline && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE) && notifObject.activityId!=0){
         [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
@@ -383,14 +397,10 @@
 
 }
 
--(void)dealloc{
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"AutoRefreshEvents" object:nil];
-}
-
 
 -(void)addCityName:(NSString*)name{
     
-    UILabel *textLabel=(UILabel*)[self.view viewWithTag:1234];
+    UILabel *textLabel=(UILabel*)[_topSection viewWithTag:1234];
     if(textLabel!=nil){
         [textLabel removeFromSuperview];
     }
@@ -412,8 +422,8 @@
     [topNavigationView addSubview:fromLabel];
 #else
     
-    [UIView transitionWithView:self.view duration:1.0f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
-        [self.view addSubview:fromLabel];
+    [UIView transitionWithView:_topSection duration:1.0f options:(UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionAllowUserInteraction) animations:^{
+        [_topSection addSubview:fromLabel];
         
     } completion:NULL];
     
@@ -450,16 +460,29 @@
         
         if(!error) {
             BeagleManager *BG=[BeagleManager SharedInstance];
-                BG.placemark=[placemarks objectAtIndex:0];
-                [self retrieveLocationAndUpdateBackgroundPhoto];
-            }
-                else{
-                    NSLog(@"reverseGeocodeLocation: %@", error.description);
-                }
-            }];
+            BG.placemark=[placemarks objectAtIndex:0];
+            [self retrieveLocationAndUpdateBackgroundPhoto];
+        }
+        else{
+            NSLog(@"reverseGeocodeLocation: %@", error.description);
+            [self performSelector:@selector(defaultLocalImage) withObject:nil afterDelay:waitBeforeLoadingDefaultImage];
 
+        }
+    }];
     
+}
+-(void)defaultLocalImage{
     
+    BeagleManager *BG=[BeagleManager SharedInstance];
+    
+    // Pull dominant color from the default image
+    UIColor *dominantColor = [BeagleUtilities getDominantColor:[UIImage imageNamed:@"defaultLocation"]];
+    
+    BG.lightDominantColor=[BeagleUtilities returnLightColor:[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.9] withWhiteness:0.7];
+    BG.mediumDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5];
+    BG.darkDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.4];
+    [self performSelector:@selector(crossDissolvePhotos:withTitle:) withObject:[UIImage imageNamed:@"defaultLocation"] withObject:nil];
+    _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
     
 }
 -(void)createANewActivity:(id)sender{
@@ -487,7 +510,7 @@
         // Pull weather information
         NSString *jsonString = [request responseString];
         
-//        NSLog(@"Request=%@", jsonString);
+       NSLog(@"Request=%@", jsonString);
         
         NSDictionary* weatherDictionary = [NSJSONSerialization JSONObjectWithData:[jsonString dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:&error];
         NSDictionary *current_observation=[weatherDictionary objectForKey:@"weather"];
@@ -508,17 +531,22 @@
         
         // Pull image from Flickr
         [[BGFlickrManager sharedManager] randomPhotoRequest:^(FlickrRequestInfo * flickrRequestInfo, NSError * error) {
+            
+            UIColor *dominantColor = nil;
+            
             if(!error) {
                 [self.timer invalidate];
                 [self crossDissolvePhotos:flickrRequestInfo.photo withTitle:flickrRequestInfo.userInfo];
+                dominantColor = [BeagleUtilities getDominantColor:flickrRequestInfo.photo];
+            }
+            else {
+                [self crossDissolvePhotos:[UIImage imageNamed:@"defaultLocation"] withTitle:@"Hello"];
+                dominantColor = [BeagleUtilities getDominantColor:[UIImage imageNamed:@"defaultLocation"]];
             }
             
-        // Color play :)
-        UIColor *dominantColor = [BeagleUtilities getDominantColor:flickrRequestInfo.photo];
-            
-        BG.lightDominantColor=[BeagleUtilities returnLightColor:[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.9] withWhiteness:0.7];
-        BG.mediumDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5];
-        BG.darkDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.4];
+            BG.lightDominantColor=[BeagleUtilities returnLightColor:[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.9] withWhiteness:0.7];
+            BG.mediumDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5];
+            BG.darkDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.4];
         
         /*
         UIColor* filterViewColor = [dominantColor colorWithAlphaComponent:0.8];
@@ -591,7 +619,6 @@
         // Add the city name and the filter pane to the top section
         [self addCityName:[BG.placemark.addressDictionary objectForKey:@"City"]];
         _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
-            
         [self.tableView reloadData];
     
         }];
@@ -608,7 +635,7 @@
     
 }
 - (void) crossDissolvePhotos:(UIImage *) photo withTitle:(NSString *) title {
-    [UIView transitionWithView:self.view duration:1.0f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+    [UIView transitionWithView:_topSection duration:1.0f options:(UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionAllowUserInteraction) animations:^{
         
 #if stockCroppingCheck
 
@@ -624,7 +651,7 @@
         UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
         stockImageView.image=photo;
         [stockImageView setContentMode:UIViewContentModeScaleAspectFit];
-
+        stockImageView.image = photo;
         
 #endif
          
@@ -775,28 +802,13 @@
     }
     play.heightRow=rowHeight+16+20+(int)textRect.size.height;
     return rowHeight+16+20+(int)textRect.size.height;
-
     
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *CellIdentifier = @"MediaTableCell";
     
-    
-    HomeTableViewCell *cell = (HomeTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-//    if (cell == nil) {
-        cell =[[HomeTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-        cell.selectionStyle=UITableViewCellSelectionStyleNone;
-//    }
-    
-    for (id obj in cell.subviews)
-    {
-        if ([NSStringFromClass([obj class]) isEqualToString:@"UITableViewCellScrollView"])
-        {
-            UIScrollView *scroll = (UIScrollView *) obj;
-            scroll.delaysContentTouches = NO;
-            break;
-        }
-    }
+    HomeTableViewCell *cell = [[HomeTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+    cell.selectionStyle=UITableViewCellEditingStyleNone;
 
     BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexPath.row];
     
@@ -829,6 +841,24 @@
         cell.photoImage = play.profilePhotoImage=checkImge;
     }
     [cell setNeedsDisplay];
+#if 0
+    for (id obj in cell.subviews)
+    {
+        
+        //        if( [[obj class]isKindOfClass:[UIButton class]]){
+        //            UIButton *btn=(UIButton*)obj;
+        //            if(btn.tag==[[NSString stringWithFormat:@"333%ld",(long)indexPath.row]integerValue]){
+        //                [obj removeFromSuperview];
+        //            }
+        //        }
+        if ([NSStringFromClass([obj class]) isEqualToString:@"UITableViewCellScrollView"])
+        {
+            UIScrollView *scroll = (UIScrollView *) obj;
+            scroll.delaysContentTouches = NO;
+            break;
+        }
+    }
+#endif
     return cell;
 }
 - (void)startIconDownload:(BeagleActivityClass*)appRecord forIndexPath:(NSIndexPath *)indexPath{
@@ -1108,9 +1138,16 @@
         
         NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"BlankHomePageView" owner:self options:nil];
         BlankHomePageView *blankHomePageView=[nib objectAtIndex:0];
-        blankHomePageView.frame=CGRectMake(0, 200, 320, 400);
+        
+        // If it's a 3.5" screen use the bounds below
+        blankHomePageView.frame=CGRectMake(0, 200, 320, 280);
+        
+        // Else use these bounds for the 4" screen
+        if([UIScreen mainScreen].bounds.size.height > 480.0f)
+            blankHomePageView.frame=CGRectMake(0, 200, 320, 368);
+        
         blankHomePageView.delegate=self;
-        [blankHomePageView updateViewConstraints];
+        //[blankHomePageView updateViewConstraints];
         blankHomePageView.userInteractionEnabled=YES;
         blankHomePageView.tag=1245;
         [self.view addSubview:blankHomePageView];
@@ -1123,7 +1160,19 @@
     switch (index) {
         case 0:
         {
-            [self refresh];
+            // Show the table again and hide the blank view
+            isPushAuto = true;
+            [self.tableView setHidden:NO];
+            BlankHomePageView *blankHomePageView=(BlankHomePageView*)[self.view  viewWithTag:1245];
+            [blankHomePageView removeFromSuperview];
+            
+            if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
+                [self LocationAcquired];
+            }
+            else{
+                [self startStandardUpdates];
+            }
+
         }
             break;
         case 1:
@@ -1162,7 +1211,7 @@
 	locationManager.desiredAccuracy = kCLLocationAccuracyBest;
     
 	// Set a movement threshold for new events.
-	locationManager.distanceFilter = kCLLocationAccuracyNearestTenMeters;
+	locationManager.distanceFilter = kCLLocationAccuracyThreeKilometers;
     
 	[locationManager startUpdatingLocation];
     
@@ -1180,11 +1229,12 @@
 			break;
 		case kCLAuthorizationStatusDenied:
 			NSLog(@"kCLAuthorizationStatusDenied");
-        {{
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Beagle can’t access your current location.\n\nTo view interests nearby, please turn on location services in  Settings under Location Services." message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        {
+            /*
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Oops!!!" message:@"Beagle can’t access your current location.\nTo view interests nearby, please turn on location services in  Settings under Location Services." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
             [alertView show];
-            // Disable the post button.
-        }}
+            */// Disable the post button.
+        }
 			break;
 		case kCLAuthorizationStatusNotDetermined:
 			NSLog(@"kCLAuthorizationStatusNotDetermined");
@@ -1202,6 +1252,7 @@
     
     self.currentLocation=newLocation;
 }
+#define kLocationFetchTimeout 5
 - (void)locationManager:(CLLocationManager *)manager
        didFailWithError:(NSError *)error {
 	NSLog(@"%s", __PRETTY_FUNCTION__);
@@ -1209,11 +1260,24 @@
     
 	if (error.code == kCLErrorDenied) {
 		[locationManager stopUpdatingLocation];
+        [self refresh];
+        [self performSelector:@selector(defaultLocalImage) withObject:nil afterDelay:waitBeforeLoadingDefaultImage];
+
 	} else if (error.code == kCLErrorLocationUnknown) {
 		// todo: retry?
 		// set a timer for five seconds to cycle location, and if it fails again, bail and tell the user.
+        
+        if(attempts!=3){
+            attempts++;
+        [self performSelector:@selector(timeoutLocationFetch) withObject:nil afterDelay:kLocationFetchTimeout];
+        }else{
+            attempts=0;
+            [locationManager stopUpdatingLocation];
+            [self performSelector:@selector(defaultLocalImage) withObject:nil afterDelay:waitBeforeLoadingDefaultImage];
+            [self refresh];
+        }
 	} else {
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error retrieving location"
+		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Where's Waldo?"
 		                                                message:[error description]
 		                                               delegate:nil
 		                                      cancelButtonTitle:nil
@@ -1232,6 +1296,11 @@
         
         [self LocationAcquired];
 	});
+}
+
+- (void) timeoutLocationFetch {
+    NSLog(@"LocationService:timeout");
+    [locationManager startUpdatingLocation];
 }
 #pragma mark - detail Interest Selected 
 
@@ -1273,6 +1342,9 @@
     }
     else{
         [self createAnOverlayOnAUITableViewCell:[NSIndexPath indexPathForRow:index inSection:0]];
+        HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+        UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)index]integerValue]];
+        [button setEnabled:NO];
 
         [_interestUpdateManager participateMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
     }
@@ -1312,6 +1384,9 @@
 -(void)showView{
     
     HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+    UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)interestIndex]integerValue]];
+    [button setEnabled:YES];
+
     ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
     [preview ShowViewFromCell];
     
@@ -1376,6 +1451,10 @@
                 _interestUpdateManager.delegate=self;
                 
                 BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:interestIndex];
+                HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+                UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)interestIndex]integerValue]];
+                [button setEnabled:NO];
+
                 [_interestUpdateManager removeMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
             }
                 break;
@@ -1645,6 +1724,9 @@
                 else if([message isEqualToString:@"Already Joined"]){
                     
                     HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+                    UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)interestIndex]integerValue]];
+                    [button setEnabled:YES];
+
                     ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
                     [preview removeFromSuperview];
                     self.tableView.scrollEnabled=YES;
@@ -1735,6 +1817,7 @@
         _homeActivityManager.delegate = nil;
         [_homeActivityManager releaseServerManager];
         _homeActivityManager = nil;
+        [self filterByCategoryType:categoryFilterType];
     }
     else if(serverRequest==kServerCallLeaveInterest ||serverRequest==kServerCallParticipateInterest||serverRequest==kServerCallSuggestedPostMembership||serverRequest==kServerCallCreateActivity){
         _interestUpdateManager.delegate = nil;
@@ -1742,16 +1825,21 @@
         _interestUpdateManager = nil;
     }
     
-    NSString *message = NSLocalizedString (@"Unable to initiate request.",
+    NSString *message = NSLocalizedString (@"That didn't quite go as planned, try again?",
                                            @"NSURLConnection initialization method failed.");
     BeagleAlertWithMessage(message);
     
-    if(serverRequest==kServerCallParticipateInterest){
+    if(serverRequest==kServerCallParticipateInterest||serverRequest==kServerCallLeaveInterest){
         HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
-        ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
-        [preview removeFromSuperview];
-        self.tableView.scrollEnabled=YES;
-
+        UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)interestIndex]integerValue]];
+        [button setEnabled:YES];
+        if(serverRequest==kServerCallParticipateInterest){
+            
+            ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
+            
+            [preview removeFromSuperview];
+            self.tableView.scrollEnabled=YES;
+        }
     }
 }
 
@@ -1766,6 +1854,7 @@
         _homeActivityManager.delegate = nil;
         [_homeActivityManager releaseServerManager];
         _homeActivityManager = nil;
+        [self filterByCategoryType:categoryFilterType];
     }
     else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest||serverRequest==kServerCallSuggestedPostMembership||serverRequest==kServerCallCreateActivity){
         _interestUpdateManager.delegate = nil;
@@ -1776,15 +1865,20 @@
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
     [alert show];
-    if(serverRequest==kServerCallParticipateInterest){
+    if(serverRequest==kServerCallParticipateInterest||serverRequest==kServerCallLeaveInterest){
         HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+        UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)interestIndex]integerValue]];
+        [button setEnabled:YES];
+        if(serverRequest==kServerCallParticipateInterest){
+
         ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
         
         [preview removeFromSuperview];
         self.tableView.scrollEnabled=YES;
-        
+        }
     }
 
 }
+
 @end
 

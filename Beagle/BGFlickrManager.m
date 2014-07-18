@@ -117,7 +117,6 @@ static BGFlickrManager *sharedManager = nil;
 
 - (void) stopFlickrManager:(id) sender {
     NSError *error = [NSError errorWithDomain:@kAsyncQueueLabel code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"FlickrManager timeout. No photos returned.", NSLocalizedDescriptionKey, nil]];
-    
     self.completionBlock(nil, error);
     [self cleanUpFlickrManager];
 }

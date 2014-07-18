@@ -17,15 +17,17 @@
 #import "ActivityViewController.h"
 #import "PostSoundEffect.h"
 #import "BeagleNotificationClass.h"
-#import "ASIHTTPRequest.h"
 #import "FriendsViewController.h"
 #import "FeedbackReporting.h"
+#import "CreateAnimationBlurView.h"
 #define DISABLED_ALPHA 0.5f
+#define kLeaveInterest 12
 static NSString * const CellIdentifier = @"cell";
-@interface DetailInterestViewController ()<BeaglePlayerScrollMenuDelegate,ServerManagerDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,IconDownloaderDelegate,InAppNotificationViewDelegate,UIAlertViewDelegate,MessageKeyboardViewDelegate,UIGestureRecognizerDelegate>{
+@interface DetailInterestViewController ()<BeaglePlayerScrollMenuDelegate,ServerManagerDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,IconDownloaderDelegate,InAppNotificationViewDelegate,UIAlertViewDelegate,MessageKeyboardViewDelegate,UIGestureRecognizerDelegate,CreateAnimationBlurViewDelegate>{
     BOOL scrollViewResize;
     UIActivityIndicatorView *activityIndicatorView;
     BOOL postsLoadComplete;
+    NSTimer *timer;
 }
 
 @property(nonatomic,strong)ServerManager*chatPostManager;
@@ -37,6 +39,7 @@ static NSString * const CellIdentifier = @"cell";
 @property(nonatomic,strong)UITableView *detailedInterestTableView;
 @property (nonatomic, strong) MessageKeyboardView *contentWrapper;
 @property (nonatomic, strong) UIProgressView* sendMessage;
+@property(nonatomic,strong)CreateAnimationBlurView *animationBlurView;
 @end
 
 @implementation DetailInterestViewController
@@ -47,7 +50,7 @@ static NSString * const CellIdentifier = @"cell";
 @synthesize profileImageView=_profileImageView;
 @synthesize chatPostManager=_chatPostManager;
 @synthesize chatPostsArray;
-@synthesize isRedirected,toLastPost;
+@synthesize isRedirected,toLastPost,inappNotification;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -101,6 +104,7 @@ static NSString * const CellIdentifier = @"cell";
     [self.contentWrapper _unregisterForNotifications];
 }
 -(void)getPostsUpdateInBackground{
+    
     if(_chatPostManager!=nil){
         _chatPostManager.delegate = nil;
         [_chatPostManager releaseServerManager];
@@ -122,6 +126,8 @@ static NSString * const CellIdentifier = @"cell";
     
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
     if(notifObject.activityId==self.interestActivity.activityId && (notifObject.notificationType==WHAT_CHANGE_TYPE || notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==CANCEL_ACTIVITY_TYPE)){
+        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+
         //do the description and text update
         if(notifObject.notificationType!=CANCEL_ACTIVITY_TYPE){
  
@@ -131,7 +137,6 @@ static NSString * const CellIdentifier = @"cell";
         UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
         [keyboard addSubview:notifView];
             }
-        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
         self.interestActivity.startActivityDate=notifObject.activityStartTime;
         self.interestActivity.endActivityDate=notifObject.activityEndTime;
         NSString* screenTitle = [BeagleUtilities activityTime:notifObject.activityStartTime endate:notifObject.activityEndTime];
@@ -140,7 +145,6 @@ static NSString * const CellIdentifier = @"cell";
         [self.detailedInterestTableView reloadData];
         }else{
 
-            [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
             NSString *message = NSLocalizedString (@"'This activity has been cancelled, let's show you what else is happening around you'",
                                                    @"Cancel Activity Type");
 
@@ -310,14 +314,19 @@ else if(!notifObject.isOffline){
 }
 
 -(void)backButtonClicked:(id)sender{
-    //[self.contentWrapper _unregisterForNotifications];
     [self.contentWrapper.inputView.textView resignFirstResponder];
-    // For dummyInputView.textView
     [self.view endEditing:YES];
     [self.contentWrapper.inputView.textView setText:nil];
-        //[self.contentWrapper textViewDidChange:self.contentWrapper.inputView.textView];
     [self.contentWrapper.dummyInputView.textView setText:nil];
     [self.navigationController popViewControllerAnimated:YES];
+}
+-(void)cancelButtonClicked:(id)sender{
+    [self.contentWrapper.inputView.textView resignFirstResponder];
+    [self.view endEditing:YES];
+    [self.contentWrapper.inputView.textView setText:nil];
+    [self.contentWrapper.dummyInputView.textView setText:nil];
+    [self dismissViewControllerAnimated:YES completion:Nil];
+    
 }
 - (void)viewDidLoad
 {
@@ -334,11 +343,31 @@ else if(!notifObject.isOffline){
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(editButtonClicked:)];
         
     }else{
+        
+        self.animationBlurView=[CreateAnimationBlurView loadCreateAnimationView:self.view];
+        self.animationBlurView.delegate=self;
+        
+        // If it's a 3.5" screen use the bounds below
+        self.animationBlurView.frame=CGRectMake(0, 0, 320, 480);
+        
+        // Else use these bounds for the 4" screen
+        if([UIScreen mainScreen].bounds.size.height > 480.0f)
+            self.animationBlurView.frame=CGRectMake(0, 0, 320, 568);
+        
+        [self.animationBlurView loadDetailedInterestAnimationView:self.interestActivity.organizerName];
+        
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Flag" style:UIBarButtonItemStylePlain target:self action:@selector(flagButtonClicked:)];
         
     }
     
-    
+    if(inappNotification){
+        
+//        self.navigationController.navigationBar.topItem.title = @"";
+//        [self.navigationController.navigationBar.backItem setHidesBackButton:NO];
+//        self.navigationItem.hidesBackButton = NO;
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(cancelButtonClicked:)];
+        
+    }
     // Set the screen title.
     NSString* screenTitle = [BeagleUtilities activityTime:self.interestActivity.startActivityDate endate:self.interestActivity.endActivityDate];
     self.navigationItem.title = screenTitle;
@@ -351,7 +380,6 @@ else if(!notifObject.isOffline){
     self.detailedInterestTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
     self.detailedInterestTableView.separatorInset = UIEdgeInsetsZero;
     self.detailedInterestTableView.delegate = self;
-    self.detailedInterestTableView.delaysContentTouches = NO;
     self.detailedInterestTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth
     |UIViewAutoresizingFlexibleHeight;
     [self.detailedInterestTableView setBackgroundColor:[BeagleUtilities returnBeagleColor:2]];
@@ -400,6 +428,8 @@ else if(!notifObject.isOffline){
     [self.contentWrapper.inputView.textView resignFirstResponder];
     [self.view endEditing:YES];
     [self.contentWrapper textViewDidChange:self.contentWrapper.inputView.textView];
+    if(self.contentWrapper.inputView.textView.text.length==0)
+        self.contentWrapper.dummyInputView.textView.text=@"Join the conversation";
     
     UIEdgeInsets contentInset = self.contentWrapper.scrollView.contentInset;
     contentInset.bottom = 0;
@@ -493,9 +523,26 @@ else if(!notifObject.isOffline){
         _interestUpdateManager.delegate=self;
         
         if (self.interestActivity.isParticipant) {
-            [_interestUpdateManager removeMembership:self.interestActivity.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Are you sure you no longer want to do this?"
+                                                            message:nil
+                                                           delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No",nil];
+            alert.tag=kLeaveInterest;
+            [alert show];
+
+//            [_interestUpdateManager removeMembership:self.interestActivity.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
         }
         else{
+            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
+            
+            [self.animationBlurView blurWithColor];
+            [self.animationBlurView crossDissolveShow];
+            UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
+            [keyboard addSubview:self.animationBlurView];
+            
+            UIButton *interestedButton=(UIButton*)[self.view viewWithTag:345];
+            [interestedButton setEnabled:NO];
+
             [_interestUpdateManager participateMembership:self.interestActivity.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
         }
         
@@ -605,26 +652,14 @@ else if(!notifObject.isOffline){
     // For the INFO part of the card
     if(indexPath.row==0){
         // Let's begin spacing from the top
-
-
         int fromTheTop = 10;
 
         static NSString *CellIdentifier = @"MediaTableCell";
-        UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-        cell =[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        
+        UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        
         cell.selectionStyle=UITableViewCellSelectionStyleNone;
         cell.separatorInset = UIEdgeInsetsZero;
-        
-        // Setup the scroll view
-        for (id obj in cell.subviews)
-        {
-            if ([NSStringFromClass([obj class]) isEqualToString:@"UITableViewCellScrollView"])
-            {
-                UIScrollView *scroll = (UIScrollView *) obj;
-                scroll.delaysContentTouches = NO;
-                break;
-            }
-        }
         
         // Setting up the title of the screen
         NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
@@ -859,8 +894,6 @@ else if(!notifObject.isOffline){
         UIColor *buttonColor = [[BeagleManager SharedInstance] mediumDominantColor];
         UIColor *outlineButtonColor = [[BeagleManager SharedInstance] darkDominantColor];
         UIFont *forthTextFont=[UIFont fontWithName:@"HelveticaNeue" size:15.0f];
-
-        [_backgroundView addSubview:interestedButton];
         
         if(self.interestActivity.activityType==1){
             [interestedButton addTarget:self action:@selector(handleTapGestures:) forControlEvents:UIControlEventTouchUpInside];
@@ -877,6 +910,7 @@ else if(!notifObject.isOffline){
             [[interestedButton titleLabel] setFont:forthTextFont];
             [interestedButton.titleLabel setTextAlignment:NSTextAlignmentCenter];
             [interestedButton setTitle:@"Created by you" forState:UIControlStateNormal];
+            
             
             // Normal state
             [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button"] withColor:buttonColor] forState:UIControlStateNormal];
@@ -934,6 +968,9 @@ else if(!notifObject.isOffline){
             [interestedButton setImageEdgeInsets:UIEdgeInsetsMake(0.0f, -12.0f, 0.0f, 0.0f)];
             [interestedButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f)];
         }
+        
+        // Add button
+        [_backgroundView addSubview:interestedButton];
     
         // Space left after the button
         fromTheTop += 33+20;
@@ -948,9 +985,9 @@ else if(!notifObject.isOffline){
         [activityIndicatorView setColor:[BeagleUtilities returnBeagleColor:12]];
         activityIndicatorView.hidesWhenStopped=YES;
              if(self.interestActivity.isParticipant)
-                 activityIndicatorView.frame=CGRectMake(135, 64+fromTheTop-25+(self.view.frame.size.height-(64+47+fromTheTop))/2, 37, 37);
+                 activityIndicatorView.frame=CGRectMake(141.5, 64+fromTheTop-25+(self.view.frame.size.height-(64+47+fromTheTop))/2, 37, 37);
              else{
-                 activityIndicatorView.frame=CGRectMake(135, 64+fromTheTop-25+(self.view.frame.size.height-(64+fromTheTop))/2, 37, 37);
+                 activityIndicatorView.frame=CGRectMake(141.5, 64+fromTheTop-25+(self.view.frame.size.height-(64+fromTheTop))/2, 37, 37);
                  
              }
         [self.view insertSubview:activityIndicatorView aboveSubview:self.contentWrapper];
@@ -973,8 +1010,8 @@ else if(!notifObject.isOffline){
             cellTop = 8.0f;
         
         static NSString *CellIdentifier = @"MediaTableCell2";
-        UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-        cell  =[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        
+        UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         cell.backgroundColor=[[BeagleManager SharedInstance] lightDominantColor];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
@@ -1275,7 +1312,10 @@ else if(!notifObject.isOffline){
                 }
                 // If Already joined, do nothing
                 else if([message isEqualToString:@"Already Joined"]){
+                    UIButton *interestedButton=(UIButton*)[self.view viewWithTag:345];
+                    [interestedButton setEnabled:YES];
 
+                    [self.animationBlurView hide];
                     NSString *message = NSLocalizedString (@"You have already joined.",
                                                            @"Already Joined");
                     BeagleAlertWithMessage(message);
@@ -1304,12 +1344,14 @@ else if(!notifObject.isOffline){
                 
                 // Updating the button and text too
                 UIButton *interestedButton=(UIButton*)[self.view viewWithTag:345];
-                UIColor *buttonColor = [[BeagleManager SharedInstance] mediumDominantColor];
+//                UIColor *buttonColor = [[BeagleManager SharedInstance] mediumDominantColor];
                 UIColor *outlineButtonColor = [[BeagleManager SharedInstance] darkDominantColor];
                 
                 if(self.interestActivity.isParticipant){
                     self.interestActivity.isParticipant=FALSE;
                     
+                    [interestedButton setEnabled:YES];
+
                     // Normal state
                     [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button-Unfilled"] withColor:outlineButtonColor] forState:UIControlStateNormal];
                     [interestedButton setTitleColor:outlineButtonColor forState:UIControlStateNormal];
@@ -1335,35 +1377,24 @@ else if(!notifObject.isOffline){
                         }
                     }
                     self.interestActivity.participantsArray=testArray;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+                    
+                    [self.detailedInterestTableView reloadData];
+
                     
                 }
                 else{
                     self.interestActivity.isParticipant=TRUE;
+                    
+                    
+                    [self.animationBlurView show];
+                    
+                    timer = [NSTimer scheduledTimerWithTimeInterval: 5.0
+                                                             target: self
+                                                           selector:@selector(hideInterestOverlay)
+                                                           userInfo: nil repeats:NO];
 
-                    // Normal state
-                    [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button"] withColor:buttonColor] forState:UIControlStateNormal];
-                    [interestedButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-                    [interestedButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Star"] withColor:[UIColor whiteColor]] forState:UIControlStateNormal];
-                    
-                    // Pressed state
-                    [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button"] withColor:[buttonColor colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
-                    [interestedButton setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
-                    [interestedButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Star"] withColor:[[UIColor whiteColor] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
-                    
-                    NSMutableArray*interestArray=[NSMutableArray new];
-                    
-                    if([self.interestActivity.participantsArray count]!=0){
-                        [interestArray addObject:[[BeagleManager SharedInstance]beaglePlayer]];
-                        [interestArray addObjectsFromArray:self.interestActivity.participantsArray];
-                        self.interestActivity.participantsArray=interestArray;
-                    }else{
-                        [interestArray addObject:[[BeagleManager SharedInstance]beaglePlayer]];
-                        self.interestActivity.participantsArray=interestArray;
-                    }
-                    self.contentWrapper.interested=YES;
-                    [self.contentWrapper _setInitialFrames];
-                    [self.contentWrapper.inputView setHidden:NO];
-                    [self.contentWrapper.dummyInputView setHidden:NO];
+
                     
                 }
                 
@@ -1371,9 +1402,6 @@ else if(!notifObject.isOffline){
                 
             }
         }
-        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
-
-            [self.detailedInterestTableView reloadData];
     }
     else if (serverRequest==kServerCallPostComment||serverRequest==kServerCallGetBackgroundChats||serverRequest==kServerInAppChatDetail){
         _chatPostManager.delegate = nil;
@@ -1405,7 +1433,23 @@ else if(!notifObject.isOffline){
                     }
                     for(id chatPost in activity_chats){
                         InterestChatClass *chatClass=[[InterestChatClass alloc]initWithDictionary:chatPost];
-                        [self.chatPostsArray addObject:chatClass];
+                        if([self.chatPostsArray count]>0){
+                            BOOL isFound=FALSE;
+                            for(InterestChatClass *chat in self.chatPostsArray){
+                                if(chat.chat_id==chatClass.chat_id){
+                                    isFound=TRUE;
+                                    break;
+                                }
+                                else{
+                                    isFound=FALSE;
+                                }
+                            }
+                            if(!isFound){
+                               [self.chatPostsArray addObject:chatClass];
+                            }
+                        }
+                        else
+                            [self.chatPostsArray addObject:chatClass];
                         self.interestActivity.postCount=[self.chatPostsArray count];
                     }
                     
@@ -1464,6 +1508,14 @@ else if(!notifObject.isOffline){
         _interestUpdateManager.delegate = nil;
         [_interestUpdateManager releaseServerManager];
         _interestUpdateManager = nil;
+        UIButton *interestedButton=(UIButton*)[self.view viewWithTag:345];
+        [interestedButton setEnabled:YES];
+
+        if(serverRequest==kServerCallParticipateInterest){
+
+            [self.animationBlurView hide];
+
+        }
     }
     else if(serverRequest==kServerCallPostComment||serverRequest==kServerCallGetBackgroundChats||serverRequest==kServerInAppChatDetail)
     {
@@ -1476,7 +1528,7 @@ else if(!notifObject.isOffline){
         self.contentWrapper.inputView.rightButton.tintColor = [BeagleUtilities returnBeagleColor:13];
     }
     
-    NSString *message = NSLocalizedString (@"Oops...something went wrong!",
+    NSString *message = NSLocalizedString (@"Well I guess those messages weren't that important. Please try again in a bit.",
                                            @"NSURLConnection initialization method failed.");
     BeagleAlertWithMessage(message);
 
@@ -1494,6 +1546,15 @@ else if(!notifObject.isOffline){
         _interestUpdateManager.delegate = nil;
         [_interestUpdateManager releaseServerManager];
         _interestUpdateManager = nil;
+        UIButton *interestedButton=(UIButton*)[self.view viewWithTag:345];
+        [interestedButton setEnabled:YES];
+
+        if(serverRequest==kServerCallParticipateInterest){
+
+            [self.animationBlurView hide];
+            
+        }
+
     }
     else if(serverRequest==kServerCallPostComment||serverRequest==kServerCallGetBackgroundChats||serverRequest==kServerInAppChatDetail)
     {
@@ -1528,10 +1589,39 @@ else if(!notifObject.isOffline){
             [self.navigationController popViewControllerAnimated:YES];
         }
     }
+    
+    else if(alertView.tag==kLeaveInterest){
+    if (buttonIndex == 0) {
+        
+                if(_interestUpdateManager!=nil){
+                    _interestUpdateManager.delegate = nil;
+                    [_interestUpdateManager releaseServerManager];
+                    _interestUpdateManager = nil;
+                }
+                
+                _interestUpdateManager=[[ServerManager alloc]init];
+                _interestUpdateManager.delegate=self;
+        
+                UIButton *interestedButton=(UIButton*)[self.view viewWithTag:345];
+                [interestedButton setEnabled:NO];
+
+                [_interestUpdateManager removeMembership:self.interestActivity.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
+        }
+    else{
+        NSLog(@"Clicked Cancel Button");
+     }
+    }
+    
+    
 }
 
 -(void)dealloc{
-    
+    for (NSIndexPath *indexPath in [imageDownloadsInProgress allKeys]) {
+        IconDownloader *d = [imageDownloadsInProgress objectForKey:indexPath];
+        [d cancelDownload];
+    }
+
+    self.imageDownloadsInProgress=nil;
     for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
     {
         [req cancel];
@@ -1539,6 +1629,57 @@ else if(!notifObject.isOffline){
     }
 }
 
+
+-(void)hideInterestOverlay{
+    [timer invalidate];
+    [self.animationBlurView hide];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
+
+    [self updateMembershipView];
+}
+
+- (void)dismissEventFilter{
+    [timer invalidate];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
+    [self updateMembershipView];
+    
+}
+
+-(void)updateMembershipView{
+    UIButton *interestedButton=(UIButton*)[self.view viewWithTag:345];
+    [interestedButton setEnabled:YES];
+
+    UIColor *buttonColor = [[BeagleManager SharedInstance] mediumDominantColor];
+    // Normal state
+    [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button"] withColor:buttonColor] forState:UIControlStateNormal];
+    [interestedButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [interestedButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Star"] withColor:[UIColor whiteColor]] forState:UIControlStateNormal];
+    
+    // Pressed state
+    [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button"] withColor:[buttonColor colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+    [interestedButton setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
+    [interestedButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Star"] withColor:[[UIColor whiteColor] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+    
+    NSMutableArray*interestArray=[NSMutableArray new];
+    
+    if([self.interestActivity.participantsArray count]!=0){
+        [interestArray addObject:[[BeagleManager SharedInstance]beaglePlayer]];
+        [interestArray addObjectsFromArray:self.interestActivity.participantsArray];
+        self.interestActivity.participantsArray=interestArray;
+    }else{
+        [interestArray addObject:[[BeagleManager SharedInstance]beaglePlayer]];
+        self.interestActivity.participantsArray=interestArray;
+    }
+    self.contentWrapper.interested=YES;
+    [self.contentWrapper _setInitialFrames];
+    [self.contentWrapper.inputView setHidden:NO];
+    [self.contentWrapper.dummyInputView setHidden:NO];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+    
+    [self.detailedInterestTableView reloadData];
+    
+
+}
 /*
 #pragma mark - Navigation
 

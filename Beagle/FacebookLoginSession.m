@@ -76,9 +76,8 @@
 
 
                             }else{
-                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Privacy Setting" message:@"We are not able to retrieve your email from Facebook.Please check your settings" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
-                                [alert show];
-                                return ;
+                                if (self.delegate && [self.delegate respondsToSelector:@selector(permissionsError:)])
+                                    [self.delegate permissionsError:nil];
 
                             }
                             
@@ -87,18 +86,10 @@
                     else{
                         //handle error gracefully
                         NSLog(@"error=%@",error);
-                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[error localizedDescription] delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
-                        [alert show];
-                        
-                        if (self.delegate && [self.delegate respondsToSelector:@selector(permissionsError)])
-                            [self.delegate permissionsError];
+                        if (self.delegate && [self.delegate respondsToSelector:@selector(permissionsError:)])
+                              [self.delegate permissionsError:error];
 
-
-                        //attempt to revalidate credentials
-                        
-                        
-                        
-                    }
+                        }
                     
                 }];
 
@@ -272,6 +263,7 @@
 }
 
 -(void)attemptRenewCredentials{
+    
     [self.accountStore renewCredentialsForAccount:(ACAccount *)self.facebookAccount completion:^(ACAccountCredentialRenewResult renewResult, NSError *error){
         if(!error)
         {

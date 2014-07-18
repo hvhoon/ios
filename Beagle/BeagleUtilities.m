@@ -733,9 +733,10 @@
     
     BeagleNotificationClass *notification=[[BeagleNotificationClass alloc]init];
     id obj=[object valueForKey:@"userInfo"];
+    notification.notificationId=[[[object valueForKey:@"userInfo"]valueForKey:@"nid"]integerValue];
     id obj1=[obj valueForKey:@"activity"];
     NSLog(@"obj1=%@",obj1);
-    notification.notificationId=[[[object valueForKey:@"userInfo"]valueForKey:@"notification_id"]integerValue];
+
     if(obj1!=nil && obj1!=[NSNull class] && [[obj1 allKeys]count]!=0){
         notification.activityId=[[obj1 valueForKey:@"id"]integerValue];
         notification.activityStartTime=[obj1 valueForKey:@"start_when"];
@@ -794,6 +795,8 @@
     
     NSDictionary* resultsd = [[[NSString alloc] initWithData:returnData
                                                     encoding:NSUTF8StringEncoding] JSONValue];
+    
+    NSLog(@"Badge Updated for in APP=%ld",(long)[[resultsd objectForKey:@"badge"]integerValue]);
     
     [[BeagleManager SharedInstance]setBadgeCount:[[resultsd objectForKey:@"badge"]integerValue]];
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[BeagleManager SharedInstance]badgeCount]];

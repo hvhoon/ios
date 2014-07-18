@@ -40,13 +40,8 @@ static UIFont *forthTextFont = nil;
     // Start from the top and set the top padding to 8
     int fromTheTop = 0;
     CGFloat organizerName_y=60.0f;
-    if(self.selected)
-    {
-        backgroundColor = background;
-    }
     
     [backgroundColor set];
-    
     
     CGContextFillRect(context, r);
     
@@ -269,7 +264,7 @@ static UIFont *forthTextFont = nil;
     interestedButton.tag=[[NSString stringWithFormat:@"333%ld",(long)cellIndex]integerValue];
     UIColor *buttonColor = [[BeagleManager SharedInstance] mediumDominantColor];
     UIColor *outlineButtonColor = [[BeagleManager SharedInstance] darkDominantColor];
-        
+    [interestedButton.titleLabel setUserInteractionEnabled: NO];
     [self addSubview:interestedButton];
     
         if(self.bg_activity.activityType==1){

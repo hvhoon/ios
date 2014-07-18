@@ -26,7 +26,7 @@
        [self view:self hasSuperviewOfClass:NSClassFromString(@"UIDatePickerWeekMonthDayView")] ||
        [self view:self hasSuperviewOfClass:NSClassFromString(@"UIDatePickerContentView")]){
         [self swizzledSetTextColor:[UIColor whiteColor]];
-        [self setFont:[UIFont fontWithName:@"HelveticaNeue" size:15.0]];
+        //[self setFont:[UIFont fontWithName:@"HelveticaNeue" size:15.0]];
         [self setTextAlignment:NSTextAlignmentCenter];
     } else {
         //Carry on with the default

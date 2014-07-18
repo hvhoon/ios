@@ -12,8 +12,12 @@
 #import "IconDownloader.h"
 #import "BeagleActivityClass.h"
 #import "JSON.h"
-@interface InterestInviteViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,InviteTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate,UISearchBarDelegate>{
+#import "CreateAnimationBlurView.h"
+#import "DetailInterestViewController.h"
+#import "BeagleNotificationClass.h"
+@interface InterestInviteViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,InviteTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate,UISearchBarDelegate,CreateAnimationBlurViewDelegate,InAppNotificationViewDelegate>{
     BOOL isSearching;
+    NSTimer *timer;
 }
 @property(nonatomic,strong)ServerManager*inviteManager;
 @property(nonatomic,strong)NSMutableArray *nearbyFriendsArray;
@@ -23,6 +27,7 @@
 @property(nonatomic,strong)IBOutlet UITableView*inviteTableView;
 @property(nonatomic,strong)NSMutableDictionary*imageDownloadsInProgress;
 @property(nonatomic,strong)IBOutlet UISearchBar *nameSearchBar;
+@property(nonatomic,strong)CreateAnimationBlurView *animationBlurView;
 @end
 
 @implementation InterestInviteViewController
@@ -43,22 +48,47 @@
     return self;
 }
 
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBackgroundInNotification:) name:kRemoteNotificationReceivedNotification object:Nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(postInAppNotification:) name:kNotificationForInterestPost object:Nil];
+
+}
+-(void)viewDidDisappear:(BOOL)animated{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kRemoteNotificationReceivedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationForInterestPost object:nil];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
+    self.animationBlurView=[CreateAnimationBlurView loadCreateAnimationView:self.view];
+    self.animationBlurView.delegate=self;
+
+    [self.animationBlurView loadCustomAnimationView:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
+
+    if([self.interestDetail.participantsArray count]==0)
+        _selectedFriendsArray=[NSMutableArray new];
+    else{
+        _selectedFriendsArray=[NSMutableArray arrayWithArray:self.interestDetail.participantsArray];
+    }
     _nearbyFriendsArray=[NSMutableArray new];
-    _selectedFriendsArray=[NSMutableArray new];
     _worldwideFriendsArray=[NSMutableArray new];
     CGRect newBounds = self.inviteTableView.bounds;
     newBounds.origin.y = newBounds.origin.y + self.nameSearchBar.bounds.size.height;
     self.inviteTableView.bounds = newBounds;
     self.nameSearchBar.showsCancelButton=NO;
-    
+
     [self.navigationController.navigationBar setTintColor:[[BeagleManager SharedInstance] darkDominantColor]];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Create" style:UIBarButtonItemStyleDone target:self action:@selector(createButtonClicked:)];
     [self.navigationItem.rightBarButtonItem setTintColor:[BeagleUtilities returnBeagleColor:13]];
-    self.navigationItem.rightBarButtonItem.enabled=YES;
+    self.navigationItem.rightBarButtonItem.enabled=NO;
+
+    if([self.interestDetail.activityDesc length]!=0 && [self.interestDetail.participantsArray count]>0){
+        self.navigationItem.rightBarButtonItem.enabled=YES;
+
+    }
 
     self.inviteTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
     self.inviteTableView.separatorInset = UIEdgeInsetsZero;
@@ -103,6 +133,78 @@
         
     // Do any additional setup after loading the view.
 }
+- (void)didReceiveBackgroundInNotification:(NSNotification*) note{
+    
+    BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
+    
+    if(!notifObject.isOffline){
+        InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0,0, 320, 64) appNotification:notifObject];
+        notifView.delegate=self;
+        UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
+        [keyboard addSubview:notifView];
+    }
+    else if(notifObject.isOffline && notifObject.activityId!=0 && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE)){
+        
+        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
+        viewController.interestServerManager=[[ServerManager alloc]init];
+        viewController.interestServerManager.delegate=viewController;
+        viewController.isRedirected=TRUE;
+        viewController.toLastPost=TRUE;
+        [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
+        [self.navigationController pushViewController:viewController animated:YES];
+        
+    }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+    
+    
+}
+
+
+-(void)postInAppNotification:(NSNotification*)note{
+    
+    BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
+    
+    if(!notifObject.isOffline){
+        InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0, 0, 320, 64) appNotification:notifObject];
+        notifView.delegate=self;
+        
+        UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
+        [keyboard addSubview:notifView];
+    }else if(notifObject.isOffline && notifObject.activityId!=0 && notifObject.notificationType==CHAT_TYPE){
+        
+        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
+        viewController.interestServerManager=[[ServerManager alloc]init];
+        viewController.interestServerManager.delegate=viewController;
+        viewController.isRedirected=TRUE;
+        viewController.toLastPost=TRUE;
+        [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
+        [self.navigationController pushViewController:viewController animated:YES];
+        
+        
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+    
+    
+}
+
+-(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
+    viewController.interestServerManager=[[ServerManager alloc]init];
+    viewController.interestServerManager.delegate=viewController;
+    viewController.isRedirected=TRUE;
+    if(notification.notificationType==CHAT_TYPE)
+        viewController.toLastPost=TRUE;
+    
+    [viewController.interestServerManager getDetailedInterest:notification.activityId];
+    [self.navigationController pushViewController:viewController animated:YES];
+}
 
 -(void)createButtonClicked:(id)sender{
     
@@ -124,6 +226,13 @@
     }
       interestDetail.requestString =[jsonContentArray JSONRepresentation];
     }
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
+    
+    [self.animationBlurView blurWithColor];
+    [self.animationBlurView crossDissolveShow];
+    UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
+    [keyboard addSubview:self.animationBlurView];
+
     [self.inviteManager createActivityOnBeagle:interestDetail];
 
 }
@@ -275,12 +384,8 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *CellIdentifier = @"MediaTableCell";
     
-    
-    InviteTableViewCell *cell = (InviteTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    //if (cell == nil) {
-    cell =[[InviteTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+    InviteTableViewCell *cell =[[InviteTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     cell.selectionStyle=UITableViewCellSelectionStyleNone;
-    //}
     
     BeagleUserClass *player=nil;
 
@@ -603,6 +708,14 @@
     if(isSearching){
         [self filterContentForSearchText:self.nameSearchBar.text];
     }
+    
+    self.interestDetail.participantsArray=self.selectedFriendsArray;
+    
+    if([self.interestDetail.participantsArray count]>0 && [self.interestDetail.activityDesc length]!=0){
+        self.navigationItem.rightBarButtonItem.enabled=YES;
+    }else{
+        self.navigationItem.rightBarButtonItem.enabled=NO;
+    }
 
 }
 
@@ -624,6 +737,14 @@
     if(isSearching){
         [self filterContentForSearchText:self.nameSearchBar.text];
     }
+    
+    self.interestDetail.participantsArray=self.selectedFriendsArray;
+    if([self.interestDetail.participantsArray count]>0 && [self.interestDetail.activityDesc length]!=0){
+        self.navigationItem.rightBarButtonItem.enabled=YES;
+    }else{
+        self.navigationItem.rightBarButtonItem.enabled=NO;
+    }
+
 }
 
 #pragma mark - server calls
@@ -679,7 +800,48 @@
                         
                         
                     }
-                    
+                    if([self.nearbyFriendsArray count]>0 && [self.selectedFriendsArray count]>0){
+                        NSMutableArray *testArray=[NSMutableArray new];
+                        for(BeagleUserClass *obj in self.nearbyFriendsArray){
+                            BOOL isFound=FALSE;
+                            
+                            for(BeagleUserClass*user in self.selectedFriendsArray){
+                                
+                                if(user.beagleUserId==obj.beagleUserId){
+                                    isFound=TRUE;
+                                    break;
+                            }else{
+                                isFound=FALSE;
+                                
+                            }
+                          }
+                            if(!isFound){
+                                [testArray addObject:obj];
+                            }
+                        }
+                    self.nearbyFriendsArray=testArray;
+                    }
+                    if([self.worldwideFriendsArray count]>0 && [self.selectedFriendsArray count]>0){
+                        NSMutableArray *testArray=[NSMutableArray new];
+                        for(BeagleUserClass *obj in self.worldwideFriendsArray){
+                            BOOL isFound=FALSE;
+                            
+                            for(BeagleUserClass*user in self.selectedFriendsArray){
+                                
+                                if(user.beagleUserId==obj.beagleUserId){
+                                    isFound=TRUE;
+                                    break;
+                                }else{
+                                    isFound=FALSE;
+                                    
+                                }
+                            }
+                            if(!isFound){
+                                [testArray addObject:obj];
+                            }
+                        }
+                        self.worldwideFriendsArray=testArray;
+                    }
                     
                     
                 }
@@ -703,9 +865,17 @@
                     BeagleManager *BG=[BeagleManager SharedInstance];
                     BG.activityDeleted=TRUE;
                     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+                    
+                    [self.animationBlurView show];
+                    
+                    timer = [NSTimer scheduledTimerWithTimeInterval: 5.0
+                                                                  target: self
+                                                                selector:@selector(hideCreateOverlay)
+                                                                userInfo: nil repeats:NO];
+                    
+
 
                 }
-                [self.navigationController popViewControllerAnimated:YES];
                 
             }
         }
@@ -715,14 +885,17 @@
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {
     
-    if(serverRequest==kServerCallgetNearbyAndWorldWideFriends)
+    if(serverRequest==kServerCallgetNearbyAndWorldWideFriends||serverRequest==kServerCallCreateActivity)
     {
         _inviteManager.delegate = nil;
         [_inviteManager releaseServerManager];
         _inviteManager = nil;
+        if(serverRequest==kServerCallCreateActivity){
+                [self.animationBlurView hide];
+        }
     }
     
-    NSString *message = NSLocalizedString (@"Unable to initiate request.",
+    NSString *message = NSLocalizedString (@"Where did all your imaginary friends go? Try again in a bit.",
                                            @"NSURLConnection initialization method failed.");
     BeagleAlertWithMessage(message);
 }
@@ -730,15 +903,32 @@
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
 {
     
-    if(serverRequest==kServerCallgetNearbyAndWorldWideFriends)
+    if(serverRequest==kServerCallgetNearbyAndWorldWideFriends||serverRequest==kServerCallCreateActivity)
     {
         _inviteManager.delegate = nil;
         [_inviteManager releaseServerManager];
         _inviteManager = nil;
+        if(serverRequest==kServerCallCreateActivity){
+            [self.animationBlurView hide];
+        }
+
     }
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
     [alert show];
+}
+-(void)dealloc{
+    for (NSIndexPath *indexPath in [imageDownloadsInProgress allKeys]) {
+        IconDownloader *d = [imageDownloadsInProgress objectForKey:indexPath];
+        [d cancelDownload];
+    }
+
+    self.imageDownloadsInProgress=nil;
+    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
+    {
+        [req cancel];
+        [req setDelegate:nil];
+    }
 }
 
 - (void)filterContentForSearchText:(NSString*)searchText
@@ -781,6 +971,19 @@
 }
 
 
+-(void)hideCreateOverlay{
+    [timer invalidate];
+    [self.animationBlurView hide];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
+    [self.navigationController popViewControllerAnimated:YES];
+
+    
+}
+- (void)dismissEventFilter{
+    [timer invalidate];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
+    [self.navigationController popViewControllerAnimated:YES];
+}
 
 /*
 #pragma mark - Navigation

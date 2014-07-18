@@ -11,4 +11,5 @@
 @interface FriendsViewController : UIViewController
 @property(nonatomic,strong)BeagleUserClass *friendBeagle;
 @property(nonatomic,assign)BOOL inviteFriends;
+
 @end

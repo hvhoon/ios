@@ -14,9 +14,8 @@
 #import "LocationBlurView.h"
 #import "DetailInterestViewController.h"
 #import "BeagleNotificationClass.h"
-#import "ASIHTTPRequest.h"
 #import "InterestInviteViewController.h"
-
+#import "CreateAnimationBlurView.h"
 #define DISABLED_ALPHA 0.5f
 
 enum Weeks {
@@ -28,7 +27,7 @@ enum Weeks {
     FRIDAY,
     SATURDAY
 };
-@interface ActivityViewController ()<UITextViewDelegate,ServerManagerDelegate,EventTimeBlurViewDelegate,EventVisibilityBlurViewDelegate,LocationBlurViewDelegate,InAppNotificationViewDelegate>{
+@interface ActivityViewController ()<UITextViewDelegate,ServerManagerDelegate,EventTimeBlurViewDelegate,EventVisibilityBlurViewDelegate,LocationBlurViewDelegate,InAppNotificationViewDelegate,CreateAnimationBlurViewDelegate>{
     IBOutlet UIImageView *profileImageView;
     IBOutlet UITextView *descriptionTextView;
     UILabel *placeholderLabel;
@@ -43,11 +42,13 @@ enum Weeks {
     IBOutlet UIImageView *visibilityImageView;
     NSInteger timeIndex;
     NSInteger visibilityIndex;
+    NSTimer *timer;
 }
 @property (nonatomic, strong) NSMutableIndexSet *optionIndices;
 @property(nonatomic, strong) EventTimeBlurView *blrTimeView;
 @property(nonatomic, strong) EventVisibilityBlurView *blrVisbilityView;
 @property(nonatomic, strong) LocationBlurView *blrLocationView;
+@property(nonatomic,strong)CreateAnimationBlurView *animationBlurView;
 @property(nonatomic,strong)ServerManager *activityServerManager;
 @property(nonatomic,strong)ServerManager *deleteActivityManager;
 @end
@@ -96,28 +97,76 @@ enum Weeks {
 {
     [super viewDidLoad];
     
+    // All the variables we need to present this screen correctly
     self.blrTimeView=[[EventTimeBlurView alloc]initWithFrame:self.view.frame parentView:self.view];
     self.blrVisbilityView=[EventVisibilityBlurView loadVisibilityFilter:self.view];
+    
+    // If it's a 3.5" screen use the bounds below
+    self.blrVisbilityView.frame=CGRectMake(0, 0, 320, 480);
+    
+    // Else use these bounds for the 4" screen
+    if([UIScreen mainScreen].bounds.size.height > 480.0f)
+        self.blrVisbilityView.frame=CGRectMake(0, 0, 320, 568);
+    
     self.blrVisbilityView.delegate=self;
     self.blrTimeView.delegate=self;
+    NSString *visibilityText = nil;
     [self.blrVisbilityView updateConstraints];
+    UIColor* clickable = [[BeagleManager SharedInstance] darkDominantColor];
+    
+    self.animationBlurView=[CreateAnimationBlurView loadCreateAnimationView:self.view];
+    self.animationBlurView.delegate=self;
+    
+    // If it's a 3.5" screen use the bounds below
+    self.animationBlurView.frame=CGRectMake(0, 0, 320, 480);
+    
+    // Else use these bounds for the 4" screen
+    if([UIScreen mainScreen].bounds.size.height > 480.0f)
+        self.animationBlurView.frame=CGRectMake(0, 0, 320, 568);
     
     self.blrLocationView=[LocationBlurView loadLocationFilter:self.view];
     self.blrLocationView.delegate=self;
+    
+    // Not giving the user the ability to change the location yet!
+    locationFilterButton.userInteractionEnabled = NO;
+    
+    // Setting the color for he Visibility, Time filter and Delete buttons
+    // Visibility text and image
+    [visibilityFilterButton setTitleColor:clickable forState:UIControlStateNormal];
+    [visibilityFilterButton setTitleColor:[clickable colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
+    [visibilityFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Visibility"] withColor:clickable] forState:UIControlStateNormal];
+    [visibilityFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Visibility"] withColor:[clickable colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+    
+    // Time text and image
+    [timeFilterButton setTitleColor:clickable forState:UIControlStateNormal];
+    [timeFilterButton setTitleColor:[clickable colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
+    [timeFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Time"] withColor:clickable] forState:UIControlStateNormal];
+    [timeFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Time"] withColor:[clickable colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+    
+    // Delete button
+    [deleteButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Delete"] withColor:clickable] forState:UIControlStateNormal];
+    [deleteButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Delete"] withColor:[clickable colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+    
+    // Color the Background view appropriately
+    [backgroundView setBackgroundColor:[[BeagleManager SharedInstance] mediumDominantColor]];
+    
+    // If we are in CREATE mode
     if(!editState){
         bg_activity=[[BeagleActivityClass alloc]init];
-    
-    
-    bg_activity.state=[[BeagleManager SharedInstance]placemark].administrativeArea;
-    bg_activity.city=[[[BeagleManager SharedInstance]placemark].addressDictionary objectForKey:@"City"];
-    
-    bg_activity.latitude=[[BeagleManager SharedInstance]currentLocation].coordinate.latitude;
-    bg_activity.longitude=[[BeagleManager SharedInstance]currentLocation].coordinate.longitude;
-
+        bg_activity.state=[[BeagleManager SharedInstance]placemark].administrativeArea;
+        bg_activity.city=[[[BeagleManager SharedInstance]placemark].addressDictionary objectForKey:@"City"];
+        bg_activity.latitude=[[BeagleManager SharedInstance]currentLocation].coordinate.latitude;
+        bg_activity.longitude=[[BeagleManager SharedInstance]currentLocation].coordinate.longitude;
     }
     self.optionIndices = [NSMutableIndexSet indexSetWithIndex:1];
     
+    NSString *location = bg_activity.city;
     
+    // Error handling
+    if(location==nil)
+        location = @"your city";
+    
+    // Add your profile image regardless of state!
     if([[[BeagleManager SharedInstance]beaglePlayer]profileData]==nil){
         
         [self imageCircular:[UIImage imageNamed:@"picbox"]];
@@ -132,94 +181,76 @@ enum Weeks {
     }
     else{
         [self imageCircular:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
+        [self.animationBlurView loadAnimationView:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
     }
     
-
+    // Setup the navigation controller
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:248.0/255.0 green:248.0/255.0 blue:248.0/255.0 alpha:1.0]];
-    [self.navigationController.navigationBar setTintColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0]];
+    [self.navigationController.navigationBar setTintColor:clickable];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(cancelButtonClicked:)];
     
+    // Either way update the count given the text in the description field
+    countTextLabel.text= [[NSString alloc] initWithFormat:@"%lu",(unsigned long)140-[descriptionTextView.text length]];
+    [countTextLabel setTextAlignment:NSTextAlignmentRight];
+    
+    // We are SAVING if the activity has already been created
     if(editState){
+        // Setup the navigation bar
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleDone target:self action:@selector(createButtonClicked:)];
+        [self.navigationItem.rightBarButtonItem setTintColor:[BeagleUtilities returnBeagleColor:13]];
+        self.navigationItem.rightBarButtonItem.enabled=YES;
         
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleDone target:self action:@selector(createButtonClicked:)];
-    [self.navigationItem.rightBarButtonItem setTintColor:[BeagleUtilities returnBeagleColor:13]];
-    self.navigationItem.rightBarButtonItem.enabled=YES;
+        // Add the description field and populate it
+        descriptionTextView.text=self.bg_activity.activityDesc;
         
-    }else{
+        // Setup the labels appropriately
+        timeIndex=-1;
+        visibilityIndex=-1;
+        [visibilityFilterButton setTitle:self.bg_activity.visibility forState:UIControlStateNormal];
+        [timeFilterButton setTitle:[BeagleUtilities activityTime:self.bg_activity.startActivityDate endate:self.bg_activity.endActivityDate] forState:UIControlStateNormal];
+        visibilityFilterButton.hidden=YES;
+        deleteButton.hidden=NO;
+        visibilityImageView.hidden=YES;
+        
+        // Setting up the correct privacy text
+        if([bg_activity.visibility isEqualToString:@"public"])
+            visibilityText = [NSString stringWithFormat:@"Visible to everybody in %@", location];
+        else if([bg_activity.visibility isEqualToString:@"private"])
+            visibilityText = [NSString stringWithFormat:@"Visible to friends in %@", location];
+        else
+            visibilityText = @"Visible to select friends";
+    }
+    // Or we are simply CREATING a new activity
+    else{
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Create" style:UIBarButtonItemStyleDone target:self action:@selector(createButtonClicked:)];
         [self.navigationItem.rightBarButtonItem setTintColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA]];
         self.navigationItem.rightBarButtonItem.enabled=NO;
         
-    }
-    #if 1
-    if(editState){
-        descriptionTextView.text=self.bg_activity.activityDesc;
-    }
-    countTextLabel.text= [[NSString alloc] initWithFormat:@"%lu",(unsigned long)140-[descriptionTextView.text length]];
-
-
-    
-    if(editState){
-        timeIndex=-1;
-        visibilityIndex=-1;
-    [visibilityFilterButton setTitle:self.bg_activity.visibility forState:UIControlStateNormal];
-    [timeFilterButton setTitle:[BeagleUtilities activityTime:self.bg_activity.startActivityDate endate:self.bg_activity.endActivityDate] forState:UIControlStateNormal];
-    }
-    else{
-         timeIndex=6;
+        // Setting up the labels for a new activity
+        timeIndex=6;
         visibilityIndex=2;
-        [visibilityFilterButton setTitle:@"Friends Nearby" forState:UIControlStateNormal];
+        [visibilityFilterButton setTitle:@"Friends" forState:UIControlStateNormal];
         [timeFilterButton setTitle:@"This Weekend" forState:UIControlStateNormal];
+        
+        // Setting the visibility label
+        switch (visibilityIndex) {
+            case 2:
+                visibilityText = [NSString stringWithFormat:@"We'll tell your friends in %@", location];
+                break;
+            case 3:
+                visibilityText = @"We'll tell the friends you selected";
+            default:
+                visibilityText = [NSString stringWithFormat:@"We'll tell your friends in %@", location];
+                break;
+        }
     }
     
-    
-    // Setting the color for he Visibility, Time filter and Delete buttons
-    // Visibility text and image
-    [visibilityFilterButton setTitleColor:[BeagleUtilities returnBeagleColor:13] forState:UIControlStateNormal];
-    [visibilityFilterButton setTitleColor:[[BeagleUtilities returnBeagleColor:13] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
-    [visibilityFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Visibility"] withColor:[BeagleUtilities returnBeagleColor:13]] forState:UIControlStateNormal];
-    [visibilityFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Visibility"] withColor:[[BeagleUtilities returnBeagleColor:13] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
-    
-    // Time text and image
-    [timeFilterButton setTitleColor:[BeagleUtilities returnBeagleColor:13] forState:UIControlStateNormal];
-    [timeFilterButton setTitleColor:[[BeagleUtilities returnBeagleColor:13] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
-    [timeFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Time"] withColor:[BeagleUtilities returnBeagleColor:13]] forState:UIControlStateNormal];
-    [timeFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Time"] withColor:[[BeagleUtilities returnBeagleColor:13] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
-    
-    // Delete button
-    [deleteButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Delete"] withColor:[BeagleUtilities returnBeagleColor:13]] forState:UIControlStateNormal];
-    [deleteButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Delete"] withColor:[[BeagleUtilities returnBeagleColor:13] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
-    
-    // Color the Background view appropriately
-    [backgroundView setBackgroundColor:[[BeagleManager SharedInstance] mediumDominantColor]];
-    
-    NSString *locationFilter=[NSString stringWithFormat:@"%@, %@",[[[BeagleManager SharedInstance]placemark].addressDictionary objectForKey:@"City"],[[BeagleManager SharedInstance]placemark].administrativeArea];
-    [locationFilterButton setTitle:locationFilter forState:UIControlStateNormal];
-    
-    // Disable this location button for now!
-    locationFilterButton.enabled = NO;
-    [countTextLabel setTextAlignment:NSTextAlignmentRight];
-    
-    if(editState){
-        visibilityFilterButton.hidden=YES;
-        
-        NSString *visibilityText = nil;
-        // Setting up the correct privacy text
-        if([bg_activity.visibility isEqualToString:@"public"])
-            visibilityText = @"Visible to everybody";
-        else if([bg_activity.visibility isEqualToString:@"private"])
-            visibilityText = @"Visible to friends nearby";
-        else
-            visibilityText = @"Visible to select friends";
-        
-        [locationFilterButton setTitle:visibilityText forState:UIControlStateNormal];
-        deleteButton.hidden=NO;
-        visibilityImageView.hidden=YES;
-    }
-	// Do any additional setup after loading the view.
-    
-#endif
+    // Setting the visibility text all the way at the end
+    [locationFilterButton setTitle:visibilityText forState:UIControlStateNormal];
+
 }
+	// Do any additional setup after loading the view.
+
 -(void)viewDidDisappear:(BOOL)animated{
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kRemoteNotificationReceivedNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationForInterestPost object:nil];
@@ -244,9 +275,13 @@ enum Weeks {
         viewController.interestServerManager.delegate=viewController;
         viewController.isRedirected=TRUE;
         viewController.toLastPost=TRUE;
-        [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
-        [self.navigationController presentViewController:viewController animated:YES completion:nil];
+        viewController.inappNotification=YES;
         
+        UINavigationController *activityNavigationController=[[UINavigationController alloc]initWithRootViewController:viewController];
+        [self presentViewController:activityNavigationController animated:YES completion:^{
+            [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
+            
+        }];
         
     }
     else if (notifObject.isOffline && notifObject.notificationType==CANCEL_ACTIVITY_TYPE){
@@ -277,8 +312,13 @@ enum Weeks {
         viewController.interestServerManager.delegate=viewController;
         viewController.isRedirected=TRUE;
         viewController.toLastPost=TRUE;
-        [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
-        [self.navigationController presentViewController:viewController animated:YES completion:nil];
+        viewController.inappNotification=YES;
+        
+        UINavigationController *activityNavigationController=[[UINavigationController alloc]initWithRootViewController:viewController];
+        [self presentViewController:activityNavigationController animated:YES completion:^{
+            [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
+
+        }];
 
         
     }
@@ -293,20 +333,27 @@ enum Weeks {
     viewController.interestServerManager=[[ServerManager alloc]init];
     viewController.interestServerManager.delegate=viewController;
     viewController.isRedirected=TRUE;
+    viewController.inappNotification=YES;
     if(notification.notificationType==CHAT_TYPE)
         viewController.toLastPost=TRUE;
-
-    [viewController.interestServerManager getDetailedInterest:notification.activityId];
-    [self.navigationController presentViewController:viewController animated:YES completion:nil];
     
+    UINavigationController *activityNavigationController=[[UINavigationController alloc]initWithRootViewController:viewController];
+    [self presentViewController:activityNavigationController animated:YES completion:^{
+        [viewController.interestServerManager getDetailedInterest:notification.activityId];
+        
+    }];
+
 }
 
 - (void)loadProfileImage:(NSString*)url {
     BeagleManager *BG=[BeagleManager SharedInstance];
     NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:url]];
     BG.beaglePlayer.profileData=imageData;
+    [self.animationBlurView loadAnimationView:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
+
     UIImage* image =[[UIImage alloc] initWithData:imageData];
-    [self performSelectorOnMainThread:@selector(imageCircular:) withObject:image waitUntilDone:NO];
+    if (image)
+        [self performSelectorOnMainThread:@selector(imageCircular:) withObject:image waitUntilDone:NO];
 }
 
 -(void)imageCircular:(UIImage*)image{
@@ -519,6 +566,13 @@ enum Weeks {
     if(editState)
     [self.activityServerManager updateActivityOnBeagle:bg_activity];
     else{
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
+        
+        [self.animationBlurView blurWithColor];
+        [self.animationBlurView crossDissolveShow];
+        UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
+        [keyboard addSubview:self.animationBlurView];
+
        [self.activityServerManager createActivityOnBeagle:bg_activity];
     }
 
@@ -850,36 +904,46 @@ enum Weeks {
 -(void)changeVisibilityFilter:(NSInteger)index{
     visibilityIndex=index;
     [self.navigationItem.rightBarButtonItem setTitle:@"Create"];
+    
+    NSString *location = bg_activity.city;
+    
+    if(location == nil)
+        location = @"your city";
+    
     switch (index) {
         case 1:
         {
-            
             [visibilityFilterButton setTitle:@"Public" forState:UIControlStateNormal];
+            [locationFilterButton setTitle:[NSString stringWithFormat:@"We'll tell your friends in %@", location] forState:UIControlStateNormal];
         }
             break;
             
         case 2:
         {
-            [visibilityFilterButton setTitle:@"Friends Nearby" forState:UIControlStateNormal];
+            [visibilityFilterButton setTitle:@"Friends" forState:UIControlStateNormal];
+            [locationFilterButton setTitle:[NSString stringWithFormat:@"We'll tell your friends in %@", location] forState:UIControlStateNormal];
+
         }
             break;
-            
-            
         case 3:
         {
-            [visibilityFilterButton setTitle:@"Custom" forState:UIControlStateNormal];
+            [visibilityFilterButton setTitle:@"Private" forState:UIControlStateNormal];
+            [locationFilterButton setTitle:[NSString stringWithFormat:@"We'll tell the friends you selected"] forState:UIControlStateNormal];
             [self.navigationItem.rightBarButtonItem setTitle:@"Select"];
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+            InterestInviteViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestInvite"];
+            bg_activity.activityDesc=descriptionTextView.text;
+            viewController.interestDetail=bg_activity;
+            [self.navigationController pushViewController:viewController animated:YES];
 
 
         }
             break;
-            
-            
-            
     }
 }
 
 -(void)dealloc{
+    
     
     for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
     {
@@ -903,9 +967,18 @@ enum Weeks {
             id status=[response objectForKey:@"status"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 if(serverRequest==kServerCallCreateActivity){
+                    
                     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+                    
+                    [self.animationBlurView show];
+                    timer = [NSTimer scheduledTimerWithTimeInterval: 5.0
+                                                             target: self
+                                                           selector:@selector(hideCreateOverlay)
+                                                           userInfo: nil repeats:NO];
+
+                }else if (serverRequest==kServerCallEditActivity){
+                     [self.navigationController dismissViewControllerAnimated:YES completion:Nil];   
                 }
-                [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
 
             }
         }
@@ -941,6 +1014,10 @@ enum Weeks {
         self.activityServerManager.delegate = nil;
         [self.activityServerManager releaseServerManager];
         self.activityServerManager = nil;
+        if(serverRequest==kServerCallCreateActivity){
+            [self.animationBlurView hide];
+        }
+
     }
     else if (serverRequest==kServerCallDeleteActivity){
         
@@ -962,6 +1039,9 @@ enum Weeks {
         self.activityServerManager.delegate = nil;
         [self.activityServerManager releaseServerManager];
         self.activityServerManager = nil;
+        if(serverRequest==kServerCallCreateActivity){
+                [self.animationBlurView hide];
+        }
     }
     else if (serverRequest==kServerCallDeleteActivity){
         
@@ -972,5 +1052,19 @@ enum Weeks {
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
     [alert show];
 }
+-(void)hideCreateOverlay{
+    [timer invalidate];
+    [self.animationBlurView hide];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
 
+    [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
+
+}
+-(void)dismissCreateAnimationBlurView{
+    [timer invalidate];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
+    
+    [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
+    
+}
 @end
