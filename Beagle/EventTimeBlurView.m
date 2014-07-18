@@ -29,10 +29,6 @@
     
     if (self) {
 
-//    EventTimeBlurView *blur = [[[NSBundle mainBundle] loadNibNamed:@"EventTimeBlurView" owner:nil options:nil] objectAtIndex:0];
-//    blur.frame=frame;
-//    self=blur;
-//    blur.userInteractionEnabled=YES;
     self.parent = view;
     self.location = CGPointMake(0, 0);
     self.frame = CGRectMake(0, -view.frame.size.height, view.frame.size.width, view.frame.size.height);

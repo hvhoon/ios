@@ -18,13 +18,6 @@
     NSInteger year;
     NSInteger month;
 }
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *topDistanceContainerView;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *topDistanceFromBackButton;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *topDistanceFromForwardButton;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *topDistanceForMonthLabel;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *distancePickerViewFromTop;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *gridSpacingFromTop;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *pickDateSpacingFromTop;
 @end
 
 @implementation CustomPickerView
@@ -45,42 +38,6 @@
 
 -(void)buildTheLogic{
     
-//    [self setAlpha:.69];
-//    CGSize pickerSize = [pickerView sizeThatFits:CGSizeZero];
-//    
-//    UIView *pickerTransformView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, pickerSize.width, pickerSize.height)];
-//    pickerTransformView.transform = CGAffineTransformMakeScale(0.75f, 0.75f);
-//    
-//    [pickerTransformView addSubview:pickerView];
-//    [self addSubview:pickerTransformView];
-//
-/*
-    _topDistanceContainerView.constant =
-    [UIScreen mainScreen].bounds.size.height > 480.0f ? 144 : 100;
-    
-    _topDistanceFromBackButton.constant =
-    [UIScreen mainScreen].bounds.size.height > 480.0f ? 154 : 110;
-
-    
-    _topDistanceFromForwardButton.constant =
-    [UIScreen mainScreen].bounds.size.height > 480.0f ? 154 : 110;
-
-    
-    _topDistanceForMonthLabel.constant =
-    [UIScreen mainScreen].bounds.size.height > 480.0f ? 154 : 110;
-    
-    _distancePickerViewFromTop.constant =
-    [UIScreen mainScreen].bounds.size.height > 480.0f ? 203 : 159;
-    
-    _gridSpacingFromTop.constant =
-    [UIScreen mainScreen].bounds.size.height > 480.0f ? 390 : 346;
-
-    _pickDateSpacingFromTop.constant =
-    [UIScreen mainScreen].bounds.size.height > 480.0f ? 385 : 341;
-*/
-    
-
-
     UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
     // make your gesture recognizer priority
     singleTap.numberOfTapsRequired = 1;
