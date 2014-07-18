@@ -98,7 +98,10 @@ static UIFont *secondTextFont = nil;
     
     if(self.bgPlayer.beagleUserId==0){
         UIButton *inviteStatusButton=[UIButton buttonWithType:UIButtonTypeCustom];
-        inviteStatusButton.frame=CGRectMake(304-52, 16, 52, 24);
+        inviteStatusButton.frame=CGRectMake(320-80, 0, 80, 54);
+        [inviteStatusButton setImageEdgeInsets:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 16.0f)];
+        [inviteStatusButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
+        
         if(self.bgPlayer.isInvited){
             inviteStatusButton.titleLabel.backgroundColor=[UIColor clearColor];
             inviteStatusButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -108,12 +111,12 @@ static UIFont *secondTextFont = nil;
          inviteStatusButton.titleLabel.textAlignment = NSTextAlignmentCenter;            [inviteStatusButton setTitle: @"Invite\nSent" forState: UIControlStateNormal];
         }else{
             [inviteStatusButton setImage:[UIImage imageNamed:@"Invite"] forState:UIControlStateNormal];
+            [inviteStatusButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Invite"] withColor:[[BeagleUtilities returnBeagleColor:13] colorWithAlphaComponent:0.5f]] forState:UIControlStateHighlighted];
         [inviteStatusButton addTarget:self action:@selector(inviteButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
         }
         [self addSubview:inviteStatusButton];
     
     }
-    
     
     UIView* lineSeparator = [[UIView alloc] initWithFrame:CGRectMake(16, 60, 288, 1)];
     lineSeparator.backgroundColor = [BeagleUtilities returnBeagleColor:2];
