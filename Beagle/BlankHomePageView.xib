@@ -71,15 +71,15 @@
                     </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="e9X-gY-Wz0">
-                    <rect key="frame" x="0.0" y="241" width="320" height="23"/>
+                    <rect key="frame" x="0.0" y="241" width="320" height="39"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="320" id="Cbu-4S-ekh"/>
-                        <constraint firstAttribute="height" constant="23" id="Wqw-4e-eeP"/>
+                        <constraint firstAttribute="height" constant="39" id="Wqw-4e-eeP"/>
                     </constraints>
                     <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="15"/>
                     <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="16" maxY="0.0"/>
-                    <inset key="titleEdgeInsets" minX="16" minY="0.0" maxX="0.0" maxY="0.0"/>
+                    <inset key="titleEdgeInsets" minX="16" minY="0.0" maxX="0.0" maxY="8"/>
                     <state key="normal" title="Press here to try again">
                         <color key="titleColor" red="0.5568627451" green="0.5568627451" blue="0.5568627451" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -98,9 +98,9 @@
                 <constraint firstItem="OoF-ek-A5i" firstAttribute="top" relation="greaterThanOrEqual" secondItem="jId-vI-ctu" secondAttribute="bottom" constant="8" id="7jM-I1-BnL"/>
                 <constraint firstItem="jId-vI-ctu" firstAttribute="leading" secondItem="7w6-D3-PcJ" secondAttribute="leading" constant="40" id="8uH-F7-KoY"/>
                 <constraint firstItem="e9X-gY-Wz0" firstAttribute="top" relation="greaterThanOrEqual" secondItem="1IT-k4-dRh" secondAttribute="bottom" constant="19" id="9KR-ia-lEU"/>
+                <constraint firstAttribute="bottom" secondItem="e9X-gY-Wz0" secondAttribute="bottom" id="Kc7-O0-FWa"/>
                 <constraint firstItem="1IT-k4-dRh" firstAttribute="leading" secondItem="7w6-D3-PcJ" secondAttribute="leading" constant="40" id="PhN-lr-EPk"/>
                 <constraint firstItem="1IT-k4-dRh" firstAttribute="top" relation="lessThanOrEqual" secondItem="OoF-ek-A5i" secondAttribute="bottom" constant="16" id="RmM-MY-slX"/>
-                <constraint firstAttribute="bottom" secondItem="e9X-gY-Wz0" secondAttribute="bottom" constant="16" id="Y2A-N3-QbX"/>
                 <constraint firstItem="OoF-ek-A5i" firstAttribute="leading" secondItem="7w6-D3-PcJ" secondAttribute="leading" constant="40" id="dlo-Ax-W7m"/>
                 <constraint firstItem="e9X-gY-Wz0" firstAttribute="leading" secondItem="7w6-D3-PcJ" secondAttribute="leading" id="rPM-OV-pUp"/>
                 <constraint firstItem="OoF-ek-A5i" firstAttribute="top" relation="lessThanOrEqual" secondItem="jId-vI-ctu" secondAttribute="bottom" constant="16" id="scg-KS-yTk"/>

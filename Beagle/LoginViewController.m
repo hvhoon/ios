@@ -263,7 +263,7 @@
         _loginServerManager = nil;
     }
 
-      NSString *message = NSLocalizedString (@"Unable to initiate request.",
+      NSString *message = NSLocalizedString (@"Well this is embarrassing. Please try again in a bit.",
                                            @"NSURLConnection initialization method failed.");
       BeagleAlertWithMessage(message);
 }

@@ -23,7 +23,7 @@ void BeagleAlertWithError(NSError *error)
 void BeagleAlertWithMessage(NSString *message)
 {
 	/* open an alert with an OK button */
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Beagle"
+	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Oops!"
 													message:message
 												   delegate:nil
 										  cancelButtonTitle:@"OK"

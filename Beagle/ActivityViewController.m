@@ -100,6 +100,14 @@ enum Weeks {
     // All the variables we need to present this screen correctly
     self.blrTimeView=[[EventTimeBlurView alloc]initWithFrame:self.view.frame parentView:self.view];
     self.blrVisbilityView=[EventVisibilityBlurView loadVisibilityFilter:self.view];
+    
+    // If it's a 3.5" screen use the bounds below
+    self.blrVisbilityView.frame=CGRectMake(0, 0, 320, 480);
+    
+    // Else use these bounds for the 4" screen
+    if([UIScreen mainScreen].bounds.size.height > 480.0f)
+        self.blrVisbilityView.frame=CGRectMake(0, 0, 320, 568);
+    
     self.blrVisbilityView.delegate=self;
     self.blrTimeView.delegate=self;
     NSString *visibilityText = nil;
@@ -108,6 +116,13 @@ enum Weeks {
     
     self.animationBlurView=[CreateAnimationBlurView loadCreateAnimationView:self.view];
     self.animationBlurView.delegate=self;
+    
+    // If it's a 3.5" screen use the bounds below
+    self.animationBlurView.frame=CGRectMake(0, 0, 320, 480);
+    
+    // Else use these bounds for the 4" screen
+    if([UIScreen mainScreen].bounds.size.height > 480.0f)
+        self.animationBlurView.frame=CGRectMake(0, 0, 320, 568);
     
     self.blrLocationView=[LocationBlurView loadLocationFilter:self.view];
     self.blrLocationView.delegate=self;
@@ -337,7 +352,8 @@ enum Weeks {
     [self.animationBlurView loadAnimationView:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
 
     UIImage* image =[[UIImage alloc] initWithData:imageData];
-    [self performSelectorOnMainThread:@selector(imageCircular:) withObject:image waitUntilDone:NO];
+    if (image)
+        [self performSelectorOnMainThread:@selector(imageCircular:) withObject:image waitUntilDone:NO];
 }
 
 -(void)imageCircular:(UIImage*)image{

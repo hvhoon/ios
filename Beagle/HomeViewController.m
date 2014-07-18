@@ -27,6 +27,7 @@
 #define kTimerIntervalInSeconds 10
 #define rowHeight 164
 #define kLeaveInterest 23
+#define waitBeforeLoadingDefaultImage 0.0f
 
 @interface HomeViewController ()<UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,HomeTableViewCellDelegate,ServerManagerDelegate,IconDownloaderDelegate,BlankHomePageViewDelegate,EventInterestFilterBlurViewDelegate,InAppNotificationViewDelegate>{
     UIView *topNavigationView;
@@ -107,9 +108,7 @@
 }
 -(void)updateHomeScreen{
     if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
-        
         [self refresh];
-        
     }
     else{
         [self startStandardUpdates];
@@ -229,10 +228,7 @@
 
     
     if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
-        
         [self LocationAcquired];
-        
-        
     }
     else{
         [self startStandardUpdates];
@@ -469,7 +465,7 @@
         }
         else{
             NSLog(@"reverseGeocodeLocation: %@", error.description);
-            [self performSelector:@selector(defaultLocalImage) withObject:nil afterDelay:20.0f];
+            [self performSelector:@selector(defaultLocalImage) withObject:nil afterDelay:waitBeforeLoadingDefaultImage];
 
         }
     }];
@@ -477,7 +473,17 @@
 }
 -(void)defaultLocalImage{
     
+    BeagleManager *BG=[BeagleManager SharedInstance];
+    
+    // Pull dominant color from the default image
+    UIColor *dominantColor = [BeagleUtilities getDominantColor:[UIImage imageNamed:@"defaultLocation"]];
+    
+    BG.lightDominantColor=[BeagleUtilities returnLightColor:[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.9] withWhiteness:0.7];
+    BG.mediumDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5];
+    BG.darkDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.4];
     [self performSelector:@selector(crossDissolvePhotos:withTitle:) withObject:[UIImage imageNamed:@"defaultLocation"] withObject:nil];
+    _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
+    
 }
 -(void)createANewActivity:(id)sender{
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -525,17 +531,22 @@
         
         // Pull image from Flickr
         [[BGFlickrManager sharedManager] randomPhotoRequest:^(FlickrRequestInfo * flickrRequestInfo, NSError * error) {
+            
+            UIColor *dominantColor = nil;
+            
             if(!error) {
                 [self.timer invalidate];
                 [self crossDissolvePhotos:flickrRequestInfo.photo withTitle:flickrRequestInfo.userInfo];
+                dominantColor = [BeagleUtilities getDominantColor:flickrRequestInfo.photo];
+            }
+            else {
+                [self crossDissolvePhotos:[UIImage imageNamed:@"defaultLocation"] withTitle:@"Hello"];
+                dominantColor = [BeagleUtilities getDominantColor:[UIImage imageNamed:@"defaultLocation"]];
             }
             
-        // Color play :)
-        UIColor *dominantColor = [BeagleUtilities getDominantColor:flickrRequestInfo.photo];
-            
-        BG.lightDominantColor=[BeagleUtilities returnLightColor:[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.9] withWhiteness:0.7];
-        BG.mediumDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5];
-        BG.darkDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.4];
+            BG.lightDominantColor=[BeagleUtilities returnLightColor:[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.9] withWhiteness:0.7];
+            BG.mediumDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5];
+            BG.darkDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.4];
         
         /*
         UIColor* filterViewColor = [dominantColor colorWithAlphaComponent:0.8];
@@ -640,7 +651,7 @@
         UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
         stockImageView.image=photo;
         [stockImageView setContentMode:UIViewContentModeScaleAspectFit];
-        _topSection.backgroundColor = [UIColor colorWithPatternImage:photo];
+        stockImageView.image = photo;
         
 #endif
          
@@ -1149,11 +1160,14 @@
     switch (index) {
         case 0:
         {
+            // Show the table again and hide the blank view
+            isPushAuto = true;
+            [self.tableView setHidden:NO];
+            BlankHomePageView *blankHomePageView=(BlankHomePageView*)[self.view  viewWithTag:1245];
+            [blankHomePageView removeFromSuperview];
+            
             if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
-                
-                [self refresh];
-                
-                
+                [self LocationAcquired];
             }
             else{
                 [self startStandardUpdates];
@@ -1216,9 +1230,10 @@
 		case kCLAuthorizationStatusDenied:
 			NSLog(@"kCLAuthorizationStatusDenied");
         {
+            /*
             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Oops!!!" message:@"Beagle can’t access your current location.\nTo view interests nearby, please turn on location services in  Settings under Location Services." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
             [alertView show];
-            // Disable the post button.
+            */// Disable the post button.
         }
 			break;
 		case kCLAuthorizationStatusNotDetermined:
@@ -1243,11 +1258,10 @@
 	NSLog(@"%s", __PRETTY_FUNCTION__);
 	NSLog(@"Error: %@", [error description]);
     
-    
 	if (error.code == kCLErrorDenied) {
 		[locationManager stopUpdatingLocation];
         [self refresh];
-        [self performSelector:@selector(defaultLocalImage) withObject:nil afterDelay:20.0f];
+        [self performSelector:@selector(defaultLocalImage) withObject:nil afterDelay:waitBeforeLoadingDefaultImage];
 
 	} else if (error.code == kCLErrorLocationUnknown) {
 		// todo: retry?
@@ -1259,11 +1273,11 @@
         }else{
             attempts=0;
             [locationManager stopUpdatingLocation];
+            [self performSelector:@selector(defaultLocalImage) withObject:nil afterDelay:waitBeforeLoadingDefaultImage];
             [self refresh];
-            [self performSelector:@selector(defaultLocalImage) withObject:nil afterDelay:20.0f];
         }
 	} else {
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error retrieving location"
+		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Where's Waldo?"
 		                                                message:[error description]
 		                                               delegate:nil
 		                                      cancelButtonTitle:nil
@@ -1811,7 +1825,7 @@
         _interestUpdateManager = nil;
     }
     
-    NSString *message = NSLocalizedString (@"Unable to initiate request.",
+    NSString *message = NSLocalizedString (@"That didn't quite go as planned, try again?",
                                            @"NSURLConnection initialization method failed.");
     BeagleAlertWithMessage(message);
     

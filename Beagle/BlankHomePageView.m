@@ -8,6 +8,7 @@
 
 #import "BlankHomePageView.h"
 
+
 @implementation BlankHomePageView
 @synthesize delegate=_delegate;
 - (id)initWithFrame:(CGRect)frame

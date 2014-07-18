@@ -152,7 +152,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="S6h-4g-xhL">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="picbox" translatesAutoresizingMaskIntoConstraints="NO" id="S6h-4g-xhL">
                                 <rect key="frame" x="85" y="52" width="100" height="100"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <constraints>
@@ -878,6 +878,7 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
         <image name="Time-Highlighted" width="16" height="16"/>
         <image name="Welcome" width="320" height="568"/>
         <image name="beagle" width="182" height="56"/>
+        <image name="picbox" width="100" height="100"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>

@@ -54,6 +54,7 @@
         _profileImageView.clipsToBounds = YES;
         _profileImageView.layer.borderColor = [UIColor whiteColor].CGColor;
         _profileImageView.layer.borderWidth = 3.0f;
+
         
         NSOperationQueue *queue = [NSOperationQueue new];
         NSInvocationOperation *operation = [[NSInvocationOperation alloc]
@@ -70,6 +71,7 @@
         _profileImageView.layer.borderColor = [UIColor whiteColor].CGColor;
         _profileImageView.layer.borderWidth = 3.0f;
     }
+    
     
     if([[[[BeagleManager SharedInstance]beaglePlayer]last_name]length]!=0)
         _profileNameLabel.text =[NSString stringWithFormat:@"%@ %@",[[[BeagleManager SharedInstance]beaglePlayer]first_name],[[[BeagleManager SharedInstance]beaglePlayer]last_name]];
@@ -89,10 +91,10 @@
     NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:url]];
     BG.beaglePlayer.profileData=imageData;
     UIImage* image =[[UIImage alloc] initWithData:imageData];
-    [self performSelectorOnMainThread:@selector(imageCircular:) withObject:image waitUntilDone:NO];
+    if (image)
+        [self performSelectorOnMainThread:@selector(imageCircular:) withObject:image waitUntilDone:NO];
 }
 -(void)imageCircular:(UIImage*)image{
-    
     _profileImageView.image=[BeagleUtilities imageCircularBySize:image sqr:200.0f];
 }
 - (IBAction)sliderButtonClicked:(id)sender{
@@ -231,7 +233,7 @@
     
     [_fbTickerSwitch setOn:player.fb_ticker animated:YES];
 
-    NSString *message = NSLocalizedString (@"Unable to initiate request.",
+    NSString *message = NSLocalizedString (@"You shouldn't be doing stuff on Facebook anyways.",
                                            @"NSURLConnection initialization method failed.");
     BeagleAlertWithMessage(message);
 }

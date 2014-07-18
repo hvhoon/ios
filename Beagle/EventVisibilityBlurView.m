@@ -28,12 +28,10 @@
         // make your gesture recognizer priority
         singleTap.numberOfTapsRequired = 1;
         [self addGestureRecognizer:singleTap];
-        
     }
     
     return self;
 }
-
 - (IBAction)visibilityIndex:(id)sender {
     
     UIButton *button=(UIButton*)sender;
