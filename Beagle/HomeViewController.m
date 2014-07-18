@@ -841,24 +841,6 @@
         cell.photoImage = play.profilePhotoImage=checkImge;
     }
     [cell setNeedsDisplay];
-#if 0
-    for (id obj in cell.subviews)
-    {
-        
-        //        if( [[obj class]isKindOfClass:[UIButton class]]){
-        //            UIButton *btn=(UIButton*)obj;
-        //            if(btn.tag==[[NSString stringWithFormat:@"333%ld",(long)indexPath.row]integerValue]){
-        //                [obj removeFromSuperview];
-        //            }
-        //        }
-        if ([NSStringFromClass([obj class]) isEqualToString:@"UITableViewCellScrollView"])
-        {
-            UIScrollView *scroll = (UIScrollView *) obj;
-            scroll.delaysContentTouches = NO;
-            break;
-        }
-    }
-#endif
     return cell;
 }
 - (void)startIconDownload:(BeagleActivityClass*)appRecord forIndexPath:(NSIndexPath *)indexPath{
@@ -1161,7 +1143,15 @@
         case 0:
         {
             // Show the table again and hide the blank view
+            
+            NSMutableArray *tableDataArray = [NSMutableArray arrayWithArray:self.tableData];
+            
+            [tableDataArray removeAllObjects];
+            
+            self.tableData=[NSArray arrayWithArray:tableDataArray];
+            [self.tableView reloadData];
             isPushAuto = true;
+
             [self.tableView setHidden:NO];
             BlankHomePageView *blankHomePageView=(BlankHomePageView*)[self.view  viewWithTag:1245];
             [blankHomePageView removeFromSuperview];
