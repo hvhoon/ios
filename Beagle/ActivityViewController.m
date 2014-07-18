@@ -337,7 +337,8 @@ enum Weeks {
     [self.animationBlurView loadAnimationView:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
 
     UIImage* image =[[UIImage alloc] initWithData:imageData];
-    [self performSelectorOnMainThread:@selector(imageCircular:) withObject:image waitUntilDone:NO];
+    if (image)
+        [self performSelectorOnMainThread:@selector(imageCircular:) withObject:image waitUntilDone:NO];
 }
 
 -(void)imageCircular:(UIImage*)image{

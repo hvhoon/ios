@@ -1168,6 +1168,12 @@
     switch (index) {
         case 0:
         {
+            // Show the table again and hide the blank view
+            isPushAuto = true;
+            [self.tableView setHidden:NO];
+            BlankHomePageView *blankHomePageView=(BlankHomePageView*)[self.view  viewWithTag:1245];
+            [blankHomePageView removeFromSuperview];
+            
             if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
                 [self LocationAcquired];
             }

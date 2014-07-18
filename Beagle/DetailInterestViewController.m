@@ -541,9 +541,6 @@ else if(!notifObject.isOffline){
     }
   }
 
-
-
-
 - (void)loadProfileImage:(NSString*)url {
     NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:url]];
     interestActivity.profilePhotoImage =[[UIImage alloc] initWithData:imageData];

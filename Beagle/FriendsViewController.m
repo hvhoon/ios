@@ -157,7 +157,8 @@
 - (void)loadProfileImage:(NSString*)url {
     NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:url]];
     UIImage* image =[[UIImage alloc] initWithData:imageData];
-    [self performSelectorOnMainThread:@selector(imageCircular:) withObject:image waitUntilDone:NO];
+    if (image)
+        [self performSelectorOnMainThread:@selector(imageCircular:) withObject:image waitUntilDone:NO];
 }
 -(void)imageCircular:(UIImage*)image{
     
