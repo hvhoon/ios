@@ -1520,7 +1520,7 @@ else if(!notifObject.isOffline){
         self.contentWrapper.inputView.rightButton.tintColor = [BeagleUtilities returnBeagleColor:13];
     }
     
-    NSString *message = NSLocalizedString (@"Oops...something went wrong!",
+    NSString *message = NSLocalizedString (@"Well I guess those messages weren't that important. Please try again in a bit.",
                                            @"NSURLConnection initialization method failed.");
     BeagleAlertWithMessage(message);
 

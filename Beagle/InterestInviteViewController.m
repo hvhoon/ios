@@ -895,7 +895,7 @@
         }
     }
     
-    NSString *message = NSLocalizedString (@"Unable to initiate request.",
+    NSString *message = NSLocalizedString (@"Where did all your imaginary friends go? Try again in a bit.",
                                            @"NSURLConnection initialization method failed.");
     BeagleAlertWithMessage(message);
 }

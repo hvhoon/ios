@@ -1834,7 +1834,7 @@
         _interestUpdateManager = nil;
     }
     
-    NSString *message = NSLocalizedString (@"Unable to initiate request.",
+    NSString *message = NSLocalizedString (@"That didn't quite go as planned, try again?",
                                            @"NSURLConnection initialization method failed.");
     BeagleAlertWithMessage(message);
     

@@ -233,7 +233,7 @@
     
     [_fbTickerSwitch setOn:player.fb_ticker animated:YES];
 
-    NSString *message = NSLocalizedString (@"Unable to initiate request.",
+    NSString *message = NSLocalizedString (@"You shouldn't be doing stuff on Facebook anyways.",
                                            @"NSURLConnection initialization method failed.");
     BeagleAlertWithMessage(message);
 }
