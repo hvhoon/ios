@@ -13,6 +13,7 @@
 #import "TTTAttributedLabel.h"
 #import "DetailInterestViewController.h"
 #import "FriendsViewController.h"
+#import "Reachability.h"
 @interface NotificationsViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,IconDownloaderDelegate,TTTAttributedLabelDelegate,ServerManagerDelegate>{
         NSInteger interestIndex;
 }
@@ -66,8 +67,17 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBackgroundInNotification:) name:kRemoteNotificationReceivedNotification object:Nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(postInAppNotification:) name:kNotificationForInterestPost object:Nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getUserNotifications) name:kUpdateNotificationStack object:Nil];
-    [self getUserNotifications];
-    [self.slidingViewController hide];
+    
+    if([[Reachability reachabilityForInternetConnection]currentReachabilityStatus]!=0){
+        [self getUserNotifications];
+        
+    }else{
+        [_notificationSpinnerView stopAnimating];
+        _notificationTableView.hidden=YES;
+        _notification_BlankImageView.hidden=NO;
+        _unreadUpdateView.hidden=YES;
+
+    }
 }
 
 -(void)getUserNotifications{
@@ -453,7 +463,6 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     BeagleNotificationClass *play = (BeagleNotificationClass *)[self.listArray objectAtIndex:indexPath.row];
     if(play.activityId!=0){
-        [self.slidingViewController show];
 
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
@@ -663,6 +672,11 @@
         _notificationsManager.delegate = nil;
         [_notificationsManager releaseServerManager];
         _notificationsManager = nil;
+        [_notificationSpinnerView stopAnimating];
+        _notificationTableView.hidden=YES;
+        _notification_BlankImageView.hidden=NO;
+        _unreadUpdateView.hidden=YES;
+
     }
     else if(serverRequest==kServerCallParticipateInterest){
         _interestUpdateManager.delegate = nil;
@@ -683,6 +697,11 @@
         _notificationsManager.delegate = nil;
         [_notificationsManager releaseServerManager];
         _notificationsManager = nil;
+        [_notificationSpinnerView stopAnimating];
+        _notificationTableView.hidden=YES;
+        _notification_BlankImageView.hidden=NO;
+        _unreadUpdateView.hidden=YES;
+
     }
     else if(serverRequest==kServerCallParticipateInterest){
         _interestUpdateManager.delegate = nil;

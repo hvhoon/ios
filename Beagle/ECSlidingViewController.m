@@ -389,12 +389,6 @@ NSString *const ECSlidingViewTopDidReset             = @"ECSlidingViewTopDidRese
 #endif
 }
 
--(void)show{
-    [self hideFakeStatusBar];
-}
--(void)hide{
-    [self showFakeStatusBar];
-}
 - (void)anchorTopViewOffScreenTo:(ECSide)side
 {
     [self anchorTopViewOffScreenTo:side animations:nil onComplete:nil];
