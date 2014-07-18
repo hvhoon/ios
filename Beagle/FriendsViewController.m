@@ -566,7 +566,7 @@
                             [sortedArray addObjectsFromArray:friendsSortedAlphabetically];
 
                         }
-                        if([beagleFriendsArray count]!=0){
+                        if([sortedArray count]!=0){
                             self.beagleFriendsArray=[NSArray arrayWithArray:sortedArray];
                         }
                         
@@ -586,7 +586,7 @@
                         
                         NSMutableArray *sortedArray=[NSMutableArray arrayWithArray:friendsSortedAlphabetically];
 
-                        if([facebookFriendsArray count]!=0){
+                        if([sortedArray count]!=0){
                             self.facebookFriendsArray=[NSArray arrayWithArray:sortedArray];
                         }
 

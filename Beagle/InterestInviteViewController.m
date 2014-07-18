@@ -828,7 +828,7 @@
                         
                         NSMutableArray *sortedArray=[NSMutableArray arrayWithArray:friendsSortedAlphabetically];
                         
-                        if([worldwideFriendsArray count]!=0){
+                        if([sortedArray count]!=0){
                             [self.worldwideFriendsArray addObjectsFromArray:sortedArray];
                         }
                         
