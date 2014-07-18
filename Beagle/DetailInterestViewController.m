@@ -1228,7 +1228,6 @@ else if(!notifObject.isOffline){
                             [participantsArray addObject:userClass];
                         }
                         self.interestActivity.participantsArray=participantsArray;
-                        //                        [self setUpPlayerScroll:participantsArray];
                         
                         
                     }
@@ -1344,7 +1343,6 @@ else if(!notifObject.isOffline){
                 
                 // Updating the button and text too
                 UIButton *interestedButton=(UIButton*)[self.view viewWithTag:345];
-//                UIColor *buttonColor = [[BeagleManager SharedInstance] mediumDominantColor];
                 UIColor *outlineButtonColor = [[BeagleManager SharedInstance] darkDominantColor];
                 
                 if(self.interestActivity.isParticipant){
@@ -1377,7 +1375,6 @@ else if(!notifObject.isOffline){
                         }
                     }
                     self.interestActivity.participantsArray=testArray;
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
                     
                     [self.detailedInterestTableView reloadData];
 
@@ -1402,6 +1399,7 @@ else if(!notifObject.isOffline){
                 
             }
         }
+
     }
     else if (serverRequest==kServerCallPostComment||serverRequest==kServerCallGetBackgroundChats||serverRequest==kServerInAppChatDetail){
         _chatPostManager.delegate = nil;
@@ -1489,9 +1487,10 @@ else if(!notifObject.isOffline){
             self.contentWrapper.inputView.rightButton.enabled = YES;
             self.contentWrapper.inputView.rightButton.tintColor = [BeagleUtilities returnBeagleColor:13];
         }
-        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
 
     }
+    if(serverRequest!=kServerCallGetDetailedInterest)
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
 
 }
 

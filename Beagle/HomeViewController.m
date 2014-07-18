@@ -104,11 +104,11 @@
 }
 
 -(void)addADelay{
-    [self performSelector:@selector(updateHomeScreen) withObject:nil afterDelay:0.85];
+    [self performSelector:@selector(updateHomeScreen) withObject:nil afterDelay:1.0];
 }
 -(void)updateHomeScreen{
     if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
-        [self refresh];
+            [self refresh];
     }
     else{
         [self startStandardUpdates];
