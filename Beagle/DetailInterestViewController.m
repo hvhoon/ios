@@ -346,6 +346,14 @@ else if(!notifObject.isOffline){
         
         self.animationBlurView=[CreateAnimationBlurView loadCreateAnimationView:self.view];
         self.animationBlurView.delegate=self;
+        
+        // If it's a 3.5" screen use the bounds below
+        self.animationBlurView.frame=CGRectMake(0, 0, 320, 480);
+        
+        // Else use these bounds for the 4" screen
+        if([UIScreen mainScreen].bounds.size.height > 480.0f)
+            self.animationBlurView.frame=CGRectMake(0, 0, 320, 568);
+        
         [self.animationBlurView loadDetailedInterestAnimationView:self.interestActivity.organizerName];
         
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Flag" style:UIBarButtonItemStylePlain target:self action:@selector(flagButtonClicked:)];
