@@ -268,14 +268,6 @@
         [d cancelDownload];
     }
     self.imageDownloadsInProgress=nil;
-    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
-    {
-        [req cancel];
-        [req setDelegate:nil];
-    }
-
-    
-
 }
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
@@ -1264,7 +1256,6 @@
         if(attempts!=3){
             attempts++;
         [self performSelector:@selector(timeoutLocationFetch) withObject:nil afterDelay:kLocationFetchTimeout];
-        [locationManager startUpdatingLocation];
         }else{
             attempts=0;
             [locationManager stopUpdatingLocation];
@@ -1295,7 +1286,7 @@
 
 - (void) timeoutLocationFetch {
     NSLog(@"LocationService:timeout");
-    [locationManager stopUpdatingLocation];
+    [locationManager startUpdatingLocation];
 }
 #pragma mark - detail Interest Selected 
 
