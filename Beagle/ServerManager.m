@@ -441,7 +441,7 @@
     _serverCallType=kServerCallGetProfileMutualFriends;
     if([self isInternetAvailable])
     {
-        [self callServerWithUrl:[NSString stringWithFormat:@"%@players/friendprofile.json?id=%@&fid=%ld",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],(long)friendId]
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@players/friendprofile.json?id=%@&fid=%ld&lat=%@&lng=%@",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],(long)friendId,[NSNumber numberWithFloat:[[BeagleManager SharedInstance]currentLocation].coordinate.latitude],[NSNumber numberWithFloat:[[BeagleManager SharedInstance]currentLocation].coordinate.longitude]]
                          method:@"GET"
                          params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
     }
@@ -455,7 +455,7 @@
     _serverCallType=kServerCallGetDOS1Friends;
     if([self isInternetAvailable])
     {
-        [self callServerWithUrl:[NSString stringWithFormat:@"%@players/friendwithdos1.json?id=%@",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]]
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@players/friendwithdos1.json?id=%@&lat=%@&lng=%@",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],[NSNumber numberWithFloat:[[BeagleManager SharedInstance]currentLocation].coordinate.latitude],[NSNumber numberWithFloat:[[BeagleManager SharedInstance]currentLocation].coordinate.longitude]]
                          method:@"GET"
                          params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
     }

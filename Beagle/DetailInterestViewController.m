@@ -1306,7 +1306,8 @@ else if(!notifObject.isOffline){
                 UILabel *participantsCountTextLabel=(UILabel*)[self.view viewWithTag:347];
                 if([message isEqualToString:@"Joined"]){
                     self.interestActivity.participantsCount++;
-                    if(self.interestActivity.dosRelation==1) self.interestActivity.dos1count++;
+                    if(self.interestActivity.dosRelation==1)
+                        self.interestActivity.dos1count++;
                     
                 }
                 // If Already joined, do nothing
@@ -1318,13 +1319,16 @@ else if(!notifObject.isOffline){
                     NSString *message = NSLocalizedString (@"You have already joined.",
                                                            @"Already Joined");
                     BeagleAlertWithMessage(message);
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+
                     return;
 
                 }
                 // If Left update counts
                 else {
                     self.interestActivity.participantsCount--;
-                    if(self.interestActivity.dosRelation==1) self.interestActivity.dos1count--;
+                    if(self.interestActivity.dosRelation==1)
+                        self.interestActivity.dos1count--;
                     
                 }
                 
@@ -1448,7 +1452,6 @@ else if(!notifObject.isOffline){
                         }
                         else
                             [self.chatPostsArray addObject:chatClass];
-                        self.interestActivity.postCount=[self.chatPostsArray count];
                     }
                     
                     
@@ -1469,6 +1472,7 @@ else if(!notifObject.isOffline){
                     
                     [self.detailedInterestTableView endUpdates];
 
+                    self.interestActivity.postCount=[self.chatPostsArray count];
                     
                     
                     }

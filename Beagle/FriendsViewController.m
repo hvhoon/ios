@@ -546,8 +546,28 @@
                             [beagleFriendsArray addObject:userClass];
                         }
                         
+                        // same city(distance less than 50 miles)
+                        NSMutableArray *friendsInCityArray=[NSMutableArray new];
+                        for(BeagleUserClass *user in beagleFriendsArray){
+                            if(user.distance <=50.0f && user.location.length!=0){
+                                [friendsInCityArray addObject:user];
+                            }
+                        }
+                        for(BeagleUserClass *user in friendsInCityArray){
+                            [beagleFriendsArray removeObjectIdenticalTo:user];
+                            
+                        }
+                        NSMutableArray *sortedArray=[NSMutableArray arrayWithArray:friendsInCityArray];
+
                         if([beagleFriendsArray count]!=0){
-                            self.beagleFriendsArray=[NSArray arrayWithArray:beagleFriendsArray];
+                        NSArray *friendsSortedAlphabetically=[NSArray arrayWithArray:beagleFriendsArray];
+                        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"fullName" ascending:YES];
+                        friendsSortedAlphabetically=[friendsSortedAlphabetically sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
+                            [sortedArray addObjectsFromArray:friendsSortedAlphabetically];
+
+                        }
+                        if([beagleFriendsArray count]!=0){
+                            self.beagleFriendsArray=[NSArray arrayWithArray:sortedArray];
                         }
                         
                     }
@@ -560,8 +580,14 @@
                             [facebookFriendsArray addObject:userClass];
                         }
                         
+                        NSArray *friendsSortedAlphabetically=[NSArray arrayWithArray:facebookFriendsArray];
+                        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"fullName" ascending:YES];
+                        friendsSortedAlphabetically=[friendsSortedAlphabetically sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
+                        
+                        NSMutableArray *sortedArray=[NSMutableArray arrayWithArray:friendsSortedAlphabetically];
+
                         if([facebookFriendsArray count]!=0){
-                            self.facebookFriendsArray=[NSArray arrayWithArray:facebookFriendsArray];
+                            self.facebookFriendsArray=[NSArray arrayWithArray:sortedArray];
                         }
 
 

@@ -967,9 +967,6 @@ enum Weeks {
             id status=[response objectForKey:@"status"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 if(serverRequest==kServerCallCreateActivity){
-                    
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
-                    
                     [self.animationBlurView show];
                     timer = [NSTimer scheduledTimerWithTimeInterval: 5.0
                                                              target: self
@@ -996,14 +993,14 @@ enum Weeks {
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 BeagleManager *BG=[BeagleManager SharedInstance];
                 BG.activityDeleted=TRUE;
-                [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
-
                 [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
                 
             }
         }
 
     }
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+
 }
 
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest

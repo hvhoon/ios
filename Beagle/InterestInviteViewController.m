@@ -362,17 +362,24 @@
     }
     
     else{
-      if([self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0){
-         if(section==1)
+      if([self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0 && [self.selectedFriendsArray count]==0){
+         if(section==0)
             sectionLabel.text=@"FRIENDS AROUND YOU";
-        else
+        else if(section==1)
             sectionLabel.text=@"FRIENDS WORLDWIDE";
       }
-    else if([self.nearbyFriendsArray count]>0)
+    else if([self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]==0)
             sectionLabel.text=@"FRIENDS AROUND YOU";
 
-    else if ([self.worldwideFriendsArray count]>0)
+    else if ([self.worldwideFriendsArray count]>0&& [self.nearbyFriendsArray count]==0)
             sectionLabel.text=@"FRIENDS WORLDWIDE";
+    else if([self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0 && [self.selectedFriendsArray count]>0){
+        if(section==1)
+            sectionLabel.text=@"FRIENDS AROUND YOU";
+        else if(section==2)
+            sectionLabel.text=@"FRIENDS WORLDWIDE";
+     }
+
     }
     return sectionHeaderview;
     
@@ -681,7 +688,19 @@
 
 #pragma mark -  Invite/Uninvite  calls
 -(void)inviteFriendOnBeagle:(NSIndexPath*)indexPath{
+    
+    
     BeagleUserClass *player=nil;
+    if(isSearching && [self.searchResults count]){
+        player = (BeagleUserClass *)[self.searchResults objectAtIndex:indexPath.row];
+        if(player.distance<=50.0f){
+            [self.nearbyFriendsArray removeObjectAtIndex:indexPath.row];
+            
+        }else{
+             [self.worldwideFriendsArray removeObjectAtIndex:indexPath.row];
+        }
+        
+    }else{
     if ([self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0){
         if(indexPath.section==0){
             player = (BeagleUserClass *)[self.nearbyFriendsArray objectAtIndex:indexPath.row];
@@ -702,9 +721,12 @@
         player = (BeagleUserClass *)[self.worldwideFriendsArray objectAtIndex:indexPath.row];
     [self.worldwideFriendsArray removeObjectAtIndex:indexPath.row];
     }
+    }
+    
     player.isInvited=TRUE;
     [self.selectedFriendsArray addObject:player];
     [self.inviteTableView reloadData];
+
     if(isSearching){
         [self filterContentForSearchText:self.nameSearchBar.text];
     }
@@ -717,6 +739,9 @@
         self.navigationItem.rightBarButtonItem.enabled=NO;
     }
 
+    if(isSearching){
+        self.navigationItem.rightBarButtonItem.enabled=YES;
+    }
 }
 
 
@@ -744,6 +769,10 @@
     }else{
         self.navigationItem.rightBarButtonItem.enabled=NO;
     }
+    if(isSearching){
+        self.navigationItem.rightBarButtonItem.enabled=YES;
+    }
+
 
 }
 
@@ -788,13 +817,19 @@
                     if (worldwide_friends != nil && [worldwide_friends class] != [NSNull class] && [worldwide_friends count]!=0) {
                         
                         NSMutableArray *worldwideFriendsArray=[[NSMutableArray alloc]init];
-                        for(id el in worldwideFriendsArray){
+                        for(id el in worldwide_friends){
                             BeagleUserClass *userClass=[[BeagleUserClass alloc]initWithProfileDictionary:el];
                             [worldwideFriendsArray addObject:userClass];
                         }
                         
+                        NSArray *friendsSortedAlphabetically=[NSArray arrayWithArray:worldwideFriendsArray];
+                        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"fullName" ascending:YES];
+                        friendsSortedAlphabetically=[friendsSortedAlphabetically sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
+                        
+                        NSMutableArray *sortedArray=[NSMutableArray arrayWithArray:friendsSortedAlphabetically];
+                        
                         if([worldwideFriendsArray count]!=0){
-                            [self.worldwideFriendsArray addObjectsFromArray:worldwideFriendsArray];
+                            [self.worldwideFriendsArray addObjectsFromArray:sortedArray];
                         }
                         
                         
