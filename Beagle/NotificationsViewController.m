@@ -694,7 +694,11 @@
     [alert show];
 }
 -(void)dealloc{
-    
+    for (NSIndexPath *indexPath in [imageDownloadsInProgress allKeys]) {
+        IconDownloader *d = [imageDownloadsInProgress objectForKey:indexPath];
+        [d cancelDownload];
+    }
+
     self.imageDownloadsInProgress=nil;
     for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
     {

@@ -10,7 +10,6 @@
 #import <Crashlytics/Crashlytics.h>
 #import "Constants.h"
 #import "BGFlickrManager.h"
-#import "ASIHTTPRequest.h"
 #import "ActivityViewController.h"
 #import "UIView+HidingView.h"
 #import "BlankHomePageView.h"
@@ -263,6 +262,11 @@
 -(void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kBeagleBadgeCount object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"AutoRefreshEvents" object:nil];
+    
+    for (NSIndexPath *indexPath in [imageDownloadsInProgress allKeys]) {
+        IconDownloader *d = [imageDownloadsInProgress objectForKey:indexPath];
+        [d cancelDownload];
+    }
     self.imageDownloadsInProgress=nil;
     for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
     {

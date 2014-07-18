@@ -12,7 +12,6 @@
 #import "IconDownloader.h"
 #import "BeagleNotificationClass.h"
 #import "DetailInterestViewController.h"
-#import "ASIHTTPRequest.h"
 @interface FriendsViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,FriendsTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate>{
     NSInteger inviteIndex;
 }
@@ -668,7 +667,11 @@
 }
 
 -(void)dealloc{
-    
+    for (NSIndexPath *indexPath in [imageDownloadsInProgress allKeys]) {
+        IconDownloader *d = [imageDownloadsInProgress objectForKey:indexPath];
+        [d cancelDownload];
+    }
+
     self.imageDownloadsInProgress=nil;
     for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
     {

@@ -14,7 +14,6 @@
 #import "LocationBlurView.h"
 #import "DetailInterestViewController.h"
 #import "BeagleNotificationClass.h"
-#import "ASIHTTPRequest.h"
 #import "InterestInviteViewController.h"
 #import "CreateAnimationBlurView.h"
 #define DISABLED_ALPHA 0.5f
@@ -928,6 +927,7 @@ enum Weeks {
 }
 
 -(void)dealloc{
+    
     
     for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
     {
