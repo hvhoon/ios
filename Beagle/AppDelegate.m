@@ -9,7 +9,6 @@
 #import "AppDelegate.h"
 #import <Crashlytics/Crashlytics.h>
 #import <Instabug/Instabug.h>
-#import <Appsee/Appsee.h>
 
 @interface AppDelegate ()<ServerManagerDelegate>{
     ServerManager *notificationServerManager;
@@ -45,7 +44,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     
     // Start AppSee analytics
     [Appsee start:@"d4f6b6daba7e4c3ca8b7ad040c2edaa3"];
-
+    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = initViewController;
     [self.window makeKeyAndVisible];

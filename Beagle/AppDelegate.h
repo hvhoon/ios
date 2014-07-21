@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "MBProgressHUD.h"
+#import <Appsee/Appsee.h>
 @interface AppDelegate : UIResponder <UIApplicationDelegate,MBProgressHUDDelegate>{
         MBProgressHUD *progressIndicator;
 }

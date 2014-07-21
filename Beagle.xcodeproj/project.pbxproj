@@ -131,6 +131,7 @@
 		682455C3196DD6A800182F50 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 682455C2196DD6A800182F50 /* CoreMotion.framework */; };
 		6891059519632C1E00BE23B7 /* AboutUsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6891059419632C1E00BE23B7 /* AboutUsViewController.m */; };
 		68E9CF54197D5E5B009477B2 /* Appsee.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68E9CF53197D5E5B009477B2 /* Appsee.framework */; };
+		68E9CF56197D5F35009477B2 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68E9CF55197D5F35009477B2 /* CoreMedia.framework */; };
 		68EDF869192AC578008ED9C1 /* Instabug.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 68EDF867192AC578008ED9C1 /* Instabug.bundle */; };
 		68EDF86A192AC578008ED9C1 /* Instabug.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68EDF868192AC578008ED9C1 /* Instabug.framework */; };
 		68EDF86C192AC760008ED9C1 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68EDF86B192AC760008ED9C1 /* CoreFoundation.framework */; };
@@ -374,6 +375,7 @@
 		6891059319632C1E00BE23B7 /* AboutUsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutUsViewController.h; sourceTree = "<group>"; };
 		6891059419632C1E00BE23B7 /* AboutUsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutUsViewController.m; sourceTree = "<group>"; };
 		68E9CF53197D5E5B009477B2 /* Appsee.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Appsee.framework; sourceTree = "<group>"; };
+		68E9CF55197D5F35009477B2 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		68EDF867192AC578008ED9C1 /* Instabug.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Instabug.bundle; sourceTree = "<group>"; };
 		68EDF868192AC578008ED9C1 /* Instabug.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Instabug.framework; sourceTree = "<group>"; };
 		68EDF86B192AC760008ED9C1 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
@@ -388,6 +390,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				68E9CF56197D5F35009477B2 /* CoreMedia.framework in Frameworks */,
 				68E9CF54197D5E5B009477B2 /* Appsee.framework in Frameworks */,
 				682455C3196DD6A800182F50 /* CoreMotion.framework in Frameworks */,
 				182F0B9019630328001771AD /* MessageUI.framework in Frameworks */,
@@ -687,6 +690,7 @@
 		18EC229F18B5A0B400316B6E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				68E9CF55197D5F35009477B2 /* CoreMedia.framework */,
 				68E9CF53197D5E5B009477B2 /* Appsee.framework */,
 				682455C2196DD6A800182F50 /* CoreMotion.framework */,
 				182F0B8F19630328001771AD /* MessageUI.framework */,
