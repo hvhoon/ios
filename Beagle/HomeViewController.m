@@ -120,8 +120,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (UpdateBadgeCount) name:kBeagleBadgeCount object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addADelay) name:kNotificationHomeAutoRefresh object:Nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationUpdate:) name:kNotificationHomeAutoRefresh object:Nil];
 
