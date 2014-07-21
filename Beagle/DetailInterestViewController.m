@@ -1230,7 +1230,14 @@ else if(!notifObject.isOffline){
                         [self createInterestInitialCard];
                         
                     }else{
-                        self.interestActivity=[[BeagleActivityClass alloc]initWithDictionary:interest];
+                        BeagleActivityClass*updatedActivity=[[BeagleActivityClass alloc]initWithDictionary:interest];
+                        self.interestActivity.postCount=updatedActivity.postCount;
+                        self.interestActivity.participantsCount=updatedActivity.participantsCount;
+                        self.interestActivity.dos1count=updatedActivity.dos1count;
+                        self.interestActivity.activityDesc=updatedActivity.activityDesc;
+                        self.interestActivity.endActivityDate=updatedActivity.endActivityDate;
+                        self.interestActivity.startActivityDate=updatedActivity.startActivityDate;
+
                         
                     }
                     NSArray *participants=[interest objectForKey:@"participants"];
