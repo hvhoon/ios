@@ -12,7 +12,6 @@
 #import "ASIFormDataRequest.h"
 #import "SBJSON.h"
 #import "JSON.h"
-#import "BeagleActivityClass.h"
 #import "InterestChatClass.h"
 @interface ServerManager()
 {

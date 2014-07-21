@@ -7,7 +7,6 @@
 //
 
 #import "DetailInterestViewController.h"
-#import "BeagleActivityClass.h"
 #import "BeaglePlayerScrollMenu.h"
 #import "PlayerProfileItem.h"
 #import "InterestChatClass.h"
@@ -94,14 +93,18 @@ static NSString * const CellIdentifier = @"cell";
     [self.contentWrapper _registerForNotifications];
     
 }
+
 -(void)viewDidDisappear:(BOOL)animated{
+    [super viewDidDisappear:animated];
+
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kRemoteNotificationReceivedNotification object:nil];
 
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationForInterestPost object:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kUpdatePostsOnInterest object:nil];
-    [super viewDidDisappear:animated];
     [self.contentWrapper _unregisterForNotifications];
+    
+    
 }
 -(void)getPostsUpdateInBackground{
     
@@ -125,21 +128,25 @@ static NSString * const CellIdentifier = @"cell";
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
     
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
-    if(notifObject.activityId==self.interestActivity.activityId && (notifObject.notificationType==WHAT_CHANGE_TYPE || notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==CANCEL_ACTIVITY_TYPE)){
-        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+    
+    NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
+    [notificationDictionary setObject:notifObject forKey:@"notify"];
+    NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
+
+    if(notifObject.activity.activityId==self.interestActivity.activityId && (notifObject.notificationType==WHAT_CHANGE_TYPE || notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==CANCEL_ACTIVITY_TYPE)){
 
         //do the description and text update
         if(notifObject.notificationType!=CANCEL_ACTIVITY_TYPE){
  
             if(!notifObject.isOffline){
-        InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0,0, 320, 64) appNotification:notifObject];
-        notifView.delegate=self;
-        UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
-        [keyboard addSubview:notifView];
+                InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
+                notifView.delegate=self;
+                [notifView show];
             }
-        self.interestActivity.startActivityDate=notifObject.activityStartTime;
-        self.interestActivity.endActivityDate=notifObject.activityEndTime;
-        NSString* screenTitle = [BeagleUtilities activityTime:notifObject.activityStartTime endate:notifObject.activityEndTime];
+        self.interestActivity.startActivityDate=notifObject.activity.startActivityDate;
+        self.interestActivity.endActivityDate=notifObject.activity.endActivityDate;
+        NSString* screenTitle = [BeagleUtilities activityTime:self.interestActivity.startActivityDate endate:notifObject.activity.endActivityDate];
         self.navigationItem.title = screenTitle;
         self.interestActivity.activityDesc=notifObject.activityWhat;
         [self.detailedInterestTableView reloadData];
@@ -159,19 +166,17 @@ static NSString * const CellIdentifier = @"cell";
 
         }
 
-    }else if(notifObject.activityId==self.interestActivity.activityId && self.interestActivity.ownerid ==[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]){
+    }else if(notifObject.activity.activityId==self.interestActivity.activityId && self.interestActivity.ownerid ==[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]){
         
         if(!notifObject.isOffline){
-            InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0,0, 320, 64) appNotification:notifObject];
+            InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
             notifView.delegate=self;
-            UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
-            [keyboard addSubview:notifView];
+            [notifView show];
         }
 
     if(notifObject.notificationType==LEAVED_ACTIVITY_TYPE){
 
         
-    [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
         BeagleUserClass *userObject=[[BeagleUserClass alloc]init];
         userObject.profileImageUrl=notifObject.photoUrl;
         userObject.first_name=notifObject.playerName;
@@ -209,7 +214,6 @@ static NSString * const CellIdentifier = @"cell";
         
     }
     else if(notifObject.notificationType==GOING_TYPE){
-        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
         BeagleUserClass *userObject=[[BeagleUserClass alloc]init];
         userObject.profileImageUrl=notifObject.photoUrl;
         userObject.first_name=notifObject.playerName;
@@ -251,16 +255,14 @@ static NSString * const CellIdentifier = @"cell";
     else if(!notifObject.isOffline){
         
     
-        InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0,0, 320, 64) appNotification:notifObject];
+        InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
         notifView.delegate=self;
-        UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
-        [keyboard addSubview:notifView];
+        [notifView show];
         
     }
     
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
 
+    
 }
 
 
@@ -268,7 +270,7 @@ static NSString * const CellIdentifier = @"cell";
     
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
     
-    if(notifObject.activityId==self.interestActivity.activityId && notifObject.notificationType==CHAT_TYPE){
+    if(notifObject.activity.activityId==self.interestActivity.activityId && notifObject.notificationType==CHAT_TYPE){
         
         
         if(_chatPostManager!=nil){
@@ -283,21 +285,22 @@ static NSString * const CellIdentifier = @"cell";
    }
 
 else if(!notifObject.isOffline){
-    InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0, 0, 320, 64) appNotification:notifObject];
+    InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
     notifView.delegate=self;
-    
-    UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
-    [keyboard addSubview:notifView];
+    [notifView show];
+    NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
+    [notificationDictionary setObject:notifObject forKey:@"notify"];
+    NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
+
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
-
     
 }
 -(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
     
     
-    if(notification.activityId!=self.interestActivity.activityId){
+    if(notification.activity.activityId!=self.interestActivity.activityId){
     
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
@@ -307,10 +310,17 @@ else if(!notifObject.isOffline){
     if(notification.notificationType==CHAT_TYPE)
         viewController.toLastPost=TRUE;
 
-    [viewController.interestServerManager getDetailedInterest:notification.activityId];
+    [viewController.interestServerManager getDetailedInterest:notification.activity.activityId];
     [self.navigationController pushViewController:viewController animated:YES];
     }
     
+}
+
+#pragma mark InAppNotificationView Handler
+- (void)notificationView:(InAppNotificationView *)inAppNotification didDismissWithButtonIndex:(NSInteger)buttonIndex{
+    
+    NSLog(@"Button Index = %ld", (long)buttonIndex);
+    [BeagleUtilities updateBadgeInfoOnTheServer:inAppNotification.notification.notificationId];
 }
 
 -(void)backButtonClicked:(id)sender{
@@ -1219,6 +1229,9 @@ else if(!notifObject.isOffline){
                         self.interestActivity=[[BeagleActivityClass alloc]initWithDictionary:interest];
                         [self createInterestInitialCard];
                         
+                    }else{
+                        self.interestActivity=[[BeagleActivityClass alloc]initWithDictionary:interest];
+                        
                     }
                     NSArray *participants=[interest objectForKey:@"participants"];
                     if (participants != nil && [participants class] != [NSNull class] && [participants count]!=0) {
@@ -1319,7 +1332,14 @@ else if(!notifObject.isOffline){
                     NSString *message = NSLocalizedString (@"You have already joined.",
                                                            @"Already Joined");
                     BeagleAlertWithMessage(message);
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+                    BeagleNotificationClass *notifObject=[[BeagleNotificationClass alloc]init];
+                    notifObject.activity=self.interestActivity;
+                    notifObject.notificationType=GOING_TYPE;
+
+                    NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
+                    [notificationDictionary setObject:notifObject forKey:@"notify"];
+                    NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
+                    [[NSNotificationCenter defaultCenter] postNotification:notification];
 
                     return;
 
@@ -1493,8 +1513,23 @@ else if(!notifObject.isOffline){
         }
 
     }
-    if(serverRequest!=kServerCallGetDetailedInterest)
-        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+        BeagleNotificationClass *notifObject=[[BeagleNotificationClass alloc]init];
+        notifObject.activity=self.interestActivity;
+        if(serverRequest==kServerCallParticipateInterest)
+            notifObject.notificationType=GOING_TYPE;
+        else if (serverRequest==kServerCallLeaveInterest)
+            notifObject.notificationType=LEAVED_ACTIVITY_TYPE;
+        else if(serverRequest==kServerCallPostComment||serverRequest==kServerCallGetBackgroundChats||serverRequest==kServerInAppChatDetail)
+                notifObject.notificationType=CHAT_TYPE;
+        else if(serverRequest==kServerCallGetDetailedInterest){
+            notifObject.notificationType=ACTIVITY_UPDATE_TYPE;
+        }
+        
+        NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
+        [notificationDictionary setObject:notifObject forKey:@"notify"];
+        NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
+        [[NSNotificationCenter defaultCenter] postNotification:notification];
+
 
 }
 
@@ -1583,12 +1618,29 @@ else if(!notifObject.isOffline){
     
     if(alertView.tag==1467){
         if (buttonIndex == 0) {
+            BeagleNotificationClass *notifObject=[[BeagleNotificationClass alloc]init];
+            notifObject.activity=self.interestActivity;
+            notifObject.notificationType=CANCEL_ACTIVITY_TYPE;
+            
+            NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
+            [notificationDictionary setObject:notifObject forKey:@"notify"];
+            NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
+            [[NSNotificationCenter defaultCenter] postNotification:notification];
+
             [self.navigationController popViewControllerAnimated:YES];
         }
 }
     else if(alertView.tag==647){
         if (buttonIndex == 0) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+            BeagleNotificationClass *notifObject=[[BeagleNotificationClass alloc]init];
+            notifObject.activity=self.interestActivity;
+            notifObject.notificationType=CANCEL_ACTIVITY_TYPE;
+
+            NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
+            [notificationDictionary setObject:notifObject forKey:@"notify"];
+            NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
+            [[NSNotificationCenter defaultCenter] postNotification:notification];
+
             [self.navigationController popViewControllerAnimated:YES];
         }
     }
@@ -1625,11 +1677,15 @@ else if(!notifObject.isOffline){
     }
 
     self.imageDownloadsInProgress=nil;
-    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
-    {
-        [req cancel];
+    
+    for (ASIHTTPRequest *req in [ASIHTTPRequest.sharedQueue operations]) {
+        [req clearDelegatesAndCancel];
         [req setDelegate:nil];
+        [req setDidFailSelector:nil];
+        [req setDidFinishSelector:nil];
     }
+    [ASIHTTPRequest.sharedQueue cancelAllOperations];
+
 }
 
 
@@ -1677,7 +1733,6 @@ else if(!notifObject.isOffline){
     [self.contentWrapper _setInitialFrames];
     [self.contentWrapper.inputView setHidden:NO];
     [self.contentWrapper.dummyInputView setHidden:NO];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
     
     [self.detailedInterestTableView reloadData];
     

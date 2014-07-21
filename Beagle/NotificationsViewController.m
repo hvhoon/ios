@@ -101,6 +101,7 @@
         [self getUserNotifications];
 }
 
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -456,13 +457,13 @@
     
     _interestUpdateManager=[[ServerManager alloc]init];
     _interestUpdateManager.delegate=self;
-    [_interestUpdateManager participateMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
+    [_interestUpdateManager participateMembership:play.activity.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
 
 
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     BeagleNotificationClass *play = (BeagleNotificationClass *)[self.listArray objectAtIndex:indexPath.row];
-    if(play.activityId!=0){
+    if(play.activity.activityId!=0){
 
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
@@ -473,7 +474,7 @@
     if(play.notificationType==CHAT_TYPE)
         viewController.toLastPost=TRUE;
 
-    [viewController.interestServerManager getDetailedInterest:play.activityId];
+    [viewController.interestServerManager getDetailedInterest:play.activity.activityId];
     [self.navigationController pushViewController:viewController animated:YES];
 
     }
@@ -719,11 +720,13 @@
     }
 
     self.imageDownloadsInProgress=nil;
-    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
-    {
-        [req cancel];
+    for (ASIHTTPRequest *req in [ASIHTTPRequest.sharedQueue operations]) {
+        [req clearDelegatesAndCancel];
         [req setDelegate:nil];
+        [req setDidFailSelector:nil];
+        [req setDidFinishSelector:nil];
     }
+    [ASIHTTPRequest.sharedQueue cancelAllOperations];
 }
 
 @end

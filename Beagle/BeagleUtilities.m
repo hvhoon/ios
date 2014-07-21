@@ -738,17 +738,15 @@
     NSLog(@"obj1=%@",obj1);
 
     if(obj1!=nil && obj1!=[NSNull class] && [[obj1 allKeys]count]!=0){
-        notification.activityId=[[obj1 valueForKey:@"id"]integerValue];
-        notification.activityStartTime=[obj1 valueForKey:@"start_when"];
-        notification.activityEndTime=[obj1 valueForKey:@"stop_when"];
-        notification.activityWhat=[obj1 valueForKey:@"what"];
+        BeagleActivityClass*activity=[[BeagleActivityClass alloc]initWithDictionary:obj1];
+        notification.activity=activity;
         notification.backgroundTap=TRUE;
     }
     else{
         notification.backgroundTap=FALSE;
     }
     
-    notification.notificationType=[[[object valueForKey:@"userInfo"] valueForKey:@"activity_type"]integerValue];
+    notification.notificationType=[[[object valueForKey:@"userInfo"] valueForKey:@"notification_type"]integerValue];
     
     [[BeagleManager SharedInstance]setBadgeCount:[[[object valueForKey:@"userInfo"] valueForKey:@"badge"]intValue]];
     notification.profileImage=[[object valueForKey:@"userInfo"] valueForKey:@"profileImage"];
@@ -767,15 +765,20 @@
     BeagleNotificationClass *notification=[[BeagleNotificationClass alloc]init];
     id obj1=[object valueForKey:@"userInfo"];
     NSLog(@"obj1=%@",obj1);
+    notification.notificationId=[[[object valueForKey:@"userInfo"]valueForKey:@"nid"]integerValue];
     notification.notificationString=[obj1 valueForKey:@"msg"];
     notification.playerName=[obj1 valueForKey:@"player_name"];
-    notification.notificationId=[[obj1 valueForKey:@"id"]integerValue];
     notification.postChatId=[[obj1 valueForKey:@"chatid"]integerValue];
     notification.activityOwnerId=[[obj1 valueForKey:@"ownerid"]integerValue];
     notification.postDesc=[obj1 valueForKey:@"post"];
     notification.isOffline=[[[object valueForKey:@"userInfo"] valueForKey:@"isOffline"]boolValue];
     notification.profileImage=[[object valueForKey:@"userInfo"] valueForKey:@"profileImage"];
-    notification.activityId=[[obj1 valueForKey:@"activity_id"]integerValue];
+    if([[obj1 valueForKey:@"activity_id"]integerValue]!=0){
+        BeagleActivityClass*activity=[[BeagleActivityClass alloc]init];
+        notification.activity=activity;
+        notification.activity.activityId=[[obj1 valueForKey:@"activity_id"]integerValue];
+        notification.activity.postCount=[[obj1 valueForKey:@"count"]integerValue];
+    }
     notification.photoUrl=[obj1 valueForKey:@"player_photo_url"];
     notification.playerId=[[obj1 valueForKey:@"player_id"]integerValue];
     notification.backgroundTap=TRUE;
@@ -796,7 +799,7 @@
     NSDictionary* resultsd = [[[NSString alloc] initWithData:returnData
                                                     encoding:NSUTF8StringEncoding] JSONValue];
     
-    NSLog(@"Badge Updated for in APP=%ld",(long)[[resultsd objectForKey:@"badge"]integerValue]);
+    NSLog(@"Badge Updated =%ld",(long)[[resultsd objectForKey:@"badge"]integerValue]);
     
     [[BeagleManager SharedInstance]setBadgeCount:[[resultsd objectForKey:@"badge"]integerValue]];
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[BeagleManager SharedInstance]badgeCount]];
@@ -805,13 +808,4 @@
     
 }
 
-+(UIView*)getInterestedAnimationEffect:(CGFloat)ticketHeight orgName:(NSString*)orgName{
-    UIView *interestedAnimationView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, ticketHeight)];
-    interestedAnimationView.backgroundColor=[BeagleUtilities returnBeagleColor:13];
-    UIImageView *starImageView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Big-Star"]];
-    starImageView.frame=CGRectMake(0, 0, 89, 83);
-    
-    [interestedAnimationView addSubview:starImageView];
-    return interestedAnimationView;
-}
 @end

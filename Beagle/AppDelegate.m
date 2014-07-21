@@ -87,8 +87,12 @@ void uncaughtExceptionHandler(NSException *exception) {
 }
 
 -(void)registerForNotifications {
-	UIRemoteNotificationType type = UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound;
-	[[UIApplication sharedApplication] registerForRemoteNotificationTypes:type];
+    
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+    (
+     UIRemoteNotificationTypeBadge |
+     UIRemoteNotificationTypeSound |
+     UIRemoteNotificationTypeAlert)];
 }
 - (void)handlePush:(NSDictionary *)launchOptions {
     
@@ -128,25 +132,6 @@ void uncaughtExceptionHandler(NSException *exception) {
 }
 
 
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo{
-    
-    if(_notificationServerManager!=nil){
-        _notificationServerManager.delegate = nil;
-        [_notificationServerManager releaseServerManager];
-        _notificationServerManager = nil;
-    }
-    _notificationServerManager=[[ServerManager alloc]init];
-    _notificationServerManager.delegate=self;
-
-    
-    if ( application.applicationState == UIApplicationStateActive){
-        [self handleOnlineNotifications:userInfo];
-    }
-    else{
-        [self handleOfflineNotifications:userInfo];
-    }
-    
-}
 -(void)handleOnlineNotifications:(NSDictionary*)userInfo{
     
         
@@ -460,7 +445,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     [self performSelectorOnMainThread:@selector(sendAppNotification:) withObject:notificationDictionary waitUntilDone:NO];
 }
 -(void)sendAppNotification:(NSMutableDictionary*)appNotifDictionary{
-    NSNotification* notification = [NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:nil userInfo:appNotifDictionary];
+    NSNotification* notification = [NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:self userInfo:appNotifDictionary];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
     [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
 }
@@ -472,11 +457,65 @@ void uncaughtExceptionHandler(NSException *exception) {
     [self performSelectorOnMainThread:@selector(sendAppNotificationForPost:) withObject:notificationDictionary waitUntilDone:NO];
 }
 -(void)sendAppNotificationForPost:(NSMutableDictionary*)appNotifDictionary{
-    NSNotification* notification = [NSNotification notificationWithName:kNotificationForInterestPost object:nil userInfo:appNotifDictionary];
+    NSNotification* notification = [NSNotification notificationWithName:kNotificationForInterestPost object:self userInfo:appNotifDictionary];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
     [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
     
 
 }
 
+-(void) application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    
+
+    // Pass on
+    [self application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:nil];
+    
+}
+
+-(void) application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    
+     if([userInfo[@"aps"][@"content_available"] intValue]== 1){
+        
+        NSLog(@"Remote Notification userInfo is %@", userInfo);
+        //Success
+        completionHandler(UIBackgroundFetchResultNewData);
+        
+        // Check if in background
+        if ([UIApplication sharedApplication].applicationState == UIApplicationStateInactive) {
+            NSLog(@"UIApplicationStateInactive");
+            
+            // User opened the push notification
+            
+        } else if(application.applicationState == UIApplicationStateActive){
+            NSLog(@"UIApplicationStateActive");
+            
+            
+        }else{
+            // User hasn't opened it, this was a silent update
+            NSLog(@"User hasn't opened it, this was a silent update");
+
+            
+        }
+
+    }else{
+    
+    completionHandler(UIBackgroundFetchResultNoData);
+    if(_notificationServerManager!=nil){
+        _notificationServerManager.delegate = nil;
+        [_notificationServerManager releaseServerManager];
+        _notificationServerManager = nil;
+    }
+    _notificationServerManager=[[ServerManager alloc]init];
+    _notificationServerManager.delegate=self;
+    
+    
+    if ( application.applicationState == UIApplicationStateActive){
+        [self handleOnlineNotifications:userInfo];
+    }
+    else{
+        [self handleOfflineNotifications:userInfo];
+    }
+    }
+    
+}
 @end

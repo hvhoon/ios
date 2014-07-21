@@ -7,7 +7,6 @@
 //
 
 #import "FriendsTableViewCell.h"
-#import "BeagleUserClass.h"
 @implementation FriendsTableViewCell
 @synthesize photoImage,delegate,cellIndexPath,bgPlayer;
 static UIFont *firstTextFont = nil;
