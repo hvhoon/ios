@@ -192,7 +192,7 @@
 }
 
 -(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
-    
+    [BeagleUtilities updateBadgeInfoOnTheServer:notification.notificationId];
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
     viewController.interestServerManager=[[ServerManager alloc]init];
@@ -209,7 +209,7 @@
 - (void)notificationView:(InAppNotificationView *)inAppNotification didDismissWithButtonIndex:(NSInteger)buttonIndex{
     
     NSLog(@"Button Index = %ld", (long)buttonIndex);
-    [BeagleUtilities updateBadgeInfoOnTheServer:inAppNotification.notification.notificationId];
+//    [BeagleUtilities updateBadgeInfoOnTheServer:inAppNotification.notification.notificationId];
 }
 
 
@@ -952,8 +952,35 @@
                 if(serverRequest==kServerCallCreateActivity){
                     BeagleManager *BG=[BeagleManager SharedInstance];
                     BG.activityDeleted=TRUE;
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+                    id player=[response objectForKey:@"player"];
+                    if (player != nil && [status class] != [NSNull class]){
+                        
+                        self.interestDetail.activityId=[[player objectForKey:@"id"]integerValue];
+                        self.interestDetail.organizerName =[NSString stringWithFormat:@"%@ %@",[[[BeagleManager SharedInstance]beaglePlayer]first_name],[[[BeagleManager SharedInstance]beaglePlayer]last_name]];
+                        self.interestDetail.locationName=[NSString stringWithFormat:@"%@, %@",self.interestDetail.city,self.interestDetail.state];
+
+                        self.interestDetail.dosRelation = 0;
+                        self.interestDetail.dos1count = 0;
+                        self.interestDetail.participantsCount = 0;
+                        self.interestDetail.isParticipant=1;
+                        self.interestDetail.postCount = 0;
+                        self.interestDetail.photoUrl=[[[BeagleManager SharedInstance]beaglePlayer]profileImageUrl];
+                        self.interestDetail.profilePhotoImage=[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]];
+                        
+                    }
+
                     
+                    BeagleNotificationClass *notifObject=[[BeagleNotificationClass alloc]init];
+                    notifObject.activity=self.interestDetail;
+                    if(serverRequest==kServerCallCreateActivity){
+                        notifObject.notificationType=ACTIVITY_CREATION_TYPE;
+                    }
+                    
+                    NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
+                    [notificationDictionary setObject:notifObject forKey:@"notify"];
+                    NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
+                    [[NSNotificationCenter defaultCenter] postNotification:notification];
+
                     [self.animationBlurView show];
                     
                     timer = [NSTimer scheduledTimerWithTimeInterval: 5.0

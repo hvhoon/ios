@@ -107,8 +107,6 @@
     if(obj1!=nil && obj1!=[NSNull class] && [[obj1 allKeys]count]!=0){
         BeagleNotificationClass *notification=[[note valueForKey:@"userInfo"]objectForKey:@"notify"];
             [self updateHomeScreen:notification];
-    }else{
-        [self performSelector:@selector(refresh) withObject:nil afterDelay:1.25];
     }
 }
 -(void)disableInAppNotification{
@@ -514,7 +512,27 @@
 
         case ACTIVITY_CREATION_TYPE:
         {
-            [self performSelector:@selector(refresh) withObject:nil afterDelay:1.25];
+            NSArray *beagle_happenarndu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_happenarndu"];
+
+            NSMutableArray *happenarnduArray=[NSMutableArray arrayWithArray:beagle_happenarndu];
+            [happenarnduArray addObject:notification.activity];
+            [self.filterActivitiesOnHomeScreen setObject:happenarnduArray forKey:@"beagle_happenarndu"];
+            
+            NSArray *beagle_crtbyu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_crtbyu"];
+            
+            NSMutableArray *crbuArray=[NSMutableArray arrayWithArray:beagle_crtbyu];
+            [crbuArray addObject:notification.activity];
+            [self.filterActivitiesOnHomeScreen setObject:crbuArray forKey:@"beagle_crtbyu"];
+
+            
+            NSArray *beagle_expressint=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_expressint"];
+            
+            NSMutableArray *exprsAray=[NSMutableArray arrayWithArray:beagle_expressint];
+            [exprsAray addObject:notification.activity];
+            [self.filterActivitiesOnHomeScreen setObject:exprsAray forKey:@"beagle_expressint"];
+
+
+
         }
             break;
     }
@@ -525,7 +543,7 @@
 
 -(void)postInAppNotification:(NSNotification*)note{
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
-
+    [self updateHomeScreen:notifObject];
     if(!hideInAppNotification && !notifObject.isOffline){
         InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
         notifView.delegate=self;
@@ -545,11 +563,12 @@
 
         
     }
-    [self refresh];
 
 }
 -(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
     
+    [BeagleUtilities updateBadgeInfoOnTheServer:notification.notificationId];
+
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
     viewController.interestServerManager=[[ServerManager alloc]init];
@@ -566,7 +585,7 @@
 - (void)notificationView:(InAppNotificationView *)inAppNotification didDismissWithButtonIndex:(NSInteger)buttonIndex{
     
     NSLog(@"Button Index = %ld", (long)buttonIndex);
-    [BeagleUtilities updateBadgeInfoOnTheServer:inAppNotification.notification.notificationId];
+//    [BeagleUtilities updateBadgeInfoOnTheServer:inAppNotification.notification.notificationId];
 }
 
 -(void)UpdateBadgeCount{
@@ -1315,13 +1334,74 @@
         case 1:
         {
             NSArray *listArray=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_happenarndu"];
-            self.tableData=[NSArray arrayWithArray:listArray];
+            
+            if([listArray count]!=0){
+                listArray = [listArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
+                    
+                    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+                    
+                    NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+                    [dateFormatter setTimeZone:utcTimeZone];
+                    
+                    NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
+                    NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
+                    
+                    return [s1 compare:s2];
+                }];
+                
+                
+
+            }
+            NSArray*suggestedListArray=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_suggestedposts"];
+            if([suggestedListArray count]!=0){
+                
+                suggestedListArray = [suggestedListArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
+                    
+                    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+                    
+                    NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+                    [dateFormatter setTimeZone:utcTimeZone];
+                    
+                    NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
+                    NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
+                    
+                    return [s1 compare:s2];
+                }];
+
+                NSMutableArray *consolidateArray=[NSMutableArray new];
+                if([listArray count]!=0)
+                    [consolidateArray addObjectsFromArray:listArray];
+                    [consolidateArray addObjectsFromArray:suggestedListArray];
+                    self.tableData=[NSArray arrayWithArray:consolidateArray];
+            }
+
+            else
+               self.tableData=[NSArray arrayWithArray:listArray];
         }
             break;
             
         case 2:
         {
             NSArray *listArray=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_friendsarndu"];
+            
+            if([listArray count]!=0){
+                listArray = [listArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
+                    
+                    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+                    
+                    NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+                    [dateFormatter setTimeZone:utcTimeZone];
+                    
+                    NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
+                    NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
+                    
+                    return [s1 compare:s2];
+                }];
+                
+            }
             self.tableData=[NSArray arrayWithArray:listArray];
             
         }
@@ -1331,6 +1411,22 @@
         case 3:
         {
             NSArray *listArray=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_expressint"];
+            if([listArray count]!=0){
+                listArray = [listArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
+                    
+                    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+                    
+                    NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+                    [dateFormatter setTimeZone:utcTimeZone];
+                    
+                    NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
+                    NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
+                    
+                    return [s1 compare:s2];
+                }];
+                
+            }
             self.tableData=[NSArray arrayWithArray:listArray];
             
         }
@@ -1340,6 +1436,23 @@
         case 4:
         {
             NSArray *listArray=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_crtbyu"];
+            if([listArray count]!=0){
+            listArray = [listArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
+                
+                NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+                
+                NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+                [dateFormatter setTimeZone:utcTimeZone];
+                
+                NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
+                NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
+                
+                return [s1 compare:s2];
+            }];
+            
+            }
+
             self.tableData=[NSArray arrayWithArray:listArray];
             
         }
@@ -1746,7 +1859,6 @@
                 id activities=[response objectForKey:@"activities"];
                 if (activities != nil && [activities class] != [NSNull class]) {
                     
-                    NSMutableArray*suggestedList=[NSMutableArray new];
                     NSArray *suggestedPosts=[activities objectForKey:@"beagle_suggestedposts"];
                     if (suggestedPosts != nil && [suggestedPosts class] != [NSNull class] && [suggestedPosts count]!=0) {
                         NSMutableArray *suggestedPostsArray=[[NSMutableArray alloc]init];
@@ -1757,21 +1869,13 @@
                         
                         NSArray *suggestedListArray=[NSArray arrayWithArray:suggestedPostsArray];
                         
-                        suggestedListArray = [suggestedListArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
+                        if([suggestedListArray count]!=0){
+                            [self.filterActivitiesOnHomeScreen setObject:suggestedListArray forKey:@"beagle_suggestedposts"];
                             
-                            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-                            
-                            NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
-                            [dateFormatter setTimeZone:utcTimeZone];
-                            
-                            NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
-                            NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
-                            
-                            return [s1 compare:s2];
-                        }];
-                        
-                        [suggestedList addObjectsFromArray:suggestedListArray];
+                        }
+
+                    }else{
+                        [self.filterActivitiesOnHomeScreen setObject:[NSMutableArray new] forKey:@"beagle_suggestedposts"];
                         
                     }
                     NSArray *happenarndu=[activities objectForKey:@"beagle_happenarndu"];
@@ -1784,38 +1888,10 @@
                         
                         NSArray *listArray=[NSArray arrayWithArray:activitiesArray];
                         
-                        listArray = [listArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
-                            
-                            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-                            
-                            NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
-                            [dateFormatter setTimeZone:utcTimeZone];
-                            
-                            NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
-                            NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
-                            
-                            return [s1 compare:s2];
-                        }];
-                        
-                        if([suggestedList count]!=0){
-                            NSMutableArray *testArray=[NSMutableArray new];
-                            [testArray addObjectsFromArray:listArray];
-                            [testArray addObjectsFromArray:suggestedList];
-                            listArray=[NSArray arrayWithArray:testArray];
-                        }
-                        
                         [self.filterActivitiesOnHomeScreen setObject:listArray forKey:@"beagle_happenarndu"];
                     }else{
-                        if([suggestedList count]!=0){
-                            NSArray *listArray=[NSArray arrayWithArray:suggestedList];
-                            [self.filterActivitiesOnHomeScreen setObject:listArray forKey:@"beagle_happenarndu"];
-                            
-                        }else
-                            
                             [self.filterActivitiesOnHomeScreen setObject:[NSMutableArray new] forKey:@"beagle_happenarndu"];
-                        
-                    }
+                        }
                     
                     NSArray * friendsarndu=[activities objectForKey:@"beagle_friendsarndu"];
                     if (friendsarndu != nil && [friendsarndu class] != [NSNull class]&& [friendsarndu count]!=0) {
@@ -1826,21 +1902,6 @@
                         }
                         
                         NSArray *listArray=[NSArray arrayWithArray:friendsAroundYouArray];
-                        
-                        listArray = [listArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
-                            
-                            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-                            
-                            NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
-                            [dateFormatter setTimeZone:utcTimeZone];
-                            
-                            NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
-                            NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
-                            
-                            return [s1 compare:s2];
-                        }];
-                        
                         
                         [self.filterActivitiesOnHomeScreen setObject:listArray forKey:@"beagle_friendsarndu"];
                         
@@ -1863,21 +1924,6 @@
                         
                         NSArray *listArray=[NSArray arrayWithArray:expressInterestArray];
                         
-                        listArray = [listArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
-                            
-                            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-                            
-                            NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
-                            [dateFormatter setTimeZone:utcTimeZone];
-                            
-                            NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
-                            NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
-                            
-                            return [s1 compare:s2];
-                        }];
-                        
-                        
                         [self.filterActivitiesOnHomeScreen setObject:listArray forKey:@"beagle_expressint"];
                         
                         
@@ -1898,21 +1944,6 @@
                         }
                         
                         NSArray *listArray=[NSArray arrayWithArray:createdByYouArray];
-                        
-                        listArray = [listArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
-                            
-                            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-                            
-                            NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
-                            [dateFormatter setTimeZone:utcTimeZone];
-                            
-                            NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
-                            NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
-                            
-                            return [s1 compare:s2];
-                        }];
-                        
                         
                         [self.filterActivitiesOnHomeScreen setObject:listArray forKey:@"beagle_crtbyu"];
                         
@@ -2023,7 +2054,7 @@
             id status=[response objectForKey:@"status"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 if(serverRequest==kServerCallCreateActivity){
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+                    [self refresh];
                 }
                 
             }

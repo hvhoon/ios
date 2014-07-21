@@ -299,7 +299,7 @@ else if(!notifObject.isOffline){
 }
 -(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
     
-    
+    [BeagleUtilities updateBadgeInfoOnTheServer:notification.notificationId];
     if(notification.activity.activityId!=self.interestActivity.activityId){
     
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];

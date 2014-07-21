@@ -330,6 +330,7 @@ enum Weeks {
 }
 -(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
     
+    [BeagleUtilities updateBadgeInfoOnTheServer:notification.notificationId];
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
     viewController.interestServerManager=[[ServerManager alloc]init];
@@ -352,7 +353,7 @@ enum Weeks {
 - (void)notificationView:(InAppNotificationView *)inAppNotification didDismissWithButtonIndex:(NSInteger)buttonIndex{
     
     NSLog(@"Button Index = %ld", (long)buttonIndex);
-    [BeagleUtilities updateBadgeInfoOnTheServer:inAppNotification.notification.notificationId];
+//    [BeagleUtilities updateBadgeInfoOnTheServer:inAppNotification.notification.notificationId];
 }
 
 - (void)loadProfileImage:(NSString*)url {
@@ -377,7 +378,7 @@ enum Weeks {
 }
 -(void)updateCreateEventParameters{
     bg_activity.activityDesc=descriptionTextView.text;
-    
+    bg_activity.activityType=1;
     NSDate *today = [NSDate date];
     NSLog(@"Today date is %@",today);
     
@@ -972,20 +973,6 @@ enum Weeks {
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
     
     
-    BeagleNotificationClass *notifObject=[[BeagleNotificationClass alloc]init];
-    notifObject.activity=self.bg_activity;
-    if(serverRequest==kServerCallEditActivity)
-        notifObject.notificationType=ACTIVITY_UPDATE_TYPE;
-    else if (serverRequest==kServerCallDeleteActivity)
-        notifObject.notificationType=CANCEL_ACTIVITY_TYPE;
-    else if(serverRequest==kServerCallCreateActivity){
-        notifObject.notificationType=ACTIVITY_CREATION_TYPE;
-    }
-    
-    NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
-    [notificationDictionary setObject:notifObject forKey:@"notify"];
-    NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
 
     if(serverRequest==kServerCallCreateActivity||serverRequest==kServerCallEditActivity){
         
@@ -999,6 +986,24 @@ enum Weeks {
             id status=[response objectForKey:@"status"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 if(serverRequest==kServerCallCreateActivity){
+                    
+                    id player=[response objectForKey:@"player"];
+                    if (player != nil && [status class] != [NSNull class]){
+                        
+                        self.bg_activity.activityId=[[player objectForKey:@"id"]integerValue];
+                        self.bg_activity.organizerName =[NSString stringWithFormat:@"%@ %@",[[[BeagleManager SharedInstance]beaglePlayer]first_name],[[[BeagleManager SharedInstance]beaglePlayer]last_name]];
+                        self.bg_activity.locationName=[NSString stringWithFormat:@"%@, %@",self.bg_activity.city,self.bg_activity.state];
+
+                        self.bg_activity.dosRelation = 0;
+                        self.bg_activity.dos1count = 0;
+                        self.bg_activity.participantsCount = 0;
+                        self.bg_activity.isParticipant=1;
+                        self.bg_activity.postCount = 0;
+                        self.bg_activity.photoUrl=[[[BeagleManager SharedInstance]beaglePlayer]profileImageUrl];
+                        self.bg_activity.profilePhotoImage=[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]];
+                        
+                    }
+
                     [self.animationBlurView show];
                     timer = [NSTimer scheduledTimerWithTimeInterval: 5.0
                                                              target: self
@@ -1032,6 +1037,20 @@ enum Weeks {
 
     }
     
+    BeagleNotificationClass *notifObject=[[BeagleNotificationClass alloc]init];
+    notifObject.activity=self.bg_activity;
+    if(serverRequest==kServerCallEditActivity)
+        notifObject.notificationType=ACTIVITY_UPDATE_TYPE;
+    else if (serverRequest==kServerCallDeleteActivity)
+        notifObject.notificationType=CANCEL_ACTIVITY_TYPE;
+    else if(serverRequest==kServerCallCreateActivity){
+        notifObject.notificationType=ACTIVITY_CREATION_TYPE;
+    }
+    
+    NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
+    [notificationDictionary setObject:notifObject forKey:@"notify"];
+    NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
 
 
 }

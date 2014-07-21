@@ -96,7 +96,7 @@
         
         
         NSMutableDictionary* activityEvent =[[NSMutableDictionary alloc] init];
-        [activityEvent setObject:[NSNumber numberWithInteger:1] forKey:@"atype"];
+        [activityEvent setObject:[NSNumber numberWithInteger:data.activityType] forKey:@"atype"];
         [activityEvent setObject:data.startActivityDate forKey:@"start_when"];
         [activityEvent setObject:[NSNumber numberWithFloat:data.latitude] forKey:@"where_lat"];
         [activityEvent setObject:[NSNumber numberWithFloat:data.longitude] forKey:@"where_lng"];

@@ -225,7 +225,7 @@
 }
 
 -(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
-    
+    [BeagleUtilities updateBadgeInfoOnTheServer:notification.notificationId];
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
     viewController.interestServerManager=[[ServerManager alloc]init];
@@ -242,7 +242,7 @@
 - (void)notificationView:(InAppNotificationView *)inAppNotification didDismissWithButtonIndex:(NSInteger)buttonIndex{
     
     NSLog(@"Button Index = %ld", (long)buttonIndex);
-    [BeagleUtilities updateBadgeInfoOnTheServer:inAppNotification.notification.notificationId];
+//    [BeagleUtilities updateBadgeInfoOnTheServer:inAppNotification.notification.notificationId];
 }
 
 #pragma mark - Table view data source

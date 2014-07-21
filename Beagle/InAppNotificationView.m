@@ -139,6 +139,7 @@ UIWindowLevel windowLevel;
 -(void)handleSingleTap:(UITapGestureRecognizer*)sender{
     
     [self dismissWithAnimation:YES];
+    
 
     if (self.notification.backgroundTap && self.notification.notificationType!=CANCEL_ACTIVITY_TYPE) {
          if (self.delegate && [self.delegate respondsToSelector:@selector(backgroundTapToPush:)])
