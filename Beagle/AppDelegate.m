@@ -9,7 +9,6 @@
 #import "AppDelegate.h"
 #import <Crashlytics/Crashlytics.h>
 #import <Instabug/Instabug.h>
-
 @interface AppDelegate ()<ServerManagerDelegate>{
     ServerManager *notificationServerManager;
 }
@@ -465,6 +464,22 @@ void uncaughtExceptionHandler(NSException *exception) {
 
 }
 
+- (NSURLSession *)backgroundURLSession
+{
+    static NSURLSession *session = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSString *identifier = @"io.objc.backgroundTransferExample";
+        NSURLSessionConfiguration* sessionConfig = [NSURLSessionConfiguration backgroundSessionConfiguration:identifier];
+        session = [NSURLSession sessionWithConfiguration:sessionConfig
+                                                delegate:self
+                                           delegateQueue:[NSOperationQueue mainQueue]];
+    });
+    
+    return session;
+}
+
+
 -(void) application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     
 
@@ -476,11 +491,23 @@ void uncaughtExceptionHandler(NSException *exception) {
 -(void) application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     
      if([userInfo[@"aps"][@"content_available"] intValue]== 1){
-        
+#if 0
         NSLog(@"Remote Notification userInfo is %@", userInfo);
-        //Success
-        completionHandler(UIBackgroundFetchResultNewData);
-        
+         
+#if TARGET_OS_IPHONE
+         self.completionHandlerDictionary = [NSMutableDictionary
+                                             dictionaryWithCapacity:0];
+#endif
+         
+         NSURL *downloadURL=[NSURL URLWithString:[NSString stringWithFormat:@"%@rsparameter.json?id=%ld",herokuHost,[[[userInfo valueForKey:@"p"] valueForKey:@"nid"]integerValue]]];
+
+         
+         NSURLRequest *request = [NSURLRequest requestWithURL:downloadURL];
+         NSURLSessionDownloadTask *task = [[self backgroundURLSession] downloadTaskWithRequest:request];
+         task.taskDescription = [NSString stringWithFormat:@"Notification %ld", [[[userInfo valueForKey:@"p"] valueForKey:@"nid"]integerValue]];
+         [task resume];
+#endif
+         completionHandler(UIBackgroundFetchResultNewData);
         // Check if in background
         if ([UIApplication sharedApplication].applicationState == UIApplicationStateInactive) {
             NSLog(@"UIApplicationStateInactive");
@@ -518,5 +545,63 @@ void uncaughtExceptionHandler(NSException *exception) {
     }
     }
     
+}
+
+
+- (void)URLSession:(NSURLSession *)session
+               downloadTask:(NSURLSessionDownloadTask *)downloadTask
+  didFinishDownloadingToURL:(NSURL *)location
+{
+    NSLog(@"downloadTask:%@ didFinishDownloadingToURL:%@", downloadTask.taskDescription, location);
+    
+    // Copy file to your app's storage with NSFileManager
+    // ...
+    
+    // Notify your UI
+}
+
+
+- (void)    application:(UIApplication *)application
+  handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)())completionHandler
+{
+    // You must re-establish a reference to the background session,
+    // or NSURLSessionDownloadDelegate and NSURLSessionDelegate methods will not be called
+    // as no delegate is attached to the session. See backgroundURLSession above.
+    NSURLSession *backgroundSession = [self backgroundURLSession];
+    
+    NSLog(@"Rejoining session with identifier %@ %@", identifier, backgroundSession);
+    
+    // Store the completion handler to update your UI after processing session events
+    [self addCompletionHandler:completionHandler forSession:identifier];
+}
+- (void)URLSessionDidFinishEventsForBackgroundURLSession:(NSURLSession *)session
+{
+    NSLog(@"Background URL session %@ finished events.\n", session);
+    
+    if (session.configuration.identifier) {
+        // Call the handler we stored in -application:handleEventsForBackgroundURLSession:
+        [self callCompletionHandlerForSession:session.configuration.identifier];
+    }
+}
+
+- (void)addCompletionHandler:(CompletionHandlerType)handler forSession:(NSString *)identifier
+{
+    if ([self.completionHandlerDictionary objectForKey:identifier]) {
+        NSLog(@"Error: Got multiple handlers for a single session identifier.  This should not happen.\n");
+    }
+    
+    [self.completionHandlerDictionary setObject:handler forKey:identifier];
+}
+
+- (void)callCompletionHandlerForSession: (NSString *)identifier
+{
+    CompletionHandlerType handler = [self.completionHandlerDictionary objectForKey: identifier];
+    
+    if (handler) {
+        [self.completionHandlerDictionary removeObjectForKey: identifier];
+        NSLog(@"Calling completion handler for session %@", identifier);
+        
+        handler();
+    }
 }
 @end
