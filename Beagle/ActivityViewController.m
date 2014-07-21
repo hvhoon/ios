@@ -970,6 +970,23 @@ enum Weeks {
 #pragma mark - server calls
 
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
+    
+    
+    BeagleNotificationClass *notifObject=[[BeagleNotificationClass alloc]init];
+    notifObject.activity=self.bg_activity;
+    if(serverRequest==kServerCallEditActivity)
+        notifObject.notificationType=ACTIVITY_UPDATE_TYPE;
+    else if (serverRequest==kServerCallDeleteActivity)
+        notifObject.notificationType=CANCEL_ACTIVITY_TYPE;
+    else if(serverRequest==kServerCallCreateActivity){
+        notifObject.notificationType=ACTIVITY_CREATION_TYPE;
+    }
+    
+    NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
+    [notificationDictionary setObject:notifObject forKey:@"notify"];
+    NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
+
     if(serverRequest==kServerCallCreateActivity||serverRequest==kServerCallEditActivity){
         
         self.activityServerManager.delegate = nil;
@@ -1015,20 +1032,6 @@ enum Weeks {
 
     }
     
-    BeagleNotificationClass *notifObject=[[BeagleNotificationClass alloc]init];
-    notifObject.activity=self.bg_activity;
-    if(serverRequest==kServerCallEditActivity)
-        notifObject.notificationType=ACTIVITY_UPDATE_TYPE;
-    else if (serverRequest==kServerCallDeleteActivity)
-        notifObject.notificationType=CANCEL_ACTIVITY_TYPE;
-    else if(serverRequest==kServerCallCreateActivity){
-        notifObject.notificationType=ACTIVITY_CREATION_TYPE;
-    }
-    
-    NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
-    [notificationDictionary setObject:notifObject forKey:@"notify"];
-    NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
 
 
 }

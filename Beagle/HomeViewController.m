@@ -108,7 +108,7 @@
         BeagleNotificationClass *notification=[[note valueForKey:@"userInfo"]objectForKey:@"notify"];
             [self updateHomeScreen:notification];
     }else{
-        [self performSelector:@selector(refresh) withObject:nil afterDelay:0.85];
+        [self performSelector:@selector(refresh) withObject:nil afterDelay:1.25];
     }
 }
 -(void)disableInAppNotification{
@@ -445,6 +445,8 @@
             if(isFound){
                 NSMutableArray *oldArray=[NSMutableArray arrayWithArray:beagle_happenarndu];
                 [oldArray removeObjectAtIndex:index];
+                [self.filterActivitiesOnHomeScreen setObject:oldArray forKey:@"beagle_happenarndu"];
+
             }
             
             isFound=false;
@@ -463,6 +465,8 @@
             if(isFound){
                 NSMutableArray *oldArray=[NSMutableArray arrayWithArray:beagle_friendsarndu];
                 [oldArray removeObjectAtIndex:index];
+                [self.filterActivitiesOnHomeScreen setObject:oldArray forKey:@"beagle_friendsarndu"];
+
             }
             isFound=false;
             index=0;
@@ -480,6 +484,8 @@
             if(isFound){
                 NSMutableArray *oldArray=[NSMutableArray arrayWithArray:beagle_expressint];
                 [oldArray removeObjectAtIndex:index];
+                [self.filterActivitiesOnHomeScreen setObject:oldArray forKey:@"beagle_expressint"];
+
             }
 
             isFound=false;
@@ -498,6 +504,8 @@
             if(isFound){
                 NSMutableArray *oldArray=[NSMutableArray arrayWithArray:beagle_crtbyu];
                 [oldArray removeObjectAtIndex:index];
+                [self.filterActivitiesOnHomeScreen setObject:oldArray forKey:@"beagle_crtbyu"];
+
             }
 
 
@@ -506,7 +514,7 @@
 
         case ACTIVITY_CREATION_TYPE:
         {
-            [self performSelector:@selector(refresh) withObject:nil afterDelay:0.85];
+            [self performSelector:@selector(refresh) withObject:nil afterDelay:1.25];
         }
             break;
     }
