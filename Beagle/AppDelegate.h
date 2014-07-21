@@ -19,7 +19,7 @@
 -(void)hideProgressView;
 typedef void (^CompletionHandlerType)();
 #if TARGET_OS_IPHONE
-@property NSMutableDictionary *completionHandlerDictionary;
+@property (nonatomic,strong)NSMutableDictionary *completionHandlerDictionary;
 #endif
 - (void) addCompletionHandler: (CompletionHandlerType) handler forSession: (NSString *)identifier;
 - (void) callCompletionHandlerForSession: (NSString *)identifier;

@@ -708,25 +708,56 @@
         }
         
     }else{
-    if ([self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0){
-        if(indexPath.section==0){
+    if ([self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0 &&[self.selectedFriendsArray count]>0){
+        if(indexPath.section==1){
             player = (BeagleUserClass *)[self.nearbyFriendsArray objectAtIndex:indexPath.row];
          [self.nearbyFriendsArray removeObjectAtIndex:indexPath.row];
         }
-        else{
+        else if(indexPath.section==2){
             player = (BeagleUserClass *)[self.worldwideFriendsArray objectAtIndex:indexPath.row];
            [self.worldwideFriendsArray removeObjectAtIndex:indexPath.row];
         }
         
     }
-    else if([self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]==0){
+    else if ([self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]==0 &&[self.selectedFriendsArray count]>0){
+            if(indexPath.section==1){
+                player = (BeagleUserClass *)[self.nearbyFriendsArray objectAtIndex:indexPath.row];
+                [self.nearbyFriendsArray removeObjectAtIndex:indexPath.row];
+            }
+        
+        }
+        else if ([self.nearbyFriendsArray count]==0 && [self.worldwideFriendsArray count]>0 &&[self.selectedFriendsArray count]>0){
+            if(indexPath.section==1){
+                player = (BeagleUserClass *)[self.worldwideFriendsArray objectAtIndex:indexPath.row];
+                [self.worldwideFriendsArray removeObjectAtIndex:indexPath.row];
+            }
+            
+        }
+        
+        if ([self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0 &&[self.selectedFriendsArray count]==0){
+            if(indexPath.section==0){
+                player = (BeagleUserClass *)[self.nearbyFriendsArray objectAtIndex:indexPath.row];
+                [self.nearbyFriendsArray removeObjectAtIndex:indexPath.row];
+            }
+            else if(indexPath.section==1){
+                player = (BeagleUserClass *)[self.worldwideFriendsArray objectAtIndex:indexPath.row];
+                [self.worldwideFriendsArray removeObjectAtIndex:indexPath.row];
+            }
+            
+        }
 
+
+    else if([self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]==0 && [self.selectedFriendsArray count]==0){
+            if(indexPath.section==0){
         player = (BeagleUserClass *)[self.nearbyFriendsArray objectAtIndex:indexPath.row];
        [self.nearbyFriendsArray removeObjectAtIndex:indexPath.row];
+            }
     }
-    else if ([self.nearbyFriendsArray count]==0 && [self.worldwideFriendsArray count]>0){
+    else if ([self.nearbyFriendsArray count]==0 && [self.worldwideFriendsArray count]>0&& [self.selectedFriendsArray count]==0){
+                    if(indexPath.section==0){
         player = (BeagleUserClass *)[self.worldwideFriendsArray objectAtIndex:indexPath.row];
     [self.worldwideFriendsArray removeObjectAtIndex:indexPath.row];
+                    }
     }
     }
     
