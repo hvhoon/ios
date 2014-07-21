@@ -7,7 +7,6 @@
 //
 
 #import "InviteTableViewCell.h"
-#import "BeagleUserClass.h"
 
 @implementation InviteTableViewCell
 @synthesize photoImage,delegate,cellIndexPath,bgPlayer;

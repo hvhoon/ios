@@ -8,7 +8,6 @@
 
 
 #import "HomeTableViewCell.h"
-#import "BeagleActivityClass.h"
 @implementation HomeTableViewCell
 @synthesize delegate,cellIndex;
 @synthesize bg_activity,photoImage;

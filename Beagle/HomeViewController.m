@@ -14,7 +14,6 @@
 #import "UIView+HidingView.h"
 #import "BlankHomePageView.h"
 #import "HomeTableViewCell.h"
-#import "BeagleActivityClass.h"
 #import "IconDownloader.h"
 #import "DetailInterestViewController.h"
 #import "BeagleUtilities.h"
@@ -103,19 +102,15 @@
    
 }
 
--(void)addADelay{
-    [self performSelector:@selector(updateHomeScreen) withObject:nil afterDelay:1.0];
-}
--(void)updateHomeScreen{
-    if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
-            [self refresh];
+-(void)notificationUpdate:(NSNotification*)note{
+        id obj1=[note valueForKey:@"userInfo"];
+    if(obj1!=nil && obj1!=[NSNull class] && [[obj1 allKeys]count]!=0){
+        BeagleNotificationClass *notification=[[note valueForKey:@"userInfo"]objectForKey:@"notify"];
+            [self updateHomeScreen:notification];
+    }else{
+        [self performSelector:@selector(refresh) withObject:nil afterDelay:0.85];
     }
-    else{
-        [self startStandardUpdates];
-    }
-    
 }
-
 -(void)disableInAppNotification{
     hideInAppNotification=TRUE;
 }
@@ -127,8 +122,10 @@
     [super viewDidLoad];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (UpdateBadgeCount) name:kBeagleBadgeCount object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationUpdate:) name:kNotificationHomeAutoRefresh object:Nil];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addADelay) name:kNotificationHomeAutoRefresh object:Nil];
+
 
     categoryFilterType=1;
     self.filterBlurView = [EventInterestFilterBlurView loadEventInterestFilter:self.view];
@@ -267,27 +264,259 @@
 }
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
+    [self updateHomeScreen:notifObject];
 
     if(!hideInAppNotification && !notifObject.isOffline){
         
-    InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0,0, 320, 64) appNotification:notifObject];
-    notifView.delegate=self;
-    UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
-     [keyboard addSubview:notifView];
-    [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+        InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
+        notifView.delegate=self;
+        [notifView show];
 
-    }else if(!hideInAppNotification && notifObject.isOffline && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE) && notifObject.activityId!=0){
-        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+    }else if(!hideInAppNotification && notifObject.isOffline && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE) && notifObject.activity.activityId!=0){
+       [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
         viewController.interestServerManager=[[ServerManager alloc]init];
         viewController.interestServerManager.delegate=viewController;
         viewController.isRedirected=TRUE;
-        [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
+        [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
         [self.navigationController pushViewController:viewController animated:YES];
 
+
     }
-    [self refresh];
+    
+
+}
+
+-(void)updateHomeScreen:(BeagleNotificationClass*)notification{
+    
+    switch (notification.notificationType) {
+        case GOING_TYPE:
+        case LEAVED_ACTIVITY_TYPE:
+        case WHAT_CHANGE_TYPE:
+        case DATE_CHANGE_TYPE:
+        case CHAT_TYPE:
+        case ACTIVITY_UPDATE_TYPE:
+        {
+            
+            NSArray *beagle_happenarndu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_happenarndu"];
+
+            for(BeagleActivityClass *data in beagle_happenarndu){
+                if(data.activityId==notification.activity.activityId){
+                    if(notification.notificationId==GOING_TYPE||notification.notificationId==LEAVED_ACTIVITY_TYPE){
+                    data.participantsCount=notification.activity.participantsCount;
+                    data.dos1count=notification.activity.dos1count;
+                    }
+                    else if(notification.notificationId==WHAT_CHANGE_TYPE){
+                    data.activityDesc=notification.activity.activityDesc;
+                    }
+                    else if(notification.notificationId==DATE_CHANGE_TYPE){
+                        data.endActivityDate=notification.activity.endActivityDate;
+                        data.startActivityDate=notification.activity.startActivityDate;
+                    }
+                    else if (notification.notificationType==CHAT_TYPE){
+                        data.postCount=notification.activity.postCount;
+                    }
+                    else if (notification.notificationType==ACTIVITY_UPDATE_TYPE){
+                        data.postCount=notification.activity.postCount;
+                        data.participantsCount=notification.activity.participantsCount;
+                        data.dos1count=notification.activity.dos1count;
+                        data.activityDesc=notification.activity.activityDesc;
+                        data.endActivityDate=notification.activity.endActivityDate;
+                        data.startActivityDate=notification.activity.startActivityDate;
+
+                    }
+                    
+
+                    break;
+                }
+            }
+            
+            NSArray *beagle_friendsarndu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_friendsarndu"];
+            
+            for(BeagleActivityClass *data in beagle_friendsarndu){
+                if(data.activityId==notification.activity.activityId){
+                    if(notification.notificationId==GOING_TYPE||notification.notificationId==LEAVED_ACTIVITY_TYPE){
+                        data.participantsCount=notification.activity.participantsCount;
+                        data.dos1count=notification.activity.dos1count;
+                    }
+                    else if(notification.notificationId==WHAT_CHANGE_TYPE){
+                        data.activityDesc=notification.activity.activityDesc;
+                    }
+                    else if(notification.notificationId==DATE_CHANGE_TYPE){
+                        data.endActivityDate=notification.activity.endActivityDate;
+                        data.startActivityDate=notification.activity.startActivityDate;
+                    }
+                    else if (notification.notificationType==CHAT_TYPE){
+                        data.postCount=notification.activity.postCount;
+                    }
+
+                    else if (notification.notificationType==ACTIVITY_UPDATE_TYPE){
+                        data.postCount=notification.activity.postCount;
+                        data.participantsCount=notification.activity.participantsCount;
+                        data.dos1count=notification.activity.dos1count;
+                        data.activityDesc=notification.activity.activityDesc;
+                        data.endActivityDate=notification.activity.endActivityDate;
+                        data.startActivityDate=notification.activity.startActivityDate;
+                        
+                    }
+
+                    break;
+                }
+            }
+            NSArray *beagle_expressint=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_expressint"];
+            
+            for(BeagleActivityClass *data in beagle_expressint){
+                if(data.activityId==notification.activity.activityId){
+                    if(notification.notificationId==GOING_TYPE||notification.notificationId==LEAVED_ACTIVITY_TYPE){
+                        data.participantsCount=notification.activity.participantsCount;
+                        data.dos1count=notification.activity.dos1count;
+                    }
+                    else if(notification.notificationId==WHAT_CHANGE_TYPE){
+                        data.activityDesc=notification.activity.activityDesc;
+                    }
+                    else if(notification.notificationId==DATE_CHANGE_TYPE){
+                        data.endActivityDate=notification.activity.endActivityDate;
+                        data.startActivityDate=notification.activity.startActivityDate;
+                    }
+                    else if (notification.notificationType==CHAT_TYPE){
+                        data.postCount=notification.activity.postCount;
+                    }
+
+                    else if (notification.notificationType==ACTIVITY_UPDATE_TYPE){
+                        data.postCount=notification.activity.postCount;
+                        data.participantsCount=notification.activity.participantsCount;
+                        data.dos1count=notification.activity.dos1count;
+                        data.activityDesc=notification.activity.activityDesc;
+                        data.endActivityDate=notification.activity.endActivityDate;
+                        data.startActivityDate=notification.activity.startActivityDate;
+                        
+                    }
+
+                    break;
+                }
+            }
+
+            NSArray *beagle_crtbyu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_crtbyu"];
+            for(BeagleActivityClass *data in beagle_crtbyu){
+                if(data.activityId==notification.activity.activityId){
+                    if(notification.notificationId==GOING_TYPE||notification.notificationId==LEAVED_ACTIVITY_TYPE){
+                        data.participantsCount=notification.activity.participantsCount;
+                        data.dos1count=notification.activity.dos1count;
+                    }
+                    else if(notification.notificationId==WHAT_CHANGE_TYPE){
+                        data.activityDesc=notification.activity.activityDesc;
+                    }
+                    else if(notification.notificationId==DATE_CHANGE_TYPE){
+                        data.endActivityDate=notification.activity.endActivityDate;
+                        data.startActivityDate=notification.activity.startActivityDate;
+                    }
+                    else if (notification.notificationType==CHAT_TYPE){
+                        data.postCount=notification.activity.postCount;
+                    }
+                    else if (notification.notificationType==ACTIVITY_UPDATE_TYPE){
+                        data.postCount=notification.activity.postCount;
+                        data.participantsCount=notification.activity.participantsCount;
+                        data.dos1count=notification.activity.dos1count;
+                        data.activityDesc=notification.activity.activityDesc;
+                        data.endActivityDate=notification.activity.endActivityDate;
+                        data.startActivityDate=notification.activity.startActivityDate;
+                        
+                    }
+
+                    break;
+                }
+            }
+            
+        }
+            break;
+            
+        case CANCEL_ACTIVITY_TYPE:
+            
+        {
+            BOOL isFound=false;
+            NSInteger index=0;
+            NSArray *beagle_happenarndu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_happenarndu"];
+
+            for(BeagleActivityClass *data in beagle_happenarndu){
+                if(data.activityId==notification.activity.activityId){
+                    isFound=true;
+                    break;
+                }else{
+                    isFound=false;
+                }
+                index++;
+            }
+            if(isFound){
+                NSMutableArray *oldArray=[NSMutableArray arrayWithArray:beagle_happenarndu];
+                [oldArray removeObjectAtIndex:index];
+            }
+            
+            isFound=false;
+            index=0;
+            NSArray *beagle_friendsarndu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_friendsarndu"];
+            
+            for(BeagleActivityClass *data in beagle_friendsarndu){
+                if(data.activityId==notification.activity.activityId){
+                    isFound=true;
+                    break;
+                }else{
+                    isFound=false;
+                }
+                index++;
+            }
+            if(isFound){
+                NSMutableArray *oldArray=[NSMutableArray arrayWithArray:beagle_friendsarndu];
+                [oldArray removeObjectAtIndex:index];
+            }
+            isFound=false;
+            index=0;
+            NSArray *beagle_expressint=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_expressint"];
+            
+            for(BeagleActivityClass *data in beagle_expressint){
+                if(data.activityId==notification.activity.activityId){
+                    isFound=true;
+                    break;
+                }else{
+                    isFound=false;
+                }
+                index++;
+            }
+            if(isFound){
+                NSMutableArray *oldArray=[NSMutableArray arrayWithArray:beagle_expressint];
+                [oldArray removeObjectAtIndex:index];
+            }
+
+            isFound=false;
+            index=0;
+            NSArray *beagle_crtbyu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_crtbyu"];
+            
+            for(BeagleActivityClass *data in beagle_crtbyu){
+                if(data.activityId==notification.activity.activityId){
+                    isFound=true;
+                    break;
+                }else{
+                    isFound=false;
+                }
+                index++;
+            }
+            if(isFound){
+                NSMutableArray *oldArray=[NSMutableArray arrayWithArray:beagle_crtbyu];
+                [oldArray removeObjectAtIndex:index];
+            }
+
+
+        }
+            break;
+
+        case ACTIVITY_CREATION_TYPE:
+        {
+            [self performSelector:@selector(refresh) withObject:nil afterDelay:0.85];
+        }
+            break;
+    }
+    
+    [self filterByCategoryType:categoryFilterType];
 
 }
 
@@ -295,14 +524,12 @@
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
 
     if(!hideInAppNotification && !notifObject.isOffline){
-    InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0, 0, 320, 64) appNotification:notifObject];
-    notifView.delegate=self;
-    
-    UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
-    [keyboard addSubview:notifView];
+        InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
+        notifView.delegate=self;
+        [notifView show];
 
         }
-    else if(!hideInAppNotification && notifObject.isOffline && (notifObject.notificationType==CHAT_TYPE) && notifObject.activityId!=0){
+    else if(!hideInAppNotification && notifObject.isOffline && (notifObject.notificationType==CHAT_TYPE) && notifObject.activity.activityId!=0){
         [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
@@ -310,7 +537,7 @@
         viewController.interestServerManager.delegate=viewController;
         viewController.isRedirected=TRUE;
         viewController.toLastPost=TRUE;
-        [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
+        [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
         [self.navigationController pushViewController:viewController animated:YES];
 
         
@@ -327,10 +554,18 @@
     viewController.isRedirected=TRUE;
     if(notification.notificationType==CHAT_TYPE)
         viewController.toLastPost=TRUE;
-    [viewController.interestServerManager getDetailedInterest:notification.activityId];
+    [viewController.interestServerManager getDetailedInterest:notification.activity.activityId];
     [self.navigationController pushViewController:viewController animated:YES];
 
 }
+
+#pragma mark InAppNotificationView Handler
+- (void)notificationView:(InAppNotificationView *)inAppNotification didDismissWithButtonIndex:(NSInteger)buttonIndex{
+    
+    NSLog(@"Button Index = %ld", (long)buttonIndex);
+    [BeagleUtilities updateBadgeInfoOnTheServer:inAppNotification.notification.notificationId];
+}
+
 -(void)UpdateBadgeCount{
     BeagleManager *BG=[BeagleManager SharedInstance];
     UIButton *notificationsButton=(UIButton*)[self.view viewWithTag:5346];

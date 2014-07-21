@@ -9,21 +9,26 @@
 #import <UIKit/UIKit.h>
 @class BeagleNotificationClass;
 @class TTTAttributedLabel;
+@protocol InAppNotificationViewDelegate;
+
+@interface InAppNotificationView : UIView<UIGestureRecognizerDelegate>{
+    NSTimer *timer;
+    NSInteger counter;
+}
+@property (nonatomic,retain)TTTAttributedLabel *summaryLabel;
+@property (nonatomic,retain)BeagleNotificationClass *notification;
+- (id)initWithNotificationClass:(BeagleNotificationClass*)appNotification;
+-(void)show;
+@property(nonatomic,weak)id<InAppNotificationViewDelegate>delegate;
+
+@end
+
 
 @protocol InAppNotificationViewDelegate <NSObject>
 
 @optional
 -(void)backgroundTapToPush:(BeagleNotificationClass*)notification;
 -(void)notificationViewWillHide;
-@end
-
-@interface InAppNotificationView : UIView{
-    NSTimer *timer;
-    NSInteger counter;
-}
-@property(nonatomic,assign)id<InAppNotificationViewDelegate>delegate;
-@property (nonatomic,retain)TTTAttributedLabel *summaryLabel;
-@property (nonatomic,retain)BeagleNotificationClass *inAppNotif;
-- (id)initWithFrame:(CGRect)frame appNotification:(BeagleNotificationClass*)appNotification;
+- (void)notificationView:(InAppNotificationView *)inAppNotification didDismissWithButtonIndex:(NSInteger)buttonIndex;
 
 @end

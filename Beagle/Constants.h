@@ -44,7 +44,7 @@
 #define LEAVED_ACTIVITY_TYPE 8
 #define ACTIVITY_CREATION_TYPE 11
 #define GOING_TYPE 13
-
+#define ACTIVITY_UPDATE_TYPE 32
 #define kBeagleBadgeCount @"BeagleBadgeCount"
 #define kUpdatePostsOnInterest @"PostUpdateOnDetailedInterest"
 #define kUpdateNotificationStack @"UpdateNotificationStack"
