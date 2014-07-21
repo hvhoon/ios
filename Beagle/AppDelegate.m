@@ -36,11 +36,15 @@ void uncaughtExceptionHandler(NSException *exception) {
 
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     
+    // Starting crash analytics
     [Crashlytics startWithAPIKey:@"e8e7ac59367e936ecae821876cc411ec67427e47"];
     NSString *storyboardId = [[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"] ? @"initialNavBeagle" : @"loginNavScreen";
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     UIViewController *initViewController = [storyboard instantiateViewControllerWithIdentifier:storyboardId];
-
+    
+    // Start AppSee analytics
+    [Appsee start:@"d4f6b6daba7e4c3ca8b7ad040c2edaa3"];
+    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = initViewController;
     [self.window makeKeyAndVisible];
@@ -60,6 +64,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     [Instabug setHeaderColor:[UIColor colorWithRed:(255/255.0) green:(149/255.0) blue:(0/255.0) alpha:1.0]];
     [Instabug setTextFontColor:[UIColor colorWithRed:(82/255.0) green:(83/255.0) blue:(83/255.0) alpha:1.0]];
     [Instabug setTextBackgroundColor:[UIColor colorWithRed:(249/255.0) green:(249/255.0) blue:(249/255.0) alpha:1.0]];
+    
     
     if([[NSUserDefaults standardUserDefaults]valueForKey:@"HourlyUpdate"]==nil){
         [[NSUserDefaults standardUserDefaults]setValue:[NSDate date] forKey:@"HourlyUpdate"];
