@@ -111,7 +111,7 @@ UIWindowLevel windowLevel;
         
         [regexp enumerateMatchesInString:[mutableAttributedString string] options:0 range:stringRange usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
             
-            UIFont *boldSystemFont =[UIFont fontWithName:@"HelveticaNueue-Medium" size:14.0];
+            UIFont *boldSystemFont =[UIFont fontWithName:@"HelveticaNeue-Bold" size:14.0f];
             CTFontRef boldFont = CTFontCreateWithName(( CFStringRef)boldSystemFont.fontName, boldSystemFont.pointSize, NULL);
             
             if (boldFont) {
