@@ -259,13 +259,13 @@
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
     [self updateHomeScreen:notifObject];
 
-    if(!hideInAppNotification && !notifObject.isOffline){
+    if(!hideInAppNotification && notifObject.notifType==1){
         
         InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
         notifView.delegate=self;
         [notifView show];
 
-    }else if(!hideInAppNotification && notifObject.isOffline && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE) && notifObject.activity.activityId!=0){
+    }else if(!hideInAppNotification && notifObject.notifType==2 && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE) && notifObject.activity.activityId!=0){
        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
@@ -544,13 +544,13 @@
 -(void)postInAppNotification:(NSNotification*)note{
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
     [self updateHomeScreen:notifObject];
-    if(!hideInAppNotification && !notifObject.isOffline){
+    if(!hideInAppNotification && notifObject.notifType==1){
         InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
         notifView.delegate=self;
         [notifView show];
 
         }
-    else if(!hideInAppNotification && notifObject.isOffline && (notifObject.notificationType==CHAT_TYPE) && notifObject.activity.activityId!=0){
+    else if(!hideInAppNotification && notifObject.notifType==2 && (notifObject.notificationType==CHAT_TYPE) && notifObject.activity.activityId!=0){
         [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];

@@ -7,20 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "MBProgressHUD.h"
 #import <Appsee/Appsee.h>
-@interface AppDelegate : UIResponder <UIApplicationDelegate,MBProgressHUDDelegate,NSURLSessionDelegate>{
-        MBProgressHUD *progressIndicator;
+@interface AppDelegate : UIResponder <UIApplicationDelegate,NSURLSessionDelegate, NSURLSessionTaskDelegate, NSURLSessionDownloadDelegate>{
 }
 @property (nonatomic,strong)id listViewController;
 @property (strong, nonatomic) UIWindow *window;
-@property (nonatomic,strong)MBProgressHUD *progressIndicator;
--(void)showProgressIndicator:(NSInteger)type;
--(void)hideProgressView;
-typedef void (^CompletionHandlerType)();
-#if TARGET_OS_IPHONE
-@property (nonatomic,strong)NSMutableDictionary *completionHandlerDictionary;
-#endif
-- (void) addCompletionHandler: (CompletionHandlerType) handler forSession: (NSString *)identifier;
-- (void) callCompletionHandlerForSession: (NSString *)identifier;
+@property (copy) void (^backgroundSessionCompletionHandler)();
+@property (nonatomic,strong) NSURLSessionDownloadTask *downloadTask;
 @end

@@ -331,9 +331,10 @@
 }
 
 
--(void)requestInAppNotificationForPosts:(NSInteger)chatId isOffline:(BOOL)isOffline{
+-(void)requestInAppNotificationForPosts:(NSInteger)chatId notifType:(NSInteger)notifType{
+    if(notifType==1)
     _serverCallType=kServerCallInAppNotificationForPosts;
-    if(isOffline)
+    else if(notifType==2)
         _serverCallType=kServerCallInAppForOfflinePost;
     
     if([self isInternetAvailable])
@@ -348,12 +349,16 @@
     }
     
 }
--(void)requestInAppNotification:(NSInteger)notificationId isOffline:(BOOL)isOffline{
+-(void)requestInAppNotification:(NSInteger)notificationId notifType:(NSInteger)notifType{
 
-    _serverCallType=kServerCallInAppNotification;
 
-    if(isOffline)
+    if(notifType==1)
+        _serverCallType=kServerCallInAppNotification;
+    else if(notifType==2)
         _serverCallType=kServerCallRequestForOfflineNotification;
+    else if(notifType==3)
+        _serverCallType=kServerCallRequestForSilentNotification;
+
 
     
     if([self isInternetAvailable])

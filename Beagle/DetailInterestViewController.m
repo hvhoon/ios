@@ -139,7 +139,7 @@ static NSString * const CellIdentifier = @"cell";
         //do the description and text update
         if(notifObject.notificationType!=CANCEL_ACTIVITY_TYPE){
  
-            if(!notifObject.isOffline){
+            if(notifObject.notifType==1){
                 InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
                 notifView.delegate=self;
                 [notifView show];
@@ -168,7 +168,7 @@ static NSString * const CellIdentifier = @"cell";
 
     }else if(notifObject.activity.activityId==self.interestActivity.activityId && self.interestActivity.ownerid ==[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]){
         
-        if(!notifObject.isOffline){
+        if(notifObject.notifType==1){
             InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
             notifView.delegate=self;
             [notifView show];
@@ -252,7 +252,7 @@ static NSString * const CellIdentifier = @"cell";
 
     
     }
-    else if(!notifObject.isOffline){
+    else if(notifObject.notifType==1){
         
     
         InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
@@ -284,7 +284,7 @@ static NSString * const CellIdentifier = @"cell";
         [_chatPostManager getPostDetail:notifObject.postChatId];
    }
 
-else if(!notifObject.isOffline){
+else if(notifObject.notifType==1){
     InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
     notifView.delegate=self;
     [notifView show];

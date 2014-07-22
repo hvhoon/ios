@@ -34,7 +34,7 @@
 @property(nonatomic,assign)NSInteger activityOwnerId;
 @property(nonatomic,assign)NSInteger dos1_relation;
 @property(nonatomic,assign)NSInteger activityType;
-@property(nonatomic,assign)BOOL isOffline;
+@property(nonatomic,assign)NSInteger notifType;
 @property(nonatomic,strong)BeagleActivityClass*activity;
 -(id) initWithDictionary:(NSDictionary *)dictionary;
 @end

@@ -750,7 +750,7 @@
     
     [[BeagleManager SharedInstance]setBadgeCount:[[[object valueForKey:@"userInfo"] valueForKey:@"badge"]intValue]];
     notification.profileImage=[[object valueForKey:@"userInfo"] valueForKey:@"profileImage"];
-    notification.isOffline=[[[object valueForKey:@"userInfo"] valueForKey:@"isOffline"]boolValue];
+    notification.notifType=[[[object valueForKey:@"userInfo"] valueForKey:@"notifType"]boolValue];
     notification.latitude=[[object valueForKey:@"userInfo"] valueForKey:@"lat"];
     notification.longitude=[[object valueForKey:@"userInfo"] valueForKey:@"lng"];
     notification.notificationString=[[object valueForKey:@"userInfo"] valueForKey:@"message"];
@@ -771,7 +771,7 @@
     notification.postChatId=[[obj1 valueForKey:@"chatid"]integerValue];
     notification.activityOwnerId=[[obj1 valueForKey:@"ownerid"]integerValue];
     notification.postDesc=[obj1 valueForKey:@"post"];
-    notification.isOffline=[[[object valueForKey:@"userInfo"] valueForKey:@"isOffline"]boolValue];
+    notification.notifType=[[[object valueForKey:@"userInfo"] valueForKey:@"notifType"]boolValue];
     notification.profileImage=[[object valueForKey:@"userInfo"] valueForKey:@"profileImage"];
     if([[obj1 valueForKey:@"activity_id"]integerValue]!=0){
         BeagleActivityClass*activity=[[BeagleActivityClass alloc]init];
