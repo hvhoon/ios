@@ -503,21 +503,11 @@ void uncaughtExceptionHandler(NSException *exception) {
     
      if([userInfo[@"aps"][@"alert"] length]== 0){
 #if 0
-        NSLog(@"Remote Notification userInfo is %@", userInfo);
          
          
-         NSURL *downloadURL=[NSURL URLWithString:[NSString stringWithFormat:@"%@rsparameter.json?id=%ld",herokuHost,[[[userInfo valueForKey:@"p"] valueForKey:@"nid"]integerValue]]];
-
-         
-         NSURLRequest *request = [NSURLRequest requestWithURL:downloadURL];
-         NSURLSessionDownloadTask *task = [[self backgroundURLSession] downloadTaskWithRequest:request];
-         task.taskDescription = [NSString stringWithFormat:@"Notification %ld", [[[userInfo valueForKey:@"p"] valueForKey:@"nid"]integerValue]];
-         [task resume];
-         
-         
-         if (self.downloadTask) {
-             return;
-         }
+        if (self.downloadTask) {
+         return;
+        }
          
          NSURL *downloadURL=[NSURL URLWithString:[NSString stringWithFormat:@"%@rsparameter.json?id=%ld",herokuHost,[[[userInfo valueForKey:@"p"] valueForKey:@"nid"]integerValue]]];
          NSURLRequest *request = [NSURLRequest requestWithURL:downloadURL];
@@ -553,7 +543,7 @@ void uncaughtExceptionHandler(NSException *exception) {
             
         }
          
-         [self presentNotification];
+//         [self presentNotification];
          completionHandler(UIBackgroundFetchResultNewData);
 
 
