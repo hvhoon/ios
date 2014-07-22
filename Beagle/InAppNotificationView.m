@@ -61,7 +61,7 @@ UIWindowLevel windowLevel;
         self.summaryLabel = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
         self.summaryLabel.frame=CGRectMake(63, 14.5, 214, 35);
         self.summaryLabel.textColor=[UIColor whiteColor];
-        self.summaryLabel.font =[UIFont fontWithName:@"HelveticaNueue" size:14.0f];
+        self.summaryLabel.font =[UIFont fontWithName:@"HelveticaNeue" size:14.0f];
         self.summaryLabel.lineBreakMode = NSLineBreakByWordWrapping;
         self.summaryLabel.numberOfLines = 2;
         self.summaryLabel.lineBreakMode = NSLineBreakByTruncatingTail;
