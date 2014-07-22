@@ -50,19 +50,18 @@ UIWindowLevel windowLevel;
         singleTap.numberOfTapsRequired = 1;
         [self addGestureRecognizer:singleTap];
 
-        
         self.userInteractionEnabled = YES;
         
         self.notification=appNotification;
-        self.backgroundColor=[UIColor blackColor];
-        self.alpha=0.9;
+        self.backgroundColor=[BeagleUtilities returnBeagleColor:13];
+        self.alpha=1.0;
         
         UIImageView *profileImageView=[[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 30, 29)];
         
         self.summaryLabel = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
-        summaryLabel.frame=CGRectMake(63, 0, 241, 64);
+        summaryLabel.frame=CGRectMake(63, 14.5, 214, 49.5);
         summaryLabel.textColor=[UIColor whiteColor];
-        summaryLabel.font =[UIFont fontWithName:@"HelveticaNueue-Light" size:14.0f];
+        summaryLabel.font =[UIFont fontWithName:@"HelveticaNueue" size:14.0f];
         summaryLabel.lineBreakMode = NSLineBreakByWordWrapping;
         summaryLabel.numberOfLines = 2;
         summaryLabel.highlightedTextColor = [UIColor whiteColor];
@@ -72,17 +71,17 @@ UIWindowLevel windowLevel;
         
         profileImageView.frame=CGRectMake(16, 14.5, 35, 35);
         profileImageView.image=[BeagleUtilities imageCircularBySize:appNotification.profileImage sqr:70.0f];
-        
+        profileImageView.layer.cornerRadius = profileImageView.frame.size.width/2;
+        profileImageView.clipsToBounds = YES;
+        profileImageView.layer.borderColor = [UIColor whiteColor].CGColor;
+        profileImageView.layer.borderWidth = 1.5f;
+    
 
         [self addSubview:profileImageView];
         [self addSubview:self.summaryLabel];
     
-        UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(viewBounds.size.width - 30, 2, 25, 30)];
-        [button setTitle:@"X" forState:UIControlStateNormal];
-        [[button titleLabel] setFont:[UIFont fontWithName:@"HelveticaNueue-Bold" size:15.0f]];
-        [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [button setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-        [button.layer setCornerRadius:3.0];
+        UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(viewBounds.size.width - 43, 14.5, 35, 35)];
+        [button setImage:[UIImage imageNamed:@"Cancel"] forState:UIControlStateNormal];
         [button addTarget:self action:@selector(buttonTapped:) forControlEvents:UIControlEventTouchUpInside];
         [button setTag:0];
         [self addSubview:button];
