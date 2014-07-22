@@ -750,7 +750,7 @@
     
     [[BeagleManager SharedInstance]setBadgeCount:[[[object valueForKey:@"userInfo"] valueForKey:@"badge"]intValue]];
     notification.profileImage=[[object valueForKey:@"userInfo"] valueForKey:@"profileImage"];
-    notification.notifType=[[[object valueForKey:@"userInfo"] valueForKey:@"notifType"]boolValue];
+    notification.notifType=[[[object valueForKey:@"userInfo"] valueForKey:@"notifType"]integerValue];
     notification.latitude=[[object valueForKey:@"userInfo"] valueForKey:@"lat"];
     notification.longitude=[[object valueForKey:@"userInfo"] valueForKey:@"lng"];
     notification.notificationString=[[object valueForKey:@"userInfo"] valueForKey:@"message"];
@@ -758,7 +758,6 @@
     notification.photoUrl=[[object valueForKey:@"userInfo"] valueForKey:@"photo_url"];
     notification.timeOfNotification=[[object valueForKey:@"userInfo"] valueForKey:@"timing"];
     notification.referredId=[[[object valueForKey:@"userInfo"] valueForKey:@"reffered_to"]integerValue];
-    notification.dos1_relation=[[[object valueForKey:@"userInfo"] valueForKey:@"dos1_relation"]integerValue];
     return notification;
 }
 +(BeagleNotificationClass*)getNotificationForInterestPost:(NSNotification*)object{
@@ -771,7 +770,7 @@
     notification.postChatId=[[obj1 valueForKey:@"chatid"]integerValue];
     notification.activityOwnerId=[[obj1 valueForKey:@"ownerid"]integerValue];
     notification.postDesc=[obj1 valueForKey:@"post"];
-    notification.notifType=[[[object valueForKey:@"userInfo"] valueForKey:@"notifType"]boolValue];
+    notification.notifType=[[[object valueForKey:@"userInfo"] valueForKey:@"notifType"]integerValue];
     notification.profileImage=[[object valueForKey:@"userInfo"] valueForKey:@"profileImage"];
     if([[obj1 valueForKey:@"activity_id"]integerValue]!=0){
         BeagleActivityClass*activity=[[BeagleActivityClass alloc]init];

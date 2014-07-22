@@ -166,7 +166,7 @@ static NSString * const CellIdentifier = @"cell";
 
         }
 
-    }else if(notifObject.activity.activityId==self.interestActivity.activityId && self.interestActivity.ownerid ==[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]){
+    }else if(notifObject.activity.activityId==self.interestActivity.activityId){
         
         if(notifObject.notifType==1){
             InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
@@ -181,12 +181,11 @@ static NSString * const CellIdentifier = @"cell";
         userObject.profileImageUrl=notifObject.photoUrl;
         userObject.first_name=notifObject.playerName;
         userObject.beagleUserId=notifObject.referredId;
-        
-        self.interestActivity.participantsCount--;
+        self.interestActivity.participantsCount=notifObject.activity.participantsCount;
         UILabel *participantsCountTextLabel=(UILabel*)[self.view viewWithTag:347];
 
-        if(notifObject.dos1_relation==1){
-            self.interestActivity.dos1count--;
+        if(notifObject.activity.dosRelation==1){
+            self.interestActivity.dos1count=notifObject.activity.dos1count;
             NSString* relationship = @"Friend";
             UILabel *friendCountTextLabel=(UILabel*)[self.view viewWithTag:348];
             
@@ -219,11 +218,11 @@ static NSString * const CellIdentifier = @"cell";
         userObject.first_name=notifObject.playerName;
         userObject.beagleUserId=notifObject.referredId;
         
-        self.interestActivity.participantsCount++;
+        self.interestActivity.participantsCount=notifObject.activity.participantsCount;
         UILabel *participantsCountTextLabel=(UILabel*)[self.view viewWithTag:347];
 
-        if(notifObject.dos1_relation==1){
-            self.interestActivity.dos1count++;
+        if(notifObject.activity.dosRelation==1){
+            self.interestActivity.dos1count=notifObject.activity.dos1count;
             NSString* relationship = @"Friend";
             UILabel *friendCountTextLabel=(UILabel*)[self.view viewWithTag:348];
             

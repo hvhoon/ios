@@ -296,7 +296,7 @@
 
             for(BeagleActivityClass *data in beagle_happenarndu){
                 if(data.activityId==notification.activity.activityId){
-                    if(notification.notificationId==GOING_TYPE||notification.notificationId==LEAVED_ACTIVITY_TYPE){
+                    if(notification.notificationType==GOING_TYPE||notification.notificationType==LEAVED_ACTIVITY_TYPE||notification.notificationType==JOINED_ACTIVITY_TYPE){
                     data.participantsCount=notification.activity.participantsCount;
                     data.dos1count=notification.activity.dos1count;
                     }
@@ -329,7 +329,7 @@
             
             for(BeagleActivityClass *data in beagle_friendsarndu){
                 if(data.activityId==notification.activity.activityId){
-                    if(notification.notificationId==GOING_TYPE||notification.notificationId==LEAVED_ACTIVITY_TYPE){
+                    if(notification.notificationType==GOING_TYPE||notification.notificationType==LEAVED_ACTIVITY_TYPE||notification.notificationType==JOINED_ACTIVITY_TYPE){
                         data.participantsCount=notification.activity.participantsCount;
                         data.dos1count=notification.activity.dos1count;
                     }
@@ -361,7 +361,7 @@
             
             for(BeagleActivityClass *data in beagle_expressint){
                 if(data.activityId==notification.activity.activityId){
-                    if(notification.notificationId==GOING_TYPE||notification.notificationId==LEAVED_ACTIVITY_TYPE){
+                    if(notification.notificationType==GOING_TYPE||notification.notificationType==LEAVED_ACTIVITY_TYPE||notification.notificationType==JOINED_ACTIVITY_TYPE){
                         data.participantsCount=notification.activity.participantsCount;
                         data.dos1count=notification.activity.dos1count;
                     }
@@ -393,7 +393,7 @@
             NSArray *beagle_crtbyu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_crtbyu"];
             for(BeagleActivityClass *data in beagle_crtbyu){
                 if(data.activityId==notification.activity.activityId){
-                    if(notification.notificationId==GOING_TYPE||notification.notificationId==LEAVED_ACTIVITY_TYPE){
+                    if(notification.notificationType==GOING_TYPE||notification.notificationType==LEAVED_ACTIVITY_TYPE||notification.notificationType==JOINED_ACTIVITY_TYPE){
                         data.participantsCount=notification.activity.participantsCount;
                         data.dos1count=notification.activity.dos1count;
                     }

@@ -363,11 +363,19 @@
     
     if([self isInternetAvailable])
     {
-        [self callServerWithUrl:[NSString stringWithFormat:@"%@rsparameter.json", _serverUrl]
+        if(notifType==3){
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@silentpushparameter.json", _serverUrl]
                          method:@"GET"
                          params:[NSDictionary dictionaryWithObjectsAndKeys:
-                                 [NSNumber numberWithInteger:notificationId],@"id",
+                                 [NSNumber numberWithInteger:notificationId],@"id",[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],@"pid",
                                  nil] data:nil];
+        }else{
+            [self callServerWithUrl:[NSString stringWithFormat:@"%@rsparameter.json", _serverUrl]
+                             method:@"GET"
+                             params:[NSDictionary dictionaryWithObjectsAndKeys:
+                                     [NSNumber numberWithInteger:notificationId],@"id",
+                                     nil] data:nil];
+        }
     }
     else
     {

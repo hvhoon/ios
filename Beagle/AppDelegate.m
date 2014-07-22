@@ -440,7 +440,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     UIImage* image =[[UIImage alloc] initWithData:imageData];
     [notificationDictionary setObject:image forKey:@"profileImage"];
     [notificationDictionary setObject:[NSNumber numberWithInteger:3] forKey:@"notifType"];
-    [self performSelectorOnMainThread:@selector(sendAppNotification:) withObject:notificationDictionary waitUntilDone:NO];
+    [self performSelectorOnMainThread:@selector(sendSilentNotification:) withObject:notificationDictionary waitUntilDone:NO];
 }
 
 - (void)loadProfileImageData:(NSMutableDictionary*)notificationDictionary {
@@ -469,6 +469,11 @@ void uncaughtExceptionHandler(NSException *exception) {
     
 
 }
+-(void)sendSilentNotification:(NSMutableDictionary*)appNotifDictionary{
+    NSNotification* notification = [NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:self userInfo:appNotifDictionary];
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
+}
+
 
 - (NSURLSession *)backgroundURLSession
 {
@@ -585,6 +590,19 @@ void uncaughtExceptionHandler(NSException *exception) {
         
         
     });
+}
+
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask
+      didWriteData:(int64_t)bytesWritten
+ totalBytesWritten:(int64_t)totalBytesWritten
+totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite{
+    
+}
+
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask
+ didResumeAtOffset:(int64_t)fileOffset
+expectedTotalBytes:(int64_t)expectedTotalBytes{
+    
 }
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
