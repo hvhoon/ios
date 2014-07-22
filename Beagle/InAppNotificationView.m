@@ -59,7 +59,7 @@ UIWindowLevel windowLevel;
         UIImageView *profileImageView=[[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 30, 29)];
         
         self.summaryLabel = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
-        self.summaryLabel.frame=CGRectMake(63, 14.5, 214, 49.5);
+        self.summaryLabel.frame=CGRectMake(63, 14.5, 214, 35);
         self.summaryLabel.textColor=[UIColor whiteColor];
         self.summaryLabel.font =[UIFont fontWithName:@"HelveticaNueue" size:14.0f];
         self.summaryLabel.lineBreakMode = NSLineBreakByWordWrapping;
