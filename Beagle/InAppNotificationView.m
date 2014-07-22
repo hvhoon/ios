@@ -59,25 +59,24 @@ UIWindowLevel windowLevel;
         UIImageView *profileImageView=[[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 30, 29)];
         
         self.summaryLabel = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
-        summaryLabel.frame=CGRectMake(63, 14.5, 214, 49.5);
-        summaryLabel.textColor=[UIColor whiteColor];
-        summaryLabel.font =[UIFont fontWithName:@"HelveticaNueue" size:14.0f];
-        summaryLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        summaryLabel.numberOfLines = 2;
-        summaryLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-        summaryLabel.verticalAlignment = TTTAttributedLabelVerticalAlignmentCenter;
-        summaryLabel.highlightedTextColor = [UIColor whiteColor];
-        summaryLabel.backgroundColor=[UIColor clearColor];
+        self.summaryLabel.frame=CGRectMake(63, 14.5, 214, 49.5);
+        self.summaryLabel.textColor=[UIColor whiteColor];
+        self.summaryLabel.font =[UIFont fontWithName:@"HelveticaNueue" size:14.0f];
+        self.summaryLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        self.summaryLabel.numberOfLines = 2;
+        self.summaryLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+        self.summaryLabel.verticalAlignment = TTTAttributedLabelVerticalAlignmentCenter;
+        self.summaryLabel.highlightedTextColor = [UIColor whiteColor];
+        self.summaryLabel.backgroundColor=[UIColor clearColor];
         
         [self setSummaryText:self.notification.notificationString];
         
-        profileImageView.frame=CGRectMake(16, 14.5, 35, 35);
-        profileImageView.image=[BeagleUtilities imageCircularBySize:appNotification.profileImage sqr:70.0f];
+        profileImageView.frame=CGRectMake(16, 13, 36.5, 36.5);
+        profileImageView.image=[BeagleUtilities imageCircularBySize:appNotification.profileImage sqr:73.0f];
         profileImageView.layer.cornerRadius = profileImageView.frame.size.width/2;
         profileImageView.clipsToBounds = YES;
         profileImageView.layer.borderColor = [UIColor whiteColor].CGColor;
         profileImageView.layer.borderWidth = 1.5f;
-    
 
         [self addSubview:profileImageView];
         [self addSubview:self.summaryLabel];
