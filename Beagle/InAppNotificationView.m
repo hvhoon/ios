@@ -64,6 +64,8 @@ UIWindowLevel windowLevel;
         summaryLabel.font =[UIFont fontWithName:@"HelveticaNueue" size:14.0f];
         summaryLabel.lineBreakMode = NSLineBreakByWordWrapping;
         summaryLabel.numberOfLines = 2;
+        summaryLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+        summaryLabel.verticalAlignment = TTTAttributedLabelVerticalAlignmentCenter;
         summaryLabel.highlightedTextColor = [UIColor whiteColor];
         summaryLabel.backgroundColor=[UIColor clearColor];
         
