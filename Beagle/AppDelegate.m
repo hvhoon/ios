@@ -150,6 +150,13 @@ void uncaughtExceptionHandler(NSException *exception) {
             NSMutableDictionary *cancelDictionary=[NSMutableDictionary new];
             [cancelDictionary setObject:[[userInfo valueForKey:@"aps"] valueForKey:@"alert"] forKey:@"message"];
             [cancelDictionary setObject:[[userInfo valueForKey:@"p"] valueForKey:@"nty"] forKey:@"notification_type"];
+            [cancelDictionary setObject:[[userInfo valueForKey:@"p"] valueForKey:@"nid"] forKey:@"nid"];
+            
+            [[BeagleManager SharedInstance]setBadgeCount:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
+            [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
+            
+            NSLog(@"badge Value=%ld",(long)[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]);
+
             
             [cancelDictionary setObject:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture",[[userInfo valueForKey:@"p"] valueForKey:@"fbuid"]] forKey:@"photo_url"];
             NSMutableDictionary *activity=[NSMutableDictionary new];
@@ -191,7 +198,13 @@ void uncaughtExceptionHandler(NSException *exception) {
             [cancelDictionary setObject:[NSNumber numberWithInteger:2] forKey:@"notifType"];
             
             [cancelDictionary setObject:[[userInfo valueForKey:@"p"] valueForKey:@"nty"] forKey:@"notification_type"];
+            [cancelDictionary setObject:[[userInfo valueForKey:@"p"] valueForKey:@"nid"] forKey:@"nid"];
             
+            [[BeagleManager SharedInstance]setBadgeCount:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
+            [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
+            
+            NSLog(@"badge Value=%ld",(long)[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]);
+
             [cancelDictionary setObject:[[userInfo valueForKey:@"aps"] valueForKey:@"alert"] forKey:@"message"];
             
             NSMutableDictionary *activity=[NSMutableDictionary new];
@@ -338,6 +351,9 @@ void uncaughtExceptionHandler(NSException *exception) {
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 
                 NSMutableDictionary *offlinePost=[response objectForKey:@"inappnotification"];
+                
+                
+                
                 
                 id badge=[offlinePost objectForKey:@"badge"];
                 if (badge != nil && [status class] != [NSNull class]){

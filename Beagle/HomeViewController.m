@@ -301,10 +301,8 @@
                     data.participantsCount=notification.activity.participantsCount;
                     data.dos1count=notification.activity.dos1count;
                     }
-                    else if(notification.notificationType==WHAT_CHANGE_TYPE){
-                    data.activityDesc=notification.activity.activityDesc;
-                    }
-                    else if(notification.notificationType==DATE_CHANGE_TYPE){
+                    else if(notification.notificationType==WHAT_CHANGE_TYPE||notification.notificationType==DATE_CHANGE_TYPE){
+                        data.activityDesc=notification.activity.activityDesc;
                         data.endActivityDate=notification.activity.endActivityDate;
                         data.startActivityDate=notification.activity.startActivityDate;
                     }
@@ -334,10 +332,8 @@
                         data.participantsCount=notification.activity.participantsCount;
                         data.dos1count=notification.activity.dos1count;
                     }
-                    else if(notification.notificationType==WHAT_CHANGE_TYPE){
+                    else if(notification.notificationType==WHAT_CHANGE_TYPE||notification.notificationType==DATE_CHANGE_TYPE){
                         data.activityDesc=notification.activity.activityDesc;
-                    }
-                    else if(notification.notificationType==DATE_CHANGE_TYPE){
                         data.endActivityDate=notification.activity.endActivityDate;
                         data.startActivityDate=notification.activity.startActivityDate;
                     }
@@ -366,10 +362,8 @@
                         data.participantsCount=notification.activity.participantsCount;
                         data.dos1count=notification.activity.dos1count;
                     }
-                    else if(notification.notificationType==WHAT_CHANGE_TYPE){
+                    else if(notification.notificationType==WHAT_CHANGE_TYPE||notification.notificationType==DATE_CHANGE_TYPE){
                         data.activityDesc=notification.activity.activityDesc;
-                    }
-                    else if(notification.notificationType==DATE_CHANGE_TYPE){
                         data.endActivityDate=notification.activity.endActivityDate;
                         data.startActivityDate=notification.activity.startActivityDate;
                     }
@@ -398,10 +392,8 @@
                         data.participantsCount=notification.activity.participantsCount;
                         data.dos1count=notification.activity.dos1count;
                     }
-                    else if(notification.notificationType==WHAT_CHANGE_TYPE){
+                    else if(notification.notificationType==WHAT_CHANGE_TYPE||notification.notificationType==DATE_CHANGE_TYPE){
                         data.activityDesc=notification.activity.activityDesc;
-                    }
-                    else if(notification.notificationType==DATE_CHANGE_TYPE){
                         data.endActivityDate=notification.activity.endActivityDate;
                         data.startActivityDate=notification.activity.startActivityDate;
                     }

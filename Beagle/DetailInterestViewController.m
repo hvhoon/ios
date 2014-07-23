@@ -149,6 +149,7 @@ static NSString * const CellIdentifier = @"cell";
         NSString* screenTitle = [BeagleUtilities activityTime:self.interestActivity.startActivityDate endate:notifObject.activity.endActivityDate];
         self.navigationItem.title = screenTitle;
         self.interestActivity.activityDesc=notifObject.activityWhat;
+        scrollViewResize=TRUE;
         [self.detailedInterestTableView reloadData];
         }else{
 
@@ -799,6 +800,7 @@ else if(notifObject.notifType==1){
         activityDescLabel.textColor = [UIColor blackColor];
         activityDescLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:17.0f];
         activityDescLabel.textAlignment = NSTextAlignmentLeft;
+        activityDescLabel.tag=3569;
         [_backgroundView addSubview:activityDescLabel];
         
         fromTheTop = fromTheTop+commentTextRect.size.height;
