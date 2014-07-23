@@ -15,7 +15,6 @@
 #import "IconDownloader.h"
 #import "ActivityViewController.h"
 #import "PostSoundEffect.h"
-#import "BeagleNotificationClass.h"
 #import "FriendsViewController.h"
 #import "FeedbackReporting.h"
 #import "CreateAnimationBlurView.h"
@@ -129,11 +128,12 @@ static NSString * const CellIdentifier = @"cell";
     
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
     
+    if(notifObject.notifType!=2){
     NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
     [notificationDictionary setObject:notifObject forKey:@"notify"];
     NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
-
+    }
     if(notifObject.activity.activityId==self.interestActivity.activityId && (notifObject.notificationType==WHAT_CHANGE_TYPE || notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==CANCEL_ACTIVITY_TYPE)){
 
         //do the description and text update
@@ -162,7 +162,7 @@ static NSString * const CellIdentifier = @"cell";
             
             [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
 
-            NSString *message = NSLocalizedString (@"'This activity has been cancelled, let's show you what else is happening around you'",
+            NSString *message = NSLocalizedString (@"This activity has been cancelled, let's show you what else is happening around you",
                                                    @"Cancel Activity Type");
 
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Beagle"
@@ -1303,7 +1303,7 @@ static NSString * const CellIdentifier = @"cell";
                 
                 
             }else if (status != nil && [status class] != [NSNull class] && [status integerValue]==205){
-                NSString *message = NSLocalizedString (@"'This activity has been cancelled, let's show you what else is happening around you'",
+                NSString *message = NSLocalizedString (@"This activity has been cancelled, let's show you what else is happening around you",
                                                        @"Cancel Activity Type");
                 
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Beagle"

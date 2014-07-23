@@ -12,7 +12,6 @@
 #import "EventVisibilityBlurView.h"
 #import "LocationBlurView.h"
 #import "DetailInterestViewController.h"
-#import "BeagleNotificationClass.h"
 #import "InterestInviteViewController.h"
 #import "CreateAnimationBlurView.h"
 #define DISABLED_ALPHA 0.5f
@@ -282,10 +281,12 @@ enum Weeks {
     }
     
     
-    NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
-    [notificationDictionary setObject:notifObject forKey:@"notify"];
-    NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
+    if(notifObject.notifType!=2){
+        NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
+        [notificationDictionary setObject:notifObject forKey:@"notify"];
+        NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
+        [[NSNotificationCenter defaultCenter] postNotification:notification];
+    }
 
 
 }
@@ -312,10 +313,12 @@ enum Weeks {
 
         
     }
-    NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
-    [notificationDictionary setObject:notifObject forKey:@"notify"];
-    NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
+    if(notifObject.notifType!=2){
+        NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
+        [notificationDictionary setObject:notifObject forKey:@"notify"];
+        NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
+        [[NSNotificationCenter defaultCenter] postNotification:notification];
+    }
 
     
 }

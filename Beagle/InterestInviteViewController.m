@@ -12,7 +12,6 @@
 #import "JSON.h"
 #import "CreateAnimationBlurView.h"
 #import "DetailInterestViewController.h"
-#import "BeagleNotificationClass.h"
 @interface InterestInviteViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,InviteTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate,UISearchBarDelegate,CreateAnimationBlurViewDelegate,InAppNotificationViewDelegate>{
     BOOL isSearching;
     NSTimer *timer;
@@ -153,10 +152,12 @@
         
     }
     
-    NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
-    [notificationDictionary setObject:notifObject forKey:@"notify"];
-    NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
+    if(notifObject.notifType!=2){
+        NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
+        [notificationDictionary setObject:notifObject forKey:@"notify"];
+        NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
+        [[NSNotificationCenter defaultCenter] postNotification:notification];
+    }
     
     
 }
@@ -183,10 +184,12 @@
         
         
     }
-    NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
-    [notificationDictionary setObject:notifObject forKey:@"notify"];
-    NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
+    if(notifObject.notifType!=2){
+        NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
+        [notificationDictionary setObject:notifObject forKey:@"notify"];
+        NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
+        [[NSNotificationCenter defaultCenter] postNotification:notification];
+    }
     
     
 }

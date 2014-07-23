@@ -7,7 +7,6 @@
 //
 
 #import "BeagleUtilities.h"
-#import "BeagleNotificationClass.h"
 #import "JSON.h"
 @implementation BeagleUtilities
 + (int) getRandomIntBetweenLow:(int) low andHigh:(int) high {

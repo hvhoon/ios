@@ -8,7 +8,6 @@
 //
 #import "IconDownloader.h"
 #import "InterestChatClass.h"
-#import "BeagleNotificationClass.h"
 #define kIconHeight 100
 #define kIconWidth 100
 

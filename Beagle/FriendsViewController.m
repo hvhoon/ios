@@ -9,7 +9,6 @@
 #import "FriendsViewController.h"
 #import "FriendsTableViewCell.h"
 #import "IconDownloader.h"
-#import "BeagleNotificationClass.h"
 #import "DetailInterestViewController.h"
 @interface FriendsViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,FriendsTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate>{
     NSInteger inviteIndex;
@@ -186,11 +185,12 @@
         
     }
     
-    NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
-    [notificationDictionary setObject:notifObject forKey:@"notify"];
-    NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
-
+    if(notifObject.notifType!=2){
+        NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
+        [notificationDictionary setObject:notifObject forKey:@"notify"];
+        NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
+        [[NSNotificationCenter defaultCenter] postNotification:notification];
+    }
 }
 
 
@@ -217,10 +217,12 @@
         
         
     }
-    NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
-    [notificationDictionary setObject:notifObject forKey:@"notify"];
-    NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
+    if(notifObject.notifType!=2){
+        NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
+        [notificationDictionary setObject:notifObject forKey:@"notify"];
+        NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
+        [[NSNotificationCenter defaultCenter] postNotification:notification];
+    }
     
 }
 

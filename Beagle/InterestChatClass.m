@@ -7,7 +7,6 @@
 //
 
 #import "InterestChatClass.h"
-#import "BeagleNotificationClass.h"
 @implementation InterestChatClass
 @synthesize ownnerid,player_id,player_name,player_photo_url,playerImage,text,timestamp,chat_id;
 

@@ -48,6 +48,7 @@
 #define kBeagleBadgeCount @"BeagleBadgeCount"
 #define kUpdatePostsOnInterest @"PostUpdateOnDetailedInterest"
 #define kUpdateNotificationStack @"UpdateNotificationStack"
+#define kUpdateHomeScreenAndNotificationStack @"UpdateHomeScreenAndNotificationStack"
 #define kRemoteNotificationReceivedNotification @"RemoteNotificationReceivedWhileRunning"
 #define kNotificationForInterestPost @"InAppInterestPostNotification"
 #define kNotificationHomeAutoRefresh @"NotificationHomeAutoRefresh"

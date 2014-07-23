@@ -7,7 +7,6 @@
 //
 
 #import "NotificationsViewController.h"
-#import "BeagleNotificationClass.h"
 #import "IconDownloader.h"
 #import "AttributedTableViewCell.h"
 #import "TTTAttributedLabel.h"

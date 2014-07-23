@@ -18,7 +18,6 @@
 #import "DetailInterestViewController.h"
 #import "BeagleUtilities.h"
 #import "EventInterestFilterBlurView.h"
-#import "BeagleNotificationClass.h"
 #import "FriendsViewController.h"
 #import "ExpressInterestPreview.h"
 #define REFRESH_HEADER_HEIGHT 70.0f
@@ -225,6 +224,9 @@
     }
     isPushAuto=TRUE;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (updateEventsInTransitionFromBg_Fg) name:@"AutoRefreshEvents" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (refresh) name:kUpdateHomeScreenAndNotificationStack object:nil];
+
 
 }
 
@@ -247,6 +249,8 @@
 }
 -(void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kBeagleBadgeCount object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kUpdateHomeScreenAndNotificationStack object:nil];
+
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"AutoRefreshEvents" object:nil];
     
     for (NSIndexPath *indexPath in [imageDownloadsInProgress allKeys]) {
@@ -257,7 +261,8 @@
 }
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
-    [self updateHomeScreen:notifObject];
+    if(notifObject.notifType!=2)
+        [self updateHomeScreen:notifObject];
 
     if(!hideInAppNotification && notifObject.notifType==1){
         
@@ -537,7 +542,8 @@
 
 -(void)postInAppNotification:(NSNotification*)note{
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
-    [self updateHomeScreen:notifObject];
+        if(notifObject.notifType!=2)
+     [self updateHomeScreen:notifObject];
     if(!hideInAppNotification && notifObject.notifType==1){
         InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
         notifView.delegate=self;

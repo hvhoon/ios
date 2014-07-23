@@ -8,7 +8,6 @@
 
 #import "InAppNotificationView.h"
 #import "TTTAttributedLabel.h"
-#import "BeagleNotificationClass.h"
 static NSRegularExpression *__nameRegularExpression;
 static inline NSRegularExpression * NameRegularExpression() {
     if (!__nameRegularExpression) {
