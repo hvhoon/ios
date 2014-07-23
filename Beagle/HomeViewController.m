@@ -138,6 +138,12 @@
         [[NSUserDefaults standardUserDefaults]synchronize];
 
     }
+    
+    // Setting the user name for AppSee
+    NSString *firstName = [[[BeagleManager SharedInstance]beaglePlayer]first_name];
+    NSString *lastName = [[[BeagleManager SharedInstance]beaglePlayer]last_name];
+    NSString *userFullName = [NSString stringWithFormat:@"%@ %@",firstName, lastName];
+    [Appsee setUserID:userFullName];
 
     if (![self.slidingViewController.underLeftViewController isKindOfClass:[SettingsViewController class]]) {
         self.slidingViewController.underLeftViewController  = [self.storyboard instantiateViewControllerWithIdentifier:@"settingsScreen"];
