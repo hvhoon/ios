@@ -1756,7 +1756,7 @@
                          // Completion Block
 
                          self.tableView.scrollEnabled=YES;
-                         [self.tableView reloadData];
+                         [self filterByCategoryType:categoryFilterType];
                          [pView removeFromSuperview];
                          
     }];
@@ -1974,6 +1974,44 @@
                 
                 if([message isEqualToString:@"Joined"]){
                     play.participantsCount++;
+                    play.isParticipant=true;
+                        NSArray *beagle_happenarndu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_happenarndu"];
+                        for(BeagleActivityClass *data in beagle_happenarndu){
+                            if(data.activityId==play.activityId){
+                                data.participantsCount++;
+                                data.isParticipant=TRUE;
+                                break;
+                            }
+                            
+                        }
+                        NSArray *beagle_friendsarndu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_friendsarndu"];
+                        
+                        for(BeagleActivityClass *data in beagle_friendsarndu){
+                            if(data.activityId==play.activityId){
+                                data.participantsCount++;
+                                data.isParticipant=TRUE;
+                                break;
+                            }
+                        }
+                    BOOL isFound=FALSE;
+
+                        NSArray *beagle_expressint=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_expressint"];
+                        
+                        for(BeagleActivityClass *data in beagle_expressint){
+                            if(data.activityId==play.activityId){
+                               data.participantsCount++;
+                                data.isParticipant=TRUE;
+                                 isFound=true;
+                                break;
+                            }
+                        }
+                    if(!isFound){
+                        NSMutableArray *oldArray=[NSMutableArray arrayWithArray:beagle_expressint];
+                        [oldArray addObject:play];
+                        [self.filterActivitiesOnHomeScreen setObject:oldArray forKey:@"beagle_expressint"];
+                        
+                    }
+
                 }
                 else if([message isEqualToString:@"Already Joined"]){
                     
@@ -1992,19 +2030,52 @@
                 }
                 else{
                     play.participantsCount--;
-                }
-                if(play.isParticipant){
                     play.isParticipant=FALSE;
-                }
-                else{
-                    play.isParticipant=TRUE;
+                    NSArray *beagle_happenarndu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_happenarndu"];
+                    
+                    for(BeagleActivityClass *data in beagle_happenarndu){
+                        if(data.activityId==play.activityId){
+                            data.participantsCount--;
+                            data.isParticipant=FALSE;
+                            break;
+                        };
+                    }
+                    NSArray *beagle_friendsarndu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_friendsarndu"];
+                    
+                    for(BeagleActivityClass *data in beagle_friendsarndu){
+                        if(data.activityId==play.activityId){
+                            data.participantsCount--;
+                            data.isParticipant=FALSE;
+                            break;
+                        }
+                    }
+                    NSArray *beagle_expressint=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_expressint"];
+                    BOOL isFound=FALSE;
+                    NSInteger index=0;
+                    
+                    for(BeagleActivityClass *data in beagle_expressint){
+                        if(data.activityId==play.activityId){
+                           data.participantsCount--;
+                            data.isParticipant=FALSE;
+                            isFound=true;
+
+                            break;
+                        }
+                        index++;
+                    }
+                    
+                    if(isFound){
+                        NSMutableArray *oldArray=[NSMutableArray arrayWithArray:beagle_expressint];
+                        [oldArray removeObjectAtIndex:index];
+                        [self.filterActivitiesOnHomeScreen setObject:oldArray forKey:@"beagle_expressint"];
+                        
+                    }
                 }
                 if(play.isParticipant){
-                    [self
-                     showView];
+                    [self showView];
 
                 }else{
-                    [self.tableView reloadData];
+                    [self filterByCategoryType:categoryFilterType];
                     
                 }
             }

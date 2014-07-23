@@ -166,7 +166,7 @@
         {
             notif.rowHeight = [AttributedTableViewCell heightForNotificationText:notif.notificationString];
             notif.rowHeight += [AttributedTableViewCell heightForTimeStampText:[BeagleUtilities calculateChatTimestamp:notif.timeOfNotification]];
-            notif.rowHeight += [AttributedTableViewCell heightForNewInterestText:notif.activityWhat];
+            notif.rowHeight += [AttributedTableViewCell heightForNewInterestText:notif.activity.activityDesc];
             notif.rowHeight += 25; // this is the 'Are you in' button;
             notif.rowHeight += 42.5; // all other buffers between object;
             height=notif.rowHeight;
@@ -258,10 +258,10 @@
         
         CGSize maximumLabelSize = CGSizeMake(238,999);
         
-        CGRect whatTextRect = [play.activityWhat boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
+        CGRect whatTextRect = [play.activity.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
         
         UILabel *whatLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, fromTheTop, whatTextRect.size.width, whatTextRect.size.height)];
-        whatLabel.attributedText = [[NSAttributedString alloc] initWithString:play.activityWhat attributes:attrs];
+        whatLabel.attributedText = [[NSAttributedString alloc] initWithString:play.activity.activityDesc attributes:attrs];
         whatLabel.numberOfLines=0;
         whatLabel.backgroundColor = [UIColor clearColor];
         [cell.contentView addSubview:whatLabel];
@@ -319,7 +319,7 @@
     
     CGSize maximumLabelSize = CGSizeMake(238,999);
     
-    CGRect whatTextRect = [play.activityWhat boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
+    CGRect whatTextRect = [play.activity.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
 
     AttributedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil){
@@ -331,7 +331,7 @@
 
                 
                 UILabel *whatLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, fromTheTop, whatTextRect.size.width, whatTextRect.size.height)];
-                whatLabel.attributedText = [[NSAttributedString alloc] initWithString:play.activityWhat attributes:attrs];
+                whatLabel.attributedText = [[NSAttributedString alloc] initWithString:play.activity.activityDesc attributes:attrs];
                 whatLabel.numberOfLines=0;
                 whatLabel.tag=[[NSString stringWithFormat:@"111%ld",(long)indexPath.row]integerValue];
                 whatLabel.backgroundColor = [UIColor clearColor];
@@ -373,7 +373,7 @@
                 fromTheTop += 8; // adding buffer above the interest text
 
                 UILabel *whatLabel=(UILabel*)[cell viewWithTag:[[NSString stringWithFormat:@"111%ld",(long)indexPath.row]integerValue]];
-                whatLabel.text=play.activityWhat;
+                whatLabel.text=play.activity.activityDesc;
                 [cell.contentView addSubview:whatLabel];
                 
                 fromTheTop += whatTextRect.size.height;

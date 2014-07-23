@@ -17,7 +17,7 @@
     self = [super init];
     if (self)
     {
-        activity=[[BeagleActivityClass alloc]init];
+        self.activity=[[BeagleActivityClass alloc]init];
         NSNumber * n = [dictionary objectForKey:@"id"];
         self.notificationId= [n intValue];
         self.activityType=[[dictionary objectForKey:@"atype"]integerValue];
@@ -36,7 +36,7 @@
         if(referredTo !=nil && [referredTo class]!=[NSNull class])
             self.referredId= [referredTo intValue];
         self.photoUrl=[dictionary objectForKey:@"photo_url"];
-        self.activityWhat=[NSString stringWithFormat:@"\"%@\"",[dictionary objectForKey:@"what"]];
+        self.activity.activityDesc=[NSString stringWithFormat:@"\"%@\"",[dictionary objectForKey:@"what"]];
         self.playerName=[dictionary objectForKey:@"name"];
     }
     return self;
