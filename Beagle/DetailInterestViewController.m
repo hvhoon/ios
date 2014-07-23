@@ -145,6 +145,10 @@ static NSString * const CellIdentifier = @"cell";
                 notifView.delegate=self;
                 [notifView show];
                 }
+                else{
+                    [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+                    
+                }
             }
         self.interestActivity.startActivityDate=notifObject.activity.startActivityDate;
         self.interestActivity.endActivityDate=notifObject.activity.endActivityDate;
@@ -179,6 +183,10 @@ static NSString * const CellIdentifier = @"cell";
                 InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
                 notifView.delegate=self;
                 [notifView show];
+            }
+            else{
+                [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+                
             }
         }
 
@@ -293,7 +301,7 @@ static NSString * const CellIdentifier = @"cell";
         [_chatPostManager getPostDetail:notifObject.postChatId];
    }
 
-else if(notifObject.notifType==1){
+ else if(notifObject.notifType==1){
     
     if(![self.navigationItem.rightBarButtonItem.title isEqualToString:@"Done"]){
         InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
@@ -361,6 +369,8 @@ else if(notifObject.notifType==1){
 }
 
 -(void)createInterestInitialCard{
+    
+    self.interestActivity.participantsArray=[[NSMutableArray alloc]init];
     if(self.interestActivity.dosRelation==0){
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(editButtonClicked:)];
         
@@ -1252,12 +1262,10 @@ else if(notifObject.notifType==1){
                     }
                     NSArray *participants=[interest objectForKey:@"participants"];
                     if (participants != nil && [participants class] != [NSNull class] && [participants count]!=0) {
-                        NSMutableArray *participantsArray=[[NSMutableArray alloc]init];
                         for(id el in participants){
                             BeagleUserClass *userClass=[[BeagleUserClass alloc]initWithDictionary:el];
-                            [participantsArray addObject:userClass];
+                            [self.interestActivity.participantsArray addObject:userClass];
                         }
-                        self.interestActivity.participantsArray=participantsArray;
                         
                         
                     }
