@@ -265,8 +265,9 @@
         notifView.delegate=self;
         [notifView show];
 
-    }else if(!hideInAppNotification && notifObject.notifType==2 && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE|| notifObject.notificationType==ACTIVITY_CREATION_TYPE || notifObject.notificationType==JOINED_ACTIVITY_TYPE) && notifObject.activity.activityId!=0){
+    }else if(!hideInAppNotification && notifObject.notifType==2 && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE|| notifObject.notificationType==ACTIVITY_CREATION_TYPE || notifObject.notificationType==JOINED_ACTIVITY_TYPE||notifObject.notificationType==CANCEL_ACTIVITY_TYPE) && notifObject.activity.activityId!=0){
        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+        if(notifObject.notificationType!=CANCEL_ACTIVITY_TYPE){
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
         viewController.interestServerManager=[[ServerManager alloc]init];
@@ -274,7 +275,7 @@
         viewController.isRedirected=TRUE;
         [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
         [self.navigationController pushViewController:viewController animated:YES];
-
+        }
 
     }
     

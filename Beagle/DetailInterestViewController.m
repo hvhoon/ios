@@ -152,6 +152,9 @@ static NSString * const CellIdentifier = @"cell";
         [self.detailedInterestTableView reloadData];
         }else{
 
+            
+            [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+
             NSString *message = NSLocalizedString (@"'This activity has been cancelled, let's show you what else is happening around you'",
                                                    @"Cancel Activity Type");
 
