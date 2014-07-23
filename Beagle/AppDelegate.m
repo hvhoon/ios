@@ -148,9 +148,8 @@ void uncaughtExceptionHandler(NSException *exception) {
             
         }else if([[[userInfo valueForKey:@"p"] valueForKey:@"nty"]integerValue]==CANCEL_ACTIVITY_TYPE){
             NSMutableDictionary *cancelDictionary=[NSMutableDictionary new];
-            [cancelDictionary setObject:[[userInfo valueForKey:@"p"] valueForKey:@"nty"] forKey:@"activity_type"];
-            
             [cancelDictionary setObject:[[userInfo valueForKey:@"aps"] valueForKey:@"alert"] forKey:@"message"];
+            [cancelDictionary setObject:[[userInfo valueForKey:@"p"] valueForKey:@"nty"] forKey:@"notification_type"];
             
             [cancelDictionary setObject:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture",[[userInfo valueForKey:@"p"] valueForKey:@"fbuid"]] forKey:@"photo_url"];
             NSMutableDictionary *activity=[NSMutableDictionary new];
@@ -191,7 +190,7 @@ void uncaughtExceptionHandler(NSException *exception) {
             NSMutableDictionary *cancelDictionary=[NSMutableDictionary new];
             [cancelDictionary setObject:[NSNumber numberWithInteger:2] forKey:@"notifType"];
             
-            [cancelDictionary setObject:[[userInfo valueForKey:@"p"] valueForKey:@"nty"] forKey:@"activity_type"];
+            [cancelDictionary setObject:[[userInfo valueForKey:@"p"] valueForKey:@"nty"] forKey:@"notification_type"];
             
             [cancelDictionary setObject:[[userInfo valueForKey:@"aps"] valueForKey:@"alert"] forKey:@"message"];
             
