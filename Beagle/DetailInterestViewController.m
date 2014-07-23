@@ -148,7 +148,7 @@ static NSString * const CellIdentifier = @"cell";
         self.interestActivity.endActivityDate=notifObject.activity.endActivityDate;
         NSString* screenTitle = [BeagleUtilities activityTime:self.interestActivity.startActivityDate endate:notifObject.activity.endActivityDate];
         self.navigationItem.title = screenTitle;
-        self.interestActivity.activityDesc=notifObject.activityWhat;
+        self.interestActivity.activityDesc=notifObject.activity.activityDesc;
         scrollViewResize=TRUE;
         [self.detailedInterestTableView reloadData];
         }else{
