@@ -1330,7 +1330,9 @@ static NSString * const CellIdentifier = @"cell";
             id status=[response objectForKey:@"status"];
             id message=[response objectForKey:@"message"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
-                
+                id participantsCount=[response objectForKey:@"participantsCount"];
+                if (participantsCount != nil && [participantsCount class] != [NSNull class]){
+
                 id badge=[response objectForKey:@"badge"];
                 if (badge != nil && [badge class] != [NSNull class]){
                     
@@ -1343,9 +1345,9 @@ static NSString * const CellIdentifier = @"cell";
                 // If Joined
                 UILabel *participantsCountTextLabel=(UILabel*)[self.view viewWithTag:347];
                 if([message isEqualToString:@"Joined"]){
-                    self.interestActivity.participantsCount++;
-                    if(self.interestActivity.dosRelation==1)
-                        self.interestActivity.dos1count++;
+
+                    self.interestActivity.participantsCount=[participantsCount integerValue];
+                    self.interestActivity.dos1count=[[response objectForKey:@"dos1count"]integerValue];
                     
                 }
                 // If Already joined, do nothing
@@ -1371,9 +1373,8 @@ static NSString * const CellIdentifier = @"cell";
                 }
                 // If Left update counts
                 else {
-                    self.interestActivity.participantsCount--;
-                    if(self.interestActivity.dosRelation==1)
-                        self.interestActivity.dos1count--;
+                    self.interestActivity.participantsCount=[participantsCount integerValue];
+                    self.interestActivity.dos1count=[[response objectForKey:@"dos1count"]integerValue];
                     
                 }
                 
@@ -1444,8 +1445,7 @@ static NSString * const CellIdentifier = @"cell";
                     
                 }
                 
-                
-                
+                }
             }
         }
 

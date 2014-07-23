@@ -1971,11 +1971,11 @@
         _interestUpdateManager = nil;
         
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
+            BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:interestIndex];
             
             id status=[response objectForKey:@"status"];
             id message=[response objectForKey:@"message"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
-                BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:interestIndex];
                 
                 if([message isEqualToString:@"Joined"]){
                     id participantsCount=[response objectForKey:@"participantsCount"];
@@ -2088,6 +2088,22 @@
                 }else{
                     [self filterByCategoryType:categoryFilterType];
                     
+                }
+            }else{
+                HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+                UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)interestIndex]integerValue]];
+                [button setEnabled:YES];
+                NSString *message = NSLocalizedString (@"That didn't quite go as planned, try again?",
+                                                       @"NSURLConnection initialization method failed.");
+                BeagleAlertWithMessage(message);
+
+
+                if(play.isParticipant){
+                    
+                    ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
+                    [preview removeFromSuperview];
+                    self.tableView.scrollEnabled=YES;
+
                 }
             }
         }
