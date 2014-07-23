@@ -1971,14 +1971,16 @@
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:interestIndex];
                 
-                
                 if([message isEqualToString:@"Joined"]){
-                    play.participantsCount++;
+                    id participantsCount=[response objectForKey:@"participantsCount"];
+                    if (participantsCount != nil && [participantsCount class] != [NSNull class]){
+
+                   play.participantsCount=[participantsCount integerValue];
                     play.isParticipant=true;
                         NSArray *beagle_happenarndu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_happenarndu"];
                         for(BeagleActivityClass *data in beagle_happenarndu){
                             if(data.activityId==play.activityId){
-                                data.participantsCount++;
+                                data.participantsCount=[participantsCount integerValue];
                                 data.isParticipant=TRUE;
                                 break;
                             }
@@ -1988,7 +1990,7 @@
                         
                         for(BeagleActivityClass *data in beagle_friendsarndu){
                             if(data.activityId==play.activityId){
-                                data.participantsCount++;
+                                data.participantsCount=[participantsCount integerValue];
                                 data.isParticipant=TRUE;
                                 break;
                             }
@@ -1999,7 +2001,7 @@
                         
                         for(BeagleActivityClass *data in beagle_expressint){
                             if(data.activityId==play.activityId){
-                               data.participantsCount++;
+                                data.participantsCount=[participantsCount integerValue];
                                 data.isParticipant=TRUE;
                                  isFound=true;
                                 break;
@@ -2011,7 +2013,7 @@
                         [self.filterActivitiesOnHomeScreen setObject:oldArray forKey:@"beagle_expressint"];
                         
                     }
-
+                    }
                 }
                 else if([message isEqualToString:@"Already Joined"]){
                     
@@ -2029,13 +2031,16 @@
                     
                 }
                 else{
-                    play.participantsCount--;
+                    id participantsCount=[response objectForKey:@"participantsCount"];
+                    if (participantsCount != nil && [participantsCount class] != [NSNull class]){
+
                     play.isParticipant=FALSE;
+                   play.participantsCount=[participantsCount integerValue];
                     NSArray *beagle_happenarndu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_happenarndu"];
                     
                     for(BeagleActivityClass *data in beagle_happenarndu){
                         if(data.activityId==play.activityId){
-                            data.participantsCount--;
+                            data.participantsCount=[participantsCount integerValue];
                             data.isParticipant=FALSE;
                             break;
                         };
@@ -2044,7 +2049,7 @@
                     
                     for(BeagleActivityClass *data in beagle_friendsarndu){
                         if(data.activityId==play.activityId){
-                            data.participantsCount--;
+                            data.participantsCount=[participantsCount integerValue];
                             data.isParticipant=FALSE;
                             break;
                         }
@@ -2055,7 +2060,7 @@
                     
                     for(BeagleActivityClass *data in beagle_expressint){
                         if(data.activityId==play.activityId){
-                           data.participantsCount--;
+                            data.participantsCount=[participantsCount integerValue];
                             data.isParticipant=FALSE;
                             isFound=true;
 
@@ -2068,7 +2073,7 @@
                         NSMutableArray *oldArray=[NSMutableArray arrayWithArray:beagle_expressint];
                         [oldArray removeObjectAtIndex:index];
                         [self.filterActivitiesOnHomeScreen setObject:oldArray forKey:@"beagle_expressint"];
-                        
+                     }
                     }
                 }
                 if(play.isParticipant){
