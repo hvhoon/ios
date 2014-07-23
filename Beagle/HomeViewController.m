@@ -265,7 +265,7 @@
         notifView.delegate=self;
         [notifView show];
 
-    }else if(!hideInAppNotification && notifObject.notifType==2 && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE) && notifObject.activity.activityId!=0){
+    }else if(!hideInAppNotification && notifObject.notifType==2 && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE|| notifObject.notificationType==ACTIVITY_CREATION_TYPE || notifObject.notificationType==JOINED_ACTIVITY_TYPE) && notifObject.activity.activityId!=0){
        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
@@ -296,7 +296,7 @@
 
             for(BeagleActivityClass *data in beagle_happenarndu){
                 if(data.activityId==notification.activity.activityId){
-                    if(notification.notificationType==GOING_TYPE||notification.notificationType==LEAVED_ACTIVITY_TYPE||notification.notificationType==JOINED_ACTIVITY_TYPE){
+                    if(notification.notificationType==GOING_TYPE||notification.notificationType==LEAVED_ACTIVITY_TYPE){
                     data.participantsCount=notification.activity.participantsCount;
                     data.dos1count=notification.activity.dos1count;
                     }
@@ -329,7 +329,7 @@
             
             for(BeagleActivityClass *data in beagle_friendsarndu){
                 if(data.activityId==notification.activity.activityId){
-                    if(notification.notificationType==GOING_TYPE||notification.notificationType==LEAVED_ACTIVITY_TYPE||notification.notificationType==JOINED_ACTIVITY_TYPE){
+                    if(notification.notificationType==GOING_TYPE||notification.notificationType==LEAVED_ACTIVITY_TYPE){
                         data.participantsCount=notification.activity.participantsCount;
                         data.dos1count=notification.activity.dos1count;
                     }
@@ -361,7 +361,7 @@
             
             for(BeagleActivityClass *data in beagle_expressint){
                 if(data.activityId==notification.activity.activityId){
-                    if(notification.notificationType==GOING_TYPE||notification.notificationType==LEAVED_ACTIVITY_TYPE||notification.notificationType==JOINED_ACTIVITY_TYPE){
+                    if(notification.notificationType==GOING_TYPE||notification.notificationType==LEAVED_ACTIVITY_TYPE){
                         data.participantsCount=notification.activity.participantsCount;
                         data.dos1count=notification.activity.dos1count;
                     }
@@ -393,7 +393,7 @@
             NSArray *beagle_crtbyu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_crtbyu"];
             for(BeagleActivityClass *data in beagle_crtbyu){
                 if(data.activityId==notification.activity.activityId){
-                    if(notification.notificationType==GOING_TYPE||notification.notificationType==LEAVED_ACTIVITY_TYPE||notification.notificationType==JOINED_ACTIVITY_TYPE){
+                    if(notification.notificationType==GOING_TYPE||notification.notificationType==LEAVED_ACTIVITY_TYPE){
                         data.participantsCount=notification.activity.participantsCount;
                         data.dos1count=notification.activity.dos1count;
                     }
@@ -511,6 +511,7 @@
             break;
 
         case ACTIVITY_CREATION_TYPE:
+        case JOINED_ACTIVITY_TYPE:
         {
             NSArray *beagle_happenarndu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_happenarndu"];
 
