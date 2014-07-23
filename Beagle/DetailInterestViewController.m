@@ -140,9 +140,11 @@ static NSString * const CellIdentifier = @"cell";
         if(notifObject.notificationType!=CANCEL_ACTIVITY_TYPE){
  
             if(notifObject.notifType==1){
+                if(![self.navigationItem.rightBarButtonItem.title isEqualToString:@"Done"]){
                 InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
                 notifView.delegate=self;
                 [notifView show];
+                }
             }
         self.interestActivity.startActivityDate=notifObject.activity.startActivityDate;
         self.interestActivity.endActivityDate=notifObject.activity.endActivityDate;
@@ -173,9 +175,11 @@ static NSString * const CellIdentifier = @"cell";
     }else if(notifObject.activity.activityId==self.interestActivity.activityId){
         
         if(notifObject.notifType==1){
-            InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
-            notifView.delegate=self;
-            [notifView show];
+            if(![self.navigationItem.rightBarButtonItem.title isEqualToString:@"Done"]){
+                InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
+                notifView.delegate=self;
+                [notifView show];
+            }
         }
 
     if(notifObject.notificationType==LEAVED_ACTIVITY_TYPE){
@@ -258,9 +262,11 @@ static NSString * const CellIdentifier = @"cell";
     else if(notifObject.notifType==1){
         
     
-        InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
-        notifView.delegate=self;
-        [notifView show];
+        if(![self.navigationItem.rightBarButtonItem.title isEqualToString:@"Done"]){
+            InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
+            notifView.delegate=self;
+            [notifView show];
+        }
         
     }
     
@@ -288,9 +294,12 @@ static NSString * const CellIdentifier = @"cell";
    }
 
 else if(notifObject.notifType==1){
-    InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
-    notifView.delegate=self;
-    [notifView show];
+    
+    if(![self.navigationItem.rightBarButtonItem.title isEqualToString:@"Done"]){
+        InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
+        notifView.delegate=self;
+        [notifView show];
+    }
     NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
     [notificationDictionary setObject:notifObject forKey:@"notify"];
     NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
@@ -375,9 +384,6 @@ else if(notifObject.notifType==1){
     
     if(inappNotification){
         
-//        self.navigationController.navigationBar.topItem.title = @"";
-//        [self.navigationController.navigationBar.backItem setHidesBackButton:NO];
-//        self.navigationItem.hidesBackButton = NO;
         self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(cancelButtonClicked:)];
         
     }
