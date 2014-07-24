@@ -90,7 +90,6 @@ static NSString * const CellIdentifier = @"cell";
 }
 -(void)viewDidAppear:(BOOL)animated{
     [self.contentWrapper _registerForNotifications];
-    
 }
 
 -(void)viewDidDisappear:(BOOL)animated{
@@ -512,6 +511,8 @@ static NSString * const CellIdentifier = @"cell";
 -(void)postClicked:(id)sender{
     if([[self.contentWrapper.inputView.textView text]length]!=0){
         
+        [Appsee addEvent:@"Post Chat"];
+        
         // Gray out 'Post' button
         self.contentWrapper.inputView.rightButton.enabled = NO;
         self.contentWrapper.inputView.rightButton.tintColor = [[BeagleUtilities returnBeagleColor:13] colorWithAlphaComponent:DISABLED_ALPHA];
@@ -558,6 +559,7 @@ static NSString * const CellIdentifier = @"cell";
                                                            delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No",nil];
             alert.tag=kLeaveInterest;
             [alert show];
+            [Appsee addEvent:@"Cancel Interest"];
 
 //            [_interestUpdateManager removeMembership:self.interestActivity.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
         }
@@ -571,7 +573,7 @@ static NSString * const CellIdentifier = @"cell";
             
             UIButton *interestedButton=(UIButton*)[self.view viewWithTag:345];
             [interestedButton setEnabled:NO];
-
+            [Appsee addEvent:@"Express Interest"];
             [_interestUpdateManager participateMembership:self.interestActivity.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
         }
         
@@ -1348,7 +1350,6 @@ static NSString * const CellIdentifier = @"cell";
 
                     self.interestActivity.participantsCount=[participantsCount integerValue];
                     self.interestActivity.dos1count=[[response objectForKey:@"dos1count"]integerValue];
-                    
                 }
                 // If Already joined, do nothing
                 else if([message isEqualToString:@"Already Joined"]){
@@ -1374,8 +1375,7 @@ static NSString * const CellIdentifier = @"cell";
                 // If Left update counts
                 else {
                     self.interestActivity.participantsCount=[participantsCount integerValue];
-                    self.interestActivity.dos1count=[[response objectForKey:@"dos1count"]integerValue];
-                    
+                    self.interestActivity.dos1count=[[response objectForKey:@"dos1count"]integerValue];                    
                 }
                 
                 // Updated labels accordingly as well

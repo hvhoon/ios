@@ -244,6 +244,7 @@
     [keyboard addSubview:self.animationBlurView];
 
     [self.inviteManager createActivityOnBeagle:interestDetail];
+    [Appsee addEvent:@"Create Activity"];
 
 }
 - (void)didReceiveMemoryWarning
@@ -983,7 +984,6 @@
                     [notificationDictionary setObject:notifObject forKey:@"notify"];
                     NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
                     [[NSNotificationCenter defaultCenter] postNotification:notification];
-
                     [self.animationBlurView show];
                     
                     timer = [NSTimer scheduledTimerWithTimeInterval: 5.0

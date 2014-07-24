@@ -34,8 +34,6 @@ UIWindowLevel windowLevel;
 - (id)initWithNotificationClass:(BeagleNotificationClass*)appNotification
 {
     
-    
-        
         UIWindow* window = [UIApplication sharedApplication].keyWindow;
         if (!window)
             window = [[UIApplication sharedApplication].windows lastObject];
@@ -43,7 +41,7 @@ UIWindowLevel windowLevel;
         CGRect viewBounds = [[[window subviews] lastObject] bounds];
         self = [super initWithFrame:CGRectMake(0, 0, viewBounds.size.width, 64)];
 
-        
+        [Appsee addEvent:@"Notification Comes In"];
         UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
         // make your gesture recognizer priority
         singleTap.numberOfTapsRequired = 1;
@@ -183,6 +181,8 @@ UIWindowLevel windowLevel;
 {
     CGRect viewBounds = [self.superview bounds];
     
+    [Appsee addEvent:@"Notification Dismissed"];
+    
     if (animated) {
         [UIView animateWithDuration:0.35 delay:0.0f options:UIViewAnimationOptionCurveEaseIn animations:^{
             self.frame = CGRectMake(0, 0, viewBounds.size.width, -64);
@@ -204,6 +204,8 @@ UIWindowLevel windowLevel;
 - (void)buttonTapped:(id)sender
 {
     [self dismissWithAnimation:YES];
+    [Appsee addEvent:@"Notification Pressed"];
+
 }
 
 /*

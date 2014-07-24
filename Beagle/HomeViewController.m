@@ -138,6 +138,12 @@
         [[NSUserDefaults standardUserDefaults]synchronize];
 
     }
+    
+    // Setting the user name for AppSee
+    NSString *firstName = [[[BeagleManager SharedInstance]beaglePlayer]first_name];
+    NSString *lastName = [[[BeagleManager SharedInstance]beaglePlayer]last_name];
+    NSString *userFullName = [NSString stringWithFormat:@"%@ %@",firstName, lastName];
+    [Appsee setUserID:userFullName];
 
     if (![self.slidingViewController.underLeftViewController isKindOfClass:[SettingsViewController class]]) {
         self.slidingViewController.underLeftViewController  = [self.storyboard instantiateViewControllerWithIdentifier:@"settingsScreen"];
@@ -1679,6 +1685,8 @@
                                                        delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No",nil];
         alert.tag=kLeaveInterest;
         [alert show];
+        [Appsee addEvent:@"Cancel Interest"];
+
 
 //        [_interestUpdateManager removeMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
     }
@@ -1687,7 +1695,7 @@
         HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
         UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)index]integerValue]];
         [button setEnabled:NO];
-
+        [Appsee addEvent:@"Express Interest"];
         [_interestUpdateManager participateMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
     }
 }
@@ -1825,6 +1833,8 @@
     _interestUpdateManager.delegate=self;
     
     [_interestUpdateManager updateSuggestedPostMembership:play.activityId];
+    
+    [Appsee addEvent:@"Activate Suggested Post"];
 }
 
 #pragma mark - server calls

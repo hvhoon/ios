@@ -209,8 +209,6 @@
                      NSLog(@"beagleId=%ld",(long)[beagleId integerValue]);
                     
                 }
-
-                
                 
                     NSURL *pictureURL = [NSURL URLWithString:[player objectForKey:@"image_url"]];
                     
