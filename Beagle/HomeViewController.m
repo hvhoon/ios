@@ -286,7 +286,7 @@
 //        [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
         [self.navigationController pushViewController:viewController animated:YES];
         }
-        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+//        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
 
     }
     if(notifObject.notifType!=2)
@@ -566,7 +566,7 @@
         viewController.toLastPost=TRUE;
 //        [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
         [self.navigationController pushViewController:viewController animated:YES];
-        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+//        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
 
         
     }
