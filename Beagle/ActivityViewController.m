@@ -574,10 +574,10 @@ enum Weeks {
     self.activityServerManager.delegate=self;
     if(editState) {
         [self.activityServerManager updateActivityOnBeagle:bg_activity];
-        [Appsee addEvent:@"Press Save Activity"];
+        [Appsee addEvent:@"Edit Activity"];
     }
     else{
-        [Appsee addEvent:@"Press Create Activity"];
+        [Appsee addEvent:@"Create Activity"];
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
         [self.animationBlurView blurWithColor];
         [self.animationBlurView crossDissolveShow];
@@ -595,7 +595,7 @@ enum Weeks {
                                                    delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No",nil];
     alert.tag=kDeleteActivity;
     [alert show];
-    [Appsee addEvent:@"Press Delete Activity"];
+    [Appsee addEvent:@"Delete Activity"];
 
 }
 
@@ -999,7 +999,6 @@ enum Weeks {
                         self.bg_activity.profilePhotoImage=[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]];
                         
                     }
-                    [Appsee addEvent:@"Activity Created"];
                     [self.animationBlurView show];
                     timer = [NSTimer scheduledTimerWithTimeInterval: 5.0
                                                              target: self
@@ -1008,7 +1007,6 @@ enum Weeks {
 
                 }else if (serverRequest==kServerCallEditActivity){
                     [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
-                    [Appsee addEvent:@"Activity Edited"];
                 }
 
             }
@@ -1028,7 +1026,6 @@ enum Weeks {
                 BeagleManager *BG=[BeagleManager SharedInstance];
                 BG.activityDeleted=TRUE;
                 [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
-                [Appsee addEvent:@"Activity Deleted"];
                 
             }
         }

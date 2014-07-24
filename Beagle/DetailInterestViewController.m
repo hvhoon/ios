@@ -557,7 +557,7 @@ static NSString * const CellIdentifier = @"cell";
                                                            delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No",nil];
             alert.tag=kLeaveInterest;
             [alert show];
-            [Appsee addEvent:@"Press Un-Express Interest (Detail)"];
+            [Appsee addEvent:@"Cancel Interest"];
 
 //            [_interestUpdateManager removeMembership:self.interestActivity.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
         }
@@ -571,7 +571,7 @@ static NSString * const CellIdentifier = @"cell";
             
             UIButton *interestedButton=(UIButton*)[self.view viewWithTag:345];
             [interestedButton setEnabled:NO];
-            [Appsee addEvent:@"Press Express Interest (Detail)"];
+            [Appsee addEvent:@"Express Interest"];
             [_interestUpdateManager participateMembership:self.interestActivity.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
         }
         
