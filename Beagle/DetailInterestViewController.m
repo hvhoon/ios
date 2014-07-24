@@ -511,6 +511,8 @@ static NSString * const CellIdentifier = @"cell";
 -(void)postClicked:(id)sender{
     if([[self.contentWrapper.inputView.textView text]length]!=0){
         
+        [Appsee addEvent:@"Post Chat"];
+        
         // Gray out 'Post' button
         self.contentWrapper.inputView.rightButton.enabled = NO;
         self.contentWrapper.inputView.rightButton.tintColor = [[BeagleUtilities returnBeagleColor:13] colorWithAlphaComponent:DISABLED_ALPHA];
