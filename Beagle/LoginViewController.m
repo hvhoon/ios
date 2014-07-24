@@ -228,7 +228,7 @@
         
             [self pushToHomeScreen];
     }
-    else if ( serverRequest==kServerGetSignInInfo){
+    else if (serverRequest==kServerGetSignInInfo){
         _loginServerManager.delegate = nil;
         [_loginServerManager releaseServerManager];
         _loginServerManager = nil;
