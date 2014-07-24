@@ -685,7 +685,8 @@ enum Weeks {
 	}
 	else if([[textView text] length] == 140)
 	{
-		return NO;
+		[Appsee addEvent:@"140 Character Limit Reached"];
+        return NO;
 	}
 	if(flag == NO)
 	{
