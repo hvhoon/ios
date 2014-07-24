@@ -458,6 +458,8 @@
     _interestUpdateManager.delegate=self;
     [_interestUpdateManager participateMembership:play.activity.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
 
+    [Appsee addEvent:@"Express Interest from Notification Screen"];
+
 
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{

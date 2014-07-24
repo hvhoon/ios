@@ -572,11 +572,13 @@ enum Weeks {
 
     self.activityServerManager=[[ServerManager alloc]init];
     self.activityServerManager.delegate=self;
-    if(editState)
-    [self.activityServerManager updateActivityOnBeagle:bg_activity];
+    if(editState) {
+        [self.activityServerManager updateActivityOnBeagle:bg_activity];
+        [Appsee addEvent:@"Press Save Activity"];
+    }
     else{
+        [Appsee addEvent:@"Press Create Activity"];
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
-        
         [self.animationBlurView blurWithColor];
         [self.animationBlurView crossDissolveShow];
         UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
@@ -584,7 +586,6 @@ enum Weeks {
 
        [self.activityServerManager createActivityOnBeagle:bg_activity];
     }
-
     
 }
 #define kDeleteActivity 2
@@ -594,6 +595,7 @@ enum Weeks {
                                                    delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No",nil];
     alert.tag=kDeleteActivity;
     [alert show];
+    [Appsee addEvent:@"Press Delete Activity"];
 
 }
 
@@ -654,7 +656,7 @@ enum Weeks {
 }
 
 -(void)textViewDidBeginEditing:(UITextView *)textView{
-    
+    [Appsee pause];
 }
 
 
@@ -701,7 +703,7 @@ enum Weeks {
     if (![textView hasText]) {
         placeholderLabel.hidden = NO;
     }
-    
+    [Appsee resume];
     
     
 }
@@ -997,7 +999,7 @@ enum Weeks {
                         self.bg_activity.profilePhotoImage=[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]];
                         
                     }
-
+                    [Appsee addEvent:@"Activity Created"];
                     [self.animationBlurView show];
                     timer = [NSTimer scheduledTimerWithTimeInterval: 5.0
                                                              target: self
@@ -1005,7 +1007,8 @@ enum Weeks {
                                                            userInfo: nil repeats:NO];
 
                 }else if (serverRequest==kServerCallEditActivity){
-                     [self.navigationController dismissViewControllerAnimated:YES completion:Nil];   
+                    [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
+                    [Appsee addEvent:@"Activity Edited"];
                 }
 
             }
@@ -1025,6 +1028,7 @@ enum Weeks {
                 BeagleManager *BG=[BeagleManager SharedInstance];
                 BG.activityDeleted=TRUE;
                 [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
+                [Appsee addEvent:@"Activity Deleted"];
                 
             }
         }

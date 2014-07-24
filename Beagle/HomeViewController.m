@@ -1685,6 +1685,8 @@
                                                        delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No",nil];
         alert.tag=kLeaveInterest;
         [alert show];
+        [Appsee addEvent:@"Press Un-Express Interest (Home)"];
+
 
 //        [_interestUpdateManager removeMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
     }
@@ -1693,7 +1695,7 @@
         HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
         UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)index]integerValue]];
         [button setEnabled:NO];
-
+        [Appsee addEvent:@"Press Express Interest (Home)"];
         [_interestUpdateManager participateMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
     }
 }
@@ -1831,6 +1833,8 @@
     _interestUpdateManager.delegate=self;
     
     [_interestUpdateManager updateSuggestedPostMembership:play.activityId];
+    
+    [Appsee addEvent:@"Activate Suggested Post"];
 }
 
 #pragma mark - server calls
