@@ -280,13 +280,13 @@
         NSLog(@"DetailInterestViewController redirect");
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
-//        viewController.interestServerManager=[[ServerManager alloc]init];
-//        viewController.interestServerManager.delegate=viewController;
+        viewController.interestServerManager=[[ServerManager alloc]init];
+        viewController.interestServerManager.delegate=viewController;
         viewController.isRedirected=TRUE;
-//        [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
+        [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
         [self.navigationController pushViewController:viewController animated:YES];
         }
-//        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
 
     }
     if(notifObject.notifType!=2)
@@ -560,13 +560,13 @@
         NSLog(@"DetailInterestViewController redirect postInAppNotification");
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
-//        viewController.interestServerManager=[[ServerManager alloc]init];
-//        viewController.interestServerManager.delegate=viewController;
+        viewController.interestServerManager=[[ServerManager alloc]init];
+        viewController.interestServerManager.delegate=viewController;
         viewController.isRedirected=TRUE;
         viewController.toLastPost=TRUE;
-//        [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
+        [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
         [self.navigationController pushViewController:viewController animated:YES];
-//        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
 
         
     }

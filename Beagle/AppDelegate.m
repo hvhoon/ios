@@ -179,7 +179,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     
 }
 -(void)handleOfflineNotifications:(NSDictionary*)userInfo{
-    {
+    
         // app was just brought from background to foreground
         NSLog(@"userInfo=%@",userInfo);
         
@@ -198,9 +198,7 @@ void uncaughtExceptionHandler(NSException *exception) {
             NSLog(@"badge Value=%ld",(long)[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]);
             
             [dictionary setObject:[[userInfo valueForKey:@"aps"] valueForKey:@"alert"] forKey:@"msg"];
-
-            
-            [dictionary setObject:[NSNumber numberWithInteger:[[[userInfo valueForKey:@"p"] valueForKey:@"aid"]integerValue]] forKey:@"activity_id"];
+           [dictionary setObject:[NSNumber numberWithInteger:[[[userInfo valueForKey:@"p"] valueForKey:@"aid"]integerValue]] forKey:@"activity_id"];
   
             [dictionary setObject:[[userInfo valueForKey:@"p"] valueForKey:@"cid"] forKey:@"chatid"];
             
@@ -236,18 +234,13 @@ void uncaughtExceptionHandler(NSException *exception) {
             
             [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
 
-            
-            
-            
-            
-            
         }
 //            else
 //            [_notificationServerManager requestInAppNotification:[[[userInfo valueForKey:@"p"] valueForKey:@"nid"]integerValue] notifType:2];
         
         // create a service which will return data and update the view badge count automatically
         
-    }
+    
 }
 
 
@@ -276,18 +269,18 @@ void uncaughtExceptionHandler(NSException *exception) {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     
     NSLog(@"applicationWillEnterForeground");
-//    [[BeagleManager SharedInstance]setBadgeCount:[[UIApplication sharedApplication]applicationIconBadgeNumber]];
-//    
-//    [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
-    
-//    [[NSNotificationCenter defaultCenter] postNotificationName:@"AutoRefreshEvents" object:self userInfo:nil];
-    
-//    [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateHomeScreenAndNotificationStack object:self userInfo:nil];
+    [[BeagleManager SharedInstance]setBadgeCount:[[UIApplication sharedApplication]applicationIconBadgeNumber]];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"AutoRefreshEvents" object:self userInfo:nil];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateHomeScreenAndNotificationStack object:self userInfo:nil];
 
     
-//    [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateNotificationStack object:self userInfo:nil];
-//
-//    [[NSNotificationCenter defaultCenter] postNotificationName:kUpdatePostsOnInterest object:self userInfo:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateNotificationStack object:self userInfo:nil];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:kUpdatePostsOnInterest object:self userInfo:nil];
     
 }
 

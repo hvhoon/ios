@@ -789,11 +789,22 @@
 +(void)updateBadgeInfoOnTheServer:(NSInteger)notificationId{
     NSURL *url=[NSURL URLWithString:[[NSString stringWithFormat:@"%@received_notification.json?id=%ld",herokuHost,(long)notificationId] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     
-    NSURLRequest *notificationRequest = [[NSURLRequest alloc] initWithURL: url];
-    NSHTTPURLResponse *response = NULL;
-	NSError *error = nil;
-    NSData *returnData = [NSURLConnection sendSynchronousRequest:notificationRequest returningResponse:&response error:&error];
-    
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL: url];
+    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+    [NSURLConnection sendAsynchronousRequest:request queue:queue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error)
+     {
+         if ([data length] > 0 && error == nil){
+             
+             [self performSelectorOnMainThread:@selector(receivedData:) withObject:data waitUntilDone:NO];
+         }else if ([data length] == 0 && error == nil){
+         }else if (error != nil && error.code == NSURLErrorTimedOut){ //used this NSURLErrorTimedOut from foundation error responses
+         }else if (error != nil){
+             NSLog(@"Error=%@",[error description]);
+         }
+     }];
+}
+
++(void)receivedData:(NSData*)returnData{
     NSDictionary* resultsd = [[[NSString alloc] initWithData:returnData
                                                     encoding:NSUTF8StringEncoding] JSONValue];
     
