@@ -159,7 +159,6 @@ static NSString * const CellIdentifier = @"cell";
         }else{
 
             
-            [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
 
             NSString *message = NSLocalizedString (@"This activity has been cancelled, let's show you what else is happening around you",
                                                    @"Cancel Activity Type");
@@ -171,6 +170,7 @@ static NSString * const CellIdentifier = @"cell";
                                                   otherButtonTitles: nil];
             alert.tag=1467;
             [alert show];
+            [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
 
 
         }
@@ -318,7 +318,6 @@ static NSString * const CellIdentifier = @"cell";
 }
 -(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
     
-    [BeagleUtilities updateBadgeInfoOnTheServer:notification.notificationId];
     if(notification.activity.activityId!=self.interestActivity.activityId){
     
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -332,7 +331,8 @@ static NSString * const CellIdentifier = @"cell";
     [viewController.interestServerManager getDetailedInterest:notification.activity.activityId];
     [self.navigationController pushViewController:viewController animated:YES];
     }
-    
+    [BeagleUtilities updateBadgeInfoOnTheServer:notification.notificationId];
+
 }
 
 #pragma mark InAppNotificationView Handler

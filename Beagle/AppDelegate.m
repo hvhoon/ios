@@ -184,42 +184,66 @@ void uncaughtExceptionHandler(NSException *exception) {
         NSLog(@"userInfo=%@",userInfo);
         
         if([[[userInfo valueForKey:@"p"] valueForKey:@"nty"]integerValue]==CHAT_TYPE){
-            [_notificationServerManager requestInAppNotificationForPosts:[[[userInfo valueForKey:@"p"] valueForKey:@"cid"]integerValue]notifType:2];
+//            [_notificationServerManager requestInAppNotificationForPosts:[[[userInfo valueForKey:@"p"] valueForKey:@"cid"]integerValue]notifType:2];
+            
+            NSMutableDictionary *dictionary=[NSMutableDictionary new];
+            [dictionary setObject:[NSNumber numberWithInteger:2] forKey:@"notifType"];
+            
+            [dictionary setObject:[[userInfo valueForKey:@"p"] valueForKey:@"nty"] forKey:@"notification_type"];
+            [dictionary setObject:[[userInfo valueForKey:@"p"] valueForKey:@"nid"] forKey:@"nid"];
+
             [[BeagleManager SharedInstance]setBadgeCount:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
             [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
             
             NSLog(@"badge Value=%ld",(long)[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]);
             
+            [dictionary setObject:[[userInfo valueForKey:@"aps"] valueForKey:@"alert"] forKey:@"msg"];
+
             
-        }
-        else if([[[userInfo valueForKey:@"p"] valueForKey:@"nty"]integerValue]==CANCEL_ACTIVITY_TYPE){
+            [dictionary setObject:[NSNumber numberWithInteger:[[[userInfo valueForKey:@"p"] valueForKey:@"aid"]integerValue]] forKey:@"activity_id"];
+  
+            [dictionary setObject:[[userInfo valueForKey:@"p"] valueForKey:@"cid"] forKey:@"chatid"];
             
-            NSMutableDictionary *cancelDictionary=[NSMutableDictionary new];
-            [cancelDictionary setObject:[NSNumber numberWithInteger:2] forKey:@"notifType"];
+            NSNotification* notification = [NSNotification notificationWithName:kNotificationForInterestPost object:nil userInfo:dictionary];
+            [[NSNotificationCenter defaultCenter] postNotification:notification];
+
+            [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
+
             
-            [cancelDictionary setObject:[[userInfo valueForKey:@"p"] valueForKey:@"nty"] forKey:@"notification_type"];
-            [cancelDictionary setObject:[[userInfo valueForKey:@"p"] valueForKey:@"nid"] forKey:@"nid"];
+            
+        }else{
+//        else if([[[userInfo valueForKey:@"p"] valueForKey:@"nty"]integerValue]==CANCEL_ACTIVITY_TYPE){
+        
+            NSMutableDictionary *dictionary=[NSMutableDictionary new];
+            [dictionary setObject:[NSNumber numberWithInteger:2] forKey:@"notifType"];
+            
+            [dictionary setObject:[[userInfo valueForKey:@"p"] valueForKey:@"nty"] forKey:@"notification_type"];
+            [dictionary setObject:[[userInfo valueForKey:@"p"] valueForKey:@"nid"] forKey:@"nid"];
             
             [[BeagleManager SharedInstance]setBadgeCount:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
             [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
             
             NSLog(@"badge Value=%ld",(long)[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]);
 
-            [cancelDictionary setObject:[[userInfo valueForKey:@"aps"] valueForKey:@"alert"] forKey:@"message"];
+            [dictionary setObject:[[userInfo valueForKey:@"aps"] valueForKey:@"alert"] forKey:@"message"];
             
             NSMutableDictionary *activity=[NSMutableDictionary new];
             [activity setObject:[NSNumber numberWithInteger:[[[userInfo valueForKey:@"p"] valueForKey:@"aid"]integerValue]] forKey:@"id"];
-            [cancelDictionary setObject:activity forKey:@"activity"];
+            [dictionary setObject:activity forKey:@"activity"];
             
-            NSNotification* notification = [NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:nil userInfo:cancelDictionary];
+            NSNotification* notification = [NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:nil userInfo:dictionary];
             [[NSNotificationCenter defaultCenter] postNotification:notification];
             
+            [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
+
             
             
             
             
-        }else
-            [_notificationServerManager requestInAppNotification:[[[userInfo valueForKey:@"p"] valueForKey:@"nid"]integerValue] notifType:2];
+            
+        }
+//            else
+//            [_notificationServerManager requestInAppNotification:[[[userInfo valueForKey:@"p"] valueForKey:@"nid"]integerValue] notifType:2];
         
         // create a service which will return data and update the view badge count automatically
         
@@ -251,6 +275,7 @@ void uncaughtExceptionHandler(NSException *exception) {
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     
+    NSLog(@"applicationWillEnterForeground");
     [[BeagleManager SharedInstance]setBadgeCount:[[UIApplication sharedApplication]applicationIconBadgeNumber]];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
@@ -519,6 +544,8 @@ void uncaughtExceptionHandler(NSException *exception) {
 
 -(void) application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     
+    
+        NSLog(@"didReceiveRemoteNotification");
      if([userInfo[@"aps"][@"alert"] length]== 0){
 #if 0
          
