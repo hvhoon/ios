@@ -32,14 +32,14 @@ typedef enum {
 @property(nonatomic, strong) OFFlickrAPIContext *flickrContext;
 @property(nonatomic, strong) OFFlickrAPIRequest *flickrRequest;
 @property(nonatomic, strong) FlickrRequestInfo *flickrRequestInfo;
-
+@property(nonatomic,strong)NSArray *photos;
 @property(nonatomic, strong) NSDate *searchInvalidateCacheTimeout;
 @property(nonatomic, strong) NSDate *searchQuitTimeout;
 @property(nonatomic, assign) searchType currentSearchType;
-
+@property(nonatomic, assign) NSInteger attempts;
 + (BGFlickrManager *) sharedManager;
 - (void) randomPhotoRequest: (void (^)(FlickrRequestInfo *, NSError *)) completion;
-
+- (void) defaultStockPhoto: (void (^)(UIImage *)) completion;
 @end
 
 typedef enum {

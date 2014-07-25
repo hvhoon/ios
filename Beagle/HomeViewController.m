@@ -806,7 +806,11 @@
                 dominantColor = [BeagleUtilities getDominantColor:flickrRequestInfo.photo];
             }
             else {
-                [self crossDissolvePhotos:[UIImage imageNamed:@"defaultLocation"] withTitle:@"Hello"];
+                
+                [[BGFlickrManager sharedManager] defaultStockPhoto:^(UIImage * photo) {
+                    [self crossDissolvePhotos:photo withTitle:@"Hello"];
+                }];
+
                 dominantColor = [BeagleUtilities getDominantColor:[UIImage imageNamed:@"defaultLocation"]];
             }
             
@@ -894,6 +898,10 @@
     [request setFailedBlock:^{
         NSError *error = [request error];
         NSLog(@"error=%@",[error description]);
+        [[BGFlickrManager sharedManager] defaultStockPhoto:^(UIImage * photo) {
+            [self crossDissolvePhotos:photo withTitle:@"Hello"];
+        }];
+
     }];
     
 
