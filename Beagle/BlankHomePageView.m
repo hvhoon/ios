@@ -24,8 +24,10 @@
     [_delegate filterOptionClicked:0];
 }
 -(IBAction)changeYourFilterClicked:(id)sender{
-        if (self.delegate && [self.delegate respondsToSelector:@selector(filterOptionClicked:)])
-    [_delegate filterOptionClicked:1];
+    [Appsee addEvent:@"Filter Clicked (Blank Screen)"];
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(filterOptionClicked:)])
+            [_delegate filterOptionClicked:1];
 }
 -(IBAction)inviteYourFriendsClicked:(id)sender{
         if (self.delegate && [self.delegate respondsToSelector:@selector(filterOptionClicked:)])
