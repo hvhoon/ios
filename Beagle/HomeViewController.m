@@ -902,6 +902,12 @@
 - (void) crossDissolvePhotos:(UIImage *) photo withTitle:(NSString *) title {
     
     [self.timer invalidate];
+    UIColor *dominantColor = [BeagleUtilities getDominantColor:photo];
+    BeagleManager *BG=[BeagleManager SharedInstance];
+    BG.lightDominantColor=[BeagleUtilities returnLightColor:[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.9] withWhiteness:0.7];
+    BG.mediumDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5];
+    BG.darkDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.4];
+    _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
 
     [UIView transitionWithView:_topSection duration:1.0f options:(UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionAllowUserInteraction) animations:^{
         
@@ -923,12 +929,6 @@
         [stockImageView setContentMode:UIViewContentModeScaleAspectFit];
         stockImageView.image = photo;
         
-        UIColor *dominantColor = [BeagleUtilities getDominantColor:photo];
-        BeagleManager *BG=[BeagleManager SharedInstance];
-        BG.lightDominantColor=[BeagleUtilities returnLightColor:[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.9] withWhiteness:0.7];
-        BG.mediumDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5];
-        BG.darkDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.4];
-        _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
 
         
 #endif
