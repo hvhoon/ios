@@ -40,6 +40,7 @@
     NSMutableDictionary *filterActivitiesOnHomeScreen;
     BOOL hideInAppNotification;
     NSInteger attempts;
+    NSTimer *timer;
 }
 @property(nonatomic,strong)EventInterestFilterBlurView*filterBlurView;
 @property(nonatomic, strong)UIView *filterView;
@@ -62,6 +63,7 @@
 @synthesize filterActivitiesOnHomeScreen;
 @synthesize _locationManager = locationManager;
 @synthesize interestUpdateManager=_interestUpdateManager;
+@synthesize timer=_timer;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -187,6 +189,12 @@
 #endif
 
     [self addCityName:@"Hello"];
+    
+    _timer = [NSTimer scheduledTimerWithTimeInterval:25.0
+                                                  target: self
+                                                selector:@selector(defaultLocalImage)
+                                                userInfo: nil repeats:NO];
+    
     UIButton *eventButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [eventButton setBackgroundImage:[UIImage imageNamed:@"add"] forState:UIControlStateNormal];
     [eventButton addTarget:self action:@selector(createANewActivity:)forControlEvents:UIControlEventTouchUpInside];
@@ -739,16 +747,7 @@
 }
 -(void)defaultLocalImage{
     
-    BeagleManager *BG=[BeagleManager SharedInstance];
-    
-    // Pull dominant color from the default image
-    UIColor *dominantColor = [BeagleUtilities getDominantColor:[UIImage imageNamed:@"defaultLocation"]];
-    
-    BG.lightDominantColor=[BeagleUtilities returnLightColor:[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.9] withWhiteness:0.7];
-    BG.mediumDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5];
-    BG.darkDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.4];
     [self performSelector:@selector(crossDissolvePhotos:withTitle:) withObject:[UIImage imageNamed:@"defaultLocation"] withObject:nil];
-    _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
     
 }
 -(void)createANewActivity:(id)sender{
@@ -798,12 +797,9 @@
         // Pull image from Flickr
         [[BGFlickrManager sharedManager] randomPhotoRequest:^(FlickrRequestInfo * flickrRequestInfo, NSError * error) {
             
-            UIColor *dominantColor = nil;
             
             if(!error) {
-                [self.timer invalidate];
                 [self crossDissolvePhotos:flickrRequestInfo.photo withTitle:flickrRequestInfo.userInfo];
-                dominantColor = [BeagleUtilities getDominantColor:flickrRequestInfo.photo];
             }
             else {
                 
@@ -811,12 +807,8 @@
                     [self crossDissolvePhotos:photo withTitle:@"Hello"];
                 }];
 
-                dominantColor = [BeagleUtilities getDominantColor:[UIImage imageNamed:@"defaultLocation"]];
             }
             
-            BG.lightDominantColor=[BeagleUtilities returnLightColor:[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.9] withWhiteness:0.7];
-            BG.mediumDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5];
-            BG.darkDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.4];
         
         /*
         UIColor* filterViewColor = [dominantColor colorWithAlphaComponent:0.8];
@@ -888,7 +880,6 @@
         
         // Add the city name and the filter pane to the top section
         [self addCityName:[BG.placemark.addressDictionary objectForKey:@"City"]];
-        _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
         [self.tableView reloadData];
     
         }];
@@ -909,6 +900,9 @@
     
 }
 - (void) crossDissolvePhotos:(UIImage *) photo withTitle:(NSString *) title {
+    
+    [self.timer invalidate];
+
     [UIView transitionWithView:_topSection duration:1.0f options:(UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionAllowUserInteraction) animations:^{
         
 #if stockCroppingCheck
@@ -921,6 +915,7 @@
         
 #else
         
+        
         [[NSUserDefaults standardUserDefaults] setValue:[NSDate date] forKey:@"HourlyUpdate"];
         
         UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
@@ -928,8 +923,16 @@
         [stockImageView setContentMode:UIViewContentModeScaleAspectFit];
         stockImageView.image = photo;
         
+        UIColor *dominantColor = [BeagleUtilities getDominantColor:photo];
+        BeagleManager *BG=[BeagleManager SharedInstance];
+        BG.lightDominantColor=[BeagleUtilities returnLightColor:[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.9] withWhiteness:0.7];
+        BG.mediumDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5];
+        BG.darkDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.4];
+        _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
+
+        
 #endif
-         
+        
     } completion:NULL];
 }
 
