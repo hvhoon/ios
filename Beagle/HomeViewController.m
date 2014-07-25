@@ -190,7 +190,7 @@
 
     [self addCityName:@"Hello"];
     
-    _timer = [NSTimer scheduledTimerWithTimeInterval:25.0
+    _timer = [NSTimer scheduledTimerWithTimeInterval:15.0
                                                   target: self
                                                 selector:@selector(defaultLocalImage)
                                                 userInfo: nil repeats:NO];
