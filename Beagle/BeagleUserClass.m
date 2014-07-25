@@ -7,8 +7,6 @@
 //
 
 #import "BeagleUserClass.h"
-#import "BeagleActivityClass.h"
-#import "BeagleNotificationClass.h"
 @implementation BeagleUserClass
 @synthesize userName,fullName,email,password,profileImageUrl,first_name,last_name,fbuid,access_token,location,fb_ticker,beagleUserId,profileData,badge,isInvited,distance,permissionsGranted;
 

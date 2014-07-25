@@ -7,12 +7,12 @@
 //
 
 #import "NotificationsViewController.h"
-#import "BeagleNotificationClass.h"
 #import "IconDownloader.h"
 #import "AttributedTableViewCell.h"
 #import "TTTAttributedLabel.h"
 #import "DetailInterestViewController.h"
 #import "FriendsViewController.h"
+#import "Reachability.h"
 @interface NotificationsViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,IconDownloaderDelegate,TTTAttributedLabelDelegate,ServerManagerDelegate>{
         NSInteger interestIndex;
 }
@@ -66,8 +66,17 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBackgroundInNotification:) name:kRemoteNotificationReceivedNotification object:Nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(postInAppNotification:) name:kNotificationForInterestPost object:Nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getUserNotifications) name:kUpdateNotificationStack object:Nil];
-    [self getUserNotifications];
-    [self.slidingViewController hide];
+    
+    if([[Reachability reachabilityForInternetConnection]currentReachabilityStatus]!=0){
+        [self getUserNotifications];
+        
+    }else{
+        [_notificationSpinnerView stopAnimating];
+        _notificationTableView.hidden=YES;
+        _notification_BlankImageView.hidden=NO;
+        _unreadUpdateView.hidden=YES;
+
+    }
 }
 
 -(void)getUserNotifications{
@@ -90,6 +99,7 @@
 -(void)postInAppNotification:(NSNotification*)note{
         [self getUserNotifications];
 }
+
 
 - (void)viewDidLoad
 {
@@ -155,7 +165,7 @@
         {
             notif.rowHeight = [AttributedTableViewCell heightForNotificationText:notif.notificationString];
             notif.rowHeight += [AttributedTableViewCell heightForTimeStampText:[BeagleUtilities calculateChatTimestamp:notif.timeOfNotification]];
-            notif.rowHeight += [AttributedTableViewCell heightForNewInterestText:notif.activityWhat];
+            notif.rowHeight += [AttributedTableViewCell heightForNewInterestText:notif.activity.activityDesc];
             notif.rowHeight += 25; // this is the 'Are you in' button;
             notif.rowHeight += 42.5; // all other buffers between object;
             height=notif.rowHeight;
@@ -247,10 +257,10 @@
         
         CGSize maximumLabelSize = CGSizeMake(238,999);
         
-        CGRect whatTextRect = [play.activityWhat boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
+        CGRect whatTextRect = [play.activity.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
         
         UILabel *whatLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, fromTheTop, whatTextRect.size.width, whatTextRect.size.height)];
-        whatLabel.attributedText = [[NSAttributedString alloc] initWithString:play.activityWhat attributes:attrs];
+        whatLabel.attributedText = [[NSAttributedString alloc] initWithString:play.activity.activityDesc attributes:attrs];
         whatLabel.numberOfLines=0;
         whatLabel.backgroundColor = [UIColor clearColor];
         [cell.contentView addSubview:whatLabel];
@@ -308,7 +318,7 @@
     
     CGSize maximumLabelSize = CGSizeMake(238,999);
     
-    CGRect whatTextRect = [play.activityWhat boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
+    CGRect whatTextRect = [play.activity.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
 
     AttributedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil){
@@ -320,7 +330,7 @@
 
                 
                 UILabel *whatLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, fromTheTop, whatTextRect.size.width, whatTextRect.size.height)];
-                whatLabel.attributedText = [[NSAttributedString alloc] initWithString:play.activityWhat attributes:attrs];
+                whatLabel.attributedText = [[NSAttributedString alloc] initWithString:play.activity.activityDesc attributes:attrs];
                 whatLabel.numberOfLines=0;
                 whatLabel.tag=[[NSString stringWithFormat:@"111%ld",(long)indexPath.row]integerValue];
                 whatLabel.backgroundColor = [UIColor clearColor];
@@ -362,7 +372,7 @@
                 fromTheTop += 8; // adding buffer above the interest text
 
                 UILabel *whatLabel=(UILabel*)[cell viewWithTag:[[NSString stringWithFormat:@"111%ld",(long)indexPath.row]integerValue]];
-                whatLabel.text=play.activityWhat;
+                whatLabel.text=play.activity.activityDesc;
                 [cell.contentView addSubview:whatLabel];
                 
                 fromTheTop += whatTextRect.size.height;
@@ -446,14 +456,15 @@
     
     _interestUpdateManager=[[ServerManager alloc]init];
     _interestUpdateManager.delegate=self;
-    [_interestUpdateManager participateMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
+    [_interestUpdateManager participateMembership:play.activity.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
+
+    [Appsee addEvent:@"Express Interest from Notification Screen"];
 
 
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     BeagleNotificationClass *play = (BeagleNotificationClass *)[self.listArray objectAtIndex:indexPath.row];
-    if(play.activityId!=0){
-        [self.slidingViewController show];
+    if(play.activity.activityId!=0){
 
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
@@ -464,7 +475,7 @@
     if(play.notificationType==CHAT_TYPE)
         viewController.toLastPost=TRUE;
 
-    [viewController.interestServerManager getDetailedInterest:play.activityId];
+    [viewController.interestServerManager getDetailedInterest:play.activity.activityId];
     [self.navigationController pushViewController:viewController animated:YES];
 
     }
@@ -663,6 +674,11 @@
         _notificationsManager.delegate = nil;
         [_notificationsManager releaseServerManager];
         _notificationsManager = nil;
+        [_notificationSpinnerView stopAnimating];
+        _notificationTableView.hidden=YES;
+        _notification_BlankImageView.hidden=NO;
+        _unreadUpdateView.hidden=YES;
+
     }
     else if(serverRequest==kServerCallParticipateInterest){
         _interestUpdateManager.delegate = nil;
@@ -683,6 +699,11 @@
         _notificationsManager.delegate = nil;
         [_notificationsManager releaseServerManager];
         _notificationsManager = nil;
+        [_notificationSpinnerView stopAnimating];
+        _notificationTableView.hidden=YES;
+        _notification_BlankImageView.hidden=NO;
+        _unreadUpdateView.hidden=YES;
+
     }
     else if(serverRequest==kServerCallParticipateInterest){
         _interestUpdateManager.delegate = nil;
@@ -700,11 +721,13 @@
     }
 
     self.imageDownloadsInProgress=nil;
-    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
-    {
-        [req cancel];
+    for (ASIHTTPRequest *req in [ASIHTTPRequest.sharedQueue operations]) {
+        [req clearDelegatesAndCancel];
         [req setDelegate:nil];
+        [req setDidFailSelector:nil];
+        [req setDidFinishSelector:nil];
     }
+    [ASIHTTPRequest.sharedQueue cancelAllOperations];
 }
 
 @end

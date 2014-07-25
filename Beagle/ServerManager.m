@@ -12,7 +12,6 @@
 #import "ASIFormDataRequest.h"
 #import "SBJSON.h"
 #import "JSON.h"
-#import "BeagleActivityClass.h"
 #import "InterestChatClass.h"
 @interface ServerManager()
 {
@@ -97,7 +96,7 @@
         
         
         NSMutableDictionary* activityEvent =[[NSMutableDictionary alloc] init];
-        [activityEvent setObject:[NSNumber numberWithInteger:1] forKey:@"atype"];
+        [activityEvent setObject:[NSNumber numberWithInteger:data.activityType] forKey:@"atype"];
         [activityEvent setObject:data.startActivityDate forKey:@"start_when"];
         [activityEvent setObject:[NSNumber numberWithFloat:data.latitude] forKey:@"where_lat"];
         [activityEvent setObject:[NSNumber numberWithFloat:data.longitude] forKey:@"where_lng"];
@@ -332,9 +331,10 @@
 }
 
 
--(void)requestInAppNotificationForPosts:(NSInteger)chatId isOffline:(BOOL)isOffline{
+-(void)requestInAppNotificationForPosts:(NSInteger)chatId notifType:(NSInteger)notifType{
+    if(notifType==1)
     _serverCallType=kServerCallInAppNotificationForPosts;
-    if(isOffline)
+    else if(notifType==2)
         _serverCallType=kServerCallInAppForOfflinePost;
     
     if([self isInternetAvailable])
@@ -349,21 +349,33 @@
     }
     
 }
--(void)requestInAppNotification:(NSInteger)notificationId isOffline:(BOOL)isOffline{
+-(void)requestInAppNotification:(NSInteger)notificationId notifType:(NSInteger)notifType{
 
-    _serverCallType=kServerCallInAppNotification;
 
-    if(isOffline)
+    if(notifType==1)
+        _serverCallType=kServerCallInAppNotification;
+    else if(notifType==2)
         _serverCallType=kServerCallRequestForOfflineNotification;
+    else if(notifType==3)
+        _serverCallType=kServerCallRequestForSilentNotification;
+
 
     
     if([self isInternetAvailable])
     {
-        [self callServerWithUrl:[NSString stringWithFormat:@"%@rsparameter.json", _serverUrl]
+        if(notifType==3){
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@silentpushparameter.json", _serverUrl]
                          method:@"GET"
                          params:[NSDictionary dictionaryWithObjectsAndKeys:
-                                 [NSNumber numberWithInteger:notificationId],@"id",
+                                 [NSNumber numberWithInteger:notificationId],@"id",[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],@"pid",
                                  nil] data:nil];
+        }else{
+            [self callServerWithUrl:[NSString stringWithFormat:@"%@rsparameter.json", _serverUrl]
+                             method:@"GET"
+                             params:[NSDictionary dictionaryWithObjectsAndKeys:
+                                     [NSNumber numberWithInteger:notificationId],@"id",
+                                     nil] data:nil];
+        }
     }
     else
     {
@@ -441,7 +453,7 @@
     _serverCallType=kServerCallGetProfileMutualFriends;
     if([self isInternetAvailable])
     {
-        [self callServerWithUrl:[NSString stringWithFormat:@"%@players/friendprofile.json?id=%@&fid=%ld",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],(long)friendId]
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@players/friendprofile.json?id=%@&fid=%ld&lat=%@&lng=%@",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],(long)friendId,[NSNumber numberWithFloat:[[BeagleManager SharedInstance]currentLocation].coordinate.latitude],[NSNumber numberWithFloat:[[BeagleManager SharedInstance]currentLocation].coordinate.longitude]]
                          method:@"GET"
                          params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
     }
@@ -455,7 +467,7 @@
     _serverCallType=kServerCallGetDOS1Friends;
     if([self isInternetAvailable])
     {
-        [self callServerWithUrl:[NSString stringWithFormat:@"%@players/friendwithdos1.json?id=%@",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]]
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@players/friendwithdos1.json?id=%@&lat=%@&lng=%@",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],[NSNumber numberWithFloat:[[BeagleManager SharedInstance]currentLocation].coordinate.latitude],[NSNumber numberWithFloat:[[BeagleManager SharedInstance]currentLocation].coordinate.longitude]]
                          method:@"GET"
                          params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
     }

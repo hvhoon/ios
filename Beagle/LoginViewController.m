@@ -209,8 +209,6 @@
                      NSLog(@"beagleId=%ld",(long)[beagleId integerValue]);
                     
                 }
-
-                
                 
                     NSURL *pictureURL = [NSURL URLWithString:[player objectForKey:@"image_url"]];
                     
@@ -228,7 +226,7 @@
         
             [self pushToHomeScreen];
     }
-    else if ( serverRequest==kServerGetSignInInfo){
+    else if (serverRequest==kServerGetSignInInfo){
         _loginServerManager.delegate = nil;
         [_loginServerManager releaseServerManager];
         _loginServerManager = nil;
@@ -284,11 +282,13 @@
 
 -(void)dealloc{
     
-    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
-    {
-        [req cancel];
+    for (ASIHTTPRequest *req in [ASIHTTPRequest.sharedQueue operations]) {
+        [req clearDelegatesAndCancel];
         [req setDelegate:nil];
+        [req setDidFailSelector:nil];
+        [req setDidFinishSelector:nil];
     }
+    [ASIHTTPRequest.sharedQueue cancelAllOperations];
 }
 
 

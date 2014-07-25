@@ -30,7 +30,7 @@
 @property(nonatomic,assign) BOOL isParticipant;
 @property(nonatomic,assign)NSInteger postCount;
 @property(nonatomic,strong)NSString*requestString;
-@property(nonatomic,strong)NSArray*participantsArray;
+@property(nonatomic,strong)NSMutableArray*participantsArray;
 @property(nonatomic,assign)CGFloat heightRow;
 -(id) initWithDictionary:(NSDictionary *)dictionary;
 @end

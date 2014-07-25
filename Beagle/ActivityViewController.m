@@ -8,12 +8,10 @@
 
 #import "ActivityViewController.h"
 #import "TimeFilterView.h"
-#import "BeagleActivityClass.h"
 #import "EventTimeBlurView.h"
 #import "EventVisibilityBlurView.h"
 #import "LocationBlurView.h"
 #import "DetailInterestViewController.h"
-#import "BeagleNotificationClass.h"
 #import "InterestInviteViewController.h"
 #import "CreateAnimationBlurView.h"
 #define DISABLED_ALPHA 0.5f
@@ -260,15 +258,7 @@ enum Weeks {
 
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
     
-    if(!notifObject.isOffline){
-    InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0,0, 320, 64) appNotification:notifObject];
-    notifView.delegate=self;
-    UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
-    [keyboard addSubview:notifView];
-    }
-    else if(notifObject.isOffline && notifObject.activityId!=0 && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE)){
-        
-        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+  if(notifObject.notifType==2 && notifObject.activity.activityId!=0 && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE|| notifObject.notificationType==ACTIVITY_CREATION_TYPE || notifObject.notificationType==JOINED_ACTIVITY_TYPE)){
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
         viewController.interestServerManager=[[ServerManager alloc]init];
@@ -279,17 +269,27 @@ enum Weeks {
         
         UINavigationController *activityNavigationController=[[UINavigationController alloc]initWithRootViewController:viewController];
         [self presentViewController:activityNavigationController animated:YES completion:^{
-            [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
+            [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
             
         }];
-        
-    }
-    else if (notifObject.isOffline && notifObject.notificationType==CANCEL_ACTIVITY_TYPE){
+      [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
 
+      
+    }
+    else if (notifObject.notifType==2 && notifObject.notificationType==CANCEL_ACTIVITY_TYPE){
         [self dismissViewControllerAnimated:YES completion:Nil];
+        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+    
+    if(notifObject.notifType!=2){
+        NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
+        [notificationDictionary setObject:notifObject forKey:@"notify"];
+        NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
+        [[NSNotificationCenter defaultCenter] postNotification:notification];
+    }
+
 
 }
 
@@ -297,15 +297,7 @@ enum Weeks {
 
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
     
-    if(!notifObject.isOffline){
-    InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0, 0, 320, 64) appNotification:notifObject];
-    notifView.delegate=self;
-    
-    UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
-    [keyboard addSubview:notifView];
-    }else if(notifObject.isOffline && notifObject.activityId!=0 && notifObject.notificationType==CHAT_TYPE){
-        
-        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+    if(notifObject.notifType==2 && notifObject.activity.activityId!=0 && notifObject.notificationType==CHAT_TYPE){
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
         viewController.interestServerManager=[[ServerManager alloc]init];
@@ -316,13 +308,19 @@ enum Weeks {
         
         UINavigationController *activityNavigationController=[[UINavigationController alloc]initWithRootViewController:viewController];
         [self presentViewController:activityNavigationController animated:YES completion:^{
-            [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
+            [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
 
         }];
+        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
 
         
     }
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+    if(notifObject.notifType!=2){
+        NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
+        [notificationDictionary setObject:notifObject forKey:@"notify"];
+        NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
+        [[NSNotificationCenter defaultCenter] postNotification:notification];
+    }
 
     
 }
@@ -339,10 +337,19 @@ enum Weeks {
     
     UINavigationController *activityNavigationController=[[UINavigationController alloc]initWithRootViewController:viewController];
     [self presentViewController:activityNavigationController animated:YES completion:^{
-        [viewController.interestServerManager getDetailedInterest:notification.activityId];
+        [viewController.interestServerManager getDetailedInterest:notification.activity.activityId];
         
     }];
+    [BeagleUtilities updateBadgeInfoOnTheServer:notification.notificationId];
 
+}
+
+
+#pragma mark InAppNotificationView Handler
+- (void)notificationView:(InAppNotificationView *)inAppNotification didDismissWithButtonIndex:(NSInteger)buttonIndex{
+    
+    NSLog(@"Button Index = %ld", (long)buttonIndex);
+//    [BeagleUtilities updateBadgeInfoOnTheServer:inAppNotification.notification.notificationId];
 }
 
 - (void)loadProfileImage:(NSString*)url {
@@ -365,19 +372,9 @@ enum Weeks {
     
     [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
 }
--(void)createButtonClicked:(id)sender{
-    
-    if([descriptionTextView.text length]==0){
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Missing Description"
-                                                        message:@"Your interest must have a description."
-                                                       delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
-        [alert show];
-        return;
-    }
-
-    
+-(void)updateCreateEventParameters{
     bg_activity.activityDesc=descriptionTextView.text;
-    
+    bg_activity.activityType=1;
     NSDate *today = [NSDate date];
     NSLog(@"Today date is %@",today);
     
@@ -396,7 +393,7 @@ enum Weeks {
     NSDate *EndOfWeek = [gregorianEnd dateFromComponents:componentsEnd]; // set the last day of the week (before the weekend)
     NSCalendar* myCalendar = [NSCalendar currentCalendar];
     components = [myCalendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit
-                                                 fromDate:EndOfWeek];
+                               fromDate:EndOfWeek];
     // Set the start of the weekend
     [components setHour:00];
     [components setMinute:00];
@@ -446,10 +443,10 @@ enum Weeks {
     NSDateComponents *monthComponents = [[NSDateComponents alloc] init];
     monthComponents.month = 1;
     NSLog(@"The beginning of this week = %@",beginningOfWeek);
-
+    
 #if 0
     NSDate *oneMonthFromNow = [[NSCalendar currentCalendar] dateByAddingComponents:components toDate:[NSDate date] options:0];
-
+    
     // Verifying all date stuff
     NSLog(@"Later Today= %@",laterToday);
     NSLog(@"Tomorrow start = %@",tomorrowStart);
@@ -471,52 +468,52 @@ enum Weeks {
     [components setMonth:[components month]+1];
     [components setDay:0];
     NSDate *endOfMonth = [myCalendar dateFromComponents:components];
-
+    
     switch (timeIndex) {
-        // Setting the start date as NOW and the end date as LATER TODAY
+            // Setting the start date as NOW and the end date as LATER TODAY
         case 1: {
             bg_activity.startActivityDate=[dateFormatter stringFromDate:[NSDate date]];//later today start
             bg_activity.endActivityDate=[dateFormatter stringFromDate:laterToday];//later today end
         }
             break;
-        // Setting the start date as NOW and the end date as END OF THIS WEEKEND
+            // Setting the start date as NOW and the end date as END OF THIS WEEKEND
         case 2: {
             bg_activity.startActivityDate=[dateFormatter stringFromDate:[NSDate date]];//this weekStart
             bg_activity.endActivityDate=[dateFormatter stringFromDate:endOfThisWeekend];//this  week end
         }
             break;
-        // Setting the start date as NEXT MONDAY and the end date as the END OF NEXT WEEKEND
+            // Setting the start date as NEXT MONDAY and the end date as the END OF NEXT WEEKEND
         case 3: {
             bg_activity.startActivityDate=[dateFormatter stringFromDate:nextMondayStart];//next week start
             bg_activity.endActivityDate=[dateFormatter stringFromDate:nextSundayEnd];//next weekend end
         }
             break;
-        // Setting the start date as NOW and the end date as the END OF THE MONTH
+            // Setting the start date as NOW and the end date as the END OF THE MONTH
         case 4: {
             bg_activity.startActivityDate=[dateFormatter stringFromDate:[NSDate date]];//month start
             bg_activity.endActivityDate=[dateFormatter stringFromDate:endOfMonth];//month end
         }
             break;
-        // Setting the start date as TOMORROW and the end date as TOMORROW
+            // Setting the start date as TOMORROW and the end date as TOMORROW
         case 5: {
-             bg_activity.startActivityDate=[dateFormatter stringFromDate:tomorrowStart];//tomorrow start
-             bg_activity.endActivityDate=[dateFormatter stringFromDate:tomorrowEnd];//tomorrow end
+            bg_activity.startActivityDate=[dateFormatter stringFromDate:tomorrowStart];//tomorrow start
+            bg_activity.endActivityDate=[dateFormatter stringFromDate:tomorrowEnd];//tomorrow end
         }
             break;
-        // Setting the start date as THIS WEEKEND START and the end date as THIS WEEKEND END
+            // Setting the start date as THIS WEEKEND START and the end date as THIS WEEKEND END
         case 6: {
             bg_activity.startActivityDate=[dateFormatter stringFromDate:thisSatStart];//this weekend start
             bg_activity.endActivityDate=[dateFormatter stringFromDate:endOfThisWeekend];//this weekend end
         }
             break;
-        // Setting the start date as NEXT SATURDAY START and the end date as NEXT SUNDAY END
+            // Setting the start date as NEXT SATURDAY START and the end date as NEXT SUNDAY END
         case 7: {
             bg_activity.startActivityDate=[dateFormatter stringFromDate:nextSatStart];//next weekend start
             bg_activity.endActivityDate=[dateFormatter stringFromDate:nextSundayEnd];//next weekend end
-         }
+        }
             break;
     }
-
+    
     switch (visibilityIndex) {
         case 1:
         {
@@ -531,17 +528,31 @@ enum Weeks {
             
         }
             break;
-
-    
+            
+            
         case 3:
         {
             bg_activity.visibility=@"custom";
             
         }
             break;
-}
-
+    }
+    
     bg_activity.ownerid=[[BeagleManager SharedInstance]beaglePlayer].beagleUserId;
+
+}
+-(void)createButtonClicked:(id)sender{
+    
+    if([descriptionTextView.text length]==0){
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Missing Description"
+                                                        message:@"Your interest must have a description."
+                                                       delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
+        [alert show];
+        return;
+    }
+
+    
+    [self updateCreateEventParameters];
     
     if(visibilityIndex==3 && !editState){
         
@@ -563,11 +574,13 @@ enum Weeks {
 
     self.activityServerManager=[[ServerManager alloc]init];
     self.activityServerManager.delegate=self;
-    if(editState)
-    [self.activityServerManager updateActivityOnBeagle:bg_activity];
+    if(editState) {
+        [self.activityServerManager updateActivityOnBeagle:bg_activity];
+        [Appsee addEvent:@"Edit Activity"];
+    }
     else{
+        [Appsee addEvent:@"Create Activity"];
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
-        
         [self.animationBlurView blurWithColor];
         [self.animationBlurView crossDissolveShow];
         UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
@@ -575,7 +588,6 @@ enum Weeks {
 
        [self.activityServerManager createActivityOnBeagle:bg_activity];
     }
-
     
 }
 #define kDeleteActivity 2
@@ -585,6 +597,7 @@ enum Weeks {
                                                    delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No",nil];
     alert.tag=kDeleteActivity;
     [alert show];
+    [Appsee addEvent:@"Delete Activity"];
 
 }
 
@@ -645,7 +658,7 @@ enum Weeks {
 }
 
 -(void)textViewDidBeginEditing:(UITextView *)textView{
-    
+    [Appsee pause];
 }
 
 
@@ -674,7 +687,8 @@ enum Weeks {
 	}
 	else if([[textView text] length] == 140)
 	{
-		return NO;
+		[Appsee addEvent:@"140 Character Limit Reached"];
+        return NO;
 	}
 	if(flag == NO)
 	{
@@ -692,7 +706,7 @@ enum Weeks {
     if (![textView hasText]) {
         placeholderLabel.hidden = NO;
     }
-    
+    [Appsee resume];
     
     
 }
@@ -932,7 +946,7 @@ enum Weeks {
             [self.navigationItem.rightBarButtonItem setTitle:@"Select"];
             UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
             InterestInviteViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestInvite"];
-            bg_activity.activityDesc=descriptionTextView.text;
+            [self updateCreateEventParameters];
             viewController.interestDetail=bg_activity;
             [self.navigationController pushViewController:viewController animated:YES];
 
@@ -945,22 +959,26 @@ enum Weeks {
 -(void)dealloc{
     
     
-    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
-    {
-        [req cancel];
+    for (ASIHTTPRequest *req in [ASIHTTPRequest.sharedQueue operations]) {
+        [req clearDelegatesAndCancel];
         [req setDelegate:nil];
+        [req setDidFailSelector:nil];
+        [req setDidFinishSelector:nil];
     }
+    [ASIHTTPRequest.sharedQueue cancelAllOperations];
 }
 #pragma mark - server calls
 
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
-
     
+    
+
     if(serverRequest==kServerCallCreateActivity||serverRequest==kServerCallEditActivity){
         
         self.activityServerManager.delegate = nil;
         [self.activityServerManager releaseServerManager];
         self.activityServerManager = nil;
+
         
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
@@ -968,8 +986,22 @@ enum Weeks {
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 if(serverRequest==kServerCallCreateActivity){
                     
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
-                    
+                    id player=[response objectForKey:@"player"];
+                    if (player != nil && [status class] != [NSNull class]){
+                        
+                        self.bg_activity.activityId=[[player objectForKey:@"id"]integerValue];
+                        self.bg_activity.organizerName =[NSString stringWithFormat:@"%@ %@",[[[BeagleManager SharedInstance]beaglePlayer]first_name],[[[BeagleManager SharedInstance]beaglePlayer]last_name]];
+                        self.bg_activity.locationName=[NSString stringWithFormat:@"%@, %@",self.bg_activity.city,self.bg_activity.state];
+
+                        self.bg_activity.dosRelation = 0;
+                        self.bg_activity.dos1count = 0;
+                        self.bg_activity.participantsCount = 0;
+                        self.bg_activity.isParticipant=1;
+                        self.bg_activity.postCount = 0;
+                        self.bg_activity.photoUrl=[[[BeagleManager SharedInstance]beaglePlayer]profileImageUrl];
+                        self.bg_activity.profilePhotoImage=[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]];
+                        
+                    }
                     [self.animationBlurView show];
                     timer = [NSTimer scheduledTimerWithTimeInterval: 5.0
                                                              target: self
@@ -977,7 +1009,7 @@ enum Weeks {
                                                            userInfo: nil repeats:NO];
 
                 }else if (serverRequest==kServerCallEditActivity){
-                     [self.navigationController dismissViewControllerAnimated:YES completion:Nil];   
+                    [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
                 }
 
             }
@@ -996,14 +1028,29 @@ enum Weeks {
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 BeagleManager *BG=[BeagleManager SharedInstance];
                 BG.activityDeleted=TRUE;
-                [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
-
                 [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
                 
             }
         }
 
     }
+    
+    BeagleNotificationClass *notifObject=[[BeagleNotificationClass alloc]init];
+    notifObject.activity=self.bg_activity;
+    if(serverRequest==kServerCallEditActivity)
+        notifObject.notificationType=ACTIVITY_UPDATE_TYPE;
+    else if (serverRequest==kServerCallDeleteActivity)
+        notifObject.notificationType=CANCEL_ACTIVITY_TYPE;
+    else if(serverRequest==kServerCallCreateActivity){
+        notifObject.notificationType=ACTIVITY_CREATION_TYPE;
+    }
+    
+    NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
+    [notificationDictionary setObject:notifObject forKey:@"notify"];
+    NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
+
+
 }
 
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest

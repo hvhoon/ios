@@ -43,11 +43,13 @@
 #define PLAYER_JOINED_BEAGLE 7
 #define LEAVED_ACTIVITY_TYPE 8
 #define ACTIVITY_CREATION_TYPE 11
+#define LIKE_TO_JOIN_TYPE 12
 #define GOING_TYPE 13
-
+#define ACTIVITY_UPDATE_TYPE 32
 #define kBeagleBadgeCount @"BeagleBadgeCount"
 #define kUpdatePostsOnInterest @"PostUpdateOnDetailedInterest"
 #define kUpdateNotificationStack @"UpdateNotificationStack"
+#define kUpdateHomeScreenAndNotificationStack @"UpdateHomeScreenAndNotificationStack"
 #define kRemoteNotificationReceivedNotification @"RemoteNotificationReceivedWhileRunning"
 #define kNotificationForInterestPost @"InAppInterestPostNotification"
 #define kNotificationHomeAutoRefresh @"NotificationHomeAutoRefresh"

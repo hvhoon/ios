@@ -7,10 +7,8 @@
 //
 
 #import "FriendsViewController.h"
-#import "BeagleUserClass.h"
 #import "FriendsTableViewCell.h"
 #import "IconDownloader.h"
-#import "BeagleNotificationClass.h"
 #import "DetailInterestViewController.h"
 @interface FriendsViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,FriendsTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate>{
     NSInteger inviteIndex;
@@ -169,29 +167,30 @@
 
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
     
-    if(!notifObject.isOffline){
-        InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0,0, 320, 64) appNotification:notifObject];
+    if(notifObject.notifType==1){
+        InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
         notifView.delegate=self;
-        UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
-        [keyboard addSubview:notifView];
+        [notifView show];
     }
-    else if(notifObject.isOffline && notifObject.activityId!=0 && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE)){
-        
-        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+    else if(notifObject.notifType==2 && notifObject.activity.activityId!=0 && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE|| notifObject.notificationType==ACTIVITY_CREATION_TYPE || notifObject.notificationType==JOINED_ACTIVITY_TYPE)){
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
         viewController.interestServerManager=[[ServerManager alloc]init];
         viewController.interestServerManager.delegate=viewController;
         viewController.isRedirected=TRUE;
         viewController.toLastPost=TRUE;
-        [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
+        [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
         [self.navigationController pushViewController:viewController animated:YES];        
-        
+        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
-
-    
+    if(notifObject.notifType!=2){
+        NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
+        [notificationDictionary setObject:notifObject forKey:@"notify"];
+        NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
+        [[NSNotificationCenter defaultCenter] postNotification:notification];
+    }
 }
 
 
@@ -199,33 +198,35 @@
     
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
     
-    if(!notifObject.isOffline){
-        InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0, 0, 320, 64) appNotification:notifObject];
+    if(notifObject.notifType==1){
+        InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
         notifView.delegate=self;
+        [notifView show];
+    }else if(notifObject.notifType==2 && notifObject.activity.activityId!=0 && notifObject.notificationType==CHAT_TYPE){
         
-        UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
-        [keyboard addSubview:notifView];
-    }else if(notifObject.isOffline && notifObject.activityId!=0 && notifObject.notificationType==CHAT_TYPE){
-        
-        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
         viewController.interestServerManager=[[ServerManager alloc]init];
         viewController.interestServerManager.delegate=viewController;
         viewController.isRedirected=TRUE;
         viewController.toLastPost=TRUE;
-        [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
+        [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
         [self.navigationController pushViewController:viewController animated:YES];
-        
+        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+
         
     }
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
-
+    if(notifObject.notifType!=2){
+        NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
+        [notificationDictionary setObject:notifObject forKey:@"notify"];
+        NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
+        [[NSNotificationCenter defaultCenter] postNotification:notification];
+    }
     
 }
 
 -(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
-    
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
     viewController.interestServerManager=[[ServerManager alloc]init];
@@ -234,9 +235,19 @@
     if(notification.notificationType==CHAT_TYPE)
         viewController.toLastPost=TRUE;
     
-    [viewController.interestServerManager getDetailedInterest:notification.activityId];
-    [self.navigationController pushViewController:viewController animated:YES];    
+    [viewController.interestServerManager getDetailedInterest:notification.activity.activityId];
+    [self.navigationController pushViewController:viewController animated:YES];
+    [BeagleUtilities updateBadgeInfoOnTheServer:notification.notificationId];
+
 }
+
+#pragma mark InAppNotificationView Handler
+- (void)notificationView:(InAppNotificationView *)inAppNotification didDismissWithButtonIndex:(NSInteger)buttonIndex{
+    
+    NSLog(@"Button Index = %ld", (long)buttonIndex);
+//    [BeagleUtilities updateBadgeInfoOnTheServer:inAppNotification.notification.notificationId];
+}
+
 #pragma mark - Table view data source
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     if([self.beagleFriendsArray count]>0 && [self.facebookFriendsArray count]>0)
@@ -546,8 +557,23 @@
                             [beagleFriendsArray addObject:userClass];
                         }
                         
-                        if([beagleFriendsArray count]!=0){
-                            self.beagleFriendsArray=[NSArray arrayWithArray:beagleFriendsArray];
+                        
+                        
+                        
+                        NSArray *friendsInCityArray=[NSArray arrayWithArray:beagleFriendsArray];
+                        
+                        friendsInCityArray = [friendsInCityArray sortedArrayUsingComparator: ^(BeagleUserClass *a, BeagleUserClass *b) {
+                            
+                            
+                            NSNumber *s1 = [NSNumber numberWithFloat:a.distance];//add the string
+                            NSNumber *s2 = [NSNumber numberWithFloat:b.distance];
+                            
+                            return [s1 compare:s2];
+                        }];
+
+                        
+                        if([friendsInCityArray count]!=0){
+                            self.beagleFriendsArray=[NSArray arrayWithArray:friendsInCityArray];
                         }
                         
                     }
@@ -560,8 +586,14 @@
                             [facebookFriendsArray addObject:userClass];
                         }
                         
-                        if([facebookFriendsArray count]!=0){
-                            self.facebookFriendsArray=[NSArray arrayWithArray:facebookFriendsArray];
+                        NSArray *friendsSortedAlphabetically=[NSArray arrayWithArray:facebookFriendsArray];
+                        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"fullName" ascending:YES];
+                        friendsSortedAlphabetically=[friendsSortedAlphabetically sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
+                        
+                        NSMutableArray *sortedArray=[NSMutableArray arrayWithArray:friendsSortedAlphabetically];
+
+                        if([sortedArray count]!=0){
+                            self.facebookFriendsArray=[NSArray arrayWithArray:sortedArray];
                         }
 
 
@@ -674,11 +706,13 @@
     }
 
     self.imageDownloadsInProgress=nil;
-    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
-    {
-        [req cancel];
+    for (ASIHTTPRequest *req in [ASIHTTPRequest.sharedQueue operations]) {
+        [req clearDelegatesAndCancel];
         [req setDelegate:nil];
+        [req setDidFailSelector:nil];
+        [req setDidFinishSelector:nil];
     }
+    [ASIHTTPRequest.sharedQueue cancelAllOperations];
 }
 
 - (IBAction)settingsButtonPressed:(id)sender {

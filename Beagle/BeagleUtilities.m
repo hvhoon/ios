@@ -7,7 +7,6 @@
 //
 
 #import "BeagleUtilities.h"
-#import "BeagleNotificationClass.h"
 #import "JSON.h"
 @implementation BeagleUtilities
 + (int) getRandomIntBetweenLow:(int) low andHigh:(int) high {
@@ -738,21 +737,19 @@
     NSLog(@"obj1=%@",obj1);
 
     if(obj1!=nil && obj1!=[NSNull class] && [[obj1 allKeys]count]!=0){
-        notification.activityId=[[obj1 valueForKey:@"id"]integerValue];
-        notification.activityStartTime=[obj1 valueForKey:@"start_when"];
-        notification.activityEndTime=[obj1 valueForKey:@"stop_when"];
-        notification.activityWhat=[obj1 valueForKey:@"what"];
+        BeagleActivityClass*activity=[[BeagleActivityClass alloc]initWithDictionary:obj1];
+        notification.activity=activity;
         notification.backgroundTap=TRUE;
     }
     else{
         notification.backgroundTap=FALSE;
     }
     
-    notification.notificationType=[[[object valueForKey:@"userInfo"] valueForKey:@"activity_type"]integerValue];
+    notification.notificationType=[[[object valueForKey:@"userInfo"] valueForKey:@"notification_type"]integerValue];
     
     [[BeagleManager SharedInstance]setBadgeCount:[[[object valueForKey:@"userInfo"] valueForKey:@"badge"]intValue]];
     notification.profileImage=[[object valueForKey:@"userInfo"] valueForKey:@"profileImage"];
-    notification.isOffline=[[[object valueForKey:@"userInfo"] valueForKey:@"isOffline"]boolValue];
+    notification.notifType=[[[object valueForKey:@"userInfo"] valueForKey:@"notifType"]integerValue];
     notification.latitude=[[object valueForKey:@"userInfo"] valueForKey:@"lat"];
     notification.longitude=[[object valueForKey:@"userInfo"] valueForKey:@"lng"];
     notification.notificationString=[[object valueForKey:@"userInfo"] valueForKey:@"message"];
@@ -760,22 +757,26 @@
     notification.photoUrl=[[object valueForKey:@"userInfo"] valueForKey:@"photo_url"];
     notification.timeOfNotification=[[object valueForKey:@"userInfo"] valueForKey:@"timing"];
     notification.referredId=[[[object valueForKey:@"userInfo"] valueForKey:@"reffered_to"]integerValue];
-    notification.dos1_relation=[[[object valueForKey:@"userInfo"] valueForKey:@"dos1_relation"]integerValue];
     return notification;
 }
 +(BeagleNotificationClass*)getNotificationForInterestPost:(NSNotification*)object{
     BeagleNotificationClass *notification=[[BeagleNotificationClass alloc]init];
     id obj1=[object valueForKey:@"userInfo"];
     NSLog(@"obj1=%@",obj1);
+    notification.notificationId=[[[object valueForKey:@"userInfo"]valueForKey:@"nid"]integerValue];
     notification.notificationString=[obj1 valueForKey:@"msg"];
     notification.playerName=[obj1 valueForKey:@"player_name"];
-    notification.notificationId=[[obj1 valueForKey:@"id"]integerValue];
     notification.postChatId=[[obj1 valueForKey:@"chatid"]integerValue];
     notification.activityOwnerId=[[obj1 valueForKey:@"ownerid"]integerValue];
     notification.postDesc=[obj1 valueForKey:@"post"];
-    notification.isOffline=[[[object valueForKey:@"userInfo"] valueForKey:@"isOffline"]boolValue];
+    notification.notifType=[[[object valueForKey:@"userInfo"] valueForKey:@"notifType"]integerValue];
     notification.profileImage=[[object valueForKey:@"userInfo"] valueForKey:@"profileImage"];
-    notification.activityId=[[obj1 valueForKey:@"activity_id"]integerValue];
+    if([[obj1 valueForKey:@"activity_id"]integerValue]!=0){
+        BeagleActivityClass*activity=[[BeagleActivityClass alloc]init];
+        notification.activity=activity;
+        notification.activity.activityId=[[obj1 valueForKey:@"activity_id"]integerValue];
+        notification.activity.postCount=[[obj1 valueForKey:@"count"]integerValue];
+    }
     notification.photoUrl=[obj1 valueForKey:@"player_photo_url"];
     notification.playerId=[[obj1 valueForKey:@"player_id"]integerValue];
     notification.backgroundTap=TRUE;
@@ -788,15 +789,26 @@
 +(void)updateBadgeInfoOnTheServer:(NSInteger)notificationId{
     NSURL *url=[NSURL URLWithString:[[NSString stringWithFormat:@"%@received_notification.json?id=%ld",herokuHost,(long)notificationId] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     
-    NSURLRequest *notificationRequest = [[NSURLRequest alloc] initWithURL: url];
-    NSHTTPURLResponse *response = NULL;
-	NSError *error = nil;
-    NSData *returnData = [NSURLConnection sendSynchronousRequest:notificationRequest returningResponse:&response error:&error];
-    
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL: url];
+    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+    [NSURLConnection sendAsynchronousRequest:request queue:queue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error)
+     {
+         if ([data length] > 0 && error == nil){
+             
+             [self performSelectorOnMainThread:@selector(receivedData:) withObject:data waitUntilDone:NO];
+         }else if ([data length] == 0 && error == nil){
+         }else if (error != nil && error.code == NSURLErrorTimedOut){ //used this NSURLErrorTimedOut from foundation error responses
+         }else if (error != nil){
+             NSLog(@"Error=%@",[error description]);
+         }
+     }];
+}
+
++(void)receivedData:(NSData*)returnData{
     NSDictionary* resultsd = [[[NSString alloc] initWithData:returnData
                                                     encoding:NSUTF8StringEncoding] JSONValue];
     
-    NSLog(@"Badge Updated for in APP=%ld",(long)[[resultsd objectForKey:@"badge"]integerValue]);
+    NSLog(@"Badge Updated =%ld",(long)[[resultsd objectForKey:@"badge"]integerValue]);
     
     [[BeagleManager SharedInstance]setBadgeCount:[[resultsd objectForKey:@"badge"]integerValue]];
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[BeagleManager SharedInstance]badgeCount]];
@@ -805,13 +817,4 @@
     
 }
 
-+(UIView*)getInterestedAnimationEffect:(CGFloat)ticketHeight orgName:(NSString*)orgName{
-    UIView *interestedAnimationView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, ticketHeight)];
-    interestedAnimationView.backgroundColor=[BeagleUtilities returnBeagleColor:13];
-    UIImageView *starImageView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Big-Star"]];
-    starImageView.frame=CGRectMake(0, 0, 89, 83);
-    
-    [interestedAnimationView addSubview:starImageView];
-    return interestedAnimationView;
-}
 @end

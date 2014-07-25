@@ -7,7 +7,6 @@
 //
 
 #import "DetailInterestViewController.h"
-#import "BeagleActivityClass.h"
 #import "BeaglePlayerScrollMenu.h"
 #import "PlayerProfileItem.h"
 #import "InterestChatClass.h"
@@ -16,7 +15,6 @@
 #import "IconDownloader.h"
 #import "ActivityViewController.h"
 #import "PostSoundEffect.h"
-#import "BeagleNotificationClass.h"
 #import "FriendsViewController.h"
 #import "FeedbackReporting.h"
 #import "CreateAnimationBlurView.h"
@@ -92,16 +90,19 @@ static NSString * const CellIdentifier = @"cell";
 }
 -(void)viewDidAppear:(BOOL)animated{
     [self.contentWrapper _registerForNotifications];
-    
 }
+
 -(void)viewDidDisappear:(BOOL)animated{
+    [super viewDidDisappear:animated];
+
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kRemoteNotificationReceivedNotification object:nil];
 
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationForInterestPost object:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kUpdatePostsOnInterest object:nil];
-    [super viewDidDisappear:animated];
     [self.contentWrapper _unregisterForNotifications];
+    
+    
 }
 -(void)getPostsUpdateInBackground{
     
@@ -125,27 +126,41 @@ static NSString * const CellIdentifier = @"cell";
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
     
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
-    if(notifObject.activityId==self.interestActivity.activityId && (notifObject.notificationType==WHAT_CHANGE_TYPE || notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==CANCEL_ACTIVITY_TYPE)){
-        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+    
+    if(notifObject.notifType!=2){
+    NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
+    [notificationDictionary setObject:notifObject forKey:@"notify"];
+    NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
+    }
+    if(notifObject.activity.activityId==self.interestActivity.activityId && (notifObject.notificationType==WHAT_CHANGE_TYPE || notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==CANCEL_ACTIVITY_TYPE)){
 
         //do the description and text update
         if(notifObject.notificationType!=CANCEL_ACTIVITY_TYPE){
  
-            if(!notifObject.isOffline){
-        InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0,0, 320, 64) appNotification:notifObject];
-        notifView.delegate=self;
-        UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
-        [keyboard addSubview:notifView];
+            if(notifObject.notifType==1){
+                if(![self.navigationItem.rightBarButtonItem.title isEqualToString:@"Done"]){
+                InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
+                notifView.delegate=self;
+                [notifView show];
+                }
+                else{
+                    [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+                    
+                }
             }
-        self.interestActivity.startActivityDate=notifObject.activityStartTime;
-        self.interestActivity.endActivityDate=notifObject.activityEndTime;
-        NSString* screenTitle = [BeagleUtilities activityTime:notifObject.activityStartTime endate:notifObject.activityEndTime];
+        self.interestActivity.startActivityDate=notifObject.activity.startActivityDate;
+        self.interestActivity.endActivityDate=notifObject.activity.endActivityDate;
+        NSString* screenTitle = [BeagleUtilities activityTime:self.interestActivity.startActivityDate endate:notifObject.activity.endActivityDate];
         self.navigationItem.title = screenTitle;
-        self.interestActivity.activityDesc=notifObject.activityWhat;
+        self.interestActivity.activityDesc=notifObject.activity.activityDesc;
+        scrollViewResize=TRUE;
         [self.detailedInterestTableView reloadData];
         }else{
 
-            NSString *message = NSLocalizedString (@"'This activity has been cancelled, let's show you what else is happening around you'",
+            
+
+            NSString *message = NSLocalizedString (@"This activity has been cancelled, let's show you what else is happening around you",
                                                    @"Cancel Activity Type");
 
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Beagle"
@@ -155,33 +170,37 @@ static NSString * const CellIdentifier = @"cell";
                                                   otherButtonTitles: nil];
             alert.tag=1467;
             [alert show];
+            [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
 
 
         }
 
-    }else if(notifObject.activityId==self.interestActivity.activityId && self.interestActivity.ownerid ==[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]){
+    }else if(notifObject.activity.activityId==self.interestActivity.activityId){
         
-        if(!notifObject.isOffline){
-            InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0,0, 320, 64) appNotification:notifObject];
-            notifView.delegate=self;
-            UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
-            [keyboard addSubview:notifView];
+        if(notifObject.notifType==1){
+            if(![self.navigationItem.rightBarButtonItem.title isEqualToString:@"Done"]){
+                InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
+                notifView.delegate=self;
+                [notifView show];
+            }
+            else{
+                [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+                
+            }
         }
 
     if(notifObject.notificationType==LEAVED_ACTIVITY_TYPE){
 
         
-    [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
         BeagleUserClass *userObject=[[BeagleUserClass alloc]init];
         userObject.profileImageUrl=notifObject.photoUrl;
         userObject.first_name=notifObject.playerName;
         userObject.beagleUserId=notifObject.referredId;
-        
-        self.interestActivity.participantsCount--;
+        self.interestActivity.participantsCount=notifObject.activity.participantsCount;
         UILabel *participantsCountTextLabel=(UILabel*)[self.view viewWithTag:347];
 
-        if(notifObject.dos1_relation==1){
-            self.interestActivity.dos1count--;
+        if(notifObject.activity.dosRelation==1){
+            self.interestActivity.dos1count=notifObject.activity.dos1count;
             NSString* relationship = @"Friend";
             UILabel *friendCountTextLabel=(UILabel*)[self.view viewWithTag:348];
             
@@ -209,17 +228,16 @@ static NSString * const CellIdentifier = @"cell";
         
     }
     else if(notifObject.notificationType==GOING_TYPE){
-        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
         BeagleUserClass *userObject=[[BeagleUserClass alloc]init];
         userObject.profileImageUrl=notifObject.photoUrl;
         userObject.first_name=notifObject.playerName;
         userObject.beagleUserId=notifObject.referredId;
         
-        self.interestActivity.participantsCount++;
+        self.interestActivity.participantsCount=notifObject.activity.participantsCount;
         UILabel *participantsCountTextLabel=(UILabel*)[self.view viewWithTag:347];
 
-        if(notifObject.dos1_relation==1){
-            self.interestActivity.dos1count++;
+        if(notifObject.activity.dosRelation==1){
+            self.interestActivity.dos1count=notifObject.activity.dos1count;
             NSString* relationship = @"Friend";
             UILabel *friendCountTextLabel=(UILabel*)[self.view viewWithTag:348];
             
@@ -248,19 +266,19 @@ static NSString * const CellIdentifier = @"cell";
 
     
     }
-    else if(!notifObject.isOffline){
+    else if(notifObject.notifType==1){
         
     
-        InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0,0, 320, 64) appNotification:notifObject];
-        notifView.delegate=self;
-        UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
-        [keyboard addSubview:notifView];
+        if(![self.navigationItem.rightBarButtonItem.title isEqualToString:@"Done"]){
+            InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
+            notifView.delegate=self;
+            [notifView show];
+        }
         
     }
     
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
 
+    
 }
 
 
@@ -268,7 +286,7 @@ static NSString * const CellIdentifier = @"cell";
     
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
     
-    if(notifObject.activityId==self.interestActivity.activityId && notifObject.notificationType==CHAT_TYPE){
+    if(notifObject.activity.activityId==self.interestActivity.activityId && notifObject.notificationType==CHAT_TYPE){
         
         
         if(_chatPostManager!=nil){
@@ -282,22 +300,25 @@ static NSString * const CellIdentifier = @"cell";
         [_chatPostManager getPostDetail:notifObject.postChatId];
    }
 
-else if(!notifObject.isOffline){
-    InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0, 0, 320, 64) appNotification:notifObject];
-    notifView.delegate=self;
+ else if(notifObject.notifType==1){
     
-    UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
-    [keyboard addSubview:notifView];
+    if(![self.navigationItem.rightBarButtonItem.title isEqualToString:@"Done"]){
+        InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
+        notifView.delegate=self;
+        [notifView show];
+    }
+    NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
+    [notificationDictionary setObject:notifObject forKey:@"notify"];
+    NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
+
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
-
     
 }
 -(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
     
-    
-    if(notification.activityId!=self.interestActivity.activityId){
+    if(notification.activity.activityId!=self.interestActivity.activityId){
     
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
@@ -307,10 +328,18 @@ else if(!notifObject.isOffline){
     if(notification.notificationType==CHAT_TYPE)
         viewController.toLastPost=TRUE;
 
-    [viewController.interestServerManager getDetailedInterest:notification.activityId];
+    [viewController.interestServerManager getDetailedInterest:notification.activity.activityId];
     [self.navigationController pushViewController:viewController animated:YES];
     }
+    [BeagleUtilities updateBadgeInfoOnTheServer:notification.notificationId];
+
+}
+
+#pragma mark InAppNotificationView Handler
+- (void)notificationView:(InAppNotificationView *)inAppNotification didDismissWithButtonIndex:(NSInteger)buttonIndex{
     
+    NSLog(@"Button Index = %ld", (long)buttonIndex);
+    [BeagleUtilities updateBadgeInfoOnTheServer:inAppNotification.notification.notificationId];
 }
 
 -(void)backButtonClicked:(id)sender{
@@ -339,6 +368,8 @@ else if(!notifObject.isOffline){
 }
 
 -(void)createInterestInitialCard{
+    
+    self.interestActivity.participantsArray=[[NSMutableArray alloc]init];
     if(self.interestActivity.dosRelation==0){
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(editButtonClicked:)];
         
@@ -362,9 +393,6 @@ else if(!notifObject.isOffline){
     
     if(inappNotification){
         
-//        self.navigationController.navigationBar.topItem.title = @"";
-//        [self.navigationController.navigationBar.backItem setHidesBackButton:NO];
-//        self.navigationItem.hidesBackButton = NO;
         self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(cancelButtonClicked:)];
         
     }
@@ -483,6 +511,8 @@ else if(!notifObject.isOffline){
 -(void)postClicked:(id)sender{
     if([[self.contentWrapper.inputView.textView text]length]!=0){
         
+        [Appsee addEvent:@"Post Chat"];
+        
         // Gray out 'Post' button
         self.contentWrapper.inputView.rightButton.enabled = NO;
         self.contentWrapper.inputView.rightButton.tintColor = [[BeagleUtilities returnBeagleColor:13] colorWithAlphaComponent:DISABLED_ALPHA];
@@ -529,6 +559,7 @@ else if(!notifObject.isOffline){
                                                            delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No",nil];
             alert.tag=kLeaveInterest;
             [alert show];
+            [Appsee addEvent:@"Cancel Interest"];
 
 //            [_interestUpdateManager removeMembership:self.interestActivity.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
         }
@@ -542,7 +573,7 @@ else if(!notifObject.isOffline){
             
             UIButton *interestedButton=(UIButton*)[self.view viewWithTag:345];
             [interestedButton setEnabled:NO];
-
+            [Appsee addEvent:@"Express Interest"];
             [_interestUpdateManager participateMembership:self.interestActivity.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
         }
         
@@ -787,6 +818,7 @@ else if(!notifObject.isOffline){
         activityDescLabel.textColor = [UIColor blackColor];
         activityDescLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:17.0f];
         activityDescLabel.textAlignment = NSTextAlignmentLeft;
+        activityDescLabel.tag=3569;
         [_backgroundView addSubview:activityDescLabel];
         
         fromTheTop = fromTheTop+commentTextRect.size.height;
@@ -1219,16 +1251,23 @@ else if(!notifObject.isOffline){
                         self.interestActivity=[[BeagleActivityClass alloc]initWithDictionary:interest];
                         [self createInterestInitialCard];
                         
+                    }else{
+                        BeagleActivityClass*updatedActivity=[[BeagleActivityClass alloc]initWithDictionary:interest];
+                        self.interestActivity.postCount=updatedActivity.postCount;
+                        self.interestActivity.participantsCount=updatedActivity.participantsCount;
+                        self.interestActivity.dos1count=updatedActivity.dos1count;
+                        self.interestActivity.activityDesc=updatedActivity.activityDesc;
+                        self.interestActivity.endActivityDate=updatedActivity.endActivityDate;
+                        self.interestActivity.startActivityDate=updatedActivity.startActivityDate;
+
+                        
                     }
                     NSArray *participants=[interest objectForKey:@"participants"];
                     if (participants != nil && [participants class] != [NSNull class] && [participants count]!=0) {
-                        NSMutableArray *participantsArray=[[NSMutableArray alloc]init];
                         for(id el in participants){
                             BeagleUserClass *userClass=[[BeagleUserClass alloc]initWithDictionary:el];
-                            [participantsArray addObject:userClass];
+                            [self.interestActivity.participantsArray addObject:userClass];
                         }
-                        self.interestActivity.participantsArray=participantsArray;
-                        //                        [self setUpPlayerScroll:participantsArray];
                         
                         
                     }
@@ -1266,7 +1305,7 @@ else if(!notifObject.isOffline){
                 
                 
             }else if (status != nil && [status class] != [NSNull class] && [status integerValue]==205){
-                NSString *message = NSLocalizedString (@"'This activity has been cancelled, let's show you what else is happening around you'",
+                NSString *message = NSLocalizedString (@"This activity has been cancelled, let's show you what else is happening around you",
                                                        @"Cancel Activity Type");
                 
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Beagle"
@@ -1293,7 +1332,9 @@ else if(!notifObject.isOffline){
             id status=[response objectForKey:@"status"];
             id message=[response objectForKey:@"message"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
-                
+                id participantsCount=[response objectForKey:@"participantsCount"];
+                if (participantsCount != nil && [participantsCount class] != [NSNull class]){
+
                 id badge=[response objectForKey:@"badge"];
                 if (badge != nil && [badge class] != [NSNull class]){
                     
@@ -1306,9 +1347,9 @@ else if(!notifObject.isOffline){
                 // If Joined
                 UILabel *participantsCountTextLabel=(UILabel*)[self.view viewWithTag:347];
                 if([message isEqualToString:@"Joined"]){
-                    self.interestActivity.participantsCount++;
-                    if(self.interestActivity.dosRelation==1) self.interestActivity.dos1count++;
-                    
+
+                    self.interestActivity.participantsCount=[participantsCount integerValue];
+                    self.interestActivity.dos1count=[[response objectForKey:@"dos1count"]integerValue];
                 }
                 // If Already joined, do nothing
                 else if([message isEqualToString:@"Already Joined"]){
@@ -1319,14 +1360,22 @@ else if(!notifObject.isOffline){
                     NSString *message = NSLocalizedString (@"You have already joined.",
                                                            @"Already Joined");
                     BeagleAlertWithMessage(message);
+                    BeagleNotificationClass *notifObject=[[BeagleNotificationClass alloc]init];
+                    notifObject.activity=self.interestActivity;
+                    notifObject.notificationType=GOING_TYPE;
+
+                    NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
+                    [notificationDictionary setObject:notifObject forKey:@"notify"];
+                    NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
+                    [[NSNotificationCenter defaultCenter] postNotification:notification];
+
                     return;
 
                 }
                 // If Left update counts
                 else {
-                    self.interestActivity.participantsCount--;
-                    if(self.interestActivity.dosRelation==1) self.interestActivity.dos1count--;
-                    
+                    self.interestActivity.participantsCount=[participantsCount integerValue];
+                    self.interestActivity.dos1count=[[response objectForKey:@"dos1count"]integerValue];                    
                 }
                 
                 // Updated labels accordingly as well
@@ -1344,7 +1393,6 @@ else if(!notifObject.isOffline){
                 
                 // Updating the button and text too
                 UIButton *interestedButton=(UIButton*)[self.view viewWithTag:345];
-//                UIColor *buttonColor = [[BeagleManager SharedInstance] mediumDominantColor];
                 UIColor *outlineButtonColor = [[BeagleManager SharedInstance] darkDominantColor];
                 
                 if(self.interestActivity.isParticipant){
@@ -1377,7 +1425,6 @@ else if(!notifObject.isOffline){
                         }
                     }
                     self.interestActivity.participantsArray=testArray;
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
                     
                     [self.detailedInterestTableView reloadData];
 
@@ -1398,10 +1445,10 @@ else if(!notifObject.isOffline){
                     
                 }
                 
-                
-                
+                }
             }
         }
+
     }
     else if (serverRequest==kServerCallPostComment||serverRequest==kServerCallGetBackgroundChats||serverRequest==kServerInAppChatDetail){
         _chatPostManager.delegate = nil;
@@ -1450,7 +1497,6 @@ else if(!notifObject.isOffline){
                         }
                         else
                             [self.chatPostsArray addObject:chatClass];
-                        self.interestActivity.postCount=[self.chatPostsArray count];
                     }
                     
                     
@@ -1471,6 +1517,7 @@ else if(!notifObject.isOffline){
                     
                     [self.detailedInterestTableView endUpdates];
 
+                    self.interestActivity.postCount=[self.chatPostsArray count];
                     
                     
                     }
@@ -1489,9 +1536,25 @@ else if(!notifObject.isOffline){
             self.contentWrapper.inputView.rightButton.enabled = YES;
             self.contentWrapper.inputView.rightButton.tintColor = [BeagleUtilities returnBeagleColor:13];
         }
-        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
 
     }
+        BeagleNotificationClass *notifObject=[[BeagleNotificationClass alloc]init];
+        notifObject.activity=self.interestActivity;
+        if(serverRequest==kServerCallParticipateInterest)
+            notifObject.notificationType=GOING_TYPE;
+        else if (serverRequest==kServerCallLeaveInterest)
+            notifObject.notificationType=LEAVED_ACTIVITY_TYPE;
+        else if(serverRequest==kServerCallPostComment||serverRequest==kServerCallGetBackgroundChats||serverRequest==kServerInAppChatDetail)
+                notifObject.notificationType=CHAT_TYPE;
+        else if(serverRequest==kServerCallGetDetailedInterest){
+            notifObject.notificationType=ACTIVITY_UPDATE_TYPE;
+        }
+        
+        NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
+        [notificationDictionary setObject:notifObject forKey:@"notify"];
+        NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
+        [[NSNotificationCenter defaultCenter] postNotification:notification];
+
 
 }
 
@@ -1580,12 +1643,29 @@ else if(!notifObject.isOffline){
     
     if(alertView.tag==1467){
         if (buttonIndex == 0) {
+            BeagleNotificationClass *notifObject=[[BeagleNotificationClass alloc]init];
+            notifObject.activity=self.interestActivity;
+            notifObject.notificationType=CANCEL_ACTIVITY_TYPE;
+            
+            NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
+            [notificationDictionary setObject:notifObject forKey:@"notify"];
+            NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
+            [[NSNotificationCenter defaultCenter] postNotification:notification];
+
             [self.navigationController popViewControllerAnimated:YES];
         }
 }
     else if(alertView.tag==647){
         if (buttonIndex == 0) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+            BeagleNotificationClass *notifObject=[[BeagleNotificationClass alloc]init];
+            notifObject.activity=self.interestActivity;
+            notifObject.notificationType=CANCEL_ACTIVITY_TYPE;
+
+            NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
+            [notificationDictionary setObject:notifObject forKey:@"notify"];
+            NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
+            [[NSNotificationCenter defaultCenter] postNotification:notification];
+
             [self.navigationController popViewControllerAnimated:YES];
         }
     }
@@ -1622,11 +1702,15 @@ else if(!notifObject.isOffline){
     }
 
     self.imageDownloadsInProgress=nil;
-    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
-    {
-        [req cancel];
+    
+    for (ASIHTTPRequest *req in [ASIHTTPRequest.sharedQueue operations]) {
+        [req clearDelegatesAndCancel];
         [req setDelegate:nil];
+        [req setDidFailSelector:nil];
+        [req setDidFinishSelector:nil];
     }
+    [ASIHTTPRequest.sharedQueue cancelAllOperations];
+
 }
 
 
@@ -1674,7 +1758,6 @@ else if(!notifObject.isOffline){
     [self.contentWrapper _setInitialFrames];
     [self.contentWrapper.inputView setHidden:NO];
     [self.contentWrapper.dummyInputView setHidden:NO];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
     
     [self.detailedInterestTableView reloadData];
     

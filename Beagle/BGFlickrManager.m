@@ -36,7 +36,7 @@
 @end
 
 @implementation BGFlickrManager
-
+@synthesize photos,attempts;
 static BGFlickrManager *sharedManager = nil;
 
 + (BGFlickrManager *) sharedManager {
@@ -135,63 +135,20 @@ static BGFlickrManager *sharedManager = nil;
     if(((FlickrAPIRequestSessionInfo *)inRequest.sessionInfo).flickrAPIRequestType == FlickrAPIRequestPhotoSearch) {
         
         self.flickrRequestInfo = [[FlickrRequestInfo alloc] init];
-        
-        NSArray *photos = [inResponseDictionary valueForKeyPath:@"photos.photo"];
-                
-        int numberOfPhotos = (int)[photos count];
+        self.attempts=0;
+        self.photos = [inResponseDictionary valueForKeyPath:@"photos.photo"];
+        int numberOfPhotos = (int)[self.photos count];
         NSLog(@"Number of photos = %d", numberOfPhotos);
+        int randomPhotoIndex = [BeagleUtilities getRandomIntBetweenLow:0 andHigh:numberOfPhotos-1];
         
-        dispatch_queue_t queue = dispatch_queue_create(kAsyncQueueLabel, NULL);
-        dispatch_async(queue, ^{
+        if([self.photos count]>0){
+            [self searchForRequiredSpecRandomly:randomPhotoIndex];
+        }
+         else{
+                [self customSearchWithFlickrApi];
+         }
         
-            // Process if we got photos back
-            for (int itr=0; !self.found && itr < numberOfPhotos; itr++)
-            {
-                int randomPhotoIndex = [BeagleUtilities getRandomIntBetweenLow:0 andHigh:numberOfPhotos-1];
-                NSDictionary *photoDict = [photos objectAtIndex:randomPhotoIndex];
-
-                NSURL *photoURL = [self.flickrContext photoSourceURLFromDictionary:photoDict size:OFFlickrMedium640Size];
-                NSLog(@"photoUrl=%@",photoURL);
-                
-                self.flickrRequestInfo.photo = [UIImage imageWithData:UIImageJPEGRepresentation([UIImage imageWithData:[NSData dataWithContentsOfURL:photoURL]], 1)];
-                        
-                // Scale the image appropriately
-                self.flickrRequestInfo.photo=[UIImage imageWithCGImage:[self.flickrRequestInfo.photo CGImage] scale:2.0 orientation:UIImageOrientationUp];
-                    
-                // You've got the image of the right dimensions
-                if (self.flickrRequestInfo.photo.size.width == 320 && self.flickrRequestInfo.photo.size.height >= 200 && self.flickrRequestInfo.photo.size.width > self.flickrRequestInfo.photo.size.height) {
-                    self.found = true;
-                    float height=self.flickrRequestInfo.photo.size.height-200.0;
-                    if(height>0) {
-                        UIImage *locationImage=[BeagleUtilities imageByCropping:self.flickrRequestInfo.photo toRect:CGRectMake(0, height/2, 320, 200) withOrientation:UIImageOrientationDownMirrored];
-                        self.flickrRequestInfo.photo=locationImage;
-                    }
-                }
-            }
-            // Deal with the results and join to the main branch
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if(self.found) {
-                    self.completionBlock(self.flickrRequestInfo, nil);
-                    [self cleanUpFlickrManager];
-                }
-                else {
-                    if (self.currentSearchType == fullSearch) {
-                        self.currentSearchType = timeLocationOnly;
-                        [self photoSearch];
-                    }
-                    else if (self.currentSearchType == timeLocationOnly) {
-                        self.currentSearchType = locationOnly;
-                        [self photoSearch];
-                    }
-                    else {
-                        self.flickrRequestInfo.photo = [UIImage imageNamed:@"defaultLocation"];
-                        self.completionBlock(self.flickrRequestInfo, nil);
-                        [self cleanUpFlickrManager];
-                    }
-                }
-            });
-        }); // end of the async block
-    }
+        }
 
     // Upon completion of the Flickr API request for a place id
     else if(((FlickrAPIRequestSessionInfo *)inRequest.sessionInfo).flickrAPIRequestType == FlickrAPIRequestPhotoId) {
@@ -206,9 +163,94 @@ static BGFlickrManager *sharedManager = nil;
     }
 }
 
+-(void)searchForRequiredSpecRandomly:(NSInteger)index{
+    
+    self.attempts++;
+    NSDictionary *photoDict = [self.photos objectAtIndex:index];
+    
+    NSURL *photoURL = [self.flickrContext photoSourceURLFromDictionary:photoDict size:OFFlickrMedium640Size];
+    
+
+        // Process if we got photos back
+        NSLog(@"photoUrl=%@",photoURL);
+        dispatch_queue_t queue = dispatch_queue_create(kAsyncQueueLabel, NULL);
+        dispatch_queue_t main = dispatch_get_main_queue();
+        
+        dispatch_async(queue, ^{
+            
+            self.flickrRequestInfo.photo = [UIImage imageWithData:UIImageJPEGRepresentation([UIImage imageWithData:[NSData dataWithContentsOfURL:photoURL]], 1)];
+            
+            // Scale the image appropriately
+            self.flickrRequestInfo.photo=[UIImage imageWithCGImage:[self.flickrRequestInfo.photo CGImage] scale:2.0 orientation:UIImageOrientationUp];
+            
+            // You've got the image of the right dimensions
+            if (self.flickrRequestInfo.photo.size.width == 320 && self.flickrRequestInfo.photo.size.height >= 200 && self.flickrRequestInfo.photo.size.width > self.flickrRequestInfo.photo.size.height) {
+                float height=self.flickrRequestInfo.photo.size.height-200.0;
+                if(height>0) {
+                    self.found = true;
+                    UIImage *locationImage=[BeagleUtilities imageByCropping:self.flickrRequestInfo.photo toRect:CGRectMake(0, height/2, 320, 200) withOrientation:UIImageOrientationDownMirrored];
+                    self.flickrRequestInfo.photo=locationImage;
+                    
+                    
+                }else{
+                    self.found = false;
+                }
+            }else{
+                self.found = false;
+            }
+            
+            dispatch_async(main, ^{
+                
+                if(!self.found && self.attempts!=[self.photos count]){
+                    int numberOfPhotos = (int)[self.photos count];
+                     [self searchForRequiredSpecRandomly:[BeagleUtilities getRandomIntBetweenLow:0 andHigh:numberOfPhotos-1]];
+
+                }else if(!self.found && self.attempts==[self.photos count]){
+                    [self customSearchWithFlickrApi];
+                }else if (self.found){
+                    self.completionBlock(self.flickrRequestInfo, nil);
+                    [self cleanUpFlickrManager];
+                    
+                }
+                
+            });
+        });
+}
+-(void)customSearchWithFlickrApi{
+    if (self.currentSearchType == fullSearch) {
+        self.currentSearchType = timeLocationOnly;
+        [self photoSearch];
+    }
+    else if (self.currentSearchType == timeLocationOnly) {
+        self.currentSearchType = locationOnly;
+        [self photoSearch];
+    }
+    else {
+        NSError *error = [NSError errorWithDomain:@kAsyncQueueLabel code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"FlickrManager did not return any photos.", NSLocalizedDescriptionKey, nil]];
+        
+        self.completionBlock(nil, error);
+        [self cleanUpFlickrManager];
+
+    }
+
+}
 - (void)flickrAPIRequest:(OFFlickrAPIRequest *)inRequest didFailWithError:(NSError *)inError {
     self.completionBlock(nil, inError);
     [self cleanUpFlickrManager];
+}
+- (void) defaultStockPhoto: (void (^)(UIImage *)) completion {
+    
+    
+    dispatch_queue_t queue = dispatch_queue_create(kAsyncQueueLabel, NULL);
+    dispatch_queue_t main = dispatch_get_main_queue();
+    
+    dispatch_async(queue, ^{
+        
+        NSString *imagePath = [NSString stringWithFormat:@"defaultLocation"];
+        dispatch_async(main, ^{
+            completion([UIImage imageNamed:imagePath]);
+        });
+    });
 }
 
 @end

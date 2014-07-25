@@ -26,6 +26,7 @@ typedef enum {
     kServerInAppChatDetail,
     kServerCallRequestForOfflineNotification,
     kServerCallInAppForOfflinePost,
+    kServerCallRequestForSilentNotification,
     kServerCallGetProfileMutualFriends,
     kServerCallGetDOS1Friends,
     kServerPostAPrivateMessageOnFacebook,
@@ -66,8 +67,8 @@ typedef enum {
 -(void)updateActivityOnBeagle:(BeagleActivityClass*)data;
 -(void)updateFacebookTickerStatus:(BOOL)status;
 -(void)getNotifications;
--(void)requestInAppNotificationForPosts:(NSInteger)chatId isOffline:(BOOL)isOffline;
--(void)requestInAppNotification:(NSInteger)notificationId isOffline:(BOOL)isOffline;
+-(void)requestInAppNotificationForPosts:(NSInteger)chatId notifType:(NSInteger)notifType;
+-(void)requestInAppNotification:(NSInteger)notificationId notifType:(NSInteger)notifType;
 -(void)getMoreBackgroundPostsForAnInterest:(InterestChatClass*)lastChatPost activId:(NSInteger)activId;
 -(void)getNewBackgroundPostsForAnInterest:(NSInteger)activityId;
 -(void)getPostDetail:(NSInteger)chatId;

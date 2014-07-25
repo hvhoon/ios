@@ -7,14 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "MBProgressHUD.h"
-@interface AppDelegate : UIResponder <UIApplicationDelegate,MBProgressHUDDelegate>{
-        MBProgressHUD *progressIndicator;
+#import <Appsee/Appsee.h>
+@interface AppDelegate : UIResponder <UIApplicationDelegate,NSURLSessionDelegate, NSURLSessionTaskDelegate, NSURLSessionDownloadDelegate>{
 }
 @property (nonatomic,strong)id listViewController;
 @property (strong, nonatomic) UIWindow *window;
-@property (nonatomic,strong)MBProgressHUD *progressIndicator;
--(void)showProgressIndicator:(NSInteger)type;
--(void)hideProgressView;
-
+@property (copy) void (^backgroundSessionCompletionHandler)();
+@property (nonatomic,strong) NSURLSessionDownloadTask *downloadTask;
 @end

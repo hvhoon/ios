@@ -14,12 +14,10 @@
 #import "UIView+HidingView.h"
 #import "BlankHomePageView.h"
 #import "HomeTableViewCell.h"
-#import "BeagleActivityClass.h"
 #import "IconDownloader.h"
 #import "DetailInterestViewController.h"
 #import "BeagleUtilities.h"
 #import "EventInterestFilterBlurView.h"
-#import "BeagleNotificationClass.h"
 #import "FriendsViewController.h"
 #import "ExpressInterestPreview.h"
 #define REFRESH_HEADER_HEIGHT 70.0f
@@ -42,6 +40,7 @@
     NSMutableDictionary *filterActivitiesOnHomeScreen;
     BOOL hideInAppNotification;
     NSInteger attempts;
+    NSTimer *timer;
 }
 @property(nonatomic,strong)EventInterestFilterBlurView*filterBlurView;
 @property(nonatomic, strong)UIView *filterView;
@@ -64,6 +63,7 @@
 @synthesize filterActivitiesOnHomeScreen;
 @synthesize _locationManager = locationManager;
 @synthesize interestUpdateManager=_interestUpdateManager;
+@synthesize timer=_timer;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -94,28 +94,22 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableInAppNotification) name:@"ECSlidingViewTopDidAnchorRight" object:Nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh) name:@"HomeViewRefresh" object:Nil];
 
-    if(self.tableView!=nil){
-        [self.tableView reloadData];
-    }
     [self.navigationController setNavigationBarHidden:YES];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    if(self.tableView!=nil){
+        [self.tableView reloadData];
+    }
    
 }
 
--(void)addADelay{
-    [self performSelector:@selector(updateHomeScreen) withObject:nil afterDelay:0.85];
-}
--(void)updateHomeScreen{
-    if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
-        [self refresh];
+-(void)notificationUpdate:(NSNotification*)note{
+        id obj1=[note valueForKey:@"userInfo"];
+    if(obj1!=nil && obj1!=[NSNull class] && [[obj1 allKeys]count]!=0){
+        BeagleNotificationClass *notification=[[note valueForKey:@"userInfo"]objectForKey:@"notify"];
+            [self updateHomeScreen:notification];
     }
-    else{
-        [self startStandardUpdates];
-    }
-    
 }
-
 -(void)disableInAppNotification{
     hideInAppNotification=TRUE;
 }
@@ -125,10 +119,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (UpdateBadgeCount) name:kBeagleBadgeCount object:nil];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addADelay) name:kNotificationHomeAutoRefresh object:Nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationUpdate:) name:kNotificationHomeAutoRefresh object:Nil];
 
     categoryFilterType=1;
     self.filterBlurView = [EventInterestFilterBlurView loadEventInterestFilter:self.view];
@@ -148,7 +140,12 @@
         [[NSUserDefaults standardUserDefaults]synchronize];
 
     }
-
+    
+    // Setting the user name for AppSee
+    NSString *firstName = [[[BeagleManager SharedInstance]beaglePlayer]first_name];
+    NSString *lastName = [[[BeagleManager SharedInstance]beaglePlayer]last_name];
+    NSString *userFullName = [NSString stringWithFormat:@"%@ %@",firstName, lastName];
+    [Appsee setUserID:userFullName];
 
     if (![self.slidingViewController.underLeftViewController isKindOfClass:[SettingsViewController class]]) {
         self.slidingViewController.underLeftViewController  = [self.storyboard instantiateViewControllerWithIdentifier:@"settingsScreen"];
@@ -192,6 +189,12 @@
 #endif
 
     [self addCityName:@"Hello"];
+    
+    _timer = [NSTimer scheduledTimerWithTimeInterval:15.0
+                                                  target: self
+                                                selector:@selector(defaultLocalImage)
+                                                userInfo: nil repeats:NO];
+    
     UIButton *eventButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [eventButton setBackgroundImage:[UIImage imageNamed:@"add"] forState:UIControlStateNormal];
     [eventButton addTarget:self action:@selector(createANewActivity:)forControlEvents:UIControlEventTouchUpInside];
@@ -235,6 +238,9 @@
     }
     isPushAuto=TRUE;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (updateEventsInTransitionFromBg_Fg) name:@"AutoRefreshEvents" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (refresh) name:kUpdateHomeScreenAndNotificationStack object:nil];
+
 
 }
 
@@ -257,6 +263,8 @@
 }
 -(void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kBeagleBadgeCount object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kUpdateHomeScreenAndNotificationStack object:nil];
+
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"AutoRefreshEvents" object:nil];
     
     for (NSIndexPath *indexPath in [imageDownloadsInProgress allKeys]) {
@@ -268,58 +276,315 @@
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
 
-    if(!hideInAppNotification && !notifObject.isOffline){
+    if(!hideInAppNotification && notifObject.notifType==1){
         
-    InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0,0, 320, 64) appNotification:notifObject];
-    notifView.delegate=self;
-    UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
-     [keyboard addSubview:notifView];
-    [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+        InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
+        notifView.delegate=self;
+        [notifView show];
 
-    }else if(!hideInAppNotification && notifObject.isOffline && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE) && notifObject.activityId!=0){
-        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+    }else if(!hideInAppNotification && notifObject.notifType==2 && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE|| notifObject.notificationType==ACTIVITY_CREATION_TYPE || notifObject.notificationType==JOINED_ACTIVITY_TYPE||notifObject.notificationType==CANCEL_ACTIVITY_TYPE) && notifObject.activity.activityId!=0){
+        if(notifObject.notificationType!=CANCEL_ACTIVITY_TYPE){
+            
+        NSLog(@"DetailInterestViewController redirect");
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
         viewController.interestServerManager=[[ServerManager alloc]init];
         viewController.interestServerManager.delegate=viewController;
         viewController.isRedirected=TRUE;
-        [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
+        [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
         [self.navigationController pushViewController:viewController animated:YES];
+        }
+        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
 
     }
-    [self refresh];
+    if(notifObject.notifType!=2)
+        [self updateHomeScreen:notifObject];
+
+
+}
+
+-(void)updateHomeScreen:(BeagleNotificationClass*)notification{
+    
+    switch (notification.notificationType) {
+        case GOING_TYPE:
+        case LEAVED_ACTIVITY_TYPE:
+        case WHAT_CHANGE_TYPE:
+        case DATE_CHANGE_TYPE:
+        case CHAT_TYPE:
+        case ACTIVITY_UPDATE_TYPE:
+        {
+            
+            NSArray *beagle_happenarndu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_happenarndu"];
+
+            for(BeagleActivityClass *data in beagle_happenarndu){
+                if(data.activityId==notification.activity.activityId){
+                    if(notification.notificationType==GOING_TYPE||notification.notificationType==LEAVED_ACTIVITY_TYPE){
+                    data.participantsCount=notification.activity.participantsCount;
+                    data.dos1count=notification.activity.dos1count;
+                    }
+                    else if(notification.notificationType==WHAT_CHANGE_TYPE||notification.notificationType==DATE_CHANGE_TYPE){
+                        data.activityDesc=notification.activity.activityDesc;
+                        data.endActivityDate=notification.activity.endActivityDate;
+                        data.startActivityDate=notification.activity.startActivityDate;
+                    }
+                    else if (notification.notificationType==CHAT_TYPE){
+                        data.postCount=notification.activity.postCount;
+                    }
+                    else if (notification.notificationType==ACTIVITY_UPDATE_TYPE){
+                        data.postCount=notification.activity.postCount;
+                        data.participantsCount=notification.activity.participantsCount;
+                        data.dos1count=notification.activity.dos1count;
+                        data.activityDesc=notification.activity.activityDesc;
+                        data.endActivityDate=notification.activity.endActivityDate;
+                        data.startActivityDate=notification.activity.startActivityDate;
+
+                    }
+                    
+
+                    break;
+                }
+            }
+            
+            NSArray *beagle_friendsarndu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_friendsarndu"];
+            
+            for(BeagleActivityClass *data in beagle_friendsarndu){
+                if(data.activityId==notification.activity.activityId){
+                    if(notification.notificationType==GOING_TYPE||notification.notificationType==LEAVED_ACTIVITY_TYPE){
+                        data.participantsCount=notification.activity.participantsCount;
+                        data.dos1count=notification.activity.dos1count;
+                    }
+                    else if(notification.notificationType==WHAT_CHANGE_TYPE||notification.notificationType==DATE_CHANGE_TYPE){
+                        data.activityDesc=notification.activity.activityDesc;
+                        data.endActivityDate=notification.activity.endActivityDate;
+                        data.startActivityDate=notification.activity.startActivityDate;
+                    }
+                    else if (notification.notificationType==CHAT_TYPE){
+                        data.postCount=notification.activity.postCount;
+                    }
+
+                    else if (notification.notificationType==ACTIVITY_UPDATE_TYPE){
+                        data.postCount=notification.activity.postCount;
+                        data.participantsCount=notification.activity.participantsCount;
+                        data.dos1count=notification.activity.dos1count;
+                        data.activityDesc=notification.activity.activityDesc;
+                        data.endActivityDate=notification.activity.endActivityDate;
+                        data.startActivityDate=notification.activity.startActivityDate;
+                        
+                    }
+
+                    break;
+                }
+            }
+            NSArray *beagle_expressint=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_expressint"];
+            
+            for(BeagleActivityClass *data in beagle_expressint){
+                if(data.activityId==notification.activity.activityId){
+                    if(notification.notificationType==GOING_TYPE||notification.notificationType==LEAVED_ACTIVITY_TYPE){
+                        data.participantsCount=notification.activity.participantsCount;
+                        data.dos1count=notification.activity.dos1count;
+                    }
+                    else if(notification.notificationType==WHAT_CHANGE_TYPE||notification.notificationType==DATE_CHANGE_TYPE){
+                        data.activityDesc=notification.activity.activityDesc;
+                        data.endActivityDate=notification.activity.endActivityDate;
+                        data.startActivityDate=notification.activity.startActivityDate;
+                    }
+                    else if (notification.notificationType==CHAT_TYPE){
+                        data.postCount=notification.activity.postCount;
+                    }
+
+                    else if (notification.notificationType==ACTIVITY_UPDATE_TYPE){
+                        data.postCount=notification.activity.postCount;
+                        data.participantsCount=notification.activity.participantsCount;
+                        data.dos1count=notification.activity.dos1count;
+                        data.activityDesc=notification.activity.activityDesc;
+                        data.endActivityDate=notification.activity.endActivityDate;
+                        data.startActivityDate=notification.activity.startActivityDate;
+                        
+                    }
+
+                    break;
+                }
+            }
+
+            NSArray *beagle_crtbyu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_crtbyu"];
+            for(BeagleActivityClass *data in beagle_crtbyu){
+                if(data.activityId==notification.activity.activityId){
+                    if(notification.notificationType==GOING_TYPE||notification.notificationType==LEAVED_ACTIVITY_TYPE){
+                        data.participantsCount=notification.activity.participantsCount;
+                        data.dos1count=notification.activity.dos1count;
+                    }
+                    else if(notification.notificationType==WHAT_CHANGE_TYPE||notification.notificationType==DATE_CHANGE_TYPE){
+                        data.activityDesc=notification.activity.activityDesc;
+                        data.endActivityDate=notification.activity.endActivityDate;
+                        data.startActivityDate=notification.activity.startActivityDate;
+                    }
+                    else if (notification.notificationType==CHAT_TYPE){
+                        data.postCount=notification.activity.postCount;
+                    }
+                    else if (notification.notificationType==ACTIVITY_UPDATE_TYPE){
+                        data.postCount=notification.activity.postCount;
+                        data.participantsCount=notification.activity.participantsCount;
+                        data.dos1count=notification.activity.dos1count;
+                        data.activityDesc=notification.activity.activityDesc;
+                        data.endActivityDate=notification.activity.endActivityDate;
+                        data.startActivityDate=notification.activity.startActivityDate;
+                        
+                    }
+
+                    break;
+                }
+            }
+            
+        }
+            break;
+            
+        case CANCEL_ACTIVITY_TYPE:
+            
+        {
+            BOOL isFound=false;
+            NSInteger index=0;
+            NSArray *beagle_happenarndu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_happenarndu"];
+
+            for(BeagleActivityClass *data in beagle_happenarndu){
+                if(data.activityId==notification.activity.activityId){
+                    isFound=true;
+                    break;
+                }else{
+                    isFound=false;
+                }
+                index++;
+            }
+            if(isFound){
+                NSMutableArray *oldArray=[NSMutableArray arrayWithArray:beagle_happenarndu];
+                [oldArray removeObjectAtIndex:index];
+                [self.filterActivitiesOnHomeScreen setObject:oldArray forKey:@"beagle_happenarndu"];
+
+            }
+            
+            isFound=false;
+            index=0;
+            NSArray *beagle_friendsarndu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_friendsarndu"];
+            
+            for(BeagleActivityClass *data in beagle_friendsarndu){
+                if(data.activityId==notification.activity.activityId){
+                    isFound=true;
+                    break;
+                }else{
+                    isFound=false;
+                }
+                index++;
+            }
+            if(isFound){
+                NSMutableArray *oldArray=[NSMutableArray arrayWithArray:beagle_friendsarndu];
+                [oldArray removeObjectAtIndex:index];
+                [self.filterActivitiesOnHomeScreen setObject:oldArray forKey:@"beagle_friendsarndu"];
+
+            }
+            isFound=false;
+            index=0;
+            NSArray *beagle_expressint=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_expressint"];
+            
+            for(BeagleActivityClass *data in beagle_expressint){
+                if(data.activityId==notification.activity.activityId){
+                    isFound=true;
+                    break;
+                }else{
+                    isFound=false;
+                }
+                index++;
+            }
+            if(isFound){
+                NSMutableArray *oldArray=[NSMutableArray arrayWithArray:beagle_expressint];
+                [oldArray removeObjectAtIndex:index];
+                [self.filterActivitiesOnHomeScreen setObject:oldArray forKey:@"beagle_expressint"];
+
+            }
+
+            isFound=false;
+            index=0;
+            NSArray *beagle_crtbyu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_crtbyu"];
+            
+            for(BeagleActivityClass *data in beagle_crtbyu){
+                if(data.activityId==notification.activity.activityId){
+                    isFound=true;
+                    break;
+                }else{
+                    isFound=false;
+                }
+                index++;
+            }
+            if(isFound){
+                NSMutableArray *oldArray=[NSMutableArray arrayWithArray:beagle_crtbyu];
+                [oldArray removeObjectAtIndex:index];
+                [self.filterActivitiesOnHomeScreen setObject:oldArray forKey:@"beagle_crtbyu"];
+
+            }
+
+
+        }
+            break;
+
+        case ACTIVITY_CREATION_TYPE:
+        case JOINED_ACTIVITY_TYPE:
+        {
+            NSArray *beagle_happenarndu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_happenarndu"];
+
+            NSMutableArray *happenarnduArray=[NSMutableArray arrayWithArray:beagle_happenarndu];
+            [happenarnduArray addObject:notification.activity];
+            [self.filterActivitiesOnHomeScreen setObject:happenarnduArray forKey:@"beagle_happenarndu"];
+            
+            NSArray *beagle_crtbyu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_crtbyu"];
+            
+            NSMutableArray *crbuArray=[NSMutableArray arrayWithArray:beagle_crtbyu];
+            [crbuArray addObject:notification.activity];
+            [self.filterActivitiesOnHomeScreen setObject:crbuArray forKey:@"beagle_crtbyu"];
+
+            
+            NSArray *beagle_expressint=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_expressint"];
+            
+            NSMutableArray *exprsAray=[NSMutableArray arrayWithArray:beagle_expressint];
+            [exprsAray addObject:notification.activity];
+            [self.filterActivitiesOnHomeScreen setObject:exprsAray forKey:@"beagle_expressint"];
+
+
+
+        }
+            break;
+    }
+    
+    [self filterByCategoryType:categoryFilterType];
 
 }
 
 -(void)postInAppNotification:(NSNotification*)note{
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
-
-    if(!hideInAppNotification && !notifObject.isOffline){
-    InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithFrame:CGRectMake(0, 0, 320, 64) appNotification:notifObject];
-    notifView.delegate=self;
-    
-    UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
-    [keyboard addSubview:notifView];
+    if(!hideInAppNotification && notifObject.notifType==1){
+        InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
+        notifView.delegate=self;
+        [notifView show];
 
         }
-    else if(!hideInAppNotification && notifObject.isOffline && (notifObject.notificationType==CHAT_TYPE) && notifObject.activityId!=0){
-        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+    else if(!hideInAppNotification && notifObject.notifType==2 && (notifObject.notificationType==CHAT_TYPE) && notifObject.activity.activityId!=0){
+        NSLog(@"DetailInterestViewController redirect postInAppNotification");
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
         viewController.interestServerManager=[[ServerManager alloc]init];
         viewController.interestServerManager.delegate=viewController;
         viewController.isRedirected=TRUE;
         viewController.toLastPost=TRUE;
-        [viewController.interestServerManager getDetailedInterest:notifObject.activityId];
+        [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
         [self.navigationController pushViewController:viewController animated:YES];
+        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
 
         
     }
-    [self refresh];
+    if(notifObject.notifType!=2)
+        [self updateHomeScreen:notifObject];
 
 }
 -(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
     
+
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
     viewController.interestServerManager=[[ServerManager alloc]init];
@@ -327,10 +592,19 @@
     viewController.isRedirected=TRUE;
     if(notification.notificationType==CHAT_TYPE)
         viewController.toLastPost=TRUE;
-    [viewController.interestServerManager getDetailedInterest:notification.activityId];
+    [viewController.interestServerManager getDetailedInterest:notification.activity.activityId];
     [self.navigationController pushViewController:viewController animated:YES];
+    [BeagleUtilities updateBadgeInfoOnTheServer:notification.notificationId];
 
 }
+
+#pragma mark InAppNotificationView Handler
+- (void)notificationView:(InAppNotificationView *)inAppNotification didDismissWithButtonIndex:(NSInteger)buttonIndex{
+    
+    NSLog(@"Button Index = %ld", (long)buttonIndex);
+//    [BeagleUtilities updateBadgeInfoOnTheServer:inAppNotification.notification.notificationId];
+}
+
 -(void)UpdateBadgeCount{
     BeagleManager *BG=[BeagleManager SharedInstance];
     UIButton *notificationsButton=(UIButton*)[self.view viewWithTag:5346];
@@ -473,16 +747,7 @@
 }
 -(void)defaultLocalImage{
     
-    BeagleManager *BG=[BeagleManager SharedInstance];
-    
-    // Pull dominant color from the default image
-    UIColor *dominantColor = [BeagleUtilities getDominantColor:[UIImage imageNamed:@"defaultLocation"]];
-    
-    BG.lightDominantColor=[BeagleUtilities returnLightColor:[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.9] withWhiteness:0.7];
-    BG.mediumDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5];
-    BG.darkDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.4];
     [self performSelector:@selector(crossDissolvePhotos:withTitle:) withObject:[UIImage imageNamed:@"defaultLocation"] withObject:nil];
-    _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
     
 }
 -(void)createANewActivity:(id)sender{
@@ -532,21 +797,18 @@
         // Pull image from Flickr
         [[BGFlickrManager sharedManager] randomPhotoRequest:^(FlickrRequestInfo * flickrRequestInfo, NSError * error) {
             
-            UIColor *dominantColor = nil;
             
             if(!error) {
-                [self.timer invalidate];
                 [self crossDissolvePhotos:flickrRequestInfo.photo withTitle:flickrRequestInfo.userInfo];
-                dominantColor = [BeagleUtilities getDominantColor:flickrRequestInfo.photo];
             }
             else {
-                [self crossDissolvePhotos:[UIImage imageNamed:@"defaultLocation"] withTitle:@"Hello"];
-                dominantColor = [BeagleUtilities getDominantColor:[UIImage imageNamed:@"defaultLocation"]];
+                
+                [[BGFlickrManager sharedManager] defaultStockPhoto:^(UIImage * photo) {
+                    [self crossDissolvePhotos:photo withTitle:@"Hello"];
+                }];
+
             }
             
-            BG.lightDominantColor=[BeagleUtilities returnLightColor:[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.9] withWhiteness:0.7];
-            BG.mediumDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5];
-            BG.darkDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.4];
         
         /*
         UIColor* filterViewColor = [dominantColor colorWithAlphaComponent:0.8];
@@ -618,7 +880,6 @@
         
         // Add the city name and the filter pane to the top section
         [self addCityName:[BG.placemark.addressDictionary objectForKey:@"City"]];
-        _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
         [self.tableView reloadData];
     
         }];
@@ -628,6 +889,10 @@
     [request setFailedBlock:^{
         NSError *error = [request error];
         NSLog(@"error=%@",[error description]);
+        [[BGFlickrManager sharedManager] defaultStockPhoto:^(UIImage * photo) {
+            [self crossDissolvePhotos:photo withTitle:@"Hello"];
+        }];
+
     }];
     
 
@@ -635,6 +900,15 @@
     
 }
 - (void) crossDissolvePhotos:(UIImage *) photo withTitle:(NSString *) title {
+    
+    [self.timer invalidate];
+    UIColor *dominantColor = [BeagleUtilities getDominantColor:photo];
+    BeagleManager *BG=[BeagleManager SharedInstance];
+    BG.lightDominantColor=[BeagleUtilities returnLightColor:[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.9] withWhiteness:0.7];
+    BG.mediumDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5];
+    BG.darkDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.4];
+    _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
+
     [UIView transitionWithView:_topSection duration:1.0f options:(UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionAllowUserInteraction) animations:^{
         
 #if stockCroppingCheck
@@ -647,14 +921,18 @@
         
 #else
         
+        
         [[NSUserDefaults standardUserDefaults] setValue:[NSDate date] forKey:@"HourlyUpdate"];
+        
         UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
         stockImageView.image=photo;
         [stockImageView setContentMode:UIViewContentModeScaleAspectFit];
         stockImageView.image = photo;
         
+
+        
 #endif
-         
+        
     } completion:NULL];
 }
 
@@ -757,9 +1035,11 @@
      return headerView;
 }
 -(void)handleFilterHeaderTap:(UITapGestureRecognizer*)sender{
+    
     [self.filterBlurView blurWithColor];
     [self.filterBlurView crossDissolveShow];
     [self.view addSubview:self.filterBlurView];
+    [Appsee addEvent:@"Filter Clicked (Home Screen)"];
 
 }
 
@@ -841,24 +1121,6 @@
         cell.photoImage = play.profilePhotoImage=checkImge;
     }
     [cell setNeedsDisplay];
-#if 0
-    for (id obj in cell.subviews)
-    {
-        
-        //        if( [[obj class]isKindOfClass:[UIButton class]]){
-        //            UIButton *btn=(UIButton*)obj;
-        //            if(btn.tag==[[NSString stringWithFormat:@"333%ld",(long)indexPath.row]integerValue]){
-        //                [obj removeFromSuperview];
-        //            }
-        //        }
-        if ([NSStringFromClass([obj class]) isEqualToString:@"UITableViewCellScrollView"])
-        {
-            UIScrollView *scroll = (UIScrollView *) obj;
-            scroll.delaysContentTouches = NO;
-            break;
-        }
-    }
-#endif
     return cell;
 }
 - (void)startIconDownload:(BeagleActivityClass*)appRecord forIndexPath:(NSIndexPath *)indexPath{
@@ -1034,6 +1296,7 @@
             headerText.frame = CGRectMake(0, 0, 16+textRect.size.width+8+15, 44.0);
             [headerText setTitle:filterText forState:UIControlStateNormal];
             headerText.imageEdgeInsets = UIEdgeInsetsMake(2.0f, textRect.size.width+16+8, 0.0f, 0.0f);
+            [Appsee addEvent:@"Filter changed: Happening Around You"];
         }
             break;
         case 2:
@@ -1048,6 +1311,7 @@
             headerText.frame = CGRectMake(0, 0, 16+textRect.size.width+8+15, 44.0);
             [headerText setTitle:filterText forState:UIControlStateNormal];
             headerText.imageEdgeInsets = UIEdgeInsetsMake(2.0f, textRect.size.width+16+8, 0.0f, 0.0f);
+            [Appsee addEvent:@"Filter changed: Created by Friends"];
         }
             break;
         case 3:
@@ -1062,6 +1326,7 @@
             headerText.frame = CGRectMake(0, 0, 16+textRect.size.width+8+15, 44.0);
             [headerText setTitle:filterText forState:UIControlStateNormal];
             headerText.imageEdgeInsets = UIEdgeInsetsMake(2.0f, textRect.size.width+16+8, 0.0f, 0.0f);
+            [Appsee addEvent:@"Filter changed: Your Interests"];
         }
             break;
         case 4:
@@ -1076,6 +1341,7 @@
             headerText.frame = CGRectMake(0, 0, 16+textRect.size.width+8+15, 44.0);
             [headerText setTitle:filterText forState:UIControlStateNormal];
             headerText.imageEdgeInsets = UIEdgeInsetsMake(2.0f, textRect.size.width+16+8, 0.0f, 0.0f);
+            [Appsee addEvent:@"Filter changed: Created by You"];
         }
             break;
     }
@@ -1094,13 +1360,74 @@
         case 1:
         {
             NSArray *listArray=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_happenarndu"];
-            self.tableData=[NSArray arrayWithArray:listArray];
+            
+            if([listArray count]!=0){
+                listArray = [listArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
+                    
+                    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+                    
+                    NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+                    [dateFormatter setTimeZone:utcTimeZone];
+                    
+                    NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
+                    NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
+                    
+                    return [s1 compare:s2];
+                }];
+                
+                
+
+            }
+            NSArray*suggestedListArray=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_suggestedposts"];
+            if([suggestedListArray count]!=0){
+                
+                suggestedListArray = [suggestedListArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
+                    
+                    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+                    
+                    NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+                    [dateFormatter setTimeZone:utcTimeZone];
+                    
+                    NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
+                    NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
+                    
+                    return [s1 compare:s2];
+                }];
+
+                NSMutableArray *consolidateArray=[NSMutableArray new];
+                if([listArray count]!=0)
+                    [consolidateArray addObjectsFromArray:listArray];
+                    [consolidateArray addObjectsFromArray:suggestedListArray];
+                    self.tableData=[NSArray arrayWithArray:consolidateArray];
+            }
+
+            else
+               self.tableData=[NSArray arrayWithArray:listArray];
         }
             break;
             
         case 2:
         {
             NSArray *listArray=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_friendsarndu"];
+            
+            if([listArray count]!=0){
+                listArray = [listArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
+                    
+                    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+                    
+                    NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+                    [dateFormatter setTimeZone:utcTimeZone];
+                    
+                    NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
+                    NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
+                    
+                    return [s1 compare:s2];
+                }];
+                
+            }
             self.tableData=[NSArray arrayWithArray:listArray];
             
         }
@@ -1110,6 +1437,22 @@
         case 3:
         {
             NSArray *listArray=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_expressint"];
+            if([listArray count]!=0){
+                listArray = [listArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
+                    
+                    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+                    
+                    NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+                    [dateFormatter setTimeZone:utcTimeZone];
+                    
+                    NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
+                    NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
+                    
+                    return [s1 compare:s2];
+                }];
+                
+            }
             self.tableData=[NSArray arrayWithArray:listArray];
             
         }
@@ -1119,6 +1462,23 @@
         case 4:
         {
             NSArray *listArray=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_crtbyu"];
+            if([listArray count]!=0){
+            listArray = [listArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
+                
+                NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+                
+                NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+                [dateFormatter setTimeZone:utcTimeZone];
+                
+                NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
+                NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
+                
+                return [s1 compare:s2];
+            }];
+            
+            }
+
             self.tableData=[NSArray arrayWithArray:listArray];
             
         }
@@ -1161,7 +1521,15 @@
         case 0:
         {
             // Show the table again and hide the blank view
+            
+            NSMutableArray *tableDataArray = [NSMutableArray arrayWithArray:self.tableData];
+            
+            [tableDataArray removeAllObjects];
+            
+            self.tableData=[NSArray arrayWithArray:tableDataArray];
+            [self.tableView reloadData];
             isPushAuto = true;
+
             [self.tableView setHidden:NO];
             BlankHomePageView *blankHomePageView=(BlankHomePageView*)[self.view  viewWithTag:1245];
             [blankHomePageView removeFromSuperview];
@@ -1337,6 +1705,8 @@
                                                        delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No",nil];
         alert.tag=kLeaveInterest;
         [alert show];
+        [Appsee addEvent:@"Cancel Interest"];
+
 
 //        [_interestUpdateManager removeMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
     }
@@ -1345,7 +1715,7 @@
         HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
         UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)index]integerValue]];
         [button setEnabled:NO];
-
+        [Appsee addEvent:@"Express Interest"];
         [_interestUpdateManager participateMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
     }
 }
@@ -1420,7 +1790,7 @@
                          // Completion Block
 
                          self.tableView.scrollEnabled=YES;
-                         [self.tableView reloadData];
+                         [self filterByCategoryType:categoryFilterType];
                          [pView removeFromSuperview];
                          
     }];
@@ -1483,6 +1853,8 @@
     _interestUpdateManager.delegate=self;
     
     [_interestUpdateManager updateSuggestedPostMembership:play.activityId];
+    
+    [Appsee addEvent:@"Activate Suggested Post"];
 }
 
 #pragma mark - server calls
@@ -1517,7 +1889,6 @@
                 id activities=[response objectForKey:@"activities"];
                 if (activities != nil && [activities class] != [NSNull class]) {
                     
-                    NSMutableArray*suggestedList=[NSMutableArray new];
                     NSArray *suggestedPosts=[activities objectForKey:@"beagle_suggestedposts"];
                     if (suggestedPosts != nil && [suggestedPosts class] != [NSNull class] && [suggestedPosts count]!=0) {
                         NSMutableArray *suggestedPostsArray=[[NSMutableArray alloc]init];
@@ -1528,21 +1899,13 @@
                         
                         NSArray *suggestedListArray=[NSArray arrayWithArray:suggestedPostsArray];
                         
-                        suggestedListArray = [suggestedListArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
+                        if([suggestedListArray count]!=0){
+                            [self.filterActivitiesOnHomeScreen setObject:suggestedListArray forKey:@"beagle_suggestedposts"];
                             
-                            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-                            
-                            NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
-                            [dateFormatter setTimeZone:utcTimeZone];
-                            
-                            NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
-                            NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
-                            
-                            return [s1 compare:s2];
-                        }];
-                        
-                        [suggestedList addObjectsFromArray:suggestedListArray];
+                        }
+
+                    }else{
+                        [self.filterActivitiesOnHomeScreen setObject:[NSMutableArray new] forKey:@"beagle_suggestedposts"];
                         
                     }
                     NSArray *happenarndu=[activities objectForKey:@"beagle_happenarndu"];
@@ -1555,38 +1918,10 @@
                         
                         NSArray *listArray=[NSArray arrayWithArray:activitiesArray];
                         
-                        listArray = [listArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
-                            
-                            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-                            
-                            NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
-                            [dateFormatter setTimeZone:utcTimeZone];
-                            
-                            NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
-                            NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
-                            
-                            return [s1 compare:s2];
-                        }];
-                        
-                        if([suggestedList count]!=0){
-                            NSMutableArray *testArray=[NSMutableArray new];
-                            [testArray addObjectsFromArray:listArray];
-                            [testArray addObjectsFromArray:suggestedList];
-                            listArray=[NSArray arrayWithArray:testArray];
-                        }
-                        
                         [self.filterActivitiesOnHomeScreen setObject:listArray forKey:@"beagle_happenarndu"];
                     }else{
-                        if([suggestedList count]!=0){
-                            NSArray *listArray=[NSArray arrayWithArray:suggestedList];
-                            [self.filterActivitiesOnHomeScreen setObject:listArray forKey:@"beagle_happenarndu"];
-                            
-                        }else
-                            
                             [self.filterActivitiesOnHomeScreen setObject:[NSMutableArray new] forKey:@"beagle_happenarndu"];
-                        
-                    }
+                        }
                     
                     NSArray * friendsarndu=[activities objectForKey:@"beagle_friendsarndu"];
                     if (friendsarndu != nil && [friendsarndu class] != [NSNull class]&& [friendsarndu count]!=0) {
@@ -1597,21 +1932,6 @@
                         }
                         
                         NSArray *listArray=[NSArray arrayWithArray:friendsAroundYouArray];
-                        
-                        listArray = [listArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
-                            
-                            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-                            
-                            NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
-                            [dateFormatter setTimeZone:utcTimeZone];
-                            
-                            NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
-                            NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
-                            
-                            return [s1 compare:s2];
-                        }];
-                        
                         
                         [self.filterActivitiesOnHomeScreen setObject:listArray forKey:@"beagle_friendsarndu"];
                         
@@ -1634,21 +1954,6 @@
                         
                         NSArray *listArray=[NSArray arrayWithArray:expressInterestArray];
                         
-                        listArray = [listArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
-                            
-                            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-                            
-                            NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
-                            [dateFormatter setTimeZone:utcTimeZone];
-                            
-                            NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
-                            NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
-                            
-                            return [s1 compare:s2];
-                        }];
-                        
-                        
                         [self.filterActivitiesOnHomeScreen setObject:listArray forKey:@"beagle_expressint"];
                         
                         
@@ -1669,21 +1974,6 @@
                         }
                         
                         NSArray *listArray=[NSArray arrayWithArray:createdByYouArray];
-                        
-                        listArray = [listArray sortedArrayUsingComparator: ^(BeagleActivityClass *a, BeagleActivityClass *b) {
-                            
-                            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-                            
-                            NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
-                            [dateFormatter setTimeZone:utcTimeZone];
-                            
-                            NSDate *s1 = [dateFormatter dateFromString:a.endActivityDate];//add the string
-                            NSDate *s2 = [dateFormatter dateFromString:b.endActivityDate];
-                            
-                            return [s1 compare:s2];
-                        }];
-                        
                         
                         [self.filterActivitiesOnHomeScreen setObject:listArray forKey:@"beagle_crtbyu"];
                         
@@ -1711,15 +2001,55 @@
         _interestUpdateManager = nil;
         
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
+            BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:interestIndex];
             
             id status=[response objectForKey:@"status"];
             id message=[response objectForKey:@"message"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
-                BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:interestIndex];
-                
                 
                 if([message isEqualToString:@"Joined"]){
-                    play.participantsCount++;
+                    id participantsCount=[response objectForKey:@"participantsCount"];
+                    if (participantsCount != nil && [participantsCount class] != [NSNull class]){
+
+                   play.participantsCount=[participantsCount integerValue];
+                    play.isParticipant=true;
+                        NSArray *beagle_happenarndu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_happenarndu"];
+                        for(BeagleActivityClass *data in beagle_happenarndu){
+                            if(data.activityId==play.activityId){
+                                data.participantsCount=[participantsCount integerValue];
+                                data.isParticipant=TRUE;
+                                break;
+                            }
+                            
+                        }
+                        NSArray *beagle_friendsarndu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_friendsarndu"];
+                        
+                        for(BeagleActivityClass *data in beagle_friendsarndu){
+                            if(data.activityId==play.activityId){
+                                data.participantsCount=[participantsCount integerValue];
+                                data.isParticipant=TRUE;
+                                break;
+                            }
+                        }
+                    BOOL isFound=FALSE;
+
+                        NSArray *beagle_expressint=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_expressint"];
+                        
+                        for(BeagleActivityClass *data in beagle_expressint){
+                            if(data.activityId==play.activityId){
+                                data.participantsCount=[participantsCount integerValue];
+                                data.isParticipant=TRUE;
+                                 isFound=true;
+                                break;
+                            }
+                        }
+                    if(!isFound){
+                        NSMutableArray *oldArray=[NSMutableArray arrayWithArray:beagle_expressint];
+                        [oldArray addObject:play];
+                        [self.filterActivitiesOnHomeScreen setObject:oldArray forKey:@"beagle_expressint"];
+                        
+                    }
+                    }
                 }
                 else if([message isEqualToString:@"Already Joined"]){
                     
@@ -1737,21 +2067,73 @@
                     
                 }
                 else{
-                    play.participantsCount--;
-                }
-                if(play.isParticipant){
+                    id participantsCount=[response objectForKey:@"participantsCount"];
+                    if (participantsCount != nil && [participantsCount class] != [NSNull class]){
+
                     play.isParticipant=FALSE;
-                }
-                else{
-                    play.isParticipant=TRUE;
+                   play.participantsCount=[participantsCount integerValue];
+                    NSArray *beagle_happenarndu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_happenarndu"];
+                    
+                    for(BeagleActivityClass *data in beagle_happenarndu){
+                        if(data.activityId==play.activityId){
+                            data.participantsCount=[participantsCount integerValue];
+                            data.isParticipant=FALSE;
+                            break;
+                        };
+                    }
+                    NSArray *beagle_friendsarndu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_friendsarndu"];
+                    
+                    for(BeagleActivityClass *data in beagle_friendsarndu){
+                        if(data.activityId==play.activityId){
+                            data.participantsCount=[participantsCount integerValue];
+                            data.isParticipant=FALSE;
+                            break;
+                        }
+                    }
+                    NSArray *beagle_expressint=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_expressint"];
+                    BOOL isFound=FALSE;
+                    NSInteger index=0;
+                    
+                    for(BeagleActivityClass *data in beagle_expressint){
+                        if(data.activityId==play.activityId){
+                            data.participantsCount=[participantsCount integerValue];
+                            data.isParticipant=FALSE;
+                            isFound=true;
+
+                            break;
+                        }
+                        index++;
+                    }
+                    
+                    if(isFound){
+                        NSMutableArray *oldArray=[NSMutableArray arrayWithArray:beagle_expressint];
+                        [oldArray removeObjectAtIndex:index];
+                        [self.filterActivitiesOnHomeScreen setObject:oldArray forKey:@"beagle_expressint"];
+                     }
+                    }
                 }
                 if(play.isParticipant){
-                    [self
-                     showView];
+                    [self showView];
 
                 }else{
-                    [self.tableView reloadData];
+                    [self filterByCategoryType:categoryFilterType];
                     
+                }
+            }else{
+                HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+                UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)interestIndex]integerValue]];
+                [button setEnabled:YES];
+                NSString *message = NSLocalizedString (@"That didn't quite go as planned, try again?",
+                                                       @"NSURLConnection initialization method failed.");
+                BeagleAlertWithMessage(message);
+
+
+                if(play.isParticipant){
+                    
+                    ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
+                    [preview removeFromSuperview];
+                    self.tableView.scrollEnabled=YES;
+
                 }
             }
         }
@@ -1794,7 +2176,7 @@
             id status=[response objectForKey:@"status"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 if(serverRequest==kServerCallCreateActivity){
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHomeAutoRefresh object:self userInfo:nil];
+                    [self refresh];
                 }
                 
             }

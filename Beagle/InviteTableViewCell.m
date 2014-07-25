@@ -7,7 +7,6 @@
 //
 
 #import "InviteTableViewCell.h"
-#import "BeagleUserClass.h"
 
 @implementation InviteTableViewCell
 @synthesize photoImage,delegate,cellIndexPath,bgPlayer;
@@ -99,15 +98,20 @@ static UIFont *secondTextFont = nil;
         [self.bgPlayer.location drawInRect:CGRectMake(67, fromTheTop, locationTextRect.size.width,locationTextRect.size.height) withAttributes:attrs];
     }
     
-        UIButton *accesoryButton=[UIButton buttonWithType:UIButtonTypeCustom];
-        accesoryButton.frame=CGRectMake(304-22, 10, 22, 22);
+    UIButton *accesoryButton=[UIButton buttonWithType:UIButtonTypeCustom];
+    accesoryButton.frame=CGRectMake(320-65, 0, 65, 65);
+    [accesoryButton setImageEdgeInsets:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 16.0f)];
+    [accesoryButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
+     
     if(bgPlayer.isInvited){
-            [accesoryButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Checked"] withColor:[[BeagleManager SharedInstance] mediumDominantColor]] forState:UIControlStateNormal];
+        [accesoryButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Checked"] withColor:[[BeagleManager SharedInstance] mediumDominantColor]] forState:UIControlStateNormal];
+        [accesoryButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Checked"] withColor:[[[BeagleManager SharedInstance] mediumDominantColor] colorWithAlphaComponent:0.5f]] forState:UIControlStateHighlighted];
         [accesoryButton addTarget:self action:@selector(accessoryButtonClickedToUninvite:) forControlEvents:UIControlEventTouchUpInside];
         
     }
         else{
             [accesoryButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Add"] withColor:[[BeagleManager SharedInstance] mediumDominantColor]] forState:UIControlStateNormal];
+            [accesoryButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Add"] withColor:[[[BeagleManager SharedInstance] mediumDominantColor] colorWithAlphaComponent:0.5f]] forState:UIControlStateHighlighted];
             [accesoryButton addTarget:self action:@selector(accessoryButtonClickedToInvite:) forControlEvents:UIControlEventTouchUpInside];
             
         }
