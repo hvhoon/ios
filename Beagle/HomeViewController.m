@@ -1607,13 +1607,27 @@
 	}
 }
 
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < _IPHONE_7_0
 - (void)locationManager:(CLLocationManager *)manager
     didUpdateToLocation:(CLLocation *)newLocation
            fromLocation:(CLLocation *)oldLocation {
 	NSLog(@"%s", __PRETTY_FUNCTION__);
-    
     self.currentLocation=newLocation;
+    
 }
+#else
+- (void)locationManager:(CLLocationManager *)manager
+     didUpdateLocations:(NSArray *)locations{
+    NSLog(@"%s", __PRETTY_FUNCTION__);
+    CLLocation*newLocation=[locations lastObject];
+    self.currentLocation=newLocation;
+    
+}
+
+
+#endif
+
 #define kLocationFetchTimeout 5
 - (void)locationManager:(CLLocationManager *)manager
        didFailWithError:(NSError *)error {
