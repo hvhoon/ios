@@ -771,7 +771,12 @@
     NSURL *url = [NSURL URLWithString:urlString];
     __weak ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
     
+    NSLog(@"Now I am in the Background photo function");
+    
     [request setCompletionBlock:^{
+        
+        NSLog(@"Finally I'm in the completion block for that request.  Next up getting the weather");
+        
         NSError* error;
         NSString *weather=nil;
         NSString *time=nil;
@@ -798,6 +803,8 @@
         BG.timeOfDay=time;
         BG.weatherCondition=weather;
         
+        NSLog(@"Just finished getting the weather");
+        
         // Pull image from Flickr
         [[BGFlickrManager sharedManager] randomPhotoRequest:^(FlickrRequestInfo * flickrRequestInfo, NSError * error) {
             
@@ -813,7 +820,7 @@
 
             }
             
-        
+            NSLog(@"Got a response from the Flickr API");
         /*
         UIColor* filterViewColor = [dominantColor colorWithAlphaComponent:0.8];
             
