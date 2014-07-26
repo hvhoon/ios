@@ -727,12 +727,16 @@
 -(void)LocationAcquired{
     [self refresh];
     
+    NSLog(@"Inside Location Acquired");
+    
     CLGeocoder * geoCoder = [[CLGeocoder alloc] init];
     CLLocation *newLocation=[[CLLocation alloc]initWithLatitude:[[BeagleManager SharedInstance]currentLocation].coordinate.latitude longitude:[[BeagleManager SharedInstance]currentLocation].coordinate.longitude];
     
     [geoCoder reverseGeocodeLocation:newLocation completionHandler:^(NSArray *placemarks, NSError *error) {
         
+        NSLog(@"Inside the Reverse Geocoding block");
         if(!error) {
+            NSLog(@"On no error returned from the block, load background image and city name");
             BeagleManager *BG=[BeagleManager SharedInstance];
             BG.placemark=[placemarks objectAtIndex:0];
             [self retrieveLocationAndUpdateBackgroundPhoto];
@@ -1676,7 +1680,7 @@
     
 	dispatch_async(dispatch_get_main_queue(), ^{
         
-        NSLog(@"Did we even get in here?");
+        NSLog(@"Inside the dispatch_async that calls 'Location Acquired'");
         [self LocationAcquired];
 	});
 }
