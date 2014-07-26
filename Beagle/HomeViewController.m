@@ -1676,6 +1676,7 @@
     
 	dispatch_async(dispatch_get_main_queue(), ^{
         
+        NSLog(@"Did we even get in here?");
         [self LocationAcquired];
 	});
 }
