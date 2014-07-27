@@ -769,7 +769,8 @@
     NSString *urlString=[NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f",BG.placemark.location.coordinate.latitude,BG.placemark.location.coordinate.longitude];
     urlString = [urlString stringByReplacingOccurrencesOfString:@" " withString:@""];
     NSURL *url = [NSURL URLWithString:urlString];
-    __weak ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+    
+    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
     
     NSLog(@"Now I am in the Background photo function");
     
