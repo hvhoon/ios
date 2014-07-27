@@ -346,7 +346,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4UB-up-buc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="766" y="-529"/>
+            <point key="canvasLocation" x="994" y="-544"/>
         </scene>
         <!--Notifications View Controller-->
         <scene sceneID="27z-UY-rOj">
@@ -393,16 +393,16 @@
                                     <constraint firstAttribute="width" constant="149" id="eef-rj-Xnu"/>
                                 </constraints>
                             </imageView>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="GqQ-4M-5Oh">
-                                <rect key="frame" x="116" y="265" width="37" height="37"/>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="GqQ-4M-5Oh">
+                                <rect key="frame" x="142" y="30" width="20" height="20"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" red="0.21520465353260865" green="0.21520465353260865" blue="0.21520465353260865" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="dR7-UU-LV5" firstAttribute="leading" secondItem="90f-oJ-SVu" secondAttribute="leading" constant="60" id="Kwj-y3-X8t"/>
-                            <constraint firstItem="GqQ-4M-5Oh" firstAttribute="top" secondItem="90f-oJ-SVu" secondAttribute="top" constant="265" id="WaL-4d-sji"/>
-                            <constraint firstItem="GqQ-4M-5Oh" firstAttribute="leading" secondItem="90f-oJ-SVu" secondAttribute="leading" constant="116" id="cb1-PZ-Vb5"/>
+                            <constraint firstItem="GqQ-4M-5Oh" firstAttribute="top" secondItem="90f-oJ-SVu" secondAttribute="top" constant="30" id="WaL-4d-sji"/>
+                            <constraint firstItem="GqQ-4M-5Oh" firstAttribute="leading" secondItem="90f-oJ-SVu" secondAttribute="leading" constant="142" id="cb1-PZ-Vb5"/>
                             <constraint firstItem="dR7-UU-LV5" firstAttribute="top" secondItem="90f-oJ-SVu" secondAttribute="top" constant="242" id="fxf-U9-Q1d"/>
                         </constraints>
                     </view>
