@@ -265,6 +265,8 @@
     self.imageDownloadsInProgress=nil;
 }
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
+    
+    [Appsee addEvent:@"Offline Notification Received"];
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
 
     if(!hideInAppNotification && notifObject.notifType==1){

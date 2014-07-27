@@ -94,6 +94,7 @@
 }
 
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
+    [Appsee addEvent:@"Offline Notification Received"];
     [self getUserNotifications];
 }
 
