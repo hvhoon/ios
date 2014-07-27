@@ -69,6 +69,7 @@
     
     if([[Reachability reachabilityForInternetConnection]currentReachabilityStatus]!=0){
         [self getUserNotifications];
+        [_notificationSpinnerView startAnimating];
         
     }else{
         [_notificationSpinnerView stopAnimating];
