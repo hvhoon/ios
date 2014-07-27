@@ -43,7 +43,6 @@ void uncaughtExceptionHandler(NSException *exception) {
     
     // Start AppSee analytics
     [Appsee start:@"d4f6b6daba7e4c3ca8b7ad040c2edaa3"];
-    [Appsee addEvent:@"App Started"];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = initViewController;
