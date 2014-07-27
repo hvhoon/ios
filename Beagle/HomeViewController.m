@@ -728,12 +728,16 @@
 -(void)LocationAcquired{
     [self refresh];
     
+    NSLog(@"Inside Location Acquired");
+    
     CLGeocoder * geoCoder = [[CLGeocoder alloc] init];
     CLLocation *newLocation=[[CLLocation alloc]initWithLatitude:[[BeagleManager SharedInstance]currentLocation].coordinate.latitude longitude:[[BeagleManager SharedInstance]currentLocation].coordinate.longitude];
     
     [geoCoder reverseGeocodeLocation:newLocation completionHandler:^(NSArray *placemarks, NSError *error) {
         
+        NSLog(@"Inside the Reverse Geocoding block");
         if(!error) {
+            NSLog(@"On no error returned from the block, load background image and city name");
             BeagleManager *BG=[BeagleManager SharedInstance];
             BG.placemark=[placemarks objectAtIndex:0];
             [self retrieveLocationAndUpdateBackgroundPhoto];
@@ -815,6 +819,8 @@
         BG.timeOfDay=time;
         BG.weatherCondition=weather;
         
+        NSLog(@"Just finished getting the weather");
+        
         // Pull image from Flickr
         [[BGFlickrManager sharedManager] randomPhotoRequest:^(FlickrRequestInfo * flickrRequestInfo, NSError * error) {
             
@@ -830,7 +836,7 @@
                 
             }
             
-            
+         
             /*
              UIColor* filterViewColor = [dominantColor colorWithAlphaComponent:0.8];
              
@@ -1684,6 +1690,7 @@
     
 	dispatch_async(dispatch_get_main_queue(), ^{
         
+        NSLog(@"Inside the dispatch_async that calls 'Location Acquired'");
         [self LocationAcquired];
 	});
 }
