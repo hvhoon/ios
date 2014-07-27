@@ -770,7 +770,7 @@
     urlString = [urlString stringByReplacingOccurrencesOfString:@" " withString:@""];
     NSURL *url = [NSURL URLWithString:urlString];
     
-    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+    __weak ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
     
     NSLog(@"Now I am in the Background photo function");
     
