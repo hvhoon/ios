@@ -69,7 +69,6 @@
     
     if([[Reachability reachabilityForInternetConnection]currentReachabilityStatus]!=0){
         [self getUserNotifications];
-        [_notificationSpinnerView startAnimating];
         
     }else{
         [_notificationSpinnerView stopAnimating];
@@ -90,6 +89,8 @@
     _notificationsManager=[[ServerManager alloc]init];
     _notificationsManager.delegate=self;
     [_notificationsManager getNotifications];
+    [_notificationSpinnerView startAnimating];
+
 
 }
 
@@ -125,7 +126,6 @@
     _unreadUpdateView.hidden=YES;
     _notification_BlankImageView.hidden=YES;
     
-    [_notificationSpinnerView startAnimating];
 	// Do any additional setup after loading the view.
     
 }
