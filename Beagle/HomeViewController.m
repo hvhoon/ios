@@ -747,19 +747,8 @@
         
         NSURLRequest *request = [[NSURLRequest alloc] initWithURL: url];
         NSOperationQueue *queue = [[NSOperationQueue alloc] init];
-        [NSURLConnection sendAsynchronousRequest:request queue:queue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error)
-         {
-             if ([data length] > 0 && error == nil){
+        [NSURLConnection sendAsynchronousRequest:request queue:queue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                  [self performSelectorOnMainThread:@selector(weatherMapReceivedData:) withObject:data waitUntilDone:NO];
-                 NSLog(@"Got weather data");
-             }
-             else {
-                 NSLog(@"error=%@",[error description]);
-                 [[BGFlickrManager sharedManager] defaultStockPhoto:^(UIImage * photo) {
-                     [self crossDissolvePhotos:photo withTitle:@"Hello"];
-                 }];
-
-             }
          }];
 }
 
@@ -771,8 +760,8 @@
     NSDictionary* weatherDictionary = [[[NSString alloc] initWithData:data
                                                     encoding:NSUTF8StringEncoding] JSONValue];
 
-        NSString *weather=nil;
-        NSString *time=nil;
+        NSString *weather=@"Clear";
+        NSString *time=@"d";
         
         NSDictionary *current_observation=[weatherDictionary objectForKey:@"weather"];
         
@@ -787,8 +776,11 @@
         time = ([time isEqualToString:@"d"]) ? @"day": @"night";
         
         // Assigning the time of day and the weather
-        BG.timeOfDay=time;
-        BG.weatherCondition=weather;
+        if (time && weather) {
+            BG.timeOfDay=time;
+            BG.weatherCondition=weather;
+        }
+    
         
         NSLog(@"Time of day: %@, Weather Conditions: %@", time, weather);
         
