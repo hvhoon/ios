@@ -735,9 +735,13 @@
     
     BeagleManager *BG=[BeagleManager SharedInstance];
     
+    NSLog(@"Getting ready to update the cover image");
+    
     // Setup string to get weather conditions
-    NSString *urlString=[NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f",BG.placemark.location.coordinate.latitude,BG.placemark.location.coordinate.longitude];
+    NSString *urlString=[NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&APPID=%@",BG.placemark.location.coordinate.latitude,BG.placemark.location.coordinate.longitude, openWeatherAPIKey];
     urlString = [urlString stringByReplacingOccurrencesOfString:@" " withString:@""];
+    
+    NSLog(@"Weather request:%@", urlString);
 
     NSURL *url=[NSURL URLWithString:[urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         
@@ -746,11 +750,10 @@
         [NSURLConnection sendAsynchronousRequest:request queue:queue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error)
          {
              if ([data length] > 0 && error == nil){
-                 
                  [self performSelectorOnMainThread:@selector(weatherMapReceivedData:) withObject:data waitUntilDone:NO];
-             }else if ([data length] == 0 && error == nil){
-             }else if (error != nil && error.code == NSURLErrorTimedOut){ //used this NSURLErrorTimedOut from foundation error responses
-             }else if (error != nil){
+                 NSLog(@"Got weather data");
+             }
+             else {
                  NSLog(@"error=%@",[error description]);
                  [[BGFlickrManager sharedManager] defaultStockPhoto:^(UIImage * photo) {
                      [self crossDissolvePhotos:photo withTitle:@"Hello"];
@@ -787,7 +790,7 @@
         BG.timeOfDay=time;
         BG.weatherCondition=weather;
         
-        NSLog(@"Just finished getting the weather");
+        NSLog(@"Time of day: %@, Weather Conditions: %@", time, weather);
         
         // Pull image from Flickr
         [[BGFlickrManager sharedManager] randomPhotoRequest:^(FlickrRequestInfo * flickrRequestInfo, NSError * error) {
