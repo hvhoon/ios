@@ -180,9 +180,9 @@ void uncaughtExceptionHandler(NSException *exception) {
 }
 -(void)handleOfflineNotifications:(NSDictionary*)userInfo{
     
-        // app was just brought from background to foreground
-        NSLog(@"userInfo=%@",userInfo);
-        
+    // app was just brought from background to foreground
+    NSLog(@"userInfo=%@",userInfo);
+    
         if([[[userInfo valueForKey:@"p"] valueForKey:@"nty"]integerValue]==CHAT_TYPE){
 //            [_notificationServerManager requestInAppNotificationForPosts:[[[userInfo valueForKey:@"p"] valueForKey:@"cid"]integerValue]notifType:2];
             

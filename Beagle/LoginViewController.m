@@ -45,7 +45,7 @@
     [NextArrow setHidden:YES];
     [activityIndicatorView setHidden:NO];
     [activityIndicatorView startAnimating];
-    
+    [Appsee addEvent:@"Login Attempt"];
 
     _facebookSession=[[FacebookLoginSession alloc]init];
     _facebookSession.delegate=self;

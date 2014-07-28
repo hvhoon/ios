@@ -9,7 +9,7 @@
 #define OBJECTIVE_FLICKR_API_KEY @"5cb1600f86fd1f249ca2f1936e5e9e34"
 #define OBJECTIVE_FLICKR_API_SHARED_SECRET @"6523fc3819c667e3"
 
-#define WeatherUndergroundApiKey @"5706a66cb7258dd4"
+#define openWeatherAPIKey @"a349ae9dd144770e6573c89b2350e8ac"
 
 //Location
 #define kLocationInvalidateCacheTimeoutDurationInSeconds 1800 //30min (60 * 30)

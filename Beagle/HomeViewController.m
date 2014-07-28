@@ -20,12 +20,13 @@
 #import "EventInterestFilterBlurView.h"
 #import "FriendsViewController.h"
 #import "ExpressInterestPreview.h"
+#import "JSON.h"
 #define REFRESH_HEADER_HEIGHT 70.0f
 #define stockCroppingCheck 0
 #define kTimerIntervalInSeconds 10
 #define rowHeight 164
 #define kLeaveInterest 23
-#define waitBeforeLoadingDefaultImage 0.0f
+#define waitBeforeLoadingDefaultImage 20.0f
 
 @interface HomeViewController ()<UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,HomeTableViewCellDelegate,ServerManagerDelegate,IconDownloaderDelegate,BlankHomePageViewDelegate,EventInterestFilterBlurViewDelegate,InAppNotificationViewDelegate>{
     UIView *topNavigationView;
@@ -189,8 +190,7 @@
 #endif
 
     [self addCityName:@"Hello"];
-    
-    _timer = [NSTimer scheduledTimerWithTimeInterval:15.0
+    _timer = [NSTimer scheduledTimerWithTimeInterval:waitBeforeLoadingDefaultImage
                                                   target: self
                                                 selector:@selector(defaultLocalImage)
                                                 userInfo: nil repeats:NO];
@@ -246,20 +246,11 @@
 
 -(void)viewDidDisappear:(BOOL)animated{
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kRemoteNotificationReceivedNotification object:nil];
-    
-    
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationForInterestPost object:nil];
-    
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationForInterestPost object:nil];
-
-    
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ECSlidingViewTopDidAnchorLeft" object:nil];
-    
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ECSlidingViewTopDidAnchorRight" object:nil];
-
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"HomeViewRefresh" object:nil];
-
-    
 }
 -(void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kBeagleBadgeCount object:nil];
@@ -274,6 +265,8 @@
     self.imageDownloadsInProgress=nil;
 }
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
+    
+    [Appsee addEvent:@"Offline Notification Received"];
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
 
     if(!hideInAppNotification && notifObject.notifType==1){
@@ -337,10 +330,7 @@
                         data.activityDesc=notification.activity.activityDesc;
                         data.endActivityDate=notification.activity.endActivityDate;
                         data.startActivityDate=notification.activity.startActivityDate;
-
                     }
-                    
-
                     break;
                 }
             }
@@ -602,7 +592,6 @@
 - (void)notificationView:(InAppNotificationView *)inAppNotification didDismissWithButtonIndex:(NSInteger)buttonIndex{
     
     NSLog(@"Button Index = %ld", (long)buttonIndex);
-//    [BeagleUtilities updateBadgeInfoOnTheServer:inAppNotification.notification.notificationId];
 }
 
 -(void)UpdateBadgeCount{
@@ -657,18 +646,6 @@
         [self LocationAcquired];
         
     }
-    
-//   else if(!isSixty && !isMoreThan50_M){
-//    if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
-//        isPushAuto=TRUE;
-//        [self LocationAcquired];
-//        
-//    }
-//    else{
-//        [self startStandardUpdates];
-//    }
-//    }
-
 }
 
 
@@ -737,11 +714,8 @@
             BG.placemark=[placemarks objectAtIndex:0];
             [self retrieveLocationAndUpdateBackgroundPhoto];
         }
-        else{
+        else
             NSLog(@"reverseGeocodeLocation: %@", error.description);
-            [self performSelector:@selector(defaultLocalImage) withObject:nil afterDelay:waitBeforeLoadingDefaultImage];
-
-        }
     }];
     
 }
@@ -761,23 +735,34 @@
     
     BeagleManager *BG=[BeagleManager SharedInstance];
     
-    // Setup string to get weather conditions
-    NSString *urlString=[NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f",BG.placemark.location.coordinate.latitude,BG.placemark.location.coordinate.longitude];
-    urlString = [urlString stringByReplacingOccurrencesOfString:@" " withString:@""];
-    NSURL *url = [NSURL URLWithString:urlString];
-    __weak ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+    NSLog(@"Getting ready to update the cover image");
     
-    [request setCompletionBlock:^{
-        NSError* error;
-        NSString *weather=nil;
-        NSString *time=nil;
+    // Setup string to get weather conditions
+    NSString *urlString=[NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&APPID=%@",BG.placemark.location.coordinate.latitude,BG.placemark.location.coordinate.longitude, openWeatherAPIKey];
+    urlString = [urlString stringByReplacingOccurrencesOfString:@" " withString:@""];
+    
+    NSLog(@"Weather request:%@", urlString);
+
+    NSURL *url=[NSURL URLWithString:[urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         
-        // Pull weather information
-        NSString *jsonString = [request responseString];
+        NSURLRequest *request = [[NSURLRequest alloc] initWithURL: url];
+        NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+        [NSURLConnection sendAsynchronousRequest:request queue:queue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                 [self performSelectorOnMainThread:@selector(weatherMapReceivedData:) withObject:data waitUntilDone:NO];
+         }];
+}
+
+-(void)weatherMapReceivedData:(NSData*)data{
+    
+    // Pull weather information
+
+    BeagleManager *BG=[BeagleManager SharedInstance];
+    NSDictionary* weatherDictionary = [[[NSString alloc] initWithData:data
+                                                    encoding:NSUTF8StringEncoding] JSONValue];
+
+        NSString *weather=@"Clear";
+        NSString *time=@"d";
         
-       NSLog(@"Request=%@", jsonString);
-        
-        NSDictionary* weatherDictionary = [NSJSONSerialization JSONObjectWithData:[jsonString dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:&error];
         NSDictionary *current_observation=[weatherDictionary objectForKey:@"weather"];
         
         // Parsing out the weather and time of day info.
@@ -791,8 +776,13 @@
         time = ([time isEqualToString:@"d"]) ? @"day": @"night";
         
         // Assigning the time of day and the weather
-        BG.timeOfDay=time;
-        BG.weatherCondition=weather;
+        if (time && weather) {
+            BG.timeOfDay=time;
+            BG.weatherCondition=weather;
+        }
+    
+        
+        NSLog(@"Time of day: %@, Weather Conditions: %@", time, weather);
         
         // Pull image from Flickr
         [[BGFlickrManager sharedManager] randomPhotoRequest:^(FlickrRequestInfo * flickrRequestInfo, NSError * error) {
@@ -806,99 +796,17 @@
                 [[BGFlickrManager sharedManager] defaultStockPhoto:^(UIImage * photo) {
                     [self crossDissolvePhotos:photo withTitle:@"Hello"];
                 }];
-
-            }
-            
-        
-        /*
-        UIColor* filterViewColor = [dominantColor colorWithAlphaComponent:0.8];
-            
-        CGFloat hue, saturation, brightness, alpha, r, g, b, a;
-        
-        CGFloat lowSaturation = 0.1;
-        CGFloat darkColor = 0.4;
-        CGFloat mediumColor = 0.5;
-        CGFloat lightColor = 0.9;
-        CGFloat veryLightColor = 0.9;
-            
-        UIColor *harishVeryLightColor, *harishLightColor, *harishDarkColor, *harishMediumColor;
-            
-            // Getting these values
-            if([dominantColor getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha]) {
-                harishVeryLightColor = ([UIColor colorWithHue:hue saturation:lowSaturation brightness:veryLightColor alpha:alpha]);
-                harishLightColor = ([UIColor colorWithHue:hue saturation:saturation brightness:lightColor alpha:alpha]);
-                harishDarkColor = ([UIColor colorWithHue:hue saturation:saturation brightness:darkColor alpha:alpha]);
-                harishMediumColor = ([UIColor colorWithHue:hue saturation:saturation brightness:mediumColor alpha:alpha]);
                 
-                if([dominantColor getRed:&r green:&g blue:&b alpha:&a]) {
-                    NSLog(@"Dominant Color = R:%i, G:%i, B:%i, Brightness:%f", (int)(r*255.0), (int)(g*255.0), (int)(b*255.0), brightness);
-        
-                }
             }
-        // == TESTING OF COLOR PALETTE ==
-        // Setup Canvas
-        UIView* canvas = [[UIView alloc] initWithFrame:CGRectMake(0, 115, 320, 41)];
-        canvas.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.7];
-        [self.view addSubview:canvas];
-        
-        // Sample 1: Dominant Color
-        UIView* dominantSquare = [[UIView alloc] initWithFrame:CGRectMake(16, 123, 25, 25)];
-        dominantSquare.backgroundColor = dominantColor;
-        [self.view addSubview:dominantSquare];
-            
-        // Sample 2: Very light variation of Dominant color using Brightness
-        UIView* harishVeryLightSquare = [[UIView alloc] initWithFrame:CGRectMake(16+25+25, 123, 25, 25)];
-        harishVeryLightSquare.backgroundColor = harishVeryLightColor;
-        [self.view addSubview:harishVeryLightSquare];
-        
-        // Sample 3: Light variation of Dominant color using Brightness
-        UIView* harishLightSquare = [[UIView alloc] initWithFrame:CGRectMake(16+25+25+25+8, 123, 25, 25)];
-        harishLightSquare.backgroundColor = harishLightColor;
-        [self.view addSubview:harishLightSquare];
-            
-        // Sample 4: Medium variation of Dominant color using Brightness
-        UIView* harishMediumSquare = [[UIView alloc] initWithFrame:CGRectMake(16+25+25+25+8+25+8, 123, 25, 25)];
-        harishMediumSquare.backgroundColor = harishMediumColor;
-        [self.view addSubview:harishMediumSquare];
-        
-        // Sample 5: Dark variation of Dominant color using Brightness
-        UIView* harishDarkSquare = [[UIView alloc] initWithFrame:CGRectMake(16+25+25+25+8+25+8+25+8, 123, 25, 25)];
-        harishDarkSquare.backgroundColor = harishDarkColor;
-        [self.view addSubview:harishDarkSquare];
-        
-        // Sample 6: Light variation of Dominant color by modifying RGB values
-        UIView* lightSquare = [[UIView alloc] initWithFrame:CGRectMake(16+25+25+25+8+25+25+8+25+8+25+8, 123, 25, 25)];
-        lightSquare.backgroundColor = [BeagleUtilities lighterColorForColor:dominantColor];
-        [self.view addSubview:lightSquare];
-        
-        // Sample 7: Dark variation of Dominant color by modifying RBG values
-        UIView* darkSquare = [[UIView alloc] initWithFrame:CGRectMake(16+25+25+25+8+25+25+8+25+8+25+8+25+8, 123, 25, 25)];
-        darkSquare.backgroundColor = [BeagleUtilities darkerColorForColor:dominantColor];
-        [self.view addSubview:darkSquare];
-        // == END TESTING OF COLOR PALETTE
-        */
-        
-        // Add the city name and the filter pane to the top section
-        [self addCityName:[BG.placemark.addressDictionary objectForKey:@"City"]];
-        [self.tableView reloadData];
-    
-        }];
-    
-    }];
-    
-    [request setFailedBlock:^{
-        NSError *error = [request error];
-        NSLog(@"error=%@",[error description]);
-        [[BGFlickrManager sharedManager] defaultStockPhoto:^(UIImage * photo) {
-            [self crossDissolvePhotos:photo withTitle:@"Hello"];
-        }];
 
-    }];
-    
-
-    [request startAsynchronous];
-    
+            // Add the city name and the filter pane to the top section
+            [self addCityName:[BG.placemark.addressDictionary objectForKey:@"City"]];
+            [self.tableView reloadData];
+            
+        }];
+        
 }
+
 - (void) crossDissolvePhotos:(UIImage *) photo withTitle:(NSString *) title {
     
     [self.timer invalidate];
@@ -920,17 +828,11 @@
         bottomNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockBottomImage2];
         
 #else
-        
-        
         [[NSUserDefaults standardUserDefaults] setValue:[NSDate date] forKey:@"HourlyUpdate"];
-        
         UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
         stockImageView.image=photo;
         [stockImageView setContentMode:UIViewContentModeScaleAspectFit];
         stockImageView.image = photo;
-        
-
-        
 #endif
         
     } completion:NULL];
@@ -1613,13 +1515,27 @@
 	}
 }
 
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < _IPHONE_7_0
 - (void)locationManager:(CLLocationManager *)manager
     didUpdateToLocation:(CLLocation *)newLocation
            fromLocation:(CLLocation *)oldLocation {
 	NSLog(@"%s", __PRETTY_FUNCTION__);
-    
     self.currentLocation=newLocation;
+    
 }
+#else
+- (void)locationManager:(CLLocationManager *)manager
+     didUpdateLocations:(NSArray *)locations{
+    NSLog(@"%s", __PRETTY_FUNCTION__);
+    CLLocation*newLocation=[locations lastObject];
+    self.currentLocation=newLocation;
+    
+}
+
+
+#endif
+
 #define kLocationFetchTimeout 5
 - (void)locationManager:(CLLocationManager *)manager
        didFailWithError:(NSError *)error {
@@ -1629,9 +1545,8 @@
 	if (error.code == kCLErrorDenied) {
 		[locationManager stopUpdatingLocation];
         [self refresh];
-        [self performSelector:@selector(defaultLocalImage) withObject:nil afterDelay:waitBeforeLoadingDefaultImage];
-
-	} else if (error.code == kCLErrorLocationUnknown) {
+	}
+    else if (error.code == kCLErrorLocationUnknown) {
 		// todo: retry?
 		// set a timer for five seconds to cycle location, and if it fails again, bail and tell the user.
         
@@ -1641,10 +1556,10 @@
         }else{
             attempts=0;
             [locationManager stopUpdatingLocation];
-            [self performSelector:@selector(defaultLocalImage) withObject:nil afterDelay:waitBeforeLoadingDefaultImage];
             [self refresh];
         }
-	} else {
+	}
+    else {
 		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Where's Waldo?"
 		                                                message:[error description]
 		                                               delegate:nil
@@ -1661,7 +1576,6 @@
     locationManager.delegate=nil;
     
 	dispatch_async(dispatch_get_main_queue(), ^{
-        
         [self LocationAcquired];
 	});
 }

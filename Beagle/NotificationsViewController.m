@@ -89,10 +89,13 @@
     _notificationsManager=[[ServerManager alloc]init];
     _notificationsManager.delegate=self;
     [_notificationsManager getNotifications];
+    [_notificationSpinnerView startAnimating];
+
 
 }
 
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
+    [Appsee addEvent:@"Offline Notification Received"];
     [self getUserNotifications];
 }
 
@@ -123,7 +126,6 @@
     _unreadUpdateView.hidden=YES;
     _notification_BlankImageView.hidden=YES;
     
-    [_notificationSpinnerView startAnimating];
 	// Do any additional setup after loading the view.
     
 }
