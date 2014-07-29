@@ -534,6 +534,16 @@ static NSString * const CellIdentifier = @"cell";
         _chatPostManager.delegate=self;
         [_chatPostManager postAComment:self.interestActivity.activityId desc:[self.contentWrapper.inputView.textView text]];
         
+    }else{
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Blank Post!!!"
+                                                            message:@"C'mon you can do better"
+                                                           delegate:nil
+                                                  cancelButtonTitle:nil
+                                                  otherButtonTitles:@"Ok", nil];
+            [alert show];
+            
+        }
     }
 }
 

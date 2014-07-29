@@ -41,6 +41,7 @@ enum Weeks {
     NSInteger timeIndex;
     NSInteger visibilityIndex;
     NSTimer *timer;
+    NSInteger locationType;
 }
 @property (nonatomic, strong) NSMutableIndexSet *optionIndices;
 @property(nonatomic, strong) EventTimeBlurView *blrTimeView;
@@ -249,6 +250,20 @@ enum Weeks {
     
     // Setting the visibility text all the way at the end
     [locationFilterButton setTitle:visibilityText forState:UIControlStateNormal];
+
+    
+    if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude==0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude==0.0f){
+        locationType=1;
+        [(AppDelegate *)[[UIApplication sharedApplication] delegate] startStandardUpdates];
+        return;
+    }
+    
+    if([self.bg_activity.city length]==0 && [self.bg_activity.state length]==0){
+        
+        locationType=1;
+        //reverse geocode
+        [self reverseGeocode];
+    }
 
 }
 	// Do any additional setup after loading the view.
@@ -550,6 +565,17 @@ enum Weeks {
 }
 -(void)createButtonClicked:(id)sender{
     
+    if(locationType==1){
+        if([self.bg_activity.city length]==0 && [self.bg_activity.state length]==0){
+            
+            //reverse geocode
+            [self reverseGeocode];
+        }
+
+        return;
+
+    }
+    
     if([descriptionTextView.text length]==0){
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Missing Description"
                                                         message:@"Your interest must have a description."
@@ -624,7 +650,22 @@ enum Weeks {
             BG.placemark=[placemarks objectAtIndex:0];
             bg_activity.state=[[BeagleManager SharedInstance]placemark].administrativeArea;
             bg_activity.city=[[[BeagleManager SharedInstance]placemark].addressDictionary objectForKey:@"City"];
-            [self createButtonClicked:nil];
+            if(locationType!=1)
+                [self createButtonClicked:nil];
+            else if (locationType==1){
+                NSString *visibilityText=nil;
+                switch (visibilityIndex) {
+                    case 2:
+                        visibilityText = [NSString stringWithFormat:@"We'll tell your friends in %@", self.bg_activity.city];
+                        break;
+                    case 3:
+                        visibilityText = @"We'll tell the friends you selected";
+                    default:
+                        visibilityText = [NSString stringWithFormat:@"We'll tell your friends in %@", self.bg_activity.city];
+                        break;
+                }
+            [locationFilterButton setTitle:visibilityText forState:UIControlStateNormal];
+            }
             
         }
         else{
@@ -687,15 +728,21 @@ enum Weeks {
 
 -(void)textViewDidChange:(UITextView *)textView{
     
-    if([[textView text]length]!=0){
-        
-        [self.navigationItem.rightBarButtonItem setTintColor:[BeagleUtilities returnBeagleColor:13]];
-        self.navigationItem.rightBarButtonItem.enabled=YES;
+    [self.navigationItem.rightBarButtonItem setTintColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA]];
+    self.navigationItem.rightBarButtonItem.enabled=NO;
 
-    }
-    else {
-        [self.navigationItem.rightBarButtonItem setTintColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA]];
-        self.navigationItem.rightBarButtonItem.enabled=NO;
+    if([BeagleUtilities checkIfTheTextIsBlank:[textView text]]){
+        
+      if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
+          
+        if([self.bg_activity.city length]!=0 && [self.bg_activity.state length]!=0){
+            
+            [self.navigationItem.rightBarButtonItem setTintColor:[BeagleUtilities returnBeagleColor:13]];
+            self.navigationItem.rightBarButtonItem.enabled=YES;
+            locationType=2;
+
+        }
+      }
 
     }
 
