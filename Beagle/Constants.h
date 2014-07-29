@@ -51,6 +51,8 @@
 #define kUpdateNotificationStack @"UpdateNotificationStack"
 #define kUpdateHomeScreenAndNotificationStack @"UpdateHomeScreenAndNotificationStack"
 #define kRemoteNotificationReceivedNotification @"RemoteNotificationReceivedWhileRunning"
+#define kErrorToGetLocation @"ErrorLocation"
+#define kLocationUpdateReceived  @"LocationSuccess"
 #define kNotificationForInterestPost @"InAppInterestPostNotification"
 #define kNotificationHomeAutoRefresh @"NotificationHomeAutoRefresh"
 #define localHost @"http://localhost:3000/"

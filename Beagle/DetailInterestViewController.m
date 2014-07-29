@@ -509,8 +509,9 @@ static NSString * const CellIdentifier = @"cell";
     [self.navigationController presentViewController:activityNavigationController animated:YES completion:nil];
 
 }
+
 -(void)postClicked:(id)sender{
-    if([[self.contentWrapper.inputView.textView text]length]!=0){
+    if([BeagleUtilities checkIfTheTextIsBlank:[self.contentWrapper.inputView.textView text]]){
         
         [Appsee addEvent:@"Post Chat"];
         
@@ -1652,7 +1653,9 @@ static NSString * const CellIdentifier = @"cell";
             [notificationDictionary setObject:notifObject forKey:@"notify"];
             NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
             [[NSNotificationCenter defaultCenter] postNotification:notification];
-
+            if([self.navigationItem.rightBarButtonItem.title isEqualToString:@"Done"]){
+                  [self doneButtonClicked:nil];
+             }
             [self.navigationController popViewControllerAnimated:YES];
         }
 }

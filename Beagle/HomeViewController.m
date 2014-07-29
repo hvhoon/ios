@@ -40,7 +40,6 @@
     NSInteger categoryFilterType;
     NSMutableDictionary *filterActivitiesOnHomeScreen;
     BOOL hideInAppNotification;
-    NSInteger attempts;
     NSTimer *timer;
 }
 @property(nonatomic,strong)EventInterestFilterBlurView*filterBlurView;
@@ -60,9 +59,7 @@
 @implementation HomeViewController
 @synthesize homeActivityManager=_homeActivityManager;
 @synthesize imageDownloadsInProgress;
-@synthesize currentLocation;
 @synthesize filterActivitiesOnHomeScreen;
-@synthesize _locationManager = locationManager;
 @synthesize interestUpdateManager=_interestUpdateManager;
 @synthesize timer=_timer;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -89,6 +86,11 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBackgroundInNotification:) name:kRemoteNotificationReceivedNotification object:Nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (LocationAcquired) name:kLocationUpdateReceived object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (refresh) name:kErrorToGetLocation object:nil];
+
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(postInAppNotification:) name:kNotificationForInterestPost object:Nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(disableInAppNotification) name:@"ECSlidingViewTopDidAnchorLeft" object:Nil];
@@ -234,7 +236,8 @@
         [self LocationAcquired];
     }
     else{
-        [self startStandardUpdates];
+        
+     [(AppDelegate *)[[UIApplication sharedApplication] delegate] startStandardUpdates];
     }
     isPushAuto=TRUE;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (updateEventsInTransitionFromBg_Fg) name:@"AutoRefreshEvents" object:nil];
@@ -251,6 +254,10 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ECSlidingViewTopDidAnchorLeft" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ECSlidingViewTopDidAnchorRight" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"HomeViewRefresh" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kLocationUpdateReceived object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kErrorToGetLocation object:nil];
+
 }
 -(void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kBeagleBadgeCount object:nil];
@@ -635,11 +642,17 @@
 }
 -(void)updateEventsInTransitionFromBg_Fg{
     
+    CLLocation *location=[(AppDelegate *)[[UIApplication sharedApplication] delegate] currentLocation];
+    CLLocationCoordinate2D coordinate=location.coordinate;
+    if(coordinate.latitude==0.0f && coordinate.longitude==0.0f){
+        [(AppDelegate *)[[UIApplication sharedApplication] delegate] startStandardUpdates];
+        return;
+    }
     BOOL isSixty=[BeagleUtilities hasBeenMoreThanSixtyMinutes];
     BOOL isMoreThan50_M=[BeagleUtilities LastDistanceFromLocationExceeds_50M];
     
     if((isSixty && isMoreThan50_M)||(isSixty && !isMoreThan50_M)){
-        [self startStandardUpdates];
+        [(AppDelegate *)[[UIApplication sharedApplication] delegate] startStandardUpdates];
     }
     else if(!isSixty && isMoreThan50_M){
         isPushAuto=TRUE;
@@ -1440,7 +1453,7 @@
                 [self LocationAcquired];
             }
             else{
-                [self startStandardUpdates];
+                [(AppDelegate *)[[UIApplication sharedApplication] delegate] startStandardUpdates];
             }
 
         }
@@ -1471,119 +1484,11 @@
     }
 }
 
-- (void)startStandardUpdates {
-    
-	if (nil == locationManager) {
-		locationManager = [[CLLocationManager alloc] init];
-	}
-    
-	locationManager.delegate = self;
-	locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-    
-	// Set a movement threshold for new events.
-	locationManager.distanceFilter = kCLLocationAccuracyThreeKilometers;
-    
-	[locationManager startUpdatingLocation];
-    
-	CLLocation *currentLoc = locationManager.location;
-	if (currentLoc) {
-		self.currentLocation = currentLoc;
-	}
-}
-- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
-	NSLog(@"%s", __PRETTY_FUNCTION__);
-	switch (status) {
-		case kCLAuthorizationStatusAuthorized:
-			NSLog(@"kCLAuthorizationStatusAuthorized");
-			[locationManager startUpdatingLocation];
-			break;
-		case kCLAuthorizationStatusDenied:
-			NSLog(@"kCLAuthorizationStatusDenied");
-        {
-            /*
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Oops!!!" message:@"Beagle can’t access your current location.\nTo view interests nearby, please turn on location services in  Settings under Location Services." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-            [alertView show];
-            */// Disable the post button.
-        }
-			break;
-		case kCLAuthorizationStatusNotDetermined:
-			NSLog(@"kCLAuthorizationStatusNotDetermined");
-			break;
-		case kCLAuthorizationStatusRestricted:
-			NSLog(@"kCLAuthorizationStatusRestricted");
-			break;
-	}
-}
 
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < _IPHONE_7_0
-- (void)locationManager:(CLLocationManager *)manager
-    didUpdateToLocation:(CLLocation *)newLocation
-           fromLocation:(CLLocation *)oldLocation {
-	NSLog(@"%s", __PRETTY_FUNCTION__);
-    self.currentLocation=newLocation;
-    
-}
-#else
-- (void)locationManager:(CLLocationManager *)manager
-     didUpdateLocations:(NSArray *)locations{
-    NSLog(@"%s", __PRETTY_FUNCTION__);
-    CLLocation*newLocation=[locations lastObject];
-    self.currentLocation=newLocation;
-    
-}
 
 
-#endif
 
-#define kLocationFetchTimeout 5
-- (void)locationManager:(CLLocationManager *)manager
-       didFailWithError:(NSError *)error {
-	NSLog(@"%s", __PRETTY_FUNCTION__);
-	NSLog(@"Error: %@", [error description]);
-    
-	if (error.code == kCLErrorDenied) {
-		[locationManager stopUpdatingLocation];
-        [self refresh];
-	}
-    else if (error.code == kCLErrorLocationUnknown) {
-		// todo: retry?
-		// set a timer for five seconds to cycle location, and if it fails again, bail and tell the user.
-        
-        if(attempts!=3){
-            attempts++;
-        [self performSelector:@selector(timeoutLocationFetch) withObject:nil afterDelay:kLocationFetchTimeout];
-        }else{
-            attempts=0;
-            [locationManager stopUpdatingLocation];
-            [self refresh];
-        }
-	}
-    else {
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Where's Waldo?"
-		                                                message:[error description]
-		                                               delegate:nil
-		                                      cancelButtonTitle:nil
-		                                      otherButtonTitles:@"Ok", nil];
-		[alert show];
-	}
-}
-- (void)setCurrentLocation:(CLLocation *)aCurrentLocation {
-	currentLocation = aCurrentLocation;
-    BeagleManager *BG=[BeagleManager SharedInstance];
-    BG.currentLocation=currentLocation;
-    [locationManager stopUpdatingLocation];
-    locationManager.delegate=nil;
-    
-	dispatch_async(dispatch_get_main_queue(), ^{
-        [self LocationAcquired];
-	});
-}
-
-- (void) timeoutLocationFetch {
-    NSLog(@"LocationService:timeout");
-    [locationManager startUpdatingLocation];
-}
 #pragma mark - detail Interest Selected 
 
 -(void)detailedInterestScreenRedirect:(NSInteger)index{
