@@ -1710,6 +1710,10 @@ static NSString * const CellIdentifier = @"cell";
 }
 
 -(void)dealloc{
+    
+    self.detailedInterestTableView.delegate = nil;
+    self.detailedInterestTableView = nil;
+    
     for (NSIndexPath *indexPath in [imageDownloadsInProgress allKeys]) {
         IconDownloader *d = [imageDownloadsInProgress objectForKey:indexPath];
         [d cancelDownload];
