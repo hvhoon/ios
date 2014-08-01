@@ -13,8 +13,10 @@
 #import "DetailInterestViewController.h"
 #import "FriendsViewController.h"
 #import "Reachability.h"
+#define checkingIfTheSpinnerIsStillAnimating 15.0f
 @interface NotificationsViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,IconDownloaderDelegate,TTTAttributedLabelDelegate,ServerManagerDelegate>{
-        NSInteger interestIndex;
+    NSInteger interestIndex;
+    NSTimer *timer;
 }
 @property(nonatomic,strong)ServerManager*notificationsManager;
 @property(nonatomic,strong)NSArray *listArray;
@@ -27,6 +29,7 @@
 @property(nonatomic,weak)IBOutlet UILabel*unreadCountLabel;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *topSpacingForBlankImage;
 @property (nonatomic, unsafe_unretained) CGFloat peekLeftAmount;
+@property(nonatomic, weak) NSTimer *timer;
 @end
 
 @implementation NotificationsViewController
@@ -36,6 +39,7 @@
 @synthesize imageDownloadsInProgress;
 @synthesize interestUpdateManager=_interestUpdateManager;
 @synthesize notificationTableView=_notificationTableView;
+@synthesize timer=_timer;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -68,6 +72,12 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getUserNotifications) name:kUpdateNotificationStack object:Nil];
     
     if([[Reachability reachabilityForInternetConnection]currentReachabilityStatus]!=0){
+        _timer = [NSTimer scheduledTimerWithTimeInterval:checkingIfTheSpinnerIsStillAnimating
+                                                  target: self
+                                                selector:@selector(stopNotificationSpinnerView)
+                                                userInfo: nil repeats:NO];
+
+        [_notificationSpinnerView startAnimating];
         [self getUserNotifications];
         
     }else{
@@ -89,7 +99,6 @@
     _notificationsManager=[[ServerManager alloc]init];
     _notificationsManager.delegate=self;
     [_notificationsManager getNotifications];
-    [_notificationSpinnerView startAnimating];
 
 
 }
@@ -128,6 +137,15 @@
     
 	// Do any additional setup after loading the view.
     
+}
+
+-(void)stopNotificationSpinnerView{
+    
+    if([_notificationSpinnerView isAnimating]){
+        [_notificationSpinnerView stopAnimating];
+    }
+    [_timer invalidate];
+
 }
 - (void)didReceiveMemoryWarning
 {
@@ -565,8 +583,10 @@
 
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
     
+    
     if(serverRequest==kServerCallGetNotifications){
-        
+        [_notificationSpinnerView stopAnimating];
+        [_timer invalidate];
         _notificationsManager.delegate = nil;
         [_notificationsManager releaseServerManager];
         _notificationsManager = nil;
@@ -587,7 +607,6 @@
                 NSArray *notifications=[response objectForKey:@"notifications"];
                 if (notifications != nil && [notifications class] != [NSNull class] && [notifications count] !=0) {
                     
-                    [_notificationSpinnerView stopAnimating];
                     
                     NSMutableArray *notificationsArray=[[NSMutableArray alloc]init];
                     for(id el in notifications){
@@ -677,6 +696,7 @@
         [_notificationsManager releaseServerManager];
         _notificationsManager = nil;
         [_notificationSpinnerView stopAnimating];
+        [_timer invalidate];
         _notificationTableView.hidden=YES;
         _notification_BlankImageView.hidden=NO;
         _unreadUpdateView.hidden=YES;
@@ -701,6 +721,7 @@
         _notificationsManager.delegate = nil;
         [_notificationsManager releaseServerManager];
         _notificationsManager = nil;
+        [_timer invalidate];
         [_notificationSpinnerView stopAnimating];
         _notificationTableView.hidden=YES;
         _notification_BlankImageView.hidden=NO;
