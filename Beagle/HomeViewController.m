@@ -567,10 +567,10 @@
         case SUGGESTED_ACTIVITY_CREATION_TYPE:
         {
             NSArray *beagle_happenarndu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_happenarndu"];
+                NSMutableArray *happenarnduArray=[NSMutableArray arrayWithArray:beagle_happenarndu];
+                [happenarnduArray addObject:notification.activity];
+                [self.filterActivitiesOnHomeScreen setObject:happenarnduArray forKey:@"beagle_happenarndu"];
 
-            NSMutableArray *happenarnduArray=[NSMutableArray arrayWithArray:beagle_happenarndu];
-            [happenarnduArray addObject:notification.activity];
-            [self.filterActivitiesOnHomeScreen setObject:happenarnduArray forKey:@"beagle_happenarndu"];
             
             if(notification.notificationType==SUGGESTED_ACTIVITY_CREATION_TYPE){
                 BOOL isFound=false;
@@ -2272,15 +2272,7 @@
     BeagleNotificationClass *notifObject=[[BeagleNotificationClass alloc]init];
     notifObject.activity=play;
     notifObject.notificationType=SUGGESTED_ACTIVITY_CREATION_TYPE;
-    
-    NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
-    [notificationDictionary setObject:notifObject forKey:@"notify"];
-    NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
-    
-
-
-    
+    [self updateHomeScreen:notifObject];
 }
 -(void)dismissCreateAnimationBlurView{
     [_overlayTimer invalidate];
@@ -2292,11 +2284,7 @@
     notifObject.activity=play;
     notifObject.notificationType=SUGGESTED_ACTIVITY_CREATION_TYPE;
     
-    NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
-    [notificationDictionary setObject:notifObject forKey:@"notify"];
-    NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
-    
+    [self updateHomeScreen:notifObject];
 }
 
 @end

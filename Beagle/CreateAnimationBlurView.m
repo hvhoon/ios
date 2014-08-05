@@ -19,6 +19,7 @@
 @property(nonatomic,weak)IBOutlet UILabel*friendsNotifyLabel;
 @property(nonatomic,weak)IBOutlet UILabel*joinChatInfoLabel;
 @property(nonatomic,weak)IBOutlet UIActivityIndicatorView*loadingIndicatorView;
+@property(nonatomic,weak)IBOutlet UIButton *backgroundButton;
 @end
 @implementation CreateAnimationBlurView
 
@@ -94,7 +95,7 @@
 
 }
 
--(void)handleSingleTap:(UITapGestureRecognizer*)sender{
+-(IBAction)handleSingleTap:(id)sender{
     [self crossDissolveHide];
 }
 + (CreateAnimationBlurView *) loadCreateAnimationView:(UIView *) view {
@@ -164,9 +165,6 @@
 
 -(void)show{
     
-    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
-    singleTap.numberOfTapsRequired = 1;
-    [self addGestureRecognizer:singleTap];
 
     if (_blurType==InterestJoin){
             [_bigStarImageView setHidden:NO];
@@ -181,7 +179,7 @@
     [_superstarTextLabel setHidden:NO];
     [_friendsNotifyLabel setHidden:NO];
     [_joinChatInfoLabel setHidden:NO];
-
+    _backgroundButton.enabled=YES;
 }
 
 -(void)hide{
@@ -197,7 +195,7 @@
         
         self.alpha =0.0f;
     } completion:^(BOOL finished) {
-        
+            _backgroundButton.enabled=NO;
     }];
    
 }
@@ -224,7 +222,7 @@
         
         self.alpha =0.0f;
     } completion:^(BOOL finished) {
-
+            _backgroundButton.enabled=NO;
     }];
     
     
