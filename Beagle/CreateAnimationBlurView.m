@@ -55,6 +55,8 @@
     [_superstarTextLabel setHidden:YES];
     [_friendsNotifyLabel setHidden:YES];
     [_joinChatInfoLabel setHidden:YES];
+    [_loadingIndicatorView setHidden:NO];
+    [_loadingIndicatorView startAnimating];
 
 }
 // Create animation screen (custom)
@@ -71,6 +73,9 @@
     [_superstarTextLabel setHidden:YES];
     [_friendsNotifyLabel setHidden:YES];
     [_joinChatInfoLabel setHidden:YES];
+    [_loadingIndicatorView setHidden:NO];
+    [_loadingIndicatorView startAnimating];
+
 }
 
 -(void)loadDetailedInterestAnimationView:(NSString*)name{
@@ -83,7 +88,10 @@
     [_profileImageView setHidden:YES];
     [_superstarTextLabel setHidden:YES];
     [_friendsNotifyLabel setHidden:YES];
-    [_joinChatInfoLabel setHidden:YES];    
+    [_joinChatInfoLabel setHidden:YES];
+    [_loadingIndicatorView setHidden:NO];
+    [_loadingIndicatorView startAnimating];
+
 }
 
 -(void)handleSingleTap:(UITapGestureRecognizer*)sender{
