@@ -1764,11 +1764,6 @@
             case kSuggestedPost:
                 
             {
-                if(_interestUpdateManager!=nil){
-                    _interestUpdateManager.delegate = nil;
-                    [_interestUpdateManager releaseServerManager];
-                    _interestUpdateManager = nil;
-                }
                 
                 BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:interestIndex];
                 play.suggestedId=play.activityId;
@@ -1776,19 +1771,24 @@
                 UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"444%ld",(long)index]integerValue]];
                 [button setEnabled:NO];
                 
-                _interestUpdateManager=[[ServerManager alloc]init];
-                _interestUpdateManager.delegate=self;
-                
-                [_interestUpdateManager updateSuggestedPostMembership:play.activityId];
                 
                 [[UIApplication sharedApplication] setStatusBarHidden:NO];
                 [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
                 [self.animationBlurView blurWithColor];
                 [self.animationBlurView crossDissolveShow];
-                UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
-                [keyboard addSubview:self.animationBlurView];
+                [self.view addSubview:self.animationBlurView];
                 
                 [Appsee addEvent:@"Activate Suggested Post"];
+                if(_interestUpdateManager!=nil){
+                    _interestUpdateManager.delegate = nil;
+                    [_interestUpdateManager releaseServerManager];
+                    _interestUpdateManager = nil;
+                }
+
+                _interestUpdateManager=[[ServerManager alloc]init];
+                _interestUpdateManager.delegate=self;
+                
+                [_interestUpdateManager updateSuggestedPostMembership:play.activityId];
                 
             }
                 break;
@@ -2136,6 +2136,7 @@
                     play.photoUrl=[[[BeagleManager SharedInstance]beaglePlayer]profileImageUrl];
                     play.profilePhotoImage=[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]];
                     }
+                    
                     [self.animationBlurView show];
                     _overlayTimer = [NSTimer scheduledTimerWithTimeInterval: 5.0
                                                                      target: self
