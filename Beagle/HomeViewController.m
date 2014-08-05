@@ -153,17 +153,6 @@
     if([UIScreen mainScreen].bounds.size.height > 480.0f)
         self.animationBlurView.frame=CGRectMake(0, 0, 320, 568);
     
-    
-
-
-    if([[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"]){
-        [[BeagleManager SharedInstance]getUserObjectInAutoSignInMode];
-    }else{
-        [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"FacebookLogin"];
-        [[NSUserDefaults standardUserDefaults]synchronize];
-
-    }
-    
     if([[[BeagleManager SharedInstance]beaglePlayer]profileData]==nil){
         
         
@@ -175,10 +164,17 @@
         [queue addOperation:operation];
         
     }
-    else{
-        [self.animationBlurView loadAnimationView:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
-    }
 
+
+
+    if([[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"]){
+        [[BeagleManager SharedInstance]getUserObjectInAutoSignInMode];
+    }else{
+        [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"FacebookLogin"];
+        [[NSUserDefaults standardUserDefaults]synchronize];
+
+    }
+    
     
     // Setting the user name for AppSee
     NSString *firstName = [[[BeagleManager SharedInstance]beaglePlayer]first_name];
@@ -290,7 +286,6 @@
     BeagleManager *BG=[BeagleManager SharedInstance];
     NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:url]];
     BG.beaglePlayer.profileData=imageData;
-    [self.animationBlurView loadAnimationView:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
 }
 
 -(void)viewDidDisappear:(BOOL)animated{
@@ -572,10 +567,10 @@
         case SUGGESTED_ACTIVITY_CREATION_TYPE:
         {
             NSArray *beagle_happenarndu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_happenarndu"];
+                NSMutableArray *happenarnduArray=[NSMutableArray arrayWithArray:beagle_happenarndu];
+                [happenarnduArray addObject:notification.activity];
+                [self.filterActivitiesOnHomeScreen setObject:happenarnduArray forKey:@"beagle_happenarndu"];
 
-            NSMutableArray *happenarnduArray=[NSMutableArray arrayWithArray:beagle_happenarndu];
-            [happenarnduArray addObject:notification.activity];
-            [self.filterActivitiesOnHomeScreen setObject:happenarnduArray forKey:@"beagle_happenarndu"];
             
             if(notification.notificationType==SUGGESTED_ACTIVITY_CREATION_TYPE){
                 BOOL isFound=false;
@@ -1764,11 +1759,6 @@
             case kSuggestedPost:
                 
             {
-                if(_interestUpdateManager!=nil){
-                    _interestUpdateManager.delegate = nil;
-                    [_interestUpdateManager releaseServerManager];
-                    _interestUpdateManager = nil;
-                }
                 
                 BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:interestIndex];
                 play.suggestedId=play.activityId;
@@ -1776,19 +1766,36 @@
                 UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"444%ld",(long)index]integerValue]];
                 [button setEnabled:NO];
                 
-                _interestUpdateManager=[[ServerManager alloc]init];
-                _interestUpdateManager.delegate=self;
                 
-                [_interestUpdateManager updateSuggestedPostMembership:play.activityId];
+                if([[[BeagleManager SharedInstance]beaglePlayer]profileData]==nil){
+                    
+                    [self.animationBlurView loadAnimationView:[UIImage imageNamed:@"picbox.png"]];
+                    
+                    
+                }
+                else{
+                    [self.animationBlurView loadAnimationView:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
+                }
+                
+
                 
                 [[UIApplication sharedApplication] setStatusBarHidden:NO];
                 [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
                 [self.animationBlurView blurWithColor];
                 [self.animationBlurView crossDissolveShow];
-                UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
-                [keyboard addSubview:self.animationBlurView];
+                [self.view addSubview:self.animationBlurView];
                 
                 [Appsee addEvent:@"Activate Suggested Post"];
+                if(_interestUpdateManager!=nil){
+                    _interestUpdateManager.delegate = nil;
+                    [_interestUpdateManager releaseServerManager];
+                    _interestUpdateManager = nil;
+                }
+
+                _interestUpdateManager=[[ServerManager alloc]init];
+                _interestUpdateManager.delegate=self;
+                
+                [_interestUpdateManager updateSuggestedPostMembership:play.activityId];
                 
             }
                 break;
@@ -2136,6 +2143,7 @@
                     play.photoUrl=[[[BeagleManager SharedInstance]beaglePlayer]profileImageUrl];
                     play.profilePhotoImage=[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]];
                     }
+                    
                     [self.animationBlurView show];
                     _overlayTimer = [NSTimer scheduledTimerWithTimeInterval: 5.0
                                                                      target: self
@@ -2264,15 +2272,7 @@
     BeagleNotificationClass *notifObject=[[BeagleNotificationClass alloc]init];
     notifObject.activity=play;
     notifObject.notificationType=SUGGESTED_ACTIVITY_CREATION_TYPE;
-    
-    NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
-    [notificationDictionary setObject:notifObject forKey:@"notify"];
-    NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
-    
-
-
-    
+    [self updateHomeScreen:notifObject];
 }
 -(void)dismissCreateAnimationBlurView{
     [_overlayTimer invalidate];
@@ -2284,11 +2284,7 @@
     notifObject.activity=play;
     notifObject.notificationType=SUGGESTED_ACTIVITY_CREATION_TYPE;
     
-    NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
-    [notificationDictionary setObject:notifObject forKey:@"notify"];
-    NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
-    
+    [self updateHomeScreen:notifObject];
 }
 
 @end
