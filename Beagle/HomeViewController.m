@@ -1721,7 +1721,7 @@
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Beagle"
                                                     message:@"We'll create an interest on your behalf and let your friends know"
-                                                   delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No",nil];
+                                                   delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes",nil];
     alert.tag=kSuggestedPost;
     [alert show];
 }
@@ -1755,6 +1755,12 @@
             }
                 break;
                 
+                
+        }
+    }
+    
+    else{
+        switch (alertView.tag) {
             case kSuggestedPost:
                 
             {
@@ -1788,10 +1794,6 @@
                 break;
                 
         }
-    }
-    
-    else{
-        NSLog(@"Clicked Cancel Button");
     }
 }
 
@@ -2129,6 +2131,8 @@
                     play.participantsCount = 0;
                     play.isParticipant=1;
                     play.postCount = 0;
+                    play.activityType=1;
+                    play.ownerid=[[[BeagleManager SharedInstance]beaglePlayer]beagleUserId];
                     play.photoUrl=[[[BeagleManager SharedInstance]beaglePlayer]profileImageUrl];
                     play.profilePhotoImage=[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]];
                     }
@@ -2140,7 +2144,20 @@
 
                 }
                 
+            }else{
+                id message=[response objectForKey:@"message"];
+                if (message != nil && [status class] != [NSNull class]){
+                    
+                        NSString *alertMessage = NSLocalizedString (@"That didn't quite go as planned, try again?",
+                                                               @"NSURLConnection initialization method failed.");
+                        BeagleAlertWithMessage(alertMessage);
+
+                        [self.animationBlurView hide];
+                        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+                        [[UIApplication sharedApplication] setStatusBarHidden:YES];
+
             }
+          }
         }
         
         
@@ -2169,6 +2186,9 @@
         
         if(serverRequest==kServerCallCreateActivity||serverRequest==kServerCallSuggestedPostMembership){
                 [self.animationBlurView hide];
+            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+            [[UIApplication sharedApplication] setStatusBarHidden:YES];
+
             }
 
     }
@@ -2210,6 +2230,9 @@
         _interestUpdateManager = nil;
         if(serverRequest==kServerCallCreateActivity||serverRequest==kServerCallSuggestedPostMembership){
             [self.animationBlurView hide];
+            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+            [[UIApplication sharedApplication] setStatusBarHidden:YES];
+
         }
 
     }
