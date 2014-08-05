@@ -536,8 +536,8 @@ static NSString * const CellIdentifier = @"cell";
         
     }else{
         {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Blank Post!!!"
-                                                            message:@"C'mon you can do better"
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Blank Post"
+                                                            message:@"I'm sure you can do better than that!"
                                                            delegate:nil
                                                   cancelButtonTitle:nil
                                                   otherButtonTitles:@"Ok", nil];
