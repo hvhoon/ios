@@ -1720,8 +1720,8 @@
     
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Beagle"
-                                                    message:@"We'll create an interest on your behalf and let your friends know"
-                                                   delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes",nil];
+                                                    message:@"Should we create this interest on your behalf and ask your friends in the city to join you?"
+                                                   delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes, do it!",nil];
     alert.tag=kSuggestedPost;
     [alert show];
 }
