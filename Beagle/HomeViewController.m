@@ -21,14 +21,16 @@
 #import "FriendsViewController.h"
 #import "ExpressInterestPreview.h"
 #import "JSON.h"
+#import "CreateAnimationBlurView.h"
 #define REFRESH_HEADER_HEIGHT 70.0f
 #define stockCroppingCheck 0
 #define kTimerIntervalInSeconds 10
 #define rowHeight 164
 #define kLeaveInterest 23
+#define kSuggestedPost 24
 #define waitBeforeLoadingDefaultImage 20.0f
 
-@interface HomeViewController ()<UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,HomeTableViewCellDelegate,ServerManagerDelegate,IconDownloaderDelegate,BlankHomePageViewDelegate,EventInterestFilterBlurViewDelegate,InAppNotificationViewDelegate>{
+@interface HomeViewController ()<UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,HomeTableViewCellDelegate,ServerManagerDelegate,IconDownloaderDelegate,BlankHomePageViewDelegate,EventInterestFilterBlurViewDelegate,InAppNotificationViewDelegate,CreateAnimationBlurViewDelegate>{
     UIView *topNavigationView;
     UIView*bottomNavigationView;
     BOOL footerActivated;
@@ -41,10 +43,12 @@
     NSMutableDictionary *filterActivitiesOnHomeScreen;
     BOOL hideInAppNotification;
     NSTimer *timer;
+    NSTimer *overlayTimer;
 }
 @property(nonatomic,strong)EventInterestFilterBlurView*filterBlurView;
 @property(nonatomic, strong)UIView *filterView;
 @property(nonatomic, weak) NSTimer *timer;
+@property(nonatomic, weak) NSTimer *overlayTimer;
 @property(nonatomic,strong)  NSMutableDictionary *imageDownloadsInProgress;
 @property(nonatomic,strong)  NSMutableDictionary *filterActivitiesOnHomeScreen;
 @property (nonatomic, strong) NSArray *tableData;
@@ -54,6 +58,7 @@
 @property(strong,nonatomic)ServerManager *homeActivityManager;
 @property(strong,nonatomic)ServerManager *interestUpdateManager;
 @property(strong,nonatomic)UIView *topSection;
+@property(nonatomic,strong)CreateAnimationBlurView *animationBlurView;
 @end
 
 @implementation HomeViewController
@@ -62,6 +67,7 @@
 @synthesize filterActivitiesOnHomeScreen;
 @synthesize interestUpdateManager=_interestUpdateManager;
 @synthesize timer=_timer;
+@synthesize overlayTimer=_overlayTimer;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -136,6 +142,20 @@
     if([UIScreen mainScreen].bounds.size.height > 480.0f)
         self.filterBlurView.frame=CGRectMake(0, 0, 320, 568);
 
+    
+    self.animationBlurView=[CreateAnimationBlurView loadCreateAnimationView:self.view];
+    self.animationBlurView.delegate=self;
+    
+    // If it's a 3.5" screen use the bounds below
+    self.animationBlurView.frame=CGRectMake(0, 0, 320, 480);
+    
+    // Else use these bounds for the 4" screen
+    if([UIScreen mainScreen].bounds.size.height > 480.0f)
+        self.animationBlurView.frame=CGRectMake(0, 0, 320, 568);
+    
+    
+
+
     if([[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"]){
         [[BeagleManager SharedInstance]getUserObjectInAutoSignInMode];
     }else{
@@ -143,6 +163,22 @@
         [[NSUserDefaults standardUserDefaults]synchronize];
 
     }
+    
+    if([[[BeagleManager SharedInstance]beaglePlayer]profileData]==nil){
+        
+        
+        NSOperationQueue *queue = [NSOperationQueue new];
+        NSInvocationOperation *operation = [[NSInvocationOperation alloc]
+                                            initWithTarget:self
+                                            selector:@selector(loadProfileImage:)
+                                            object:[[[BeagleManager SharedInstance]beaglePlayer]profileImageUrl]];
+        [queue addOperation:operation];
+        
+    }
+    else{
+        [self.animationBlurView loadAnimationView:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
+    }
+
     
     // Setting the user name for AppSee
     NSString *firstName = [[[BeagleManager SharedInstance]beaglePlayer]first_name];
@@ -161,20 +197,21 @@
     
 #if stockCroppingCheck
     
-    UIImage *stockBottomImage1=[BeagleUtilities imageByCropping:[UIImage imageNamed:@"defaultLocation"] toRect:CGRectMake(0, 0, 320, 64) withOrientation:UIImageOrientationDownMirrored];
     topNavigationView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 64)];
-    topNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockBottomImage2]
+    topNavigationView.backgroundColor=[UIColor grayColor];
+    UIImageView *topGradient=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"gradient"]];
+    topGradient.frame = CGRectMake(0, 0, 320, 64);
+    [topNavigationView addSubview:topGradient];
     [self.view addSubview:topNavigationView];
     
-    // Adding a gradient to the top navigation bar so that the image is more visible
-    UIImageView *topGradient=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"gradient"]];
-    [topNavigationView addSubview:topGradient];
     
-    UIImage *stockBottomImage2=[BeagleUtilities imageByCropping:[UIImage imageNamed:@"defaultLocation"] toRect:CGRectMake(0, 64, 320, 103) withOrientation:UIImageOrientationDownMirrored];
-    bottomNavigationView=[[UIView alloc]initWithFrame:CGRectMake(0, 64, 320, 147)];
-    
-    bottomNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockBottomImage2];
+//    UIImage *stockBottomImage2=[BeagleUtilities imageByCropping:[UIImage imageNamed:@"defaultLocation"] toRect:CGRectMake(0, 64, 320, 103) withOrientation:UIImageOrientationDownMirrored];
+    bottomNavigationView=[[UIView alloc]initWithFrame:CGRectMake(0, 64, 320, 136)];
     [self.view addSubview:bottomNavigationView];
+    UIImageView *middleSectionImageView=[[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 320, 92)];
+    middleSectionImageView.backgroundColor=[UIColor grayColor];
+    middleSectionImageView.tag=3457;
+    [bottomNavigationView addSubview:middleSectionImageView];
 
 #else
     _topSection = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)];
@@ -210,8 +247,11 @@
     
     // Setting up the filter pane
 #if stockCroppingCheck
-    _filterView = [[UIView alloc] initWithFrame:CGRectMake(0, 103, 320, 44)];
-    [_filterView addSubview:[self renderFilterHeaderView]];
+    _filterView = [[UIView alloc] initWithFrame:CGRectMake(0, 92, 320, 44)];
+    UIView*headerView=[self renderFilterHeaderView];
+    headerView.backgroundColor=[UIColor grayColor];
+    [_filterView addSubview:headerView];
+    _filterView.tag=1346;
     [bottomNavigationView addSubview:_filterView];
 #else
     _filterView = [[UIView alloc] initWithFrame:CGRectMake(0, 156, 320, 44)];
@@ -224,7 +264,6 @@
     
     _tableViewController.refreshControl = [UIRefreshControl new];
     [_tableViewController.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
-   // self.tableView.delaysContentTouches = NO;
     _tableViewController.tableView = self.tableView;
     
     // Setting up the table and the refresh animation
@@ -245,6 +284,13 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (refresh) name:kUpdateHomeScreenAndNotificationStack object:nil];
 
 
+}
+
+- (void)loadProfileImage:(NSString*)url {
+    BeagleManager *BG=[BeagleManager SharedInstance];
+    NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:url]];
+    BG.beaglePlayer.profileData=imageData;
+    [self.animationBlurView loadAnimationView:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
 }
 
 -(void)viewDidDisappear:(BOOL)animated{
@@ -523,12 +569,37 @@
 
         case ACTIVITY_CREATION_TYPE:
         case JOINED_ACTIVITY_TYPE:
+        case SUGGESTED_ACTIVITY_CREATION_TYPE:
         {
             NSArray *beagle_happenarndu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_happenarndu"];
 
             NSMutableArray *happenarnduArray=[NSMutableArray arrayWithArray:beagle_happenarndu];
             [happenarnduArray addObject:notification.activity];
             [self.filterActivitiesOnHomeScreen setObject:happenarnduArray forKey:@"beagle_happenarndu"];
+            
+            if(notification.notificationType==SUGGESTED_ACTIVITY_CREATION_TYPE){
+                BOOL isFound=false;
+                NSInteger index=0;
+                NSArray *beagle_suggestedposts=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_suggestedposts"];
+                
+                for(BeagleActivityClass *data in beagle_suggestedposts){
+                    if(data.suggestedId==notification.activity.suggestedId){
+                        isFound=true;
+                        break;
+                    }else{
+                        isFound=false;
+                    }
+                    index++;
+                }
+                if(isFound){
+                    NSMutableArray *oldArray=[NSMutableArray arrayWithArray:beagle_suggestedposts];
+                    [oldArray removeObjectAtIndex:index];
+                    [self.filterActivitiesOnHomeScreen setObject:oldArray forKey:@"beagle_suggestedposts"];
+                    
+                }
+                
+            }
+
             
             NSArray *beagle_crtbyu=[self.filterActivitiesOnHomeScreen objectForKey:@"beagle_crtbyu"];
             
@@ -542,6 +613,8 @@
             NSMutableArray *exprsAray=[NSMutableArray arrayWithArray:beagle_expressint];
             [exprsAray addObject:notification.activity];
             [self.filterActivitiesOnHomeScreen setObject:exprsAray forKey:@"beagle_expressint"];
+            
+            
 
 
 
@@ -663,8 +736,13 @@
 
 
 -(void)addCityName:(NSString*)name{
+    UILabel *textLabel=nil;
+#if stockCroppingCheck
+    textLabel=(UILabel*)[topNavigationView viewWithTag:1234];
+#else
+    textLabel=(UILabel*)[_topSection viewWithTag:1234];
+#endif
     
-    UILabel *textLabel=(UILabel*)[_topSection viewWithTag:1234];
     if(textLabel!=nil){
         [textLabel removeFromSuperview];
     }
@@ -682,16 +760,17 @@
     fromLabel.textAlignment = NSTextAlignmentLeft;
     fromLabel.alpha = 1.0;
     
-#if stockCroppingCheck
-    [topNavigationView addSubview:fromLabel];
-#else
     
     [UIView transitionWithView:_topSection duration:1.0f options:(UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionAllowUserInteraction) animations:^{
+#if stockCroppingCheck
+        [topNavigationView addSubview:fromLabel];
+#else
+
         [_topSection addSubview:fromLabel];
+#endif
         
     } completion:NULL];
     
-#endif
 
 }
 - (void)refresh {
@@ -828,34 +907,48 @@
     BG.lightDominantColor=[BeagleUtilities returnLightColor:[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.9] withWhiteness:0.7];
     BG.mediumDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5];
     BG.darkDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.4];
-    _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
+    [[NSUserDefaults standardUserDefaults] setValue:[NSDate date] forKey:@"HourlyUpdate"];
 
-    [UIView transitionWithView:_topSection duration:1.0f options:(UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionAllowUserInteraction) animations:^{
+    
         
 #if stockCroppingCheck
 
-        UIImage *stockBottomImage1=[BeagleUtilities imageByCropping:photo toRect:CGRectMake(0, 0, 320, 64) withOrientation:UIImageOrientationDownMirrored];
-        topNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockBottomImage1];
+//    [UIView transitionWithView:bottomNavigationView duration:1.0f options:(UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionAllowUserInteraction) animations:^{
+
+        UIImage *stockImageTop=[BeagleUtilities imageByCropping:photo toRect:CGRectMake(0, 0, 320, 64) withOrientation:UIImageOrientationDownMirrored];
+        topNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockImageTop];
         
-        UIImage *stockBottomImage2=[BeagleUtilities imageByCropping:photo toRect:CGRectMake(0, 64, 320, 103) withOrientation:UIImageOrientationDownMirrored];
-        bottomNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockBottomImage2];
+        UIImage *stockImageMiddle=[BeagleUtilities imageByCropping:photo toRect:CGRectMake(0, 64, 320, 92) withOrientation:UIImageOrientationDownMirrored];
+        UIImageView *middleBackgroundView=(UIImageView*)[bottomNavigationView viewWithTag:3457];
+        middleBackgroundView.image=stockImageMiddle;
+
+        UIImage *stockImageBottom=[BeagleUtilities imageByCropping:photo toRect:CGRectMake(0, 156, 320, 44) withOrientation:UIImageOrientationDownMirrored];
+           UIView*headerView=(UIView*)[self.view viewWithTag:43567];
+           headerView.backgroundColor=[[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
+        _filterView.backgroundColor = [UIColor colorWithPatternImage:stockImageBottom];
+        
+//        } completion:NULL];
+
         
 #else
-        [[NSUserDefaults standardUserDefaults] setValue:[NSDate date] forKey:@"HourlyUpdate"];
+        _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
+
+        [UIView transitionWithView:_topSection duration:1.0f options:(UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionAllowUserInteraction) animations:^{
+
         UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
         stockImageView.image=photo;
         [stockImageView setContentMode:UIViewContentModeScaleAspectFit];
         stockImageView.image = photo;
+            } completion:NULL];
 #endif
         
-    } completion:NULL];
+    
 }
 
 -(UIView*)renderFilterHeaderView {
 
     UIView *headerView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 44)];
     CGSize size = CGSizeMake(220,999);
-    
     NSString* filterText = @"Happening Around You";
     
     CGRect textRect = [filterText
@@ -1269,7 +1362,7 @@
 
 
 -(void)filterByCategoryType:(NSInteger)type{
-    
+    footerActivated=TRUE;
     self.imageDownloadsInProgress = [NSMutableDictionary dictionary];
     switch (type) {
         case 1:
@@ -1401,7 +1494,9 @@
     }
     if([self.tableData count]!=0){
         
-        
+        if([self.tableData count]>=3){
+            footerActivated=FALSE;
+        }
         [self.tableView setHidden:NO];
         
         BlankHomePageView *blankHomePageView=(BlankHomePageView*)[self.view  viewWithTag:1245];
@@ -1409,6 +1504,7 @@
         [self.tableView reloadData];
     }
     else{
+        
         [self.tableView setHidden:YES];
         
         NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"BlankHomePageView" owner:self options:nil];
@@ -1551,7 +1647,7 @@
 
 }
 
--(void)createAnOverlayOnAUITableViewCell:(NSIndexPath*)indexpath{
+-(void)createAnOverlayOnAUITableViewCell:(NSIndexPath*)indexpath {
     BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexpath.row];
     HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:indexpath];
     ExpressInterestPreview *preview=[[ExpressInterestPreview alloc]initWithFrame:CGRectMake(0, 0, 320, play.heightRow) orgn:play.organizerName];
@@ -1617,7 +1713,18 @@
     
 }
 
-
+#pragma mark - askNearbyFriendsToPartOfSuggestedPost call
+-(void)askNearbyFriendsToPartOfSuggestedPost:(NSInteger)index{
+    
+    interestIndex=index;
+    
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Beagle"
+                                                    message:@"We'll create an interest on your behalf and let your friends know"
+                                                   delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No",nil];
+    alert.tag=kSuggestedPost;
+    [alert show];
+}
 
 #pragma mark -
 #pragma mark UIAlertView methods
@@ -1643,8 +1750,40 @@
                 HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
                 UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)interestIndex]integerValue]];
                 [button setEnabled:NO];
-
+                
                 [_interestUpdateManager removeMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
+            }
+                break;
+                
+            case kSuggestedPost:
+                
+            {
+                if(_interestUpdateManager!=nil){
+                    _interestUpdateManager.delegate = nil;
+                    [_interestUpdateManager releaseServerManager];
+                    _interestUpdateManager = nil;
+                }
+                
+                BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:interestIndex];
+                play.suggestedId=play.activityId;
+                HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+                UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"444%ld",(long)index]integerValue]];
+                [button setEnabled:NO];
+                
+                _interestUpdateManager=[[ServerManager alloc]init];
+                _interestUpdateManager.delegate=self;
+                
+                [_interestUpdateManager updateSuggestedPostMembership:play.activityId];
+                
+                [[UIApplication sharedApplication] setStatusBarHidden:NO];
+                [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
+                [self.animationBlurView blurWithColor];
+                [self.animationBlurView crossDissolveShow];
+                UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
+                [keyboard addSubview:self.animationBlurView];
+                
+                [Appsee addEvent:@"Activate Suggested Post"];
+                
             }
                 break;
                 
@@ -1656,25 +1795,6 @@
     }
 }
 
-#pragma mark - askNearbyFriendsToPartOfSuggestedPost call
--(void)askNearbyFriendsToPartOfSuggestedPost:(NSInteger)index{
-    
-    BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:index];
-    interestIndex=index;
-
-    if(_interestUpdateManager!=nil){
-        _interestUpdateManager.delegate = nil;
-        [_interestUpdateManager releaseServerManager];
-        _interestUpdateManager = nil;
-    }
-    
-    _interestUpdateManager=[[ServerManager alloc]init];
-    _interestUpdateManager.delegate=self;
-    
-    [_interestUpdateManager updateSuggestedPostMembership:play.activityId];
-    
-    [Appsee addEvent:@"Activate Suggested Post"];
-}
 
 #pragma mark - server calls
 
@@ -1981,7 +2101,9 @@
                     
                 }
                 play.visibility=@"private";
+                play.activityType=1;
                 [_interestUpdateManager createActivityOnBeagle:play];
+
             }
         }
         
@@ -1995,7 +2117,27 @@
             id status=[response objectForKey:@"status"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 if(serverRequest==kServerCallCreateActivity){
-                    [self refresh];
+                    
+                    id player=[response objectForKey:@"player"];
+                    if (player != nil && [status class] != [NSNull class]){
+
+                    BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:interestIndex];
+                    play.activityId=[[player objectForKey:@"id"]integerValue];
+                    play.organizerName =[NSString stringWithFormat:@"%@ %@",[[[BeagleManager SharedInstance]beaglePlayer]first_name],[[[BeagleManager SharedInstance]beaglePlayer]last_name]];
+                    play.dosRelation = 0;
+                    play.dos1count = 0;
+                    play.participantsCount = 0;
+                    play.isParticipant=1;
+                    play.postCount = 0;
+                    play.photoUrl=[[[BeagleManager SharedInstance]beaglePlayer]profileImageUrl];
+                    play.profilePhotoImage=[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]];
+                    }
+                    [self.animationBlurView show];
+                    _overlayTimer = [NSTimer scheduledTimerWithTimeInterval: 5.0
+                                                                     target: self
+                                                                   selector:@selector(hideCreateOverlay)
+                                                                   userInfo: nil repeats:NO];
+
                 }
                 
             }
@@ -2024,6 +2166,11 @@
         _interestUpdateManager.delegate = nil;
         [_interestUpdateManager releaseServerManager];
         _interestUpdateManager = nil;
+        
+        if(serverRequest==kServerCallCreateActivity||serverRequest==kServerCallSuggestedPostMembership){
+                [self.animationBlurView hide];
+            }
+
     }
     
     NSString *message = NSLocalizedString (@"That didn't quite go as planned, try again?",
@@ -2061,6 +2208,10 @@
         _interestUpdateManager.delegate = nil;
         [_interestUpdateManager releaseServerManager];
         _interestUpdateManager = nil;
+        if(serverRequest==kServerCallCreateActivity||serverRequest==kServerCallSuggestedPostMembership){
+            [self.animationBlurView hide];
+        }
+
     }
     
     
@@ -2079,6 +2230,42 @@
         }
     }
 
+}
+-(void)hideCreateOverlay{
+    [_overlayTimer invalidate];
+    [self.animationBlurView hide];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:interestIndex];
+
+    BeagleNotificationClass *notifObject=[[BeagleNotificationClass alloc]init];
+    notifObject.activity=play;
+    notifObject.notificationType=SUGGESTED_ACTIVITY_CREATION_TYPE;
+    
+    NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
+    [notificationDictionary setObject:notifObject forKey:@"notify"];
+    NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
+    
+
+
+    
+}
+-(void)dismissCreateAnimationBlurView{
+    [_overlayTimer invalidate];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:interestIndex];
+    
+    BeagleNotificationClass *notifObject=[[BeagleNotificationClass alloc]init];
+    notifObject.activity=play;
+    notifObject.notificationType=SUGGESTED_ACTIVITY_CREATION_TYPE;
+    
+    NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
+    [notificationDictionary setObject:notifObject forKey:@"notify"];
+    NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
+    
 }
 
 @end

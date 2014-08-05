@@ -51,6 +51,7 @@
 		18714B3B1940F268008F59DE /* PostSoundEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = 18714B3A1940F268008F59DE /* PostSoundEffect.m */; };
 		187808591954DEA8005E682F /* FriendsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 187808581954DEA8005E682F /* FriendsTableViewCell.m */; };
 		1889E5EC195A84F70079C3E9 /* InviteTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1889E5EB195A84F60079C3E9 /* InviteTableViewCell.m */; };
+		189B4C67198C436C0030FABC /* UIView+HidingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 180AF0BD18DC805700EE87D6 /* UIView+HidingView.m */; };
 		189EEBBE196B2A2B00681F04 /* ExpressInterestPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = 189EEBBD196B2A2B00681F04 /* ExpressInterestPreview.m */; };
 		18E7AF0918BBAA1700EBBDE2 /* FacebookLoginSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E7AF0818BBAA1700EBBDE2 /* FacebookLoginSession.m */; };
 		18E7AF0D18BBAA6600EBBDE2 /* BeagleUserClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E7AF0C18BBAA6600EBBDE2 /* BeagleUserClass.m */; };
@@ -1205,6 +1206,7 @@
 				18F2B751191D3AF500245C5A /* EventTimeBlurView.m in Sources */,
 				189EEBBE196B2A2B00681F04 /* ExpressInterestPreview.m in Sources */,
 				18FADB9718B668A500A62287 /* UIImage+ImageWithUIView.m in Sources */,
+				189B4C67198C436C0030FABC /* UIView+HidingView.m in Sources */,
 				180F60491923D1D800B3807F /* GooglePlacesPlaceDetailQuery.m in Sources */,
 				18F3CEFD1909774D00AE3C47 /* MessageKeyboardView.m in Sources */,
 				18EC231518B5A42D00316B6E /* ASIDownloadCache.m in Sources */,
