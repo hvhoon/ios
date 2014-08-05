@@ -1781,6 +1781,16 @@ static NSString * const CellIdentifier = @"cell";
     
 
 }
+
+- (void)scrollMenu:(BeaglePlayerScrollMenu *)menu didSelectIndex:(NSInteger)selectedIndex{
+    BeagleUserClass *player=[self.interestActivity.participantsArray objectAtIndex:selectedIndex];
+    if(player.beagleUserId!=[[[BeagleManager SharedInstance]beaglePlayer]beagleUserId]){
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    FriendsViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"profileScreen"];
+    viewController.friendBeagle=player;
+    [self.navigationController pushViewController:viewController animated:YES];
+    }
+}
 /*
 #pragma mark - Navigation
 
