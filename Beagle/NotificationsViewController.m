@@ -708,7 +708,7 @@
         _interestUpdateManager = nil;
     }
 
-    NSString *message = NSLocalizedString (@"Unfortunately we can't show you how popular you are right. Please try again.",
+    NSString *message = NSLocalizedString (@"Unfortunately we can't show you how popular you are right now. Please try again.",
                                            @"NSURLConnection initialization method failed.");
     BeagleAlertWithMessage(message);
 }
