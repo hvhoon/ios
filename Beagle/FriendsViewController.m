@@ -493,6 +493,14 @@
     BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:indexPath.row];
     inviteIndex=indexPath.row;
     
+    FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.friendsTableView cellForRowAtIndexPath:indexPath];
+    UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"222%ld",(long)indexPath.row]integerValue]];
+    UIActivityIndicatorView *spinner=(UIActivityIndicatorView*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)indexPath.row]integerValue]];
+
+    [button setHidden:YES];
+    [spinner setHidden:NO];
+    [spinner startAnimating];
+    
     if(_inviteManager!=nil){
         _inviteManager.delegate = nil;
         [_inviteManager releaseServerManager];
