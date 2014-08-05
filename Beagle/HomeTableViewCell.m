@@ -171,24 +171,31 @@ static UIFont *forthTextFont = nil;
     
     // Suggested post
     if(self.bg_activity.activityType==2){
-    UIBezierPath *bezierPath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(16, fromTheTop,
-                                                                                  165,33) cornerRadius:25.0];
-    CGContextSetStrokeColorWithColor(context, [[BeagleManager SharedInstance] darkDominantColor].CGColor);
-    [bezierPath stroke];
-        attrs =[NSDictionary dictionaryWithObjectsAndKeys:
-                [UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0f], NSFontAttributeName,
-                [[BeagleManager SharedInstance] darkDominantColor],NSForegroundColorAttributeName,
-                style, NSParagraphStyleAttributeName, nil];
+    UIColor *outlineButtonColor = [[BeagleManager SharedInstance] darkDominantColor];
+    UIButton *suggestedButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        suggestedButton.frame=CGRectMake(16, fromTheTop,
+                                         165,33);
+    suggestedButton.tag=[[NSString stringWithFormat:@"444%ld",(long)cellIndex]integerValue];
+       [suggestedButton.titleLabel setUserInteractionEnabled: NO];
+       [self addSubview:suggestedButton];
+        
+        
+        [[suggestedButton titleLabel]setFont:[UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0f]];
+        [suggestedButton.titleLabel setTextAlignment:NSTextAlignmentCenter];
+        [suggestedButton setTitle:@"ASK FRIENDS NEARBY" forState:UIControlStateNormal];
+        
+        // Normal state
+        [suggestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button-Unfilled"] withColor:outlineButtonColor] forState:UIControlStateNormal];
+        [suggestedButton setTitleColor:outlineButtonColor forState:UIControlStateNormal];
+        // Pressed state
+        [suggestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button-Unfilled"] withColor:[outlineButtonColor colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+        [suggestedButton setTitleColor:[outlineButtonColor colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
+        
+        [suggestedButton addTarget:self action:@selector(suggestedBtnPressed:) forControlEvents:UIControlEventTouchUpInside];
+        [suggestedButton setEnabled:YES];
 
-        CGSize askFriendsNearbySize = [@"ASK FRIENDS NEARBY" boundingRectWithSize:CGSizeMake(288, r.size.height)
-                                                               options:NSStringDrawingUsesLineFragmentOrigin
-                                                            attributes:attrs
-                                                               context:nil].size;
         
-        
-        [@"ASK FRIENDS NEARBY" drawInRect:CGRectMake(32,fromTheTop+9,askFriendsNearbySize.width,askFriendsNearbySize.height) withAttributes:attrs];
-        suggestedRect=CGRectMake(16, fromTheTop, 165,33);
-    }
+}
     else{
 
     // Drawing number of interested text
@@ -360,6 +367,13 @@ static UIFont *forthTextFont = nil;
    
 }
 
+-(void)suggestedBtnPressed:(id)sender{
+    UIButton *btn=(UIButton*)sender;
+        if (self.delegate && [self.delegate respondsToSelector:@selector(askNearbyFriendsToPartOfSuggestedPost:)])
+            [delegate askNearbyFriendsToPartOfSuggestedPost:btn.tag%444];
+}
+
+
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
     UITouch *touch =[touches anyObject];
     CGPoint startPoint =[touch locationInView:self.contentView];
@@ -384,24 +398,8 @@ static UIFont *forthTextFont = nil;
         if (self.delegate && [self.delegate respondsToSelector:@selector(detailedInterestScreenRedirect:)])
             [self.delegate detailedInterestScreenRedirect:cellIndex];
     }
-    }else{
-        if(CGRectContainsPoint(suggestedRect,startPoint)){
-                if (self.delegate && [self.delegate respondsToSelector:@selector(askNearbyFriendsToPartOfSuggestedPost:)])
-                    [delegate askNearbyFriendsToPartOfSuggestedPost:cellIndex];
-            }
-
     }
+
     [super touchesEnded:touches withEvent:event];
-}
-
-- (void)setHighlighted:(BOOL)highlighted {
-    [super setHighlighted:highlighted];
-    if(highlighted) {
-         self.backgroundColor=[UIColor orangeColor];
-    }
-    else
-    {
-         self.backgroundColor=[UIColor whiteColor];
-    }
 }
 @end
