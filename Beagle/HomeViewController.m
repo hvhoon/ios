@@ -153,17 +153,6 @@
     if([UIScreen mainScreen].bounds.size.height > 480.0f)
         self.animationBlurView.frame=CGRectMake(0, 0, 320, 568);
     
-    
-
-
-    if([[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"]){
-        [[BeagleManager SharedInstance]getUserObjectInAutoSignInMode];
-    }else{
-        [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"FacebookLogin"];
-        [[NSUserDefaults standardUserDefaults]synchronize];
-
-    }
-    
     if([[[BeagleManager SharedInstance]beaglePlayer]profileData]==nil){
         
         
@@ -175,10 +164,17 @@
         [queue addOperation:operation];
         
     }
-    else{
-        [self.animationBlurView loadAnimationView:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
-    }
 
+
+
+    if([[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"]){
+        [[BeagleManager SharedInstance]getUserObjectInAutoSignInMode];
+    }else{
+        [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"FacebookLogin"];
+        [[NSUserDefaults standardUserDefaults]synchronize];
+
+    }
+    
     
     // Setting the user name for AppSee
     NSString *firstName = [[[BeagleManager SharedInstance]beaglePlayer]first_name];
@@ -290,7 +286,6 @@
     BeagleManager *BG=[BeagleManager SharedInstance];
     NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:url]];
     BG.beaglePlayer.profileData=imageData;
-    [self.animationBlurView loadAnimationView:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
 }
 
 -(void)viewDidDisappear:(BOOL)animated{
@@ -1771,6 +1766,18 @@
                 UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"444%ld",(long)index]integerValue]];
                 [button setEnabled:NO];
                 
+                
+                if([[[BeagleManager SharedInstance]beaglePlayer]profileData]==nil){
+                    
+                    [self.animationBlurView loadAnimationView:[UIImage imageNamed:@"picbox.png"]];
+                    
+                    
+                }
+                else{
+                    [self.animationBlurView loadAnimationView:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
+                }
+                
+
                 
                 [[UIApplication sharedApplication] setStatusBarHidden:NO];
                 [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
