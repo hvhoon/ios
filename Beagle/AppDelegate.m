@@ -9,8 +9,11 @@
 #import "AppDelegate.h"
 #import <Crashlytics/Crashlytics.h>
 #import <Instabug/Instabug.h>
+#import "HomeViewController.h"
 @interface AppDelegate ()<ServerManagerDelegate>{
     ServerManager *notificationServerManager;
+    NSInteger attempts;
+
 }
 @property(nonatomic,strong)ServerManager *notificationServerManager;
 @end
@@ -18,6 +21,8 @@
 @implementation AppDelegate
 @synthesize listViewController;
 @synthesize downloadTask;
+@synthesize currentLocation;
+@synthesize _locationManager = locationManager;
 @synthesize notificationServerManager=_notificationServerManager;
 void uncaughtExceptionHandler(NSException *exception) {
     NSLog(@"CRASH: %@", exception);
@@ -675,5 +680,119 @@ expectedTotalBytes:(int64_t)expectedTotalBytes{
     localNotification.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1;
     
     [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+}
+
+- (void)startStandardUpdates {
+    
+	if (nil == locationManager) {
+		locationManager = [[CLLocationManager alloc] init];
+	}
+    
+	locationManager.delegate = self;
+	locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+    
+	// Set a movement threshold for new events.
+	locationManager.distanceFilter = kCLLocationAccuracyThreeKilometers;
+    
+	[locationManager startUpdatingLocation];
+    
+	CLLocation *currentLoc = locationManager.location;
+	if (currentLoc) {
+		self.currentLocation = currentLoc;
+	}
+}
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+	NSLog(@"%s", __PRETTY_FUNCTION__);
+	switch (status) {
+		case kCLAuthorizationStatusAuthorized:
+			NSLog(@"kCLAuthorizationStatusAuthorized");
+			[locationManager startUpdatingLocation];
+			break;
+		case kCLAuthorizationStatusDenied:
+			NSLog(@"kCLAuthorizationStatusDenied");
+        {
+            /*
+             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Oops!!!" message:@"Beagle can’t access your current location.\nTo view interests nearby, please turn on location services in  Settings under Location Services." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+             [alertView show];
+             */// Disable the post button.
+        }
+			break;
+		case kCLAuthorizationStatusNotDetermined:
+			NSLog(@"kCLAuthorizationStatusNotDetermined");
+			break;
+		case kCLAuthorizationStatusRestricted:
+			NSLog(@"kCLAuthorizationStatusRestricted");
+			break;
+	}
+}
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < _IPHONE_7_0
+- (void)locationManager:(CLLocationManager *)manager
+    didUpdateToLocation:(CLLocation *)newLocation
+           fromLocation:(CLLocation *)oldLocation {
+	NSLog(@"%s", __PRETTY_FUNCTION__);
+    self.currentLocation=newLocation;
+    
+}
+#else
+- (void)locationManager:(CLLocationManager *)manager
+     didUpdateLocations:(NSArray *)locations{
+    NSLog(@"%s", __PRETTY_FUNCTION__);
+    CLLocation*newLocation=[locations lastObject];
+    self.currentLocation=newLocation;
+    
+}
+#endif
+
+#define kLocationFetchTimeout 5
+- (void)locationManager:(CLLocationManager *)manager
+       didFailWithError:(NSError *)error {
+	NSLog(@"%s", __PRETTY_FUNCTION__);
+	NSLog(@"Error: %@", [error description]);
+    
+	if (error.code == kCLErrorDenied) {
+		[locationManager stopUpdatingLocation];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kErrorToGetLocation object:self userInfo:nil];
+	}
+    else if (error.code == kCLErrorLocationUnknown) {
+		// todo: retry?
+		// set a timer for five seconds to cycle location, and if it fails again, bail and tell the user.
+        
+        if(attempts!=3){
+            attempts++;
+            [self performSelector:@selector(timeoutLocationFetch) withObject:nil afterDelay:kLocationFetchTimeout];
+        }else{
+            attempts=0;
+            [locationManager stopUpdatingLocation];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kErrorToGetLocation object:self userInfo:nil];
+
+        }
+	}
+    else {
+		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Where's Waldo?"
+		                                                message:[error description]
+		                                               delegate:nil
+		                                      cancelButtonTitle:nil
+		                                      otherButtonTitles:@"Ok", nil];
+		[alert show];
+	}
+}
+
+- (void)setCurrentLocation:(CLLocation *)aCurrentLocation {
+	currentLocation = aCurrentLocation;
+    BeagleManager *BG=[BeagleManager SharedInstance];
+    BG.currentLocation=currentLocation;
+    [locationManager stopUpdatingLocation];
+    locationManager.delegate=nil;
+    
+	dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:kLocationUpdateReceived object:self userInfo:nil];
+
+	});
+}
+
+- (void) timeoutLocationFetch {
+    NSLog(@"LocationService:timeout");
+    [locationManager startUpdatingLocation];
 }
 @end

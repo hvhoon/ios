@@ -98,20 +98,31 @@ static UIFont *secondTextFont = nil;
     if(self.bgPlayer.beagleUserId==0){
         UIButton *inviteStatusButton=[UIButton buttonWithType:UIButtonTypeCustom];
         inviteStatusButton.frame=CGRectMake(320-80, 0, 80, 54);
-        [inviteStatusButton setImageEdgeInsets:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 16.0f)];
-        [inviteStatusButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
-        
+        inviteStatusButton.tag=[[NSString stringWithFormat:@"222%ld",(long)cellIndexPath.row]integerValue];
+
+        UIActivityIndicatorView *spinningWheel = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        spinningWheel.tag=[[NSString stringWithFormat:@"333%ld",(long)cellIndexPath.row]integerValue];
+        spinningWheel.center = inviteStatusButton.center;
+        spinningWheel.hidesWhenStopped=YES;
+        [self addSubview:spinningWheel];
+        [spinningWheel setHidden:YES];
+
         if(self.bgPlayer.isInvited){
+            [inviteStatusButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
             inviteStatusButton.titleLabel.backgroundColor=[UIColor clearColor];
             inviteStatusButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+            inviteStatusButton.titleLabel.numberOfLines = 0;
             inviteStatusButton.titleLabel.textColor=[UIColor blackColor];
             inviteStatusButton.titleLabel.font=secondTextFont;
             [inviteStatusButton setTitleColor:[BeagleUtilities returnBeagleColor:3] forState:UIControlStateNormal];
-         inviteStatusButton.titleLabel.textAlignment = NSTextAlignmentCenter;            [inviteStatusButton setTitle: @"Invite\nSent" forState: UIControlStateNormal];
+            inviteStatusButton.titleLabel.textAlignment = NSTextAlignmentLeft;
+            [inviteStatusButton setTitle: @"Invite\nSent" forState: UIControlStateNormal];
         }else{
+            [inviteStatusButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
+            [inviteStatusButton setImageEdgeInsets:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 16.0f)];
             [inviteStatusButton setImage:[UIImage imageNamed:@"Invite"] forState:UIControlStateNormal];
             [inviteStatusButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Invite"] withColor:[[BeagleUtilities returnBeagleColor:13] colorWithAlphaComponent:0.5f]] forState:UIControlStateHighlighted];
-        [inviteStatusButton addTarget:self action:@selector(inviteButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+            [inviteStatusButton addTarget:self action:@selector(inviteButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
         }
         [self addSubview:inviteStatusButton];
     

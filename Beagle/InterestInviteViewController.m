@@ -47,6 +47,10 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (createButtonClicked:) name:kLocationUpdateReceived object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showLocationError) name:kErrorToGetLocation object:nil];
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBackgroundInNotification:) name:kRemoteNotificationReceivedNotification object:Nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(postInAppNotification:) name:kNotificationForInterestPost object:Nil];
 
@@ -54,6 +58,9 @@
 -(void)viewDidDisappear:(BOOL)animated{
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kRemoteNotificationReceivedNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationForInterestPost object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kLocationUpdateReceived object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kErrorToGetLocation object:nil];
+
 }
 
 - (void)viewDidLoad
@@ -239,6 +246,20 @@
     }
       interestDetail.requestString =[jsonContentArray JSONRepresentation];
     }
+    
+    if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude==0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude==0.0f){
+        [(AppDelegate *)[[UIApplication sharedApplication] delegate] startStandardUpdates];
+        return;
+    }
+
+    if([self.interestDetail.city length]==0 && [self.interestDetail.state length]==0){
+        
+        //reverse geocode
+        
+        [self reverseGeocode];
+        return;
+    }
+
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
     
     [self.animationBlurView blurWithColor];
@@ -249,6 +270,28 @@
     [self.inviteManager createActivityOnBeagle:interestDetail];
     [Appsee addEvent:@"Create Activity"];
 
+}
+
+-(void)reverseGeocode{
+    CLGeocoder * geoCoder = [[CLGeocoder alloc] init];
+    CLLocation *newLocation=[[CLLocation alloc]initWithLatitude:[[BeagleManager SharedInstance]currentLocation].coordinate.latitude longitude:[[BeagleManager SharedInstance]currentLocation].coordinate.longitude];
+    
+    [geoCoder reverseGeocodeLocation:newLocation completionHandler:^(NSArray *placemarks, NSError *error) {
+        
+        if(!error) {
+            BeagleManager *BG=[BeagleManager SharedInstance];
+            BG.placemark=[placemarks objectAtIndex:0];
+            self.interestDetail.state=[[BeagleManager SharedInstance]placemark].administrativeArea;
+            self.interestDetail.city=[[[BeagleManager SharedInstance]placemark].addressDictionary objectForKey:@"City"];
+            [self createButtonClicked:nil];
+            
+        }
+        else{
+            NSLog(@"reverseGeocodeLocation: %@", error.description);
+            [self showLocationError];
+        }
+    }];
+    
 }
 - (void)didReceiveMemoryWarning
 {
@@ -1106,6 +1149,15 @@
     [timer invalidate];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
     [self.navigationController popViewControllerAnimated:YES];
+}
+-(void)showLocationError{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Where's Waldo?"
+                                                    message:@"We are unable to get your current location"
+                                                   delegate:nil
+                                          cancelButtonTitle:nil
+                                          otherButtonTitles:@"Ok", nil];
+    [alert show];
+    
 }
 
 /*

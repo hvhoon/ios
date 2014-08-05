@@ -493,6 +493,14 @@
     BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:indexPath.row];
     inviteIndex=indexPath.row;
     
+    FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.friendsTableView cellForRowAtIndexPath:indexPath];
+    UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"222%ld",(long)indexPath.row]integerValue]];
+    UIActivityIndicatorView *spinner=(UIActivityIndicatorView*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)indexPath.row]integerValue]];
+
+    [button setHidden:YES];
+    [spinner setHidden:NO];
+    [spinner startAnimating];
+    
     if(_inviteManager!=nil){
         _inviteManager.delegate = nil;
         [_inviteManager releaseServerManager];
@@ -622,8 +630,8 @@
             id status=[response objectForKey:@"status"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 
-                NSString *message = NSLocalizedString (@"Message sent successfully",
-                                                       @"Message sent successfully");
+                NSString *message = NSLocalizedString (@"Invite sent. You're a good friend!",
+                                                       @"Message sent successfully!");
                 
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Beagle"
                                                                 message:message

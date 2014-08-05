@@ -46,11 +46,14 @@
 #define LIKE_TO_JOIN_TYPE 12
 #define GOING_TYPE 13
 #define ACTIVITY_UPDATE_TYPE 32
+#define SUGGESTED_ACTIVITY_CREATION_TYPE 33
 #define kBeagleBadgeCount @"BeagleBadgeCount"
 #define kUpdatePostsOnInterest @"PostUpdateOnDetailedInterest"
 #define kUpdateNotificationStack @"UpdateNotificationStack"
 #define kUpdateHomeScreenAndNotificationStack @"UpdateHomeScreenAndNotificationStack"
 #define kRemoteNotificationReceivedNotification @"RemoteNotificationReceivedWhileRunning"
+#define kErrorToGetLocation @"ErrorLocation"
+#define kLocationUpdateReceived  @"LocationSuccess"
 #define kNotificationForInterestPost @"InAppInterestPostNotification"
 #define kNotificationHomeAutoRefresh @"NotificationHomeAutoRefresh"
 #define localHost @"http://localhost:3000/"

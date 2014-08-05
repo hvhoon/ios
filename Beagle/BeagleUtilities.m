@@ -816,5 +816,13 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
     
 }
++(BOOL)checkIfTheTextIsBlank:(NSString*)text{
+    
+    NSString *trimedString = [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    if([trimedString length]!=0)
+        return YES;
+    
+    return NO;
+}
 
 @end

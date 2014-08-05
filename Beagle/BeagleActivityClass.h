@@ -17,6 +17,7 @@
 @property(nonatomic,strong)NSString *city;
 @property(nonatomic,strong)NSString *state;
 @property(nonatomic,assign)NSInteger activityId;
+@property(nonatomic,assign)NSInteger suggestedId;
 @property(nonatomic,assign)CGFloat latitude;
 @property(nonatomic,assign)CGFloat longitude;
 @property(nonatomic,assign)NSInteger ownerid;

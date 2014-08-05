@@ -509,8 +509,9 @@ static NSString * const CellIdentifier = @"cell";
     [self.navigationController presentViewController:activityNavigationController animated:YES completion:nil];
 
 }
+
 -(void)postClicked:(id)sender{
-    if([[self.contentWrapper.inputView.textView text]length]!=0){
+    if([BeagleUtilities checkIfTheTextIsBlank:[self.contentWrapper.inputView.textView text]]){
         
         [Appsee addEvent:@"Post Chat"];
         
@@ -533,6 +534,16 @@ static NSString * const CellIdentifier = @"cell";
         _chatPostManager.delegate=self;
         [_chatPostManager postAComment:self.interestActivity.activityId desc:[self.contentWrapper.inputView.textView text]];
         
+    }else{
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Blank Post"
+                                                            message:@"I'm sure you can do better than that!"
+                                                           delegate:nil
+                                                  cancelButtonTitle:nil
+                                                  otherButtonTitles:@"Ok", nil];
+            [alert show];
+            
+        }
     }
 }
 
@@ -1652,7 +1663,9 @@ static NSString * const CellIdentifier = @"cell";
             [notificationDictionary setObject:notifObject forKey:@"notify"];
             NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
             [[NSNotificationCenter defaultCenter] postNotification:notification];
-
+            if([self.navigationItem.rightBarButtonItem.title isEqualToString:@"Done"]){
+                  [self doneButtonClicked:nil];
+             }
             [self.navigationController popViewControllerAnimated:YES];
         }
 }
@@ -1697,6 +1710,10 @@ static NSString * const CellIdentifier = @"cell";
 }
 
 -(void)dealloc{
+    
+    self.detailedInterestTableView.delegate = nil;
+    self.detailedInterestTableView = nil;
+    
     for (NSIndexPath *indexPath in [imageDownloadsInProgress allKeys]) {
         IconDownloader *d = [imageDownloadsInProgress objectForKey:indexPath];
         [d cancelDownload];
@@ -1763,6 +1780,16 @@ static NSString * const CellIdentifier = @"cell";
     [self.detailedInterestTableView reloadData];
     
 
+}
+
+- (void)scrollMenu:(BeaglePlayerScrollMenu *)menu didSelectIndex:(NSInteger)selectedIndex{
+    BeagleUserClass *player=[self.interestActivity.participantsArray objectAtIndex:selectedIndex];
+    if(player.beagleUserId!=[[[BeagleManager SharedInstance]beaglePlayer]beagleUserId]){
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    FriendsViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"profileScreen"];
+    viewController.friendBeagle=player;
+    [self.navigationController pushViewController:viewController animated:YES];
+    }
 }
 /*
 #pragma mark - Navigation

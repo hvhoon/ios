@@ -23,7 +23,6 @@
    CGRect interestedRect;
    CGRect profileRect;
    CGRect nameRect;
-   CGRect suggestedRect;
 }
 @property(nonatomic,strong)UIImage*photoImage;
 @property (nonatomic,weak)id <HomeTableViewCellDelegate> delegate;

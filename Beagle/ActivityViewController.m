@@ -41,6 +41,7 @@ enum Weeks {
     NSInteger timeIndex;
     NSInteger visibilityIndex;
     NSTimer *timer;
+    NSInteger locationType;
 }
 @property (nonatomic, strong) NSMutableIndexSet *optionIndices;
 @property(nonatomic, strong) EventTimeBlurView *blrTimeView;
@@ -66,6 +67,10 @@ enum Weeks {
 }
 -(void)viewWillAppear:(BOOL)animated{
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (createButtonClicked:) name:kLocationUpdateReceived object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showLocationError) name:kErrorToGetLocation object:nil];
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBackgroundInNotification:) name:kRemoteNotificationReceivedNotification object:Nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(postInAppNotification:) name:kNotificationForInterestPost object:Nil];
@@ -246,12 +251,29 @@ enum Weeks {
     // Setting the visibility text all the way at the end
     [locationFilterButton setTitle:visibilityText forState:UIControlStateNormal];
 
+    
+    if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude==0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude==0.0f){
+        locationType=1;
+        [(AppDelegate *)[[UIApplication sharedApplication] delegate] startStandardUpdates];
+        return;
+    }
+    
+    if([self.bg_activity.city length]==0 && [self.bg_activity.state length]==0){
+        
+        locationType=1;
+        //reverse geocode
+        [self reverseGeocode];
+    }
+
 }
 	// Do any additional setup after loading the view.
 
 -(void)viewDidDisappear:(BOOL)animated{
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kRemoteNotificationReceivedNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationForInterestPost object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kLocationUpdateReceived object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kErrorToGetLocation object:nil];
+
 }
 
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
@@ -543,6 +565,17 @@ enum Weeks {
 }
 -(void)createButtonClicked:(id)sender{
     
+    if(locationType==1){
+        if([self.bg_activity.city length]==0 && [self.bg_activity.state length]==0){
+            
+            //reverse geocode
+            [self reverseGeocode];
+        }
+
+        return;
+
+    }
+    
     if([descriptionTextView.text length]==0){
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Missing Description"
                                                         message:@"Your interest must have a description."
@@ -574,6 +607,21 @@ enum Weeks {
 
     self.activityServerManager=[[ServerManager alloc]init];
     self.activityServerManager.delegate=self;
+    
+    if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude==0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude==0.0f){
+        [(AppDelegate *)[[UIApplication sharedApplication] delegate] startStandardUpdates];
+        return;
+    }
+    
+    if([self.bg_activity.city length]==0 && [self.bg_activity.state length]==0){
+
+        //reverse geocode
+        
+        [self reverseGeocode];
+        return;
+    }
+
+
     if(editState) {
         [self.activityServerManager updateActivityOnBeagle:bg_activity];
         [Appsee addEvent:@"Edit Activity"];
@@ -589,6 +637,43 @@ enum Weeks {
        [self.activityServerManager createActivityOnBeagle:bg_activity];
     }
     
+}
+
+-(void)reverseGeocode{
+    CLGeocoder * geoCoder = [[CLGeocoder alloc] init];
+    CLLocation *newLocation=[[CLLocation alloc]initWithLatitude:[[BeagleManager SharedInstance]currentLocation].coordinate.latitude longitude:[[BeagleManager SharedInstance]currentLocation].coordinate.longitude];
+    
+    [geoCoder reverseGeocodeLocation:newLocation completionHandler:^(NSArray *placemarks, NSError *error) {
+        
+        if(!error) {
+            BeagleManager *BG=[BeagleManager SharedInstance];
+            BG.placemark=[placemarks objectAtIndex:0];
+            bg_activity.state=[[BeagleManager SharedInstance]placemark].administrativeArea;
+            bg_activity.city=[[[BeagleManager SharedInstance]placemark].addressDictionary objectForKey:@"City"];
+            if(locationType!=1)
+                [self createButtonClicked:nil];
+            else if (locationType==1){
+                NSString *visibilityText=nil;
+                switch (visibilityIndex) {
+                    case 2:
+                        visibilityText = [NSString stringWithFormat:@"We'll tell your friends in %@", self.bg_activity.city];
+                        break;
+                    case 3:
+                        visibilityText = @"We'll tell the friends you selected";
+                    default:
+                        visibilityText = [NSString stringWithFormat:@"We'll tell your friends in %@", self.bg_activity.city];
+                        break;
+                }
+            [locationFilterButton setTitle:visibilityText forState:UIControlStateNormal];
+            }
+            
+        }
+        else{
+            NSLog(@"reverseGeocodeLocation: %@", error.description);
+            [self showLocationError];
+        }
+    }];
+
 }
 #define kDeleteActivity 2
 -(IBAction)deleteButtonClicked:(id)sender{
@@ -643,15 +728,21 @@ enum Weeks {
 
 -(void)textViewDidChange:(UITextView *)textView{
     
-    if([[textView text]length]!=0){
-        
-        [self.navigationItem.rightBarButtonItem setTintColor:[BeagleUtilities returnBeagleColor:13]];
-        self.navigationItem.rightBarButtonItem.enabled=YES;
+    [self.navigationItem.rightBarButtonItem setTintColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA]];
+    self.navigationItem.rightBarButtonItem.enabled=NO;
 
-    }
-    else {
-        [self.navigationItem.rightBarButtonItem setTintColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA]];
-        self.navigationItem.rightBarButtonItem.enabled=NO;
+    if([BeagleUtilities checkIfTheTextIsBlank:[textView text]]){
+        
+      if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
+          
+        if([self.bg_activity.city length]!=0 && [self.bg_activity.state length]!=0){
+            
+            [self.navigationItem.rightBarButtonItem setTintColor:[BeagleUtilities returnBeagleColor:13]];
+            self.navigationItem.rightBarButtonItem.enabled=YES;
+            locationType=2;
+
+        }
+      }
 
     }
 
@@ -955,7 +1046,15 @@ enum Weeks {
             break;
     }
 }
+-(void)showLocationError{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Where's Waldo?"
+                                                    message:@"We are unable to get your current location"
+                                                   delegate:nil
+                                          cancelButtonTitle:nil
+                                          otherButtonTitles:@"Ok", nil];
+    [alert show];
 
+}
 -(void)dealloc{
     
     
