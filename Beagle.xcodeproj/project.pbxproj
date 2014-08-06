@@ -50,6 +50,7 @@
 		18714B381940F1D2008F59DE /* messageSent.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 18714B361940F1D2008F59DE /* messageSent.aiff */; };
 		18714B3B1940F268008F59DE /* PostSoundEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = 18714B3A1940F268008F59DE /* PostSoundEffect.m */; };
 		187808591954DEA8005E682F /* FriendsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 187808581954DEA8005E682F /* FriendsTableViewCell.m */; };
+		187846BD19928D7E0091AA70 /* Beagle-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 187846BC19928D7E0091AA70 /* Beagle-Info.plist */; };
 		1889E5EC195A84F70079C3E9 /* InviteTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1889E5EB195A84F60079C3E9 /* InviteTableViewCell.m */; };
 		189EEBBE196B2A2B00681F04 /* ExpressInterestPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = 189EEBBD196B2A2B00681F04 /* ExpressInterestPreview.m */; };
 		18E7AF0918BBAA1700EBBDE2 /* FacebookLoginSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E7AF0818BBAA1700EBBDE2 /* FacebookLoginSession.m */; };
@@ -233,6 +234,7 @@
 		18714B3A1940F268008F59DE /* PostSoundEffect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostSoundEffect.m; sourceTree = "<group>"; };
 		187808571954DEA8005E682F /* FriendsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendsTableViewCell.h; sourceTree = "<group>"; };
 		187808581954DEA8005E682F /* FriendsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendsTableViewCell.m; sourceTree = "<group>"; };
+		187846BC19928D7E0091AA70 /* Beagle-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Beagle-Info.plist"; sourceTree = "<group>"; };
 		1889E5EA195A84F50079C3E9 /* InviteTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteTableViewCell.h; sourceTree = "<group>"; };
 		1889E5EB195A84F60079C3E9 /* InviteTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteTableViewCell.m; sourceTree = "<group>"; };
 		189EEBBC196B2A2B00681F04 /* ExpressInterestPreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExpressInterestPreview.h; sourceTree = "<group>"; };
@@ -248,7 +250,6 @@
 		18EC22A018B5A0B400316B6E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		18EC22A218B5A0B400316B6E /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		18EC22A418B5A0B400316B6E /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		18EC22A818B5A0B400316B6E /* Beagle-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Beagle-Info.plist"; sourceTree = "<group>"; };
 		18EC22AA18B5A0B400316B6E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		18EC22AC18B5A0B400316B6E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		18EC22AE18B5A0B400316B6E /* Beagle-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Beagle-Prefix.pch"; sourceTree = "<group>"; };
@@ -765,10 +766,10 @@
 			children = (
 				18714B341940F1D2008F59DE /* Sounds */,
 				180AF0BF18DC809E00EE87D6 /* User.plist */,
-				18EC22A818B5A0B400316B6E /* Beagle-Info.plist */,
 				18EC22A918B5A0B400316B6E /* InfoPlist.strings */,
 				18EC22AC18B5A0B400316B6E /* main.m */,
 				18EC22AE18B5A0B400316B6E /* Beagle-Prefix.pch */,
+				187846BC19928D7E0091AA70 /* Beagle-Info.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1084,6 +1085,7 @@
 				18EC22AB18B5A0B400316B6E /* InfoPlist.strings in Resources */,
 				18F8697E192136DB000C8A37 /* EventInterestFilterBlurView.xib in Resources */,
 				18F889951902C7FF00C80011 /* PlayerProfileItem.xib in Resources */,
+				187846BD19928D7E0091AA70 /* Beagle-Info.plist in Resources */,
 				18EC22B318B5A0B400316B6E /* Images.xcassets in Resources */,
 				1805CED918C8D25800AC8556 /* TimeFilterView.xib in Resources */,
 				180AF0B318DC7FB200EE87D6 /* BlankHomePageView.xib in Resources */,
@@ -1329,7 +1331,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Harish Hoon (B99DQ79SBX)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)",
 					"$(inherited)",
@@ -1345,7 +1347,7 @@
 					"$(PROJECT_DIR)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "1B10E54F-0722-487C-BE8B-8FCF028E8E6F";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1356,7 +1358,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Soclivity, LLC (RLC9X36TPX)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)",
 					"$(inherited)",
@@ -1372,7 +1374,7 @@
 					"$(PROJECT_DIR)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "1A8A9F47-2D20-49A0-9BC8-DD8658734098";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
