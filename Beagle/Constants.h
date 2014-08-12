@@ -58,8 +58,7 @@
 #define kNotificationHomeAutoRefresh @"NotificationHomeAutoRefresh"
 
 #ifdef DEBUG
-#define herokuHost @"http://localhost:3000/"
-//#define herokuHost @"http://obscure-basin-9504.herokuapp.com/"
+#define herokuHost @"http://obscure-basin-9504.herokuapp.com/"
 #else
 #define herokuHost @"http://infinite-spire-6520.herokuapp.com/"
 #endif
