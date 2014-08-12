@@ -23,7 +23,7 @@
 #import "JSON.h"
 #import "CreateAnimationBlurView.h"
 #define REFRESH_HEADER_HEIGHT 70.0f
-#define stockCroppingCheck 0
+#define stockCroppingCheck 1
 #define kTimerIntervalInSeconds 10
 #define rowHeight 164
 #define kLeaveInterest 23
@@ -45,6 +45,8 @@
     NSTimer *timer;
     NSTimer *overlayTimer;
 }
+@property (nonatomic, strong) UIView* middleSectionView;
+@property (nonatomic, assign) CGFloat lastContentOffset;
 @property(nonatomic,strong)EventInterestFilterBlurView*filterBlurView;
 @property(nonatomic, strong)UIView *filterView;
 @property(nonatomic, weak) NSTimer *timer;
@@ -68,6 +70,7 @@
 @synthesize interestUpdateManager=_interestUpdateManager;
 @synthesize timer=_timer;
 @synthesize overlayTimer=_overlayTimer;
+@synthesize middleSectionView=_middleSectionView;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -200,14 +203,10 @@
     [topNavigationView addSubview:topGradient];
     [self.view addSubview:topNavigationView];
     
-    
-//    UIImage *stockBottomImage2=[BeagleUtilities imageByCropping:[UIImage imageNamed:@"defaultLocation"] toRect:CGRectMake(0, 64, 320, 103) withOrientation:UIImageOrientationDownMirrored];
-    bottomNavigationView=[[UIView alloc]initWithFrame:CGRectMake(0, 64, 320, 136)];
-    [self.view addSubview:bottomNavigationView];
-    UIImageView *middleSectionImageView=[[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 320, 92)];
-    middleSectionImageView.backgroundColor=[UIColor grayColor];
-    middleSectionImageView.tag=3457;
-    [bottomNavigationView addSubview:middleSectionImageView];
+    _middleSectionView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 92)];
+    _middleSectionView.backgroundColor=[UIColor grayColor];
+    _middleSectionView.tag=3457;
+//    [bottomNavigationView addSubview:middleSectionImageView];
 
 #else
     _topSection = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)];
@@ -243,12 +242,11 @@
     
     // Setting up the filter pane
 #if stockCroppingCheck
-    _filterView = [[UIView alloc] initWithFrame:CGRectMake(0, 92, 320, 44)];
+    _filterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     UIView*headerView=[self renderFilterHeaderView];
     headerView.backgroundColor=[UIColor grayColor];
     [_filterView addSubview:headerView];
     _filterView.tag=1346;
-    [bottomNavigationView addSubview:_filterView];
 #else
     _filterView = [[UIView alloc] initWithFrame:CGRectMake(0, 156, 320, 44)];
     [_filterView addSubview:[self renderFilterHeaderView]];
@@ -278,8 +276,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (updateEventsInTransitionFromBg_Fg) name:@"AutoRefreshEvents" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (refresh) name:kUpdateHomeScreenAndNotificationStack object:nil];
-
-
+    
+    
 }
 
 - (void)loadProfileImage:(NSString*)url {
@@ -908,21 +906,22 @@
         
 #if stockCroppingCheck
 
-//    [UIView transitionWithView:bottomNavigationView duration:1.0f options:(UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionAllowUserInteraction) animations:^{
 
         UIImage *stockImageTop=[BeagleUtilities imageByCropping:photo toRect:CGRectMake(0, 0, 320, 64) withOrientation:UIImageOrientationDownMirrored];
         topNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockImageTop];
         
         UIImage *stockImageMiddle=[BeagleUtilities imageByCropping:photo toRect:CGRectMake(0, 64, 320, 92) withOrientation:UIImageOrientationDownMirrored];
-        UIImageView *middleBackgroundView=(UIImageView*)[bottomNavigationView viewWithTag:3457];
-        middleBackgroundView.image=stockImageMiddle;
+        UIView *sectionView=(UIView*)[self.tableView viewWithTag:3457];
+        sectionView.backgroundColor=[UIColor colorWithPatternImage:stockImageMiddle];
+       [sectionView setNeedsDisplay];
 
         UIImage *stockImageBottom=[BeagleUtilities imageByCropping:photo toRect:CGRectMake(0, 156, 320, 44) withOrientation:UIImageOrientationDownMirrored];
            UIView*headerView=(UIView*)[self.view viewWithTag:43567];
            headerView.backgroundColor=[[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
         _filterView.backgroundColor = [UIColor colorWithPatternImage:stockImageBottom];
+    
+        [self.tableView reloadData];
         
-//        } completion:NULL];
 
         
 #else
@@ -1048,16 +1047,44 @@
 
 #pragma mark - Table view data source
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+//    if(isScrollingView){
+//        return 1;
+//    }
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
-    
+//    if(isScrollingView){
+//            return [self.tableData count];
+//     }
+    if(section==0)
+        return 0;
+    else{
         return [self.tableData count];
+        
+    }
+
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+//    if (isScrollingView){
+//        
+//            return 44.0f;
+//        }
+    if(section==0)
+        return 92.0f;
+    else{
+        return 44.0f;
+        
+    }
+
+}
+
+
 -(CGFloat)tableView:(UITableView*)tableView heightForRowAtIndexPath:(NSIndexPath*)indexPath {
+    
+    if(indexPath.section==1){
     NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     [style setAlignment:NSTextAlignmentLeft];
 
@@ -1085,46 +1112,58 @@
     }
     play.heightRow=rowHeight+16+20+(int)textRect.size.height;
     return rowHeight+16+20+(int)textRect.size.height;
+   }
+        return 0.0f;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    
+        if(section==0){
+            return _middleSectionView;
+        }
+        return _filterView;
+
     
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *CellIdentifier = @"MediaTableCell";
     
-    HomeTableViewCell *cell = [[HomeTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-    cell.selectionStyle=UITableViewCellEditingStyleNone;
-
-    BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexPath.row];
-    
-    cell.delegate=self;
-    cell.cellIndex=indexPath.row;
-    
-    cell.bg_activity = play;
-    
-    UIImage*checkImge=nil;
-    if(play.ownerid!=0 && play.activityType==1)
-        checkImge= [BeagleUtilities loadImage:play.ownerid];
-
-    if(checkImge==nil){
-    
-    if (!play.profilePhotoImage)
-    {
-        if (tableView.dragging == NO && tableView.decelerating == NO)
-        {
-            [self startIconDownload:play forIndexPath:indexPath];
-        }
-        // if a download is deferred or in progress, return a placeholder image
-        cell.photoImage = [UIImage imageNamed:@"picbox.png"];
+        HomeTableViewCell *cell = [[HomeTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        cell.selectionStyle=UITableViewCellEditingStyleNone;
         
-    }
-    else
-    {
-        cell.photoImage = play.profilePhotoImage;
-    }
-    }else{
-        cell.photoImage = play.profilePhotoImage=checkImge;
-    }
-    [cell setNeedsDisplay];
-    return cell;
+        BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexPath.row];
+        
+        cell.delegate=self;
+        cell.cellIndex=indexPath.row;
+        
+        cell.bg_activity = play;
+        
+        UIImage*checkImge=nil;
+        if(play.ownerid!=0 && play.activityType==1)
+            checkImge= [BeagleUtilities loadImage:play.ownerid];
+        
+        if(checkImge==nil){
+            
+            if (!play.profilePhotoImage)
+            {
+                if (tableView.dragging == NO && tableView.decelerating == NO)
+                {
+                    [self startIconDownload:play forIndexPath:indexPath];
+                }
+                // if a download is deferred or in progress, return a placeholder image
+                cell.photoImage = [UIImage imageNamed:@"picbox.png"];
+                
+            }
+            else
+            {
+                cell.photoImage = play.profilePhotoImage;
+            }
+        }else{
+            cell.photoImage = play.profilePhotoImage=checkImge;
+        }
+        [cell setNeedsDisplay];
+        return cell;
 }
 - (void)startIconDownload:(BeagleActivityClass*)appRecord forIndexPath:(NSIndexPath *)indexPath{
     IconDownloader *iconDownloader = [imageDownloadsInProgress objectForKey:indexPath];
@@ -1189,23 +1228,10 @@
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
-    
     [self loadImagesForOnscreenRows];
 }
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     
-#if stockCroppingCheck
-    if(!footerActivated)
-        [bottomNavigationView scrollViewWillBeginDragging:scrollView];
-#endif
-}
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
-#if stockCroppingCheck
-    if(!footerActivated)
-[bottomNavigationView scrollViewDidScroll:scrollView];
-    
-#endif
 }
 - (void)didReceiveMemoryWarning
 {
