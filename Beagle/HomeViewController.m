@@ -23,7 +23,7 @@
 #import "JSON.h"
 #import "CreateAnimationBlurView.h"
 #define REFRESH_HEADER_HEIGHT 70.0f
-#define stockCroppingCheck 1
+#define stockCroppingCheck 0
 #define kTimerIntervalInSeconds 10
 #define rowHeight 164
 #define kLeaveInterest 23
@@ -206,7 +206,6 @@
     _middleSectionView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 92)];
     _middleSectionView.backgroundColor=[UIColor grayColor];
     _middleSectionView.tag=3457;
-//    [bottomNavigationView addSubview:middleSectionImageView];
 
 #else
     _topSection = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)];
@@ -248,9 +247,9 @@
     [_filterView addSubview:headerView];
     _filterView.tag=1346;
 #else
-    _filterView = [[UIView alloc] initWithFrame:CGRectMake(0, 156, 320, 44)];
+    _filterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     [_filterView addSubview:[self renderFilterHeaderView]];
-    [_topSection addSubview:_filterView];
+//    [_topSection addSubview:_filterView];
 #endif
     
     _tableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStylePlain];
@@ -261,8 +260,9 @@
     _tableViewController.tableView = self.tableView;
     
     // Setting up the table and the refresh animation
-    self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
+//    self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+    [self.tableView setBackgroundColor:[UIColor clearColor]];
 
     
     if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
@@ -276,8 +276,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (updateEventsInTransitionFromBg_Fg) name:@"AutoRefreshEvents" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (refresh) name:kUpdateHomeScreenAndNotificationStack object:nil];
-    
-    
+    [self.view insertSubview:self.tableView aboveSubview:_topSection];
 }
 
 - (void)loadProfileImage:(NSString*)url {
@@ -926,6 +925,10 @@
         
 #else
         _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
+    
+//    UIView*headerView=(UIView*)[self.view viewWithTag:43567];
+//    headerView.backgroundColor=[[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
+//    [headerView setNeedsDisplay];
 
         [UIView transitionWithView:_topSection duration:1.0f options:(UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionAllowUserInteraction) animations:^{
 
@@ -1047,19 +1050,12 @@
 
 #pragma mark - Table view data source
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-//    if(isScrollingView){
-//        return 1;
-//    }
     return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    
-//    if(isScrollingView){
-//            return [self.tableData count];
-//     }
     if(section==0)
-        return 0;
+             return 0;
     else{
         return [self.tableData count];
         
@@ -1068,10 +1064,6 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-//    if (isScrollingView){
-//        
-//            return 44.0f;
-//        }
     if(section==0)
         return 92.0f;
     else{
@@ -1113,16 +1105,22 @@
     play.heightRow=rowHeight+16+20+(int)textRect.size.height;
     return rowHeight+16+20+(int)textRect.size.height;
    }
-        return 0.0f;
+     return 0.0f;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     
         if(section==0){
-            return _middleSectionView;
+            UIView *translucentView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 44)];
+            translucentView.backgroundColor=[UIColor clearColor];
+
+            translucentView.frame=CGRectMake(0, 0, 320, 92);
+            return translucentView;
+
+        }else{
+            return _filterView;
         }
-        return _filterView;
 
     
 }
