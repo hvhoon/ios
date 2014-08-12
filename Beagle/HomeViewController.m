@@ -44,6 +44,9 @@
     BOOL hideInAppNotification;
     NSTimer *timer;
     NSTimer *overlayTimer;
+    CGFloat yOffset;
+    UIColor *dominantColorFilter;
+    CGFloat deltaAlpha;
 }
 @property (nonatomic, strong) UIView* middleSectionView;
 @property (nonatomic, assign) CGFloat lastContentOffset;
@@ -131,6 +134,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    yOffset = 0.0;
+    deltaAlpha=0.8;
+    dominantColorFilter=[UIColor clearColor];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (UpdateBadgeCount) name:kBeagleBadgeCount object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationUpdate:) name:kNotificationHomeAutoRefresh object:Nil];
 
@@ -277,6 +283,14 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (refresh) name:kUpdateHomeScreenAndNotificationStack object:nil];
     [self.view insertSubview:self.tableView aboveSubview:_topSection];
+    
+    
+    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+
+    
+    self.view.backgroundColor=[BeagleUtilities returnBeagleColor:2];
+    
+
 }
 
 - (void)loadProfileImage:(NSString*)url {
@@ -895,6 +909,7 @@
     
     [self.timer invalidate];
     UIColor *dominantColor = [BeagleUtilities getDominantColor:photo];
+    dominantColorFilter=[BeagleUtilities getDominantColor:photo];
     BeagleManager *BG=[BeagleManager SharedInstance];
     BG.lightDominantColor=[BeagleUtilities returnLightColor:[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.9] withWhiteness:0.7];
     BG.mediumDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5];
@@ -1227,9 +1242,51 @@
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     [self loadImagesForOnscreenRows];
+    if(scrollView.contentOffset.y >=180){
+        deltaAlpha=1.0f;
+        _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColorFilter withShade:0.5] colorWithAlphaComponent:deltaAlpha];
+
+    }
+    if(scrollView.contentOffset.y <=0){
+        deltaAlpha=0.8f;
+        _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColorFilter withShade:0.5] colorWithAlphaComponent:deltaAlpha];
+
+    }
 }
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     
+}
+
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    
+    if (scrollView.contentOffset.y < yOffset) {
+        
+        // scrolls down.
+        yOffset = scrollView.contentOffset.y;
+        _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColorFilter withShade:0.5] colorWithAlphaComponent:deltaAlpha];
+        [_filterView setNeedsDisplay];
+        deltaAlpha-=0.001;
+        if(deltaAlpha<=0.8){
+            deltaAlpha=0.8;
+        }
+        
+        NSLog(@"deltaDown=%f",deltaAlpha);
+
+    }
+    else
+    {
+        // scrolls up.
+        yOffset = scrollView.contentOffset.y;
+        _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColorFilter withShade:0.5] colorWithAlphaComponent:deltaAlpha];
+        [_filterView setNeedsDisplay];
+        deltaAlpha+=0.003;
+        if(deltaAlpha>=1.0f){
+            deltaAlpha=1.0f;
+        }
+        NSLog(@"deltaUp=%f",deltaAlpha);
+
+    }
+    NSLog(@"scrollView.contentOffset.y=%f",scrollView.contentOffset.y);
 }
 - (void)didReceiveMemoryWarning
 {
