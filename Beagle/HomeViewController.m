@@ -48,6 +48,7 @@
     UIColor *dominantColorFilter;
     CGFloat deltaAlpha;
     BOOL firstTime;
+    BOOL isLoading;
 }
 @property (nonatomic, strong) UIView* middleSectionView;
 @property (nonatomic, assign) CGFloat lastContentOffset;
@@ -138,10 +139,11 @@
     firstTime=true;
     yOffset = 0.0;
     deltaAlpha=0.8;
-    dominantColorFilter=[UIColor clearColor];
+    dominantColorFilter=[UIColor grayColor];
+    isLoading=true;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (UpdateBadgeCount) name:kBeagleBadgeCount object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationUpdate:) name:kNotificationHomeAutoRefresh object:Nil];
-
+    
     categoryFilterType=1;
     self.filterBlurView = [EventInterestFilterBlurView loadEventInterestFilter:self.view];
     self.filterBlurView.delegate=self;
@@ -257,6 +259,7 @@
 #else
     _filterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     [_filterView addSubview:[self renderFilterHeaderView]];
+    _filterView.backgroundColor=[UIColor grayColor];
 #endif
     
     _tableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStylePlain];
@@ -268,6 +271,7 @@
     _tableViewController.tableView = self.tableView;
     
     // Setting up the table and the refresh animation
+//    self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [self.tableView setBackgroundColor:[UIColor clearColor]];
 
@@ -279,6 +283,7 @@
         
      [(AppDelegate *)[[UIApplication sharedApplication] delegate] startStandardUpdates];
     }
+    isPushAuto=TRUE;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (updateEventsInTransitionFromBg_Fg) name:@"AutoRefreshEvents" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (refresh) name:kUpdateHomeScreenAndNotificationStack object:nil];
@@ -290,7 +295,6 @@
     
     self.view.backgroundColor=[BeagleUtilities returnBeagleColor:2];
     
-
 }
 
 - (void)loadProfileImage:(NSString*)url {
@@ -734,6 +738,7 @@
         [(AppDelegate *)[[UIApplication sharedApplication] delegate] startStandardUpdates];
     }
     else if(!isSixty && isMoreThan50_M){
+//        isPushAuto=TRUE;
         [self LocationAcquired];
         
     }
@@ -797,6 +802,7 @@
     NSLog(@"Starting up query");
     if(isPushAuto) {
         [_tableViewController.refreshControl beginRefreshing];
+        [_tableViewController.refreshControl setTintColor:[UIColor whiteColor]];
         [self.tableView setContentOffset:CGPointMake(0, -REFRESH_HEADER_HEIGHT) animated:YES];
     }
         
@@ -953,7 +959,7 @@
         
 #else
         _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
-    
+    isLoading=FALSE;
 //    UIView*headerView=(UIView*)[self.view viewWithTag:43567];
 //    headerView.backgroundColor=[[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
 //    [headerView setNeedsDisplay];
@@ -1301,7 +1307,8 @@
 }
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    
+
+    if(!isLoading){
     // Set the y offset correctly
     if (scrollView.contentOffset.y <=0)
         yOffset = 0;
@@ -1318,7 +1325,7 @@
     
     // Logs
     NSLog(@"Offset: %f, ScollView: %f, Alpha = %f", yOffset, scrollView.contentOffset.y, deltaAlpha);
-    
+    }
     // Magnification effect on the cover image
     UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
     [stockImageView setContentMode:UIViewContentModeScaleAspectFill];
@@ -1329,7 +1336,7 @@
         headerImageFrame.size.height = 200 - (scrollOffset);
         stockImageView.frame = headerImageFrame;
     }
-    
+
 }
 - (void)didReceiveMemoryWarning
 {
@@ -1640,6 +1647,7 @@
             
             self.tableData=[NSArray arrayWithArray:tableDataArray];
             [self.tableView reloadData];
+//            isPushAuto = true;
 
             if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
                 [self LocationAcquired];
@@ -2040,6 +2048,9 @@
                 }
             }
         }
+        if(isPushAuto){
+            isPushAuto=FALSE;
+        }
     }
     else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
         _interestUpdateManager.delegate = nil;
@@ -2274,6 +2285,9 @@
 
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {
+    if(isPushAuto){
+        isPushAuto=FALSE;
+    }
     [_tableViewController.refreshControl endRefreshing];
     if(serverRequest==kServerCallGetActivities)
     {
@@ -2317,6 +2331,9 @@
 
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
 {
+    if(isPushAuto){
+        isPushAuto=FALSE;
+    }
     [_tableViewController.refreshControl endRefreshing];
     if(serverRequest==kServerCallGetActivities)
     {
