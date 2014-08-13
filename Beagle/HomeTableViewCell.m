@@ -9,7 +9,7 @@
 
 #import "HomeTableViewCell.h"
 @implementation HomeTableViewCell
-@synthesize delegate,cellIndex;
+@synthesize delegate,cellIndexPath;
 @synthesize bg_activity,photoImage;
 static UIFont *firstTextFont = nil;
 static UIFont *secondTextFont = nil;
@@ -175,7 +175,7 @@ static UIFont *forthTextFont = nil;
     UIButton *suggestedButton = [UIButton buttonWithType:UIButtonTypeCustom];
         suggestedButton.frame=CGRectMake(16, fromTheTop,
                                          165,33);
-    suggestedButton.tag=[[NSString stringWithFormat:@"444%ld",(long)cellIndex]integerValue];
+    suggestedButton.tag=[[NSString stringWithFormat:@"444%ld",(long)cellIndexPath.row]integerValue];
        [suggestedButton.titleLabel setUserInteractionEnabled: NO];
        [self addSubview:suggestedButton];
         
@@ -267,7 +267,7 @@ static UIFont *forthTextFont = nil;
     // Draw the Button
     UIButton *interestedButton = [UIButton buttonWithType:UIButtonTypeCustom];
     interestedButton.frame=CGRectMake(16, fromTheTop, 151, 34);
-    interestedButton.tag=[[NSString stringWithFormat:@"333%ld",(long)cellIndex]integerValue];
+    interestedButton.tag=[[NSString stringWithFormat:@"333%ld",(long)cellIndexPath.row]integerValue];
     UIColor *buttonColor = [[BeagleManager SharedInstance] mediumDominantColor];
     UIColor *outlineButtonColor = [[BeagleManager SharedInstance] darkDominantColor];
     [interestedButton.titleLabel setUserInteractionEnabled: NO];
@@ -382,21 +382,21 @@ static UIFont *forthTextFont = nil;
     if(CGRectContainsPoint(interestedRect,startPoint)){
         if(self.bg_activity.dosRelation!=0){
             if (self.delegate && [self.delegate respondsToSelector:@selector(updateInterestedStatus:)])
-            [delegate updateInterestedStatus:cellIndex];
+            [delegate updateInterestedStatus:cellIndexPath.row];
         }
     }
     else if(CGRectContainsPoint(profileRect,startPoint) || CGRectContainsPoint(nameRect,startPoint)){
         if(self.bg_activity.dosRelation!=0){
         if (self.delegate && [self.delegate respondsToSelector:@selector(profileScreenRedirect:)])
-            [self.delegate profileScreenRedirect:cellIndex];
+            [self.delegate profileScreenRedirect:cellIndexPath.row];
         }else{
             if (self.delegate && [self.delegate respondsToSelector:@selector(detailedInterestScreenRedirect:)])
-                [self.delegate detailedInterestScreenRedirect:cellIndex];
+                [self.delegate detailedInterestScreenRedirect:cellIndexPath.row];
         }
     }
     else {
         if (self.delegate && [self.delegate respondsToSelector:@selector(detailedInterestScreenRedirect:)])
-            [self.delegate detailedInterestScreenRedirect:cellIndex];
+            [self.delegate detailedInterestScreenRedirect:cellIndexPath.row];
     }
     }
 

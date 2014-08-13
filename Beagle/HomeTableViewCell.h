@@ -27,5 +27,5 @@
 @property(nonatomic,strong)UIImage*photoImage;
 @property (nonatomic,weak)id <HomeTableViewCellDelegate> delegate;
 @property (nonatomic, strong) BeagleActivityClass *bg_activity;
-@property(nonatomic,assign)NSInteger cellIndex;
+@property(nonatomic,assign)NSIndexPath *cellIndexPath;
 @end

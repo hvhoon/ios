@@ -47,6 +47,11 @@
     CGFloat yOffset;
     UIColor *dominantColorFilter;
     CGFloat deltaAlpha;
+    CGFloat _headerImageYOffset;
+    UIImageView *stockImageView;
+    UIActivityIndicatorView *_spinner;
+    BOOL isLoading;
+    BOOL firstTime;
 }
 @property (nonatomic, strong) UIView* middleSectionView;
 @property (nonatomic, assign) CGFloat lastContentOffset;
@@ -134,6 +139,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    firstTime=true;
     yOffset = 0.0;
     deltaAlpha=0.8;
     dominantColorFilter=[UIColor clearColor];
@@ -214,16 +220,18 @@
     _middleSectionView.tag=3457;
 
 #else
-    _topSection = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)];
+    _topSection = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 250)];
+//    _topSection.backgroundColor=[UIColor yellowColor];
     [self.view addSubview:_topSection];
     
-    UIImageView *stockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)];
+    stockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 250)];
     stockImageView.backgroundColor = [UIColor grayColor];
     stockImageView.tag=3456;
+    stockImageView.contentMode =UIViewContentModeScaleAspectFit;// UIViewContentModeScaleAspectFill;
     [_topSection addSubview:stockImageView];
      
     UIImageView *topGradient=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"gradient"]];
-    topGradient.frame = CGRectMake(0, 0, 320, 64);
+    topGradient.frame = CGRectMake(0, 0, 320, 64+50);
     [_topSection addSubview:topGradient];
     
 #endif
@@ -233,6 +241,8 @@
                                                   target: self
                                                 selector:@selector(defaultLocalImage)
                                                 userInfo: nil repeats:NO];
+    
+
     
     UIButton *eventButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [eventButton setBackgroundImage:[UIImage imageNamed:@"add"] forState:UIControlStateNormal];
@@ -262,6 +272,7 @@
     [self addChildViewController:_tableViewController];
     
     _tableViewController.refreshControl = [UIRefreshControl new];
+    _tableViewController.refreshControl.tintColor=[UIColor clearColor];
     [_tableViewController.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
     _tableViewController.tableView = self.tableView;
     
@@ -278,7 +289,7 @@
         
      [(AppDelegate *)[[UIApplication sharedApplication] delegate] startStandardUpdates];
     }
-    isPushAuto=TRUE;
+//    isPushAuto=TRUE;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (updateEventsInTransitionFromBg_Fg) name:@"AutoRefreshEvents" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (refresh) name:kUpdateHomeScreenAndNotificationStack object:nil];
@@ -290,7 +301,13 @@
     
     self.view.backgroundColor=[BeagleUtilities returnBeagleColor:2];
     
-
+    
+    // Create the underlying imageview and offset it
+    _headerImageYOffset = -50.0;
+    CGRect headerImageFrame = stockImageView.frame;
+    headerImageFrame.origin.y = _headerImageYOffset;
+    stockImageView.frame = headerImageFrame;
+    
 }
 
 - (void)loadProfileImage:(NSString*)url {
@@ -734,7 +751,7 @@
         [(AppDelegate *)[[UIApplication sharedApplication] delegate] startStandardUpdates];
     }
     else if(!isSixty && isMoreThan50_M){
-        isPushAuto=TRUE;
+//        isPushAuto=TRUE;
         [self LocationAcquired];
         
     }
@@ -752,8 +769,24 @@
     if(textLabel!=nil){
         [textLabel removeFromSuperview];
     }
+    NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     
-    UILabel *fromLabel = [[UILabel alloc]initWithFrame:CGRectMake(16, 0, 263, 57)];
+    // Drawing the time label
+    [style setAlignment:NSTextAlignmentLeft];
+
+    NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+             [UIFont fontWithName:@"HelveticaNeue-Light" size:30.0], NSFontAttributeName,
+             [UIColor whiteColor],NSForegroundColorAttributeName,
+             style, NSParagraphStyleAttributeName, nil];
+    
+    CGSize maximumLabelSize = CGSizeMake(288,999);
+    
+    CGRect cityTextRect = [name boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
+                                                                      attributes:attrs
+                                                                         context:nil];
+
+    
+    UILabel *fromLabel = [[UILabel alloc]initWithFrame:CGRectMake(16, 0, cityTextRect.size.width, 57)];
     
     fromLabel.text = name;
     fromLabel.tag=1234;
@@ -765,6 +798,14 @@
     fromLabel.textColor = [UIColor whiteColor];
     fromLabel.textAlignment = NSTextAlignmentLeft;
     fromLabel.alpha = 1.0;
+    
+    
+    _spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    _spinner.frame = CGRectMake(25+cityTextRect.size.width,13.5,37, 37);
+    _spinner.hidesWhenStopped=YES;
+    [_topSection addSubview:_spinner];
+    [_spinner setHidden:YES];
+
     
     
     [UIView transitionWithView:_topSection duration:1.0f options:(UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionAllowUserInteraction) animations:^{
@@ -781,7 +822,11 @@
 }
 - (void)refresh {
     NSLog(@"Starting up query");
-    
+    if(isLoading)
+        return;
+    [_spinner setHidden:NO];
+    [_spinner startAnimating];
+    isLoading=true;
     if(isPushAuto) {
         [_tableViewController.refreshControl beginRefreshing];
         [self.tableView setContentOffset:CGPointMake(0, -REFRESH_HEADER_HEIGHT) animated:YES];
@@ -947,7 +992,7 @@
 
         [UIView transitionWithView:_topSection duration:1.0f options:(UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionAllowUserInteraction) animations:^{
 
-        UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
+//        UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
         stockImageView.image=photo;
         [stockImageView setContentMode:UIViewContentModeScaleAspectFit];
         stockImageView.image = photo;
@@ -1072,7 +1117,13 @@
     if(section==0)
              return 0;
     else{
-        return [self.tableData count];
+        if([self.tableData count]>0)
+            return [self.tableData count];
+        else if(firstTime && [self.tableData count]==0){
+            return 0;
+        }else{
+            return 1;
+        }
         
     }
 
@@ -1091,7 +1142,7 @@
 
 -(CGFloat)tableView:(UITableView*)tableView heightForRowAtIndexPath:(NSIndexPath*)indexPath {
     
-    if(indexPath.section==1){
+    if(indexPath.section==1 && [self.tableData count]>0){
     NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     [style setAlignment:NSTextAlignmentLeft];
 
@@ -1119,7 +1170,15 @@
     }
     play.heightRow=rowHeight+16+20+(int)textRect.size.height;
     return rowHeight+16+20+(int)textRect.size.height;
-   }
+    }else if (indexPath.section==1 && [self.tableData count]==0){
+        if([UIScreen mainScreen].bounds.size.height > 480.0f)
+            return 368.0f;
+        else{
+            return 280.0f;
+        }
+
+        
+    }
      return 0.0f;
 }
 
@@ -1142,13 +1201,16 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *CellIdentifier = @"MediaTableCell";
     
+    
+    if([self.tableData count]>0){
+    
         HomeTableViewCell *cell = [[HomeTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         cell.selectionStyle=UITableViewCellEditingStyleNone;
         
         BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexPath.row];
         
         cell.delegate=self;
-        cell.cellIndex=indexPath.row;
+        cell.cellIndexPath=indexPath;
         
         cell.bg_activity = play;
         
@@ -1177,6 +1239,28 @@
         }
         [cell setNeedsDisplay];
         return cell;
+        
+    }else{
+        UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        cell.selectionStyle=UITableViewCellEditingStyleNone;
+        NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"BlankHomePageView" owner:self options:nil];
+        BlankHomePageView *blankHomePageView=[nib objectAtIndex:0];
+        
+        // If it's a 3.5" screen use the bounds below
+        blankHomePageView.frame=CGRectMake(0, 0, 320, 280);
+        
+        // Else use these bounds for the 4" screen
+        if([UIScreen mainScreen].bounds.size.height > 480.0f)
+            blankHomePageView.frame=CGRectMake(0, 0, 320, 368);
+        
+        blankHomePageView.delegate=self;
+        blankHomePageView.userInteractionEnabled=YES;
+        blankHomePageView.tag=1245;
+        [cell.contentView addSubview:blankHomePageView];
+        return cell;
+
+    }
+        return nil;
 }
 - (void)startIconDownload:(BeagleActivityClass*)appRecord forIndexPath:(NSIndexPath *)indexPath{
     IconDownloader *iconDownloader = [imageDownloadsInProgress objectForKey:indexPath];
@@ -1242,7 +1326,7 @@
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     [self loadImagesForOnscreenRows];
-    if(scrollView.contentOffset.y >=180){
+    if(scrollView.contentOffset.y >=170){
         deltaAlpha=1.0f;
         _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColorFilter withShade:0.5] colorWithAlphaComponent:deltaAlpha];
 
@@ -1265,12 +1349,12 @@
         yOffset = scrollView.contentOffset.y;
         _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColorFilter withShade:0.5] colorWithAlphaComponent:deltaAlpha];
         [_filterView setNeedsDisplay];
-        deltaAlpha-=0.001;
+        deltaAlpha-=0.003;
         if(deltaAlpha<=0.8){
             deltaAlpha=0.8;
         }
         
-        NSLog(@"deltaDown=%f",deltaAlpha);
+//        NSLog(@"deltaDown=%f",deltaAlpha);
 
     }
     else
@@ -1283,10 +1367,22 @@
         if(deltaAlpha>=1.0f){
             deltaAlpha=1.0f;
         }
-        NSLog(@"deltaUp=%f",deltaAlpha);
+//        NSLog(@"deltaUp=%f",deltaAlpha);
 
     }
-    NSLog(@"scrollView.contentOffset.y=%f",scrollView.contentOffset.y);
+//    NSLog(@"scrollView.contentOffset.y=%f",scrollView.contentOffset.y);
+    
+    CGFloat scrollOffset = scrollView.contentOffset.y;
+    CGRect headerImageFrame = stockImageView.frame;
+    
+    if (scrollOffset < 0) {
+        // Adjust image proportionally
+        headerImageFrame.origin.y = _headerImageYOffset - ((scrollOffset/3));
+    } else {
+        // We're scrolling up, return to normal behavior
+//        headerImageFrame.origin.y = _headerImageYOffset - scrollOffset;
+    }
+    stockImageView.frame = headerImageFrame;
 }
 - (void)didReceiveMemoryWarning
 {
@@ -1439,6 +1535,7 @@
 
 -(void)filterByCategoryType:(NSInteger)type{
     footerActivated=TRUE;
+    firstTime=FALSE;
     self.imageDownloadsInProgress = [NSMutableDictionary dictionary];
     switch (type) {
         case 1:
@@ -1573,34 +1670,15 @@
         if([self.tableData count]>=3){
             footerActivated=FALSE;
         }
-        [self.tableView setHidden:NO];
-        
-        BlankHomePageView *blankHomePageView=(BlankHomePageView*)[self.view  viewWithTag:1245];
-        [blankHomePageView removeFromSuperview];
-        [self.tableView reloadData];
+            self.tableView.scrollEnabled=YES;
     }
     else{
+        self.tableView.scrollEnabled=NO;
         
-        [self.tableView setHidden:YES];
-        
-        NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"BlankHomePageView" owner:self options:nil];
-        BlankHomePageView *blankHomePageView=[nib objectAtIndex:0];
-        
-        // If it's a 3.5" screen use the bounds below
-        blankHomePageView.frame=CGRectMake(0, 200, 320, 280);
-        
-        // Else use these bounds for the 4" screen
-        if([UIScreen mainScreen].bounds.size.height > 480.0f)
-            blankHomePageView.frame=CGRectMake(0, 200, 320, 368);
-        
-        blankHomePageView.delegate=self;
-        //[blankHomePageView updateViewConstraints];
-        blankHomePageView.userInteractionEnabled=YES;
-        blankHomePageView.tag=1245;
-        [self.view addSubview:blankHomePageView];
     }
 
-    
+    [self.tableView reloadData];
+
 }
 #pragma mark - filter  option calls
 -(void)filterOptionClicked:(NSInteger)index{
@@ -1615,12 +1693,8 @@
             
             self.tableData=[NSArray arrayWithArray:tableDataArray];
             [self.tableView reloadData];
-            isPushAuto = true;
+//            isPushAuto = true;
 
-            [self.tableView setHidden:NO];
-            BlankHomePageView *blankHomePageView=(BlankHomePageView*)[self.view  viewWithTag:1245];
-            [blankHomePageView removeFromSuperview];
-            
             if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
                 [self LocationAcquired];
             }
@@ -1702,8 +1776,8 @@
 //        [_interestUpdateManager removeMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
     }
     else{
-        [self createAnOverlayOnAUITableViewCell:[NSIndexPath indexPathForRow:index inSection:0]];
-        HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+        [self createAnOverlayOnAUITableViewCell:[NSIndexPath indexPathForRow:index inSection:1]];
+        HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:1]];
         UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)index]integerValue]];
         [button setEnabled:NO];
         [Appsee addEvent:@"Express Interest"];
@@ -1744,7 +1818,7 @@
 
 -(void)showView{
     
-    HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+    HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:1]];
     UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)interestIndex]integerValue]];
     [button setEnabled:YES];
 
@@ -1768,7 +1842,7 @@
 }
 -(void)hideView:(UIView*)pView{
     
-    HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+    HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:1]];
 
     [UIView animateWithDuration:0.5
                           delay:0.0
@@ -1823,7 +1897,7 @@
                 _interestUpdateManager.delegate=self;
                 
                 BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:interestIndex];
-                HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+                HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:1]];
                 UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)interestIndex]integerValue]];
                 [button setEnabled:NO];
                 
@@ -1843,7 +1917,7 @@
                 
                 BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:interestIndex];
                 play.suggestedId=play.activityId;
-                HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+                HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:1]];
                 UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"444%ld",(long)index]integerValue]];
                 [button setEnabled:NO];
                 
@@ -1893,7 +1967,9 @@
     [_tableViewController.refreshControl endRefreshing];
     
     if(serverRequest==kServerCallGetActivities){
-        
+        [_spinner stopAnimating];
+        isLoading=false;
+
         self.filterActivitiesOnHomeScreen=[[NSMutableDictionary alloc]init];
         
         _homeActivityManager.delegate = nil;
@@ -2082,7 +2158,7 @@
                 }
                 else if([message isEqualToString:@"Already Joined"]){
                     
-                    HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+                    HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:1]];
                     UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)interestIndex]integerValue]];
                     [button setEnabled:YES];
 
@@ -2149,7 +2225,7 @@
                     
                 }
             }else{
-                HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+                HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:1]];
                 UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)interestIndex]integerValue]];
                 [button setEnabled:YES];
                 NSString *message = NSLocalizedString (@"That didn't quite go as planned, try again?",
@@ -2263,6 +2339,9 @@
     [_tableViewController.refreshControl endRefreshing];
     if(serverRequest==kServerCallGetActivities)
     {
+        [_spinner stopAnimating];
+        isLoading=false;
+
         _homeActivityManager.delegate = nil;
         [_homeActivityManager releaseServerManager];
         _homeActivityManager = nil;
@@ -2287,7 +2366,7 @@
     BeagleAlertWithMessage(message);
     
     if(serverRequest==kServerCallParticipateInterest||serverRequest==kServerCallLeaveInterest){
-        HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+        HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:1]];
         UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)interestIndex]integerValue]];
         [button setEnabled:YES];
         if(serverRequest==kServerCallParticipateInterest){
@@ -2308,6 +2387,9 @@
     [_tableViewController.refreshControl endRefreshing];
     if(serverRequest==kServerCallGetActivities)
     {
+        [_spinner stopAnimating];
+        isLoading=false;
+
         _homeActivityManager.delegate = nil;
         [_homeActivityManager releaseServerManager];
         _homeActivityManager = nil;
@@ -2330,7 +2412,7 @@
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
     [alert show];
     if(serverRequest==kServerCallParticipateInterest||serverRequest==kServerCallLeaveInterest){
-        HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:0]];
+        HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:1]];
         UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)interestIndex]integerValue]];
         [button setEnabled:YES];
         if(serverRequest==kServerCallParticipateInterest){
