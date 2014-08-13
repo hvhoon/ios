@@ -22,7 +22,7 @@
 #import "ExpressInterestPreview.h"
 #import "JSON.h"
 #import "CreateAnimationBlurView.h"
-#define REFRESH_HEADER_HEIGHT 70.0f
+#define REFRESH_HEADER_HEIGHT 44.0f
 #define stockCroppingCheck 0
 #define kTimerIntervalInSeconds 10
 #define rowHeight 164
@@ -65,7 +65,6 @@
 @property(strong,nonatomic)ServerManager *interestUpdateManager;
 @property(strong,nonatomic)UIView *topSection;
 @property(nonatomic,strong)CreateAnimationBlurView *animationBlurView;
-@property(strong, nonatomic)UIView *creditsSection;
 @end
 
 @implementation HomeViewController
@@ -139,7 +138,6 @@
     firstTime=true;
     yOffset = 0.0;
     deltaAlpha=0.8;
-    dominantColorFilter=[UIColor grayColor];
     isLoading=true;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (UpdateBadgeCount) name:kBeagleBadgeCount object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationUpdate:) name:kNotificationHomeAutoRefresh object:Nil];
@@ -218,13 +216,9 @@
     _middleSectionView.tag=3457;
 
 #else
-    _topSection = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 300)];
+    _topSection = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)];
+    _topSection.backgroundColor = [UIColor grayColor];
     [self.view addSubview:_topSection];
-    
-    _creditsSection = [[UIView alloc] initWithFrame:CGRectMake(0, 200, 320, 100)];
-    _creditsSection.backgroundColor = [UIColor darkGrayColor];
-    [_topSection addSubview:_creditsSection];
-    [_creditsSection setHidden:YES];
     
     UIImageView *stockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)];
     stockImageView.backgroundColor = [UIColor grayColor];
@@ -293,7 +287,6 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (refresh) name:kUpdateHomeScreenAndNotificationStack object:nil];
     [self.view insertSubview:self.tableView aboveSubview:_topSection];
-    
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     self.view.backgroundColor=[BeagleUtilities returnBeagleColor:2];
     
@@ -803,8 +796,8 @@
 - (void)refresh {
     NSLog(@"Starting up query");
     if(isPushAuto) {
-        [_tableViewController.refreshControl beginRefreshing];
         [_tableViewController.refreshControl setTintColor:[UIColor whiteColor]];
+        [_tableViewController.refreshControl beginRefreshing];
         [self.tableView setContentOffset:CGPointMake(0, -REFRESH_HEADER_HEIGHT) animated:YES];
     }
         
@@ -958,7 +951,8 @@
         
 #else
         _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
-    isLoading=FALSE;
+        _topSection.backgroundColor = BG.mediumDominantColor;
+        isLoading=FALSE;
 //    UIView*headerView=(UIView*)[self.view viewWithTag:43567];
 //    headerView.backgroundColor=[[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
 //    [headerView setNeedsDisplay];
@@ -1307,61 +1301,42 @@
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
 
-    if(!isLoading){
-    // Set the y offset correctly
-    if (scrollView.contentOffset.y <=0)
-        yOffset = 0;
-    else if(scrollView.contentOffset.y >=136)
-        yOffset = 136;
-    else
-        yOffset = scrollView.contentOffset.y;
-    
-    deltaAlpha = 0.8 + (0.18 * (yOffset/136));
-
-    // Color filter view
-    _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColorFilter withShade:0.5] colorWithAlphaComponent:deltaAlpha];
-    [_filterView setNeedsDisplay];
-    
-    // Logs
-    NSLog(@"Offset: %f, ScollView: %f, Alpha = %f", yOffset, scrollView.contentOffset.y, deltaAlpha);
-    }
-    // Magnification effect on the cover image
     UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
     [stockImageView setContentMode:UIViewContentModeScaleAspectFill];
     CGRect headerImageFrame = stockImageView.frame;
-    CGRect creditFrame = _creditsSection.frame;
+    CGRect topFrame = _topSection.frame;
     
     // Let the scrolling begin, keep track of where you are
-    if (scrollView.contentOffset.y >= 0) {
-        if (scrollView.contentOffset.y >=92)
-            yOffset = 92;
+    if (scrollView.contentOffset.y >= 0.0) {
+        if (scrollView.contentOffset.y >=92.0)
+            yOffset = 92.0;
         else
             yOffset = scrollView.contentOffset.y;
         
-        [_creditsSection setHidden:YES];
-        deltaAlpha = 0.8 + (0.18 * (yOffset/92));
+        deltaAlpha = 0.8 + (0.18 * (yOffset/92.0));
     }
     else {
-        if (scrollView.contentOffset.y <=-44) {
-            yOffset = -44;
+        if (scrollView.contentOffset.y <=-44.0) {
+            yOffset = -44.0;
             
-            if (scrollView.contentOffset.y <=-80) {
-                headerImageFrame.size.height = 120 - (scrollView.contentOffset.y);
-                creditFrame.size.height = 120 - (scrollView.contentOffset.y);
-                _creditsSection.frame = creditFrame;
+            if (scrollView.contentOffset.y <=-88.0) {
+                headerImageFrame.size.height = 110.5 - (scrollView.contentOffset.y);
                 stockImageView.frame = headerImageFrame;
             }
         }
         else
             yOffset = scrollView.contentOffset.y;
         
-        [_creditsSection setHidden:NO];
-        deltaAlpha = 0.8 + (0.2 * (yOffset/-44));
+        topFrame.size.height = 200.0 - (scrollView.contentOffset.y);
+        _topSection.frame = topFrame;
+        deltaAlpha = 0.8 + (0.2 * (yOffset/-44.0));
     }
-
-    // Update the filter color appropriately!
-    _filterView.backgroundColor = [[[BeagleManager SharedInstance] mediumDominantColor] colorWithAlphaComponent:deltaAlpha];
-    [_filterView setNeedsDisplay];
+    
+    // Update the filter color appropriately if the screen is not loading for the first time!
+    if (!isLoading) {
+        _filterView.backgroundColor = [[[BeagleManager SharedInstance] mediumDominantColor] colorWithAlphaComponent:deltaAlpha];
+        [_filterView setNeedsDisplay];
+    }
 
 }
 - (void)didReceiveMemoryWarning
