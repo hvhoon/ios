@@ -45,7 +45,6 @@
     NSTimer *timer;
     NSTimer *overlayTimer;
     CGFloat yOffset;
-    UIColor *dominantColorFilter;
     CGFloat deltaAlpha;
     BOOL firstTime;
 }
@@ -65,6 +64,7 @@
 @property(strong,nonatomic)ServerManager *interestUpdateManager;
 @property(strong,nonatomic)UIView *topSection;
 @property(nonatomic,strong)CreateAnimationBlurView *animationBlurView;
+@property(strong, nonatomic)UIView *creditsSection;
 @end
 
 @implementation HomeViewController
@@ -138,7 +138,6 @@
     firstTime=true;
     yOffset = 0.0;
     deltaAlpha=0.8;
-    dominantColorFilter=[UIColor clearColor];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (UpdateBadgeCount) name:kBeagleBadgeCount object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationUpdate:) name:kNotificationHomeAutoRefresh object:Nil];
 
@@ -216,8 +215,13 @@
     _middleSectionView.tag=3457;
 
 #else
-    _topSection = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)];
+    _topSection = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 300)];
     [self.view addSubview:_topSection];
+    
+    _creditsSection = [[UIView alloc] initWithFrame:CGRectMake(0, 200, 320, 100)];
+    _creditsSection.backgroundColor = [UIColor darkGrayColor];
+    [_topSection addSubview:_creditsSection];
+    [_creditsSection setHidden:YES];
     
     UIImageView *stockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)];
     stockImageView.backgroundColor = [UIColor grayColor];
@@ -284,12 +288,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (refresh) name:kUpdateHomeScreenAndNotificationStack object:nil];
     [self.view insertSubview:self.tableView aboveSubview:_topSection];
     
-    
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-
-    
     self.view.backgroundColor=[BeagleUtilities returnBeagleColor:2];
-    
 
 }
 
@@ -922,14 +922,11 @@
     
     [self.timer invalidate];
     UIColor *dominantColor = [BeagleUtilities getDominantColor:photo];
-    dominantColorFilter=[BeagleUtilities getDominantColor:photo];
     BeagleManager *BG=[BeagleManager SharedInstance];
     BG.lightDominantColor=[BeagleUtilities returnLightColor:[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.9] withWhiteness:0.7];
     BG.mediumDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5];
     BG.darkDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.4];
     [[NSUserDefaults standardUserDefaults] setValue:[NSDate date] forKey:@"HourlyUpdate"];
-
-    
         
 #if stockCroppingCheck
 
@@ -952,8 +949,8 @@
 
         
 #else
-        _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
-    
+    _filterView.backgroundColor = [BG.mediumDominantColor colorWithAlphaComponent:0.8];
+    _creditsSection.backgroundColor = BG.mediumDominantColor;
 //    UIView*headerView=(UIView*)[self.view viewWithTag:43567];
 //    headerView.backgroundColor=[[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
 //    [headerView setNeedsDisplay];
@@ -1302,34 +1299,43 @@
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
     
-    // Set the y offset correctly
-    if (scrollView.contentOffset.y <=0)
-        yOffset = 0;
-    else if(scrollView.contentOffset.y >=136)
-        yOffset = 136;
-    else
-        yOffset = scrollView.contentOffset.y;
-    
-    deltaAlpha = 0.8 + (0.18 * (yOffset/136));
-
-    // Color filter view
-    _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColorFilter withShade:0.5] colorWithAlphaComponent:deltaAlpha];
-    [_filterView setNeedsDisplay];
-    
-    // Logs
-    NSLog(@"Offset: %f, ScollView: %f, Alpha = %f", yOffset, scrollView.contentOffset.y, deltaAlpha);
-    
-    // Magnification effect on the cover image
     UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
     [stockImageView setContentMode:UIViewContentModeScaleAspectFill];
-    CGFloat scrollOffset = scrollView.contentOffset.y;
     CGRect headerImageFrame = stockImageView.frame;
+    CGRect creditFrame = _creditsSection.frame;
     
-    if (scrollView.contentOffset.y <=0) {
-        headerImageFrame.size.height = 200 - (scrollOffset);
-        stockImageView.frame = headerImageFrame;
+    // Let the scrolling begin, keep track of where you are
+    if (scrollView.contentOffset.y >= 0) {
+        if (scrollView.contentOffset.y >=92)
+            yOffset = 92;
+        else
+            yOffset = scrollView.contentOffset.y;
+        
+        [_creditsSection setHidden:YES];
+        deltaAlpha = 0.8 + (0.18 * (yOffset/92));
     }
-    
+    else {
+        if (scrollView.contentOffset.y <=-44) {
+            yOffset = -44;
+            
+            if (scrollView.contentOffset.y <=-80) {
+                headerImageFrame.size.height = 120 - (scrollView.contentOffset.y);
+                creditFrame.size.height = 120 - (scrollView.contentOffset.y);
+                _creditsSection.frame = creditFrame;
+                stockImageView.frame = headerImageFrame;
+            }
+        }
+        else
+            yOffset = scrollView.contentOffset.y;
+        
+        [_creditsSection setHidden:NO];
+        deltaAlpha = 0.8 + (0.2 * (yOffset/-44));
+    }
+
+    // Update the filter color appropriately!
+    _filterView.backgroundColor = [[[BeagleManager SharedInstance] mediumDominantColor] colorWithAlphaComponent:deltaAlpha];
+    [_filterView setNeedsDisplay];
+
 }
 - (void)didReceiveMemoryWarning
 {
