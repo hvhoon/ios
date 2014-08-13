@@ -47,8 +47,6 @@
     CGFloat yOffset;
     UIColor *dominantColorFilter;
     CGFloat deltaAlpha;
-    CGFloat _headerImageYOffset;
-    UIImageView *stockImageView;
     UIActivityIndicatorView *_spinner;
     BOOL isLoading;
     BOOL firstTime;
@@ -221,13 +219,11 @@
 
 #else
     _topSection = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)];
-//    _topSection.backgroundColor=[UIColor yellowColor];
     [self.view addSubview:_topSection];
     
-    stockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 250)];
+    UIImageView *stockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)];
     stockImageView.backgroundColor = [UIColor grayColor];
     stockImageView.tag=3456;
-    stockImageView.contentMode =UIViewContentModeScaleAspectFit;// UIViewContentModeScaleAspectFill;
     [_topSection addSubview:stockImageView];
      
     UIImageView *topGradient=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"gradient"]];
@@ -241,8 +237,6 @@
                                                   target: self
                                                 selector:@selector(defaultLocalImage)
                                                 userInfo: nil repeats:NO];
-    
-
     
     UIButton *eventButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [eventButton setBackgroundImage:[UIImage imageNamed:@"add"] forState:UIControlStateNormal];
@@ -301,13 +295,7 @@
     
     self.view.backgroundColor=[BeagleUtilities returnBeagleColor:2];
     
-    
-    // Create the underlying imageview and offset it
-    _headerImageYOffset = -50.0;
-    CGRect headerImageFrame = stockImageView.frame;
-    headerImageFrame.origin.y = _headerImageYOffset;
-    stockImageView.frame = headerImageFrame;
-    
+
 }
 
 - (void)loadProfileImage:(NSString*)url {
@@ -992,7 +980,7 @@
 
         [UIView transitionWithView:_topSection duration:1.0f options:(UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionAllowUserInteraction) animations:^{
 
-//        UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
+        UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
         stockImageView.image=photo;
         [stockImageView setContentMode:UIViewContentModeScaleAspectFit];
         stockImageView.image = photo;
@@ -1326,7 +1314,9 @@
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     [self loadImagesForOnscreenRows];
-    if(scrollView.contentOffset.y >=170){
+    
+    /*
+    if(scrollView.contentOffset.y >=180){
         deltaAlpha=1.0f;
         _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColorFilter withShade:0.5] colorWithAlphaComponent:deltaAlpha];
 
@@ -1336,6 +1326,7 @@
         _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColorFilter withShade:0.5] colorWithAlphaComponent:deltaAlpha];
 
     }
+     */
 }
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     
@@ -1343,18 +1334,45 @@
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
     
+    // Set the y offset correctly
+    if (scrollView.contentOffset.y <=0)
+        yOffset = 0;
+    else if(scrollView.contentOffset.y >=136)
+        yOffset = 136;
+    else
+        yOffset = scrollView.contentOffset.y;
+    
+    deltaAlpha = 0.8 + (0.18 * (yOffset/136));
+
+    // Color filter view
+    _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColorFilter withShade:0.5] colorWithAlphaComponent:deltaAlpha];
+    [_filterView setNeedsDisplay];
+    
+    // Logs
+    NSLog(@"Offset: %f, ScollView: %f, Alpha = %f", yOffset, scrollView.contentOffset.y, deltaAlpha);
+    
+    if (scrollView.contentOffset.y <=0) {
+        UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
+        [stockImageView setContentMode:UIViewContentModeScaleAspectFill];
+        CGFloat scrollOffset = scrollView.contentOffset.y;
+        CGRect headerImageFrame = stockImageView.frame;
+        headerImageFrame.size.height = 200 - (scrollOffset);
+        stockImageView.frame = headerImageFrame;
+    }
+    
+    /*
     if (scrollView.contentOffset.y < yOffset) {
         
         // scrolls down.
         yOffset = scrollView.contentOffset.y;
         _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColorFilter withShade:0.5] colorWithAlphaComponent:deltaAlpha];
         [_filterView setNeedsDisplay];
-        deltaAlpha-=0.003;
+        deltaAlpha-=0.001;
         if(deltaAlpha<=0.8){
             deltaAlpha=0.8;
         }
         
-//        NSLog(@"deltaDown=%f",deltaAlpha);
+        NSLog(@"deltaDown=%f",deltaAlpha);
 
     }
     else
@@ -1367,22 +1385,10 @@
         if(deltaAlpha>=1.0f){
             deltaAlpha=1.0f;
         }
-//        NSLog(@"deltaUp=%f",deltaAlpha);
+        NSLog(@"deltaUp=%f",deltaAlpha);
 
     }
-//    NSLog(@"scrollView.contentOffset.y=%f",scrollView.contentOffset.y);
-    
-    CGFloat scrollOffset = scrollView.contentOffset.y;
-    CGRect headerImageFrame = stockImageView.frame;
-    
-    if (scrollOffset < 0) {
-        // Adjust image proportionally
-        headerImageFrame.origin.y = _headerImageYOffset - ((scrollOffset/3));
-    } else {
-        // We're scrolling up, return to normal behavior
-//        headerImageFrame.origin.y = _headerImageYOffset - scrollOffset;
-    }
-    stockImageView.frame = headerImageFrame;
+    */
 }
 - (void)didReceiveMemoryWarning
 {
