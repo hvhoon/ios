@@ -262,6 +262,7 @@
     [self addChildViewController:_tableViewController];
     
     _tableViewController.refreshControl = [UIRefreshControl new];
+    _tableViewController.refreshControl.tintColor = [UIColor whiteColor];
     [_tableViewController.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
     _tableViewController.tableView = self.tableView;
     
@@ -1279,6 +1280,14 @@
     // Logs
     NSLog(@"Offset: %f, ScollView: %f, Alpha = %f", yOffset, scrollView.contentOffset.y, deltaAlpha);
     
+    if (scrollView.contentOffset.y <=0) {
+        UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
+        [stockImageView setContentMode:UIViewContentModeScaleAspectFill];
+        CGFloat scrollOffset = scrollView.contentOffset.y;
+        CGRect headerImageFrame = stockImageView.frame;
+        headerImageFrame.size.height = 200 - (scrollOffset);
+        stockImageView.frame = headerImageFrame;
+    }
     
     /*
     if (scrollView.contentOffset.y < yOffset) {
