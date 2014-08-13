@@ -1380,7 +1380,7 @@
         headerImageFrame.origin.y = _headerImageYOffset - ((scrollOffset/3));
     } else {
         // We're scrolling up, return to normal behavior
-        headerImageFrame.origin.y = _headerImageYOffset - scrollOffset;
+//        headerImageFrame.origin.y = _headerImageYOffset - scrollOffset;
     }
     stockImageView.frame = headerImageFrame;
 }
