@@ -139,6 +139,8 @@
     firstTime=true;
     yOffset = 0.0;
     deltaAlpha=0.8;
+    dominantColorFilter=[UIColor grayColor];
+    isLoading=true;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (UpdateBadgeCount) name:kBeagleBadgeCount object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationUpdate:) name:kNotificationHomeAutoRefresh object:Nil];
     
@@ -294,7 +296,7 @@
     
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     self.view.backgroundColor=[BeagleUtilities returnBeagleColor:2];
-
+    
 }
 
 - (void)loadProfileImage:(NSString*)url {
@@ -955,8 +957,8 @@
 
         
 #else
-    _filterView.backgroundColor = [BG.mediumDominantColor colorWithAlphaComponent:0.8];
-    _creditsSection.backgroundColor = BG.mediumDominantColor;
+        _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
+    isLoading=FALSE;
 //    UIView*headerView=(UIView*)[self.view viewWithTag:43567];
 //    headerView.backgroundColor=[[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
 //    [headerView setNeedsDisplay];
@@ -1304,7 +1306,26 @@
 }
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
+
+    if(!isLoading){
+    // Set the y offset correctly
+    if (scrollView.contentOffset.y <=0)
+        yOffset = 0;
+    else if(scrollView.contentOffset.y >=136)
+        yOffset = 136;
+    else
+        yOffset = scrollView.contentOffset.y;
     
+    deltaAlpha = 0.8 + (0.18 * (yOffset/136));
+
+    // Color filter view
+    _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColorFilter withShade:0.5] colorWithAlphaComponent:deltaAlpha];
+    [_filterView setNeedsDisplay];
+    
+    // Logs
+    NSLog(@"Offset: %f, ScollView: %f, Alpha = %f", yOffset, scrollView.contentOffset.y, deltaAlpha);
+    }
+    // Magnification effect on the cover image
     UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
     [stockImageView setContentMode:UIViewContentModeScaleAspectFill];
     CGRect headerImageFrame = stockImageView.frame;
