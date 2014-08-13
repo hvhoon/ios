@@ -1325,7 +1325,7 @@
     
     // Logs
     NSLog(@"Offset: %f, ScollView: %f, Alpha = %f", yOffset, scrollView.contentOffset.y, deltaAlpha);
-    }
+    
     // Magnification effect on the cover image
     UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
     [stockImageView setContentMode:UIViewContentModeScaleAspectFill];
@@ -1336,7 +1336,7 @@
         headerImageFrame.size.height = 200 - (scrollOffset);
         stockImageView.frame = headerImageFrame;
     }
-
+    }
 }
 - (void)didReceiveMemoryWarning
 {
