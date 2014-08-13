@@ -220,7 +220,7 @@
     _middleSectionView.tag=3457;
 
 #else
-    _topSection = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 250)];
+    _topSection = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)];
 //    _topSection.backgroundColor=[UIColor yellowColor];
     [self.view addSubview:_topSection];
     
@@ -231,7 +231,7 @@
     [_topSection addSubview:stockImageView];
      
     UIImageView *topGradient=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"gradient"]];
-    topGradient.frame = CGRectMake(0, 0, 320, 64+50);
+    topGradient.frame = CGRectMake(0, 0, 320, 64);
     [_topSection addSubview:topGradient];
     
 #endif
