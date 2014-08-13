@@ -1198,7 +1198,7 @@
         BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexPath.row];
         
         cell.delegate=self;
-        cell.cellIndexPath=indexPath;
+        cell.cellIndex=indexPath.row;
         
         cell.bg_activity = play;
         
@@ -1315,18 +1315,6 @@
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     [self loadImagesForOnscreenRows];
     
-    /*
-    if(scrollView.contentOffset.y >=180){
-        deltaAlpha=1.0f;
-        _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColorFilter withShade:0.5] colorWithAlphaComponent:deltaAlpha];
-
-    }
-    if(scrollView.contentOffset.y <=0){
-        deltaAlpha=0.8f;
-        _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColorFilter withShade:0.5] colorWithAlphaComponent:deltaAlpha];
-
-    }
-     */
 }
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     
@@ -1360,35 +1348,6 @@
         stockImageView.frame = headerImageFrame;
     }
     
-    /*
-    if (scrollView.contentOffset.y < yOffset) {
-        
-        // scrolls down.
-        yOffset = scrollView.contentOffset.y;
-        _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColorFilter withShade:0.5] colorWithAlphaComponent:deltaAlpha];
-        [_filterView setNeedsDisplay];
-        deltaAlpha-=0.001;
-        if(deltaAlpha<=0.8){
-            deltaAlpha=0.8;
-        }
-        
-        NSLog(@"deltaDown=%f",deltaAlpha);
-
-    }
-    else
-    {
-        // scrolls up.
-        yOffset = scrollView.contentOffset.y;
-        _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColorFilter withShade:0.5] colorWithAlphaComponent:deltaAlpha];
-        [_filterView setNeedsDisplay];
-        deltaAlpha+=0.003;
-        if(deltaAlpha>=1.0f){
-            deltaAlpha=1.0f;
-        }
-        NSLog(@"deltaUp=%f",deltaAlpha);
-
-    }
-    */
 }
 - (void)didReceiveMemoryWarning
 {
