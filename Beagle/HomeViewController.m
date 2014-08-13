@@ -266,7 +266,7 @@
     [self addChildViewController:_tableViewController];
     
     _tableViewController.refreshControl = [UIRefreshControl new];
-    _tableViewController.refreshControl.tintColor=[UIColor clearColor];
+    _tableViewController.refreshControl.tintColor=[UIColor whiteColor];
     [_tableViewController.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
     _tableViewController.tableView = self.tableView;
     
@@ -787,13 +787,13 @@
     fromLabel.textAlignment = NSTextAlignmentLeft;
     fromLabel.alpha = 1.0;
     
-    
+    /*
     _spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
     _spinner.frame = CGRectMake(25+cityTextRect.size.width,13.5,37, 37);
     _spinner.hidesWhenStopped=YES;
     [_topSection addSubview:_spinner];
     [_spinner setHidden:YES];
-
+     */
     
     
     [UIView transitionWithView:_topSection duration:1.0f options:(UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionAllowUserInteraction) animations:^{
@@ -898,7 +898,7 @@
         
         // Parsing out the weather and time of day info.
         for(id mainWeather in current_observation) {
-            weather=[mainWeather objectForKey:@"main"];
+            //weather=[mainWeather objectForKey:@"main"];
             time=[mainWeather objectForKey:@"icon"];
         }
         
@@ -1339,11 +1339,13 @@
     // Logs
     NSLog(@"Offset: %f, ScollView: %f, Alpha = %f", yOffset, scrollView.contentOffset.y, deltaAlpha);
     
+    // Magnification effect on the cover image
+    UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
+    [stockImageView setContentMode:UIViewContentModeScaleAspectFill];
+    CGFloat scrollOffset = scrollView.contentOffset.y;
+    CGRect headerImageFrame = stockImageView.frame;
+    
     if (scrollView.contentOffset.y <=0) {
-        UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
-        [stockImageView setContentMode:UIViewContentModeScaleAspectFill];
-        CGFloat scrollOffset = scrollView.contentOffset.y;
-        CGRect headerImageFrame = stockImageView.frame;
         headerImageFrame.size.height = 200 - (scrollOffset);
         stockImageView.frame = headerImageFrame;
     }
