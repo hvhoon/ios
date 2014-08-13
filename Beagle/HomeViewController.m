@@ -1336,6 +1336,7 @@
         _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColorFilter withShade:0.5] colorWithAlphaComponent:deltaAlpha];
 
     }
+     */
 }
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     
@@ -1343,6 +1344,33 @@
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
     
+    // Set the y offset correctly
+    if (scrollView.contentOffset.y <=0)
+        yOffset = 0;
+    else if(scrollView.contentOffset.y >=136)
+        yOffset = 136;
+    else
+        yOffset = scrollView.contentOffset.y;
+    
+    deltaAlpha = 0.8 + (0.18 * (yOffset/136));
+
+    // Color filter view
+    _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColorFilter withShade:0.5] colorWithAlphaComponent:deltaAlpha];
+    [_filterView setNeedsDisplay];
+    
+    // Logs
+    NSLog(@"Offset: %f, ScollView: %f, Alpha = %f", yOffset, scrollView.contentOffset.y, deltaAlpha);
+    
+    if (scrollView.contentOffset.y <=0) {
+        UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
+        [stockImageView setContentMode:UIViewContentModeScaleAspectFill];
+        CGFloat scrollOffset = scrollView.contentOffset.y;
+        CGRect headerImageFrame = stockImageView.frame;
+        headerImageFrame.size.height = 200 - (scrollOffset);
+        stockImageView.frame = headerImageFrame;
+    }
+    
+    /*
     if (scrollView.contentOffset.y < yOffset) {
         
         // scrolls down.
