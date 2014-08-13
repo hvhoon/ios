@@ -47,6 +47,7 @@
     CGFloat yOffset;
     CGFloat deltaAlpha;
     BOOL firstTime;
+    BOOL isLoading;
 }
 @property (nonatomic, strong) UIView* middleSectionView;
 @property (nonatomic, assign) CGFloat lastContentOffset;
@@ -140,7 +141,7 @@
     deltaAlpha=0.8;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (UpdateBadgeCount) name:kBeagleBadgeCount object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationUpdate:) name:kNotificationHomeAutoRefresh object:Nil];
-
+    
     categoryFilterType=1;
     self.filterBlurView = [EventInterestFilterBlurView loadEventInterestFilter:self.view];
     self.filterBlurView.delegate=self;
@@ -261,6 +262,7 @@
 #else
     _filterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     [_filterView addSubview:[self renderFilterHeaderView]];
+    _filterView.backgroundColor=[UIColor grayColor];
 #endif
     
     _tableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStylePlain];
@@ -272,6 +274,7 @@
     _tableViewController.tableView = self.tableView;
     
     // Setting up the table and the refresh animation
+//    self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [self.tableView setBackgroundColor:[UIColor clearColor]];
 
@@ -283,6 +286,7 @@
         
      [(AppDelegate *)[[UIApplication sharedApplication] delegate] startStandardUpdates];
     }
+    isPushAuto=TRUE;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (updateEventsInTransitionFromBg_Fg) name:@"AutoRefreshEvents" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (refresh) name:kUpdateHomeScreenAndNotificationStack object:nil];
@@ -734,6 +738,7 @@
         [(AppDelegate *)[[UIApplication sharedApplication] delegate] startStandardUpdates];
     }
     else if(!isSixty && isMoreThan50_M){
+//        isPushAuto=TRUE;
         [self LocationAcquired];
         
     }
@@ -797,6 +802,7 @@
     NSLog(@"Starting up query");
     if(isPushAuto) {
         [_tableViewController.refreshControl beginRefreshing];
+        [_tableViewController.refreshControl setTintColor:[UIColor whiteColor]];
         [self.tableView setContentOffset:CGPointMake(0, -REFRESH_HEADER_HEIGHT) animated:YES];
     }
         
@@ -1646,6 +1652,7 @@
             
             self.tableData=[NSArray arrayWithArray:tableDataArray];
             [self.tableView reloadData];
+//            isPushAuto = true;
 
             if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
                 [self LocationAcquired];
@@ -2046,6 +2053,9 @@
                 }
             }
         }
+        if(isPushAuto){
+            isPushAuto=FALSE;
+        }
     }
     else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
         _interestUpdateManager.delegate = nil;
@@ -2280,6 +2290,9 @@
 
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {
+    if(isPushAuto){
+        isPushAuto=FALSE;
+    }
     [_tableViewController.refreshControl endRefreshing];
     if(serverRequest==kServerCallGetActivities)
     {
@@ -2323,6 +2336,9 @@
 
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
 {
+    if(isPushAuto){
+        isPushAuto=FALSE;
+    }
     [_tableViewController.refreshControl endRefreshing];
     if(serverRequest==kServerCallGetActivities)
     {
