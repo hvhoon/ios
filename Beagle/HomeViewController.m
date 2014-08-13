@@ -1242,6 +1242,8 @@
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     [self loadImagesForOnscreenRows];
+    
+    /*
     if(scrollView.contentOffset.y >=180){
         deltaAlpha=1.0f;
         _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColorFilter withShade:0.5] colorWithAlphaComponent:deltaAlpha];
@@ -1252,6 +1254,7 @@
         _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColorFilter withShade:0.5] colorWithAlphaComponent:deltaAlpha];
 
     }
+     */
 }
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     
@@ -1259,6 +1262,25 @@
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
     
+    // Set the y offset correctly
+    if (scrollView.contentOffset.y <=0)
+        yOffset = 0;
+    else if(scrollView.contentOffset.y >=136)
+        yOffset = 136;
+    else
+        yOffset = scrollView.contentOffset.y;
+    
+    deltaAlpha = 0.8 + (0.18 * (yOffset/136));
+
+    // Color filter view
+    _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColorFilter withShade:0.5] colorWithAlphaComponent:deltaAlpha];
+    [_filterView setNeedsDisplay];
+    
+    // Logs
+    NSLog(@"Offset: %f, ScollView: %f, Alpha = %f", yOffset, scrollView.contentOffset.y, deltaAlpha);
+    
+    
+    /*
     if (scrollView.contentOffset.y < yOffset) {
         
         // scrolls down.
@@ -1286,7 +1308,7 @@
         NSLog(@"deltaUp=%f",deltaAlpha);
 
     }
-    NSLog(@"scrollView.contentOffset.y=%f",scrollView.contentOffset.y);
+    */
 }
 - (void)didReceiveMemoryWarning
 {
