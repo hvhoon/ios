@@ -47,8 +47,6 @@
     CGFloat yOffset;
     UIColor *dominantColorFilter;
     CGFloat deltaAlpha;
-    UIActivityIndicatorView *_spinner;
-    BOOL isLoading;
     BOOL firstTime;
 }
 @property (nonatomic, strong) UIView* middleSectionView;
@@ -259,7 +257,6 @@
 #else
     _filterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     [_filterView addSubview:[self renderFilterHeaderView]];
-//    [_topSection addSubview:_filterView];
 #endif
     
     _tableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStylePlain];
@@ -271,7 +268,6 @@
     _tableViewController.tableView = self.tableView;
     
     // Setting up the table and the refresh animation
-//    self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [self.tableView setBackgroundColor:[UIColor clearColor]];
 
@@ -283,7 +279,6 @@
         
      [(AppDelegate *)[[UIApplication sharedApplication] delegate] startStandardUpdates];
     }
-//    isPushAuto=TRUE;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (updateEventsInTransitionFromBg_Fg) name:@"AutoRefreshEvents" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (refresh) name:kUpdateHomeScreenAndNotificationStack object:nil];
@@ -739,7 +734,6 @@
         [(AppDelegate *)[[UIApplication sharedApplication] delegate] startStandardUpdates];
     }
     else if(!isSixty && isMoreThan50_M){
-//        isPushAuto=TRUE;
         [self LocationAcquired];
         
     }
@@ -787,15 +781,6 @@
     fromLabel.textAlignment = NSTextAlignmentLeft;
     fromLabel.alpha = 1.0;
     
-    /*
-    _spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-    _spinner.frame = CGRectMake(25+cityTextRect.size.width,13.5,37, 37);
-    _spinner.hidesWhenStopped=YES;
-    [_topSection addSubview:_spinner];
-    [_spinner setHidden:YES];
-     */
-    
-    
     [UIView transitionWithView:_topSection duration:1.0f options:(UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionAllowUserInteraction) animations:^{
 #if stockCroppingCheck
         [topNavigationView addSubview:fromLabel];
@@ -810,11 +795,6 @@
 }
 - (void)refresh {
     NSLog(@"Starting up query");
-    if(isLoading)
-        return;
-    [_spinner setHidden:NO];
-    [_spinner startAnimating];
-    isLoading=true;
     if(isPushAuto) {
         [_tableViewController.refreshControl beginRefreshing];
         [self.tableView setContentOffset:CGPointMake(0, -REFRESH_HEADER_HEIGHT) animated:YES];
@@ -1660,7 +1640,6 @@
             
             self.tableData=[NSArray arrayWithArray:tableDataArray];
             [self.tableView reloadData];
-//            isPushAuto = true;
 
             if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
                 [self LocationAcquired];
@@ -1934,8 +1913,6 @@
     [_tableViewController.refreshControl endRefreshing];
     
     if(serverRequest==kServerCallGetActivities){
-        [_spinner stopAnimating];
-        isLoading=false;
 
         self.filterActivitiesOnHomeScreen=[[NSMutableDictionary alloc]init];
         
@@ -2062,9 +2039,6 @@
                     
                 }
             }
-        }
-        if(isPushAuto){
-            isPushAuto=FALSE;
         }
     }
     else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
@@ -2300,14 +2274,9 @@
 
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {
-    if(isPushAuto){
-        isPushAuto=FALSE;
-    }
     [_tableViewController.refreshControl endRefreshing];
     if(serverRequest==kServerCallGetActivities)
     {
-        [_spinner stopAnimating];
-        isLoading=false;
 
         _homeActivityManager.delegate = nil;
         [_homeActivityManager releaseServerManager];
@@ -2348,14 +2317,9 @@
 
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
 {
-    if(isPushAuto){
-        isPushAuto=FALSE;
-    }
     [_tableViewController.refreshControl endRefreshing];
     if(serverRequest==kServerCallGetActivities)
     {
-        [_spinner stopAnimating];
-        isLoading=false;
 
         _homeActivityManager.delegate = nil;
         [_homeActivityManager releaseServerManager];
