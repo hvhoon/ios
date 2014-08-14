@@ -1640,15 +1640,10 @@
     switch (index) {
         case 0:
         {
-            // Show the table again and hide the blank view
             
-            NSMutableArray *tableDataArray = [NSMutableArray arrayWithArray:self.tableData];
-            
-            [tableDataArray removeAllObjects];
-            
-            self.tableData=[NSArray arrayWithArray:tableDataArray];
+            firstTime=YES;
             [self.tableView reloadData];
-//            isPushAuto = true;
+            isPushAuto = true;
 
             if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
                 [self LocationAcquired];
