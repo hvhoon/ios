@@ -11,7 +11,6 @@
 #import "Constants.h"
 #import "BGFlickrManager.h"
 #import "ActivityViewController.h"
-#import "UIView+HidingView.h"
 #import "BlankHomePageView.h"
 #import "HomeTableViewCell.h"
 #import "IconDownloader.h"
@@ -23,7 +22,6 @@
 #import "JSON.h"
 #import "CreateAnimationBlurView.h"
 #define REFRESH_HEADER_HEIGHT 44.0f
-#define stockCroppingCheck 0
 #define kTimerIntervalInSeconds 10
 #define rowHeight 164
 #define kLeaveInterest 23
@@ -202,20 +200,6 @@
     }
       [self.view addGestureRecognizer:self.slidingViewController.panGesture];
     
-#if stockCroppingCheck
-    
-    topNavigationView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 64)];
-    topNavigationView.backgroundColor=[UIColor grayColor];
-    UIImageView *topGradient=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"gradient"]];
-    topGradient.frame = CGRectMake(0, 0, 320, 64);
-    [topNavigationView addSubview:topGradient];
-    [self.view addSubview:topNavigationView];
-    
-    _middleSectionView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 92)];
-    _middleSectionView.backgroundColor=[UIColor grayColor];
-    _middleSectionView.tag=3457;
-
-#else
     _topSection = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)];
     _topSection.backgroundColor = [UIColor grayColor];
     [self.view addSubview:_topSection];
@@ -229,7 +213,6 @@
     topGradient.frame = CGRectMake(0, 0, 320, 64);
     [_topSection addSubview:topGradient];
     
-#endif
 
     [self addCityName:@"Hello"];
     _timer = [NSTimer scheduledTimerWithTimeInterval:waitBeforeLoadingDefaultImage
@@ -242,24 +225,12 @@
     [eventButton addTarget:self action:@selector(createANewActivity:)forControlEvents:UIControlEventTouchUpInside];
     eventButton.frame = CGRectMake(263.0, 0.0, 57.0, 57.0);
     
-#if stockCroppingCheck
-    [topNavigationView addSubview:eventButton];
-#else
     [_topSection addSubview:eventButton];
-#endif
     
     // Setting up the filter pane
-#if stockCroppingCheck
-    _filterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-    UIView*headerView=[self renderFilterHeaderView];
-    headerView.backgroundColor=[UIColor grayColor];
-    [_filterView addSubview:headerView];
-    _filterView.tag=1346;
-#else
     _filterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     [_filterView addSubview:[self renderFilterHeaderView]];
     _filterView.backgroundColor=[UIColor grayColor];
-#endif
     
     _tableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStylePlain];
     [self addChildViewController:_tableViewController];
@@ -270,7 +241,6 @@
     _tableViewController.tableView = self.tableView;
     
     // Setting up the table and the refresh animation
-//    self.tableView.backgroundColor=[BeagleUtilities returnBeagleColor:2];
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [self.tableView setBackgroundColor:[UIColor clearColor]];
 
@@ -741,12 +711,8 @@
 
 
 -(void)addCityName:(NSString*)name{
-    UILabel *textLabel=nil;
-#if stockCroppingCheck
-    textLabel=(UILabel*)[topNavigationView viewWithTag:1234];
-#else
-    textLabel=(UILabel*)[_topSection viewWithTag:1234];
-#endif
+    
+    UILabel *textLabel=(UILabel*)[_topSection viewWithTag:1234];
     
     if(textLabel!=nil){
         [textLabel removeFromSuperview];
@@ -782,12 +748,7 @@
     fromLabel.alpha = 1.0;
     
     [UIView transitionWithView:_topSection duration:1.0f options:(UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionAllowUserInteraction) animations:^{
-#if stockCroppingCheck
-        [topNavigationView addSubview:fromLabel];
-#else
-
         [_topSection addSubview:fromLabel];
-#endif
         
     } completion:NULL];
     
@@ -935,33 +896,9 @@
     BG.darkDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.4];
     [[NSUserDefaults standardUserDefaults] setValue:[NSDate date] forKey:@"HourlyUpdate"];
         
-#if stockCroppingCheck
-
-
-        UIImage *stockImageTop=[BeagleUtilities imageByCropping:photo toRect:CGRectMake(0, 0, 320, 64) withOrientation:UIImageOrientationDownMirrored];
-        topNavigationView.backgroundColor=[UIColor colorWithPatternImage:stockImageTop];
-        
-        UIImage *stockImageMiddle=[BeagleUtilities imageByCropping:photo toRect:CGRectMake(0, 64, 320, 92) withOrientation:UIImageOrientationDownMirrored];
-        UIView *sectionView=(UIView*)[self.tableView viewWithTag:3457];
-        sectionView.backgroundColor=[UIColor colorWithPatternImage:stockImageMiddle];
-       [sectionView setNeedsDisplay];
-
-        UIImage *stockImageBottom=[BeagleUtilities imageByCropping:photo toRect:CGRectMake(0, 156, 320, 44) withOrientation:UIImageOrientationDownMirrored];
-           UIView*headerView=(UIView*)[self.view viewWithTag:43567];
-           headerView.backgroundColor=[[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
-        _filterView.backgroundColor = [UIColor colorWithPatternImage:stockImageBottom];
-    
-        [self.tableView reloadData];
-        
-
-        
-#else
     _filterView.backgroundColor = [BG.mediumDominantColor colorWithAlphaComponent:0.8];
         _topSection.backgroundColor = BG.mediumDominantColor;
         isLoading=FALSE;
-//    UIView*headerView=(UIView*)[self.view viewWithTag:43567];
-//    headerView.backgroundColor=[[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
-//    [headerView setNeedsDisplay];
 
         [UIView transitionWithView:_topSection duration:1.0f options:(UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionAllowUserInteraction) animations:^{
 
@@ -970,9 +907,6 @@
         [stockImageView setContentMode:UIViewContentModeScaleAspectFill];
         stockImageView.image = photo;
             } completion:NULL];
-#endif
-        
-    
 }
 
 -(UIView*)renderFilterHeaderView {

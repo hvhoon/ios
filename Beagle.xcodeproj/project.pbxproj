@@ -196,8 +196,6 @@
 		180AF0B718DC7FE500EE87D6 /* HomeTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeTableViewCell.m; sourceTree = "<group>"; };
 		180AF0B918DC801500EE87D6 /* ABTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ABTableViewCell.h; sourceTree = "<group>"; };
 		180AF0BA18DC801500EE87D6 /* ABTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ABTableViewCell.m; sourceTree = "<group>"; };
-		180AF0BC18DC805700EE87D6 /* UIView+HidingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+HidingView.h"; sourceTree = "<group>"; };
-		180AF0BD18DC805700EE87D6 /* UIView+HidingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+HidingView.m"; sourceTree = "<group>"; };
 		180AF0BF18DC809E00EE87D6 /* User.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = User.plist; sourceTree = "<group>"; };
 		180F603D1923D1D700B3807F /* GooglePlacesAutocompletePlace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GooglePlacesAutocompletePlace.m; sourceTree = "<group>"; };
 		180F603E1923D1D700B3807F /* GooglePlacesAutocompleteQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GooglePlacesAutocompleteQuery.h; sourceTree = "<group>"; };
@@ -498,8 +496,6 @@
 			children = (
 				1805009B191BE592003AAD47 /* UIScreen+Screenshot.h */,
 				1805009C191BE592003AAD47 /* UIScreen+Screenshot.m */,
-				180AF0BC18DC805700EE87D6 /* UIView+HidingView.h */,
-				180AF0BD18DC805700EE87D6 /* UIView+HidingView.m */,
 				18007EFB18C6541200230C23 /* UIImage+Alpha.h */,
 				18007EFC18C6541200230C23 /* UIImage+Alpha.m */,
 				18007EFD18C6541200230C23 /* UIImage+ImageEffects.h */,
