@@ -21,7 +21,6 @@
 #import "ExpressInterestPreview.h"
 #import "JSON.h"
 #import "CreateAnimationBlurView.h"
-#define REFRESH_HEADER_HEIGHT 44.0f
 #define kTimerIntervalInSeconds 10
 #define rowHeight 164
 #define kLeaveInterest 23
@@ -96,6 +95,8 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    _tableViewController.refreshControl.tintColor=[UIColor whiteColor];
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBackgroundInNotification:) name:kRemoteNotificationReceivedNotification object:Nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (LocationAcquired) name:kLocationUpdateReceived object:nil];
@@ -236,7 +237,6 @@
     [self addChildViewController:_tableViewController];
     
     _tableViewController.refreshControl = [UIRefreshControl new];
-    _tableViewController.refreshControl.tintColor=[UIColor whiteColor];
     [_tableViewController.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
     _tableViewController.tableView = self.tableView;
     
@@ -703,7 +703,7 @@
         [(AppDelegate *)[[UIApplication sharedApplication] delegate] startStandardUpdates];
     }
     else if(!isSixty && isMoreThan50_M){
-//        isPushAuto=TRUE;
+        isPushAuto=TRUE;
         [self LocationAcquired];
         
     }
@@ -757,11 +757,15 @@
 - (void)refresh {
     NSLog(@"Starting up query");
     if(isPushAuto) {
-        [_tableViewController.refreshControl setTintColor:[UIColor whiteColor]];
-        [_tableViewController.refreshControl beginRefreshing];
-        [self.tableView setContentOffset:CGPointMake(0, -REFRESH_HEADER_HEIGHT) animated:YES];
-    }
         
+    [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^(void){
+            [self.tableView setContentOffset:CGPointMake(0, -1.0f) animated:NO];
+            [self.tableView setContentOffset:CGPointMake(0, -_tableViewController.refreshControl.frame.size.height)];
+        } completion:^(BOOL finished) {
+            [_tableViewController.refreshControl beginRefreshing];
+        }];
+    }
+    
     if(_homeActivityManager!=nil){
         _homeActivityManager.delegate = nil;
         [_homeActivityManager releaseServerManager];
@@ -1859,7 +1863,6 @@
 #pragma mark - server calls
 
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
-    
     [_tableViewController.refreshControl endRefreshing];
     
     if(serverRequest==kServerCallGetActivities){
