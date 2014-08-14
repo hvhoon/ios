@@ -879,8 +879,14 @@
         
         // Parsing out the weather and time of day info.
         for(id mainWeather in current_observation) {
-            //weather=[mainWeather objectForKey:@"main"];
+            weather=[mainWeather objectForKey:@"main"];
             time=[mainWeather objectForKey:@"icon"];
+        }
+    
+        // Parsing and playing God :)
+        // Get rid of any clouds!
+        if ([weather rangeOfString:@"Clouds"].location != NSNotFound) {
+            weather = @"Clear";
         }
         
         // Figuring out whether it's day or night.
