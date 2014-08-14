@@ -950,7 +950,7 @@
 
         
 #else
-        _filterView.backgroundColor = [[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.5] colorWithAlphaComponent:0.8];
+    _filterView.backgroundColor = [BG.mediumDominantColor colorWithAlphaComponent:0.8];
         _topSection.backgroundColor = BG.mediumDominantColor;
         isLoading=FALSE;
 //    UIView*headerView=(UIView*)[self.view viewWithTag:43567];
@@ -961,7 +961,7 @@
 
         UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
         stockImageView.image=photo;
-        [stockImageView setContentMode:UIViewContentModeScaleAspectFit];
+        [stockImageView setContentMode:UIViewContentModeScaleAspectFill];
         stockImageView.image = photo;
             } completion:NULL];
 #endif
@@ -1302,35 +1302,41 @@
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
 
     UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
-    [stockImageView setContentMode:UIViewContentModeScaleAspectFill];
     CGRect headerImageFrame = stockImageView.frame;
     CGRect topFrame = _topSection.frame;
     
     // Let the scrolling begin, keep track of where you are
+    // If the user scrolls up, increase the opacity of the filter bar
     if (scrollView.contentOffset.y >= 0.0) {
         if (scrollView.contentOffset.y >=92.0)
             yOffset = 92.0;
         else
             yOffset = scrollView.contentOffset.y;
         
-        deltaAlpha = 0.8 + (0.18 * (yOffset/92.0));
+        deltaAlpha = 0.8 + (0.2 * (yOffset/92.0));
     }
+    // If the user scrolls down, descrease the opacity of the filter bar
     else {
-        if (scrollView.contentOffset.y <=-44.0) {
-            yOffset = -44.0;
+        // If the user pulls the filter bar below the cover image, increase it's opacity
+        if (scrollView.contentOffset.y <=-34.0) {
+            yOffset = -34.0;
             
+            // If the user still pulls down more, magnify the image
             if (scrollView.contentOffset.y <=-88.0) {
-                headerImageFrame.size.height = 110.5 - (scrollView.contentOffset.y);
+                headerImageFrame.size.height = 200.0 - (88.0+scrollView.contentOffset.y)/2;
                 stockImageView.frame = headerImageFrame;
             }
         }
+        // If the user just pulls down a bit, increase the opacity
         else
             yOffset = scrollView.contentOffset.y;
         
+        // Always keep the height of the top section in sync with how far down the user is pulling
         topFrame.size.height = 200.0 - (scrollView.contentOffset.y);
         _topSection.frame = topFrame;
-        deltaAlpha = 0.8 + (0.2 * (yOffset/-44.0));
+        deltaAlpha = 0.8 + (0.2 * (yOffset/-34.0));
     }
+    
     
     // Update the filter color appropriately if the screen is not loading for the first time!
     if (!isLoading) {
