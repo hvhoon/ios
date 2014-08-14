@@ -1319,7 +1319,7 @@
         else
             yOffset = scrollView.contentOffset.y;
         
-        deltaAlpha = 0.8 + (0.2 * (yOffset/92.0));
+        deltaAlpha = 0.8 + (0.18 * (yOffset/92.0));
     }
     // If the user scrolls down, descrease the opacity of the filter bar
     else {
