@@ -402,7 +402,7 @@
 
     if([self isInternetAvailable])
     {
-        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/backgroundchat.json?pid=%@&aid=%ld&chatid=%ld&start_time=%@&end_time=%@",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],activId,(long)lastChatPost.chat_id,[dateFormatter stringFromDate:updatedDate],[dateFormatter stringFromDate:[NSDate date]]]
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/backgroundchat.json?pid=%@&aid=%ld&chatid=%ld&start_time=%@&end_time=%@",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],(long)activId,(long)lastChatPost.chat_id,[dateFormatter stringFromDate:updatedDate],[dateFormatter stringFromDate:[NSDate date]]]
                          method:@"GET"
                          params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
     }
