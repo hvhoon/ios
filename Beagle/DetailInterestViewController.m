@@ -26,6 +26,7 @@ static NSString * const CellIdentifier = @"cell";
     UIActivityIndicatorView *activityIndicatorView;
     BOOL postsLoadComplete;
     NSTimer *timer;
+    UIImageView *_partcipantScrollArrowImageView;
 }
 
 @property(nonatomic,strong)ServerManager*chatPostManager;
@@ -908,9 +909,21 @@ static NSString * const CellIdentifier = @"cell";
                     if(_scrollMenu==nil||scrollViewResize){
                         _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, fromTheTop, 268, 55)];
                         scrollViewResize=FALSE;
+                        _partcipantScrollArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(268+12+16, fromTheTop+13.5, 8, 16)];
+                        _partcipantScrollArrowImageView.image = [UIImage imageNamed:@"Right-Scroll"];
+
                     }
                     [_backgroundView addSubview:_scrollMenu];
-                    [self setUpPlayerScroll:self.interestActivity.participantsArray];
+            
+                   [_backgroundView addSubview:_partcipantScrollArrowImageView];
+            if([self.interestActivity.participantsArray count]>4){
+                _partcipantScrollArrowImageView.hidden=NO;
+            }else{
+                _partcipantScrollArrowImageView.hidden=YES;
+            }
+
+
+            [self setUpPlayerScroll:self.interestActivity.participantsArray];
             
             fromTheTop += 55;
             fromTheTop += 16;
@@ -1145,6 +1158,15 @@ static NSString * const CellIdentifier = @"cell";
         [iconDownloader startDownload:kInterestChat];
     }
 }
+
+-(void)showArrowIndicator{
+    _partcipantScrollArrowImageView.hidden=NO;
+}
+-(void)hideArrowIndicator{
+    _partcipantScrollArrowImageView.hidden=YES;
+    
+}
+
 
 // this method is used in case the user scrolled into a set of cells that don't have their app icons yet
 - (void)loadImagesForOnscreenRows{

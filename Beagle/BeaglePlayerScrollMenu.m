@@ -68,6 +68,10 @@
 }
 
 - (void)setMenu {
+    
+    for(UIView *subview in [_scrollView subviews]) {
+        [subview removeFromSuperview];
+    }
 	int i = 0;
 	for (PlayerProfileItem *menuItem in _menuArray) {
         UIImage *image=[BeagleUtilities loadImage:menuItem.playerId];
@@ -217,11 +221,13 @@
 {
     isDragging = FALSE;
     [self setMenu];
+
 }
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
     isDecelerating = FALSE;
     [self setMenu];
+    
 }
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
@@ -230,6 +236,42 @@
 - (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView
 {
     isDecelerating = TRUE;
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    NSLog(@"contentOffset=%f",scrollView.contentOffset.x);
+    
+    if(scrollView.contentOffset.x<=0){
+        if([self.menuArray count]>4){
+            if ([_delegate respondsToSelector:@selector(showArrowIndicator)]) {
+                [_delegate showArrowIndicator];
+            }
+            
+        }
+        else{
+            if ([_delegate respondsToSelector:@selector(hideArrowIndicator)]) {
+                [_delegate hideArrowIndicator];
+            }
+        }
+    }
+    else {
+        NSInteger value =(scrollView.contentOffset.x/55);
+        NSLog(@"value=%ld",(long)value);
+        if([self.menuArray count]>=(value+4)){
+            if ([_delegate respondsToSelector:@selector(showArrowIndicator)]) {
+                [_delegate showArrowIndicator];
+            }
+            
+        }
+        else{
+            if ([_delegate respondsToSelector:@selector(hideArrowIndicator)]) {
+                [_delegate hideArrowIndicator];
+            }
+            
+        }
+
+    }
+
 }
 @end
 
