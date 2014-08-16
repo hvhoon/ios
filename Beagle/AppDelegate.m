@@ -86,7 +86,7 @@ void uncaughtExceptionHandler(NSException *exception) {
         [[NSUserDefaults standardUserDefaults] synchronize];
         
     }
-    [self handlePush:launchOptions];
+//    [self handlePush:launchOptions];
     return YES;
 }
 
