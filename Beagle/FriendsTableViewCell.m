@@ -78,7 +78,7 @@ static UIFont *secondTextFont = nil;
     
     // Adding buffer below the top section with the profile picture
     fromTheTop = fromTheTop+4+organizerNameSize.height;
-if([self.bgPlayer.location length]!=0){    
+  if([self.bgPlayer.location length]!=0){    
     // Drawing the activity description
     attrs = [NSDictionary dictionaryWithObjectsAndKeys:
              secondTextFont, NSFontAttributeName,

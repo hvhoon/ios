@@ -905,28 +905,13 @@ static NSString * const CellIdentifier = @"cell";
                  [BeagleUtilities returnBeagleColor:4],NSForegroundColorAttributeName,
                  style, NSParagraphStyleAttributeName, nil];
         
-            if(self.interestActivity.ownerid==[[[BeagleManager SharedInstance]beaglePlayer]beagleUserId]){
-            //owner
-                if(self.interestActivity.participantsCount>0){
                     if(_scrollMenu==nil||scrollViewResize){
                         _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, fromTheTop, 268, 55)];
                         scrollViewResize=FALSE;
                     }
                     [_backgroundView addSubview:_scrollMenu];
                     [self setUpPlayerScroll:self.interestActivity.participantsArray];
-                }
-            }
-            else {
-            //not a owner but a participant
-                if(self.interestActivity.participantsCount>0){
-                    if(_scrollMenu==nil||scrollViewResize){
-                        _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, fromTheTop, 268, 55)];
-                        scrollViewResize=FALSE;
-                    }
-                    [_backgroundView addSubview:_scrollMenu];
-                    [self setUpPlayerScroll:self.interestActivity.participantsArray];
-                }
-            }
+            
             fromTheTop += 55;
             fromTheTop += 16;
         }
