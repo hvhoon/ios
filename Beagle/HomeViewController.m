@@ -1244,8 +1244,6 @@
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
 
-    UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
-    CGRect headerImageFrame = stockImageView.frame;
     CGRect topFrame = _topSection.frame;
     
     // Let the scrolling begin, keep track of where you are
@@ -1261,15 +1259,8 @@
     // If the user scrolls down, descrease the opacity of the filter bar
     else {
         // If the user pulls the filter bar below the cover image, increase it's opacity
-        if (scrollView.contentOffset.y <=-22.0) {
+        if (scrollView.contentOffset.y <=-22.0)
             yOffset = -22.0;
-            
-            // If the user still pulls down more, magnify the image
-            if (scrollView.contentOffset.y <=-88.0) {
-                headerImageFrame.size.height = 200.0 - (88.0+scrollView.contentOffset.y)/2;
-                stockImageView.frame = headerImageFrame;
-            }
-        }
         // If the user just pulls down a bit, increase the opacity
         else
             yOffset = scrollView.contentOffset.y;
@@ -1279,7 +1270,6 @@
         _topSection.frame = topFrame;
         deltaAlpha = 0.8 + (0.2 * (yOffset/-22.0));
     }
-    
     
     // Update the filter color appropriately if the screen is not loading for the first time!
     if (!isLoading) {
