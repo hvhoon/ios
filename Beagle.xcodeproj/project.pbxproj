@@ -52,6 +52,7 @@
 		187808591954DEA8005E682F /* FriendsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 187808581954DEA8005E682F /* FriendsTableViewCell.m */; };
 		1889E5EC195A84F70079C3E9 /* InviteTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1889E5EB195A84F60079C3E9 /* InviteTableViewCell.m */; };
 		189EEBBE196B2A2B00681F04 /* ExpressInterestPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = 189EEBBD196B2A2B00681F04 /* ExpressInterestPreview.m */; };
+		18AA773D19A0310E0037298E /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18AA773C19A0310E0037298E /* FacebookSDK.framework */; };
 		18E7AF0918BBAA1700EBBDE2 /* FacebookLoginSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E7AF0818BBAA1700EBBDE2 /* FacebookLoginSession.m */; };
 		18E7AF0D18BBAA6600EBBDE2 /* BeagleUserClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E7AF0C18BBAA6600EBBDE2 /* BeagleUserClass.m */; };
 		18EBCFDB18CE350600FDC624 /* CustomPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EBCFD518CE350600FDC624 /* CustomPickerView.m */; };
@@ -235,6 +236,7 @@
 		1889E5EB195A84F60079C3E9 /* InviteTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteTableViewCell.m; sourceTree = "<group>"; };
 		189EEBBC196B2A2B00681F04 /* ExpressInterestPreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExpressInterestPreview.h; sourceTree = "<group>"; };
 		189EEBBD196B2A2B00681F04 /* ExpressInterestPreview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExpressInterestPreview.m; sourceTree = "<group>"; };
+		18AA773C19A0310E0037298E /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../Documents/FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
 		18E7AF0718BBAA1700EBBDE2 /* FacebookLoginSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookLoginSession.h; sourceTree = "<group>"; };
 		18E7AF0818BBAA1700EBBDE2 /* FacebookLoginSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookLoginSession.m; sourceTree = "<group>"; };
 		18E7AF0B18BBAA6600EBBDE2 /* BeagleUserClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeagleUserClass.h; sourceTree = "<group>"; };
@@ -411,6 +413,7 @@
 				18EC233318B5A68200316B6E /* CFNetwork.framework in Frameworks */,
 				18EC233118B5A67800316B6E /* libxml2.dylib in Frameworks */,
 				18EC232F18B5A66E00316B6E /* libz.dylib in Frameworks */,
+				18AA773D19A0310E0037298E /* FacebookSDK.framework in Frameworks */,
 				18EC22A318B5A0B400316B6E /* CoreGraphics.framework in Frameworks */,
 				18EC22A518B5A0B400316B6E /* UIKit.framework in Frameworks */,
 				18EC22A118B5A0B400316B6E /* Foundation.framework in Frameworks */,
@@ -686,6 +689,7 @@
 		18EC229F18B5A0B400316B6E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				18AA773C19A0310E0037298E /* FacebookSDK.framework */,
 				68E9CF59197D710B009477B2 /* libsqlite3.dylib */,
 				68E9CF55197D5F35009477B2 /* CoreMedia.framework */,
 				68E9CF53197D5E5B009477B2 /* Appsee.framework */,
@@ -1329,6 +1333,7 @@
 					"$(SRCROOT)",
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					/Users/apple/Documents/FacebookSDK,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Beagle/Beagle-Prefix.pch";
@@ -1357,6 +1362,7 @@
 					"$(SRCROOT)",
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					/Users/apple/Documents/FacebookSDK,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Beagle/Beagle-Prefix.pch";
