@@ -27,6 +27,7 @@ static NSString * const CellIdentifier = @"cell";
     BOOL postsLoadComplete;
     NSTimer *timer;
     UIImageView *_partcipantScrollArrowImageView;
+    BOOL reloadParticipants;
 }
 
 @property(nonatomic,strong)ServerManager*chatPostManager;
@@ -909,13 +910,21 @@ static NSString * const CellIdentifier = @"cell";
                     if(_scrollMenu==nil||scrollViewResize){
                         _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, fromTheTop, 268, 55)];
                         scrollViewResize=FALSE;
+                        _scrollMenu.tag=786;
                         _partcipantScrollArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(268+12+16, fromTheTop+13.5, 8, 16)];
                         _partcipantScrollArrowImageView.image = [UIImage imageNamed:@"Right-Scroll"];
-
                     }
-                    [_backgroundView addSubview:_scrollMenu];
+            if(reloadParticipants){
+                reloadParticipants=false;
+                  [_backgroundView addSubview:_scrollMenu];
+                  [self setUpPlayerScroll:self.interestActivity.participantsArray];
+
+            }else{
+            BeaglePlayerScrollMenu *mneu=(BeaglePlayerScrollMenu*)[self.view viewWithTag:786];
+                [_backgroundView addSubview:mneu];
+            }
+            [_backgroundView addSubview:_partcipantScrollArrowImageView];
             
-                   [_backgroundView addSubview:_partcipantScrollArrowImageView];
             if([self.interestActivity.participantsArray count]>4){
                 _partcipantScrollArrowImageView.hidden=NO;
             }else{
@@ -923,10 +932,10 @@ static NSString * const CellIdentifier = @"cell";
             }
 
 
-            [self setUpPlayerScroll:self.interestActivity.participantsArray];
             
             fromTheTop += 55;
             fromTheTop += 16;
+            
         }
         
         // Draw the Button
@@ -1287,7 +1296,7 @@ static NSString * const CellIdentifier = @"cell";
                             BeagleUserClass *userClass=[[BeagleUserClass alloc]initWithDictionary:el];
                             [self.interestActivity.participantsArray addObject:userClass];
                         }
-                        
+                        reloadParticipants=true;
                         
                     }
                     NSArray *chats=[interest objectForKey:@"chats"];

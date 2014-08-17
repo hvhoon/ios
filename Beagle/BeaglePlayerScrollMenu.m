@@ -239,7 +239,6 @@
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    NSLog(@"contentOffset=%f",scrollView.contentOffset.x);
     
     if(scrollView.contentOffset.x<=0){
         if([self.menuArray count]>4){
@@ -256,7 +255,6 @@
     }
     else {
         NSInteger value =(scrollView.contentOffset.x/55);
-        NSLog(@"value=%ld",(long)value);
         if([self.menuArray count]>=(value+4)){
             if ([_delegate respondsToSelector:@selector(showArrowIndicator)]) {
                 [_delegate showArrowIndicator];
