@@ -1453,7 +1453,7 @@ static NSString * const CellIdentifier = @"cell";
                         }
                     }
                     self.interestActivity.participantsArray=testArray;
-                    
+                    reloadParticipants=true;
                     [self.detailedInterestTableView reloadData];
 
                     
@@ -1792,7 +1792,7 @@ static NSString * const CellIdentifier = @"cell";
     [self.contentWrapper _setInitialFrames];
     [self.contentWrapper.inputView setHidden:NO];
     [self.contentWrapper.dummyInputView setHidden:NO];
-    
+    reloadParticipants=true;
     [self.detailedInterestTableView reloadData];
     
 
