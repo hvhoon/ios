@@ -36,69 +36,44 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Welcome" translatesAutoresizingMaskIntoConstraints="NO" id="7Am-pN-Mfi">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="backdrop" translatesAutoresizingMaskIntoConstraints="NO" id="7Am-pN-Mfi">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5F8-nW-xgb">
-                                <rect key="frame" x="0.0" y="446" width="320" height="122"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="320" id="ydh-ka-ooY"/>
-                                    <constraint firstAttribute="height" constant="122" id="zca-fQ-DOR"/>
-                                </constraints>
-                                <state key="normal">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="signInUsingFacebookClicked:" destination="7pi-6C-XLG" eventType="touchUpInside" id="61m-ki-BOW"/>
-                                </connections>
-                            </button>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="I4P-5s-SbQ">
-                                <rect key="frame" x="268" y="494" width="37" height="37"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="37" id="FaF-Qe-uM0"/>
-                                    <constraint firstAttribute="height" constant="37" id="H3L-Rm-Jgu"/>
-                                </constraints>
-                            </activityIndicatorView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="beagle" translatesAutoresizingMaskIntoConstraints="NO" id="ai2-E1-4qz">
-                                <rect key="frame" x="70" y="485" width="182" height="56"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="beagle" translatesAutoresizingMaskIntoConstraints="NO" id="bB6-JY-WKW">
+                                <rect key="frame" x="70" y="45" width="182" height="56"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Next-Arrow" translatesAutoresizingMaskIntoConstraints="NO" id="8ri-y9-k08">
-                                <rect key="frame" x="248" y="473" width="67" height="79"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Let your interests find you" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WbJ-8c-ie4">
+                                <rect key="frame" x="46" y="105" width="229" height="23"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="79" id="QRF-f7-Z9K"/>
-                                    <constraint firstAttribute="width" constant="67" id="jg1-Ee-Bvp"/>
-                                </constraints>
-                            </imageView>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="19"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="characterWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="260" translatesAutoresizingMaskIntoConstraints="NO" id="G6G-qf-L6k">
+                                <rect key="frame" x="30" y="476" width="260" height="67"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <string key="text">We use facebook to find what's happening around you and tell others what you want to do.We promise to never post to your wall or spam your friends</string>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="14"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="I4P-5s-SbQ" firstAttribute="leading" secondItem="ai2-E1-4qz" secondAttribute="trailing" constant="16" id="1aN-7T-7u4"/>
                             <constraint firstItem="7Am-pN-Mfi" firstAttribute="top" secondItem="bIx-1C-8jM" secondAttribute="top" id="2ig-J4-Ybu"/>
-                            <constraint firstItem="I4P-5s-SbQ" firstAttribute="leading" secondItem="bIx-1C-8jM" secondAttribute="leading" constant="268" id="6aI-tK-TRG"/>
-                            <constraint firstItem="4gp-wI-KSS" firstAttribute="top" secondItem="ai2-E1-4qz" secondAttribute="bottom" constant="27" id="6of-xq-2fX"/>
-                            <constraint firstAttribute="trailing" secondItem="8ri-y9-k08" secondAttribute="trailing" constant="5" id="8aq-R8-LBB"/>
+                            <constraint firstItem="WbJ-8c-ie4" firstAttribute="top" secondItem="bIx-1C-8jM" secondAttribute="top" constant="105" id="4CT-hY-GPi"/>
+                            <constraint firstItem="bB6-JY-WKW" firstAttribute="leading" secondItem="bIx-1C-8jM" secondAttribute="leading" constant="70" id="5db-PD-3Cn"/>
                             <constraint firstAttribute="trailing" secondItem="7Am-pN-Mfi" secondAttribute="trailing" id="CZB-2E-9L3"/>
                             <constraint firstItem="7Am-pN-Mfi" firstAttribute="leading" secondItem="bIx-1C-8jM" secondAttribute="leading" id="GDM-z5-uxj"/>
                             <constraint firstAttribute="bottom" secondItem="7Am-pN-Mfi" secondAttribute="bottom" id="MDh-A4-XnC"/>
-                            <constraint firstItem="4gp-wI-KSS" firstAttribute="top" secondItem="5F8-nW-xgb" secondAttribute="bottom" id="SyX-Ru-dpO"/>
-                            <constraint firstItem="5F8-nW-xgb" firstAttribute="leading" secondItem="bIx-1C-8jM" secondAttribute="leading" id="UE9-Y8-raf"/>
-                            <constraint firstItem="4gp-wI-KSS" firstAttribute="top" secondItem="8ri-y9-k08" secondAttribute="bottom" constant="16" id="e5e-ll-U3o"/>
-                            <constraint firstItem="8ri-y9-k08" firstAttribute="leading" secondItem="bIx-1C-8jM" secondAttribute="leading" constant="248" id="gxn-u9-Bal"/>
-                            <constraint firstItem="ai2-E1-4qz" firstAttribute="leading" secondItem="bIx-1C-8jM" secondAttribute="leading" constant="70" id="kWZ-U8-VXj"/>
-                            <constraint firstAttribute="trailing" secondItem="I4P-5s-SbQ" secondAttribute="trailing" constant="15" id="nEc-LB-dWq"/>
-                            <constraint firstAttribute="trailing" secondItem="5F8-nW-xgb" secondAttribute="trailing" id="op9-fL-FBI"/>
-                            <constraint firstItem="4gp-wI-KSS" firstAttribute="top" secondItem="I4P-5s-SbQ" secondAttribute="bottom" constant="37" id="uKS-GC-wzD"/>
+                            <constraint firstItem="G6G-qf-L6k" firstAttribute="leading" secondItem="bIx-1C-8jM" secondAttribute="leading" constant="30" id="V3D-IQ-oWn"/>
+                            <constraint firstItem="bB6-JY-WKW" firstAttribute="top" secondItem="bIx-1C-8jM" secondAttribute="top" constant="45" id="YKa-W7-jhZ"/>
+                            <constraint firstAttribute="bottom" secondItem="G6G-qf-L6k" secondAttribute="bottom" constant="25" id="a1M-kY-uWP"/>
+                            <constraint firstItem="WbJ-8c-ie4" firstAttribute="leading" secondItem="bIx-1C-8jM" secondAttribute="leading" constant="46" id="lWP-dL-ZSE"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="3u9-9B-H5N"/>
-                    <connections>
-                        <outlet property="NextArrow" destination="8ri-y9-k08" id="NkR-5o-nZA"/>
-                        <outlet property="activityIndicatorView" destination="I4P-5s-SbQ" id="lRC-3y-hlg"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6MZ-my-FM8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -872,11 +847,10 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
         <image name="Info" width="25" height="25"/>
         <image name="Invite-Friends" width="25" height="21"/>
         <image name="Megaphone" width="25" height="23"/>
-        <image name="Next-Arrow" width="67" height="79"/>
         <image name="Notifications-Blank" width="149" height="84"/>
         <image name="Signout" width="25" height="27"/>
         <image name="Time-Highlighted" width="16" height="16"/>
-        <image name="Welcome" width="320" height="568"/>
+        <image name="backdrop" width="320" height="568"/>
         <image name="beagle" width="182" height="56"/>
         <image name="picbox" width="100" height="100"/>
     </resources>

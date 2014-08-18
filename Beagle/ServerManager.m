@@ -60,7 +60,7 @@
         [playerRegisteration setObject:data.email forKey:@"email"];
         [playerRegisteration setObject:data.profileImageUrl forKey:@"image_url"];
         [playerRegisteration setObject:[NSNumber numberWithInteger:data.fbuid] forKey:@"fbuid"];
-        [playerRegisteration setObject:[NSNumber numberWithBool:data.permissionsGranted] forKey:@"permissions"];
+//        [playerRegisteration setObject:[NSNumber numberWithBool:data.permissionsGranted] forKey:@"permissions"];
 
         [playerRegisteration setObject:data.access_token forKey:@"access_token"];
             if([data.location length]!=0)

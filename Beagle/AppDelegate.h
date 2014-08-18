@@ -9,18 +9,18 @@
 #import <UIKit/UIKit.h>
 #import <Appsee/Appsee.h>
 #import <CoreLocation/CoreLocation.h>
+#import <FacebookSDK/FacebookSDK.h>
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate,NSURLSessionDelegate, NSURLSessionTaskDelegate, NSURLSessionDownloadDelegate,CLLocationManagerDelegate>{
+@interface AppDelegate : UIResponder <UIApplicationDelegate,CLLocationManagerDelegate>{
 }
 @property (nonatomic, strong) CLLocation *currentLocation;
 @property (nonatomic, strong) CLLocationManager *_locationManager;
 @property (nonatomic,strong)id listViewController;
 @property (strong, nonatomic) UIWindow *window;
-@property (copy) void (^backgroundSessionCompletionHandler)();
-@property (nonatomic,strong) NSURLSessionDownloadTask *downloadTask;
 - (void)locationManager:(CLLocationManager *)manager
        didFailWithError:(NSError *)error;
 - (void)startStandardUpdates;
-
+-(void)checkForFacebookSSOLogin;
+- (void)sessionStateChanged:(FBSession *)session state:(FBSessionState) state error:(NSError *)error;
 
 @end

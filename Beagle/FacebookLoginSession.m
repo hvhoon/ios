@@ -32,9 +32,6 @@
     NSString *key = @"500525846725031";
     NSDictionary *dictFB = [NSDictionary dictionaryWithObjectsAndKeys:key,ACFacebookAppIdKey,@[@"email"],ACFacebookPermissionsKey,nil];
     
-    
-    
-    
     [self.accountStore requestAccessToAccountsWithType:FBaccountType options:dictFB completion:^(BOOL granted, NSError *error) {
         if (granted && !error) {
             
@@ -67,19 +64,84 @@
                         }
                         dispatch_async(dispatch_get_main_queue(),^{
                             
+                            BeagleManager *BGM=[BeagleManager SharedInstance];
+                            BeagleUserClass *userObject=nil;
+                            if([[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"]){
+                                userObject= BGM.beaglePlayer;
+                            }else{
+                                userObject=[[BeagleUserClass alloc]init];
+                            }
+                            
+                            
+                            id userName = [list objectForKey:@"username"];
+                            if (userName != nil && [userName class] != [NSNull class]) {
+                                
+                                userObject.userName=userName;
+                            }
+                            id fullName = [list objectForKey:@"name"];
+                            if (fullName != nil && [fullName class] != [NSNull class]) {
+                                
+                                
+                                NSArray *arr = [fullName componentsSeparatedByString:@" "];
+                                
+                                if([arr count]>=2){
+                                    userObject.first_name=[arr objectAtIndex:0];
+                                    userObject.last_name=[arr objectAtIndex:1];
+                                }
+                                else{
+                                    userObject.first_name=fullName;
+                                }
+                                
+                            }
+                            
+                            id userId = [list objectForKey:@"id"];
+                            if(userId != nil && [userId class] != [NSNull class]){
+                                userObject.fbuid=[userId integerValue];
+                            }
+                            
+                            id first_name = [list objectForKey:@"first_name"];
+                            if(first_name != nil && [first_name class] != [NSNull class]){
+                                userObject.first_name=first_name;
+                            }
+                            
+                            id last_name = [list objectForKey:@"last_name"];
+                            if(last_name != nil && [last_name class] != [NSNull class]){
+                                userObject.last_name =last_name;
+                            }
+                            
+                            
+                            
+                            id location = [list objectForKey:@"location"];
+                            if(location != nil && [location class] != [NSNull class]){
+                                id country = [location objectForKey:@"name"];
+                                if(country != nil && [country class] != [NSNull class]){
+                                    userObject.location=country;
+                                }
+                            }
+                            
+                            
+                            userObject.profileImageUrl= [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", [list objectForKey:@"id"]];
+                            
+                            
+                            
+                            userObject.access_token = self.facebookAccount.credential.oauthToken;
+
+                            
+                            
                             id email = [list objectForKey:@"email"];
                             if (email != nil && [email class] != [NSNull class]) {
                                 
-                                
-                                if (self.delegate && [self.delegate respondsToSelector:@selector(checkIfUserAlreadyExists:)])
-                                    [self.delegate checkIfUserAlreadyExists:email];
-
-
-                            }else{
-                                if (self.delegate && [self.delegate respondsToSelector:@selector(permissionsError:)])
-                                    [self.delegate permissionsError:nil];
-
+                                userObject.email=email;
                             }
+                            
+                            userObject.permissionsGranted=isGranted;
+                            
+                            BGM.beaglePlayer=userObject;
+                            
+                            if (self.delegate && [self.delegate respondsToSelector:@selector(successfulFacebookLogin:)])
+                                [self.delegate successfulFacebookLogin:userObject];
+
+
                             
                         });
                     }
@@ -98,6 +160,7 @@
             }
         }
         else {
+            
             if (error.code == 6) {
                 NSLog(@"FB Account doesn't exist");
             }
@@ -110,10 +173,6 @@
         
     }];
     
-    
-    
-    
-
 }
 -(void)get
 {
@@ -300,7 +359,7 @@
         NSString *key = @"500525846725031";
         
         NSArray *accounts = [self.accountStore accountsWithAccountType:FBaccountType];
-        NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:key,ACFacebookAppIdKey,[NSArray arrayWithObjects:@"friends_location",@"user_friends",@"xmpp_login",nil],ACFacebookPermissionsKey,ACFacebookAudienceEveryone,ACFacebookAudienceKey,nil];
+        NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:key,ACFacebookAppIdKey,[NSArray arrayWithObjects:@"friends_location",@"xmpp_login",nil],ACFacebookPermissionsKey,ACFacebookAudienceEveryone,ACFacebookAudienceKey,nil];
         
         
         

@@ -27,7 +27,6 @@ static NSString * const CellIdentifier = @"cell";
     BOOL postsLoadComplete;
     NSTimer *timer;
     UIImageView *_partcipantScrollArrowImageView;
-    BOOL reloadParticipants;
 }
 
 @property(nonatomic,strong)ServerManager*chatPostManager;
@@ -907,22 +906,14 @@ static NSString * const CellIdentifier = @"cell";
                  [BeagleUtilities returnBeagleColor:4],NSForegroundColorAttributeName,
                  style, NSParagraphStyleAttributeName, nil];
         
-                    if(_scrollMenu==nil||scrollViewResize){
-                        _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, fromTheTop, 268, 55)];
-                        scrollViewResize=FALSE;
-                        _scrollMenu.tag=786;
-                        _partcipantScrollArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(268+12+16, fromTheTop+13.5, 8, 16)];
-                        _partcipantScrollArrowImageView.image = [UIImage imageNamed:@"Right-Scroll"];
-                    }
-            if(reloadParticipants){
-                reloadParticipants=false;
-                  [_backgroundView addSubview:_scrollMenu];
-                  [self setUpPlayerScroll:self.interestActivity.participantsArray];
+                _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, fromTheTop, 268, 55)];
+                scrollViewResize=FALSE;
+                _scrollMenu.tag=786;
+                _partcipantScrollArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(268+12+16, fromTheTop+13.5, 8, 16)];
+                _partcipantScrollArrowImageView.image = [UIImage imageNamed:@"Right-Scroll"];
+               [_backgroundView addSubview:_scrollMenu];
+               [self setUpPlayerScroll:self.interestActivity.participantsArray];
 
-            }else{
-            BeaglePlayerScrollMenu *mneu=(BeaglePlayerScrollMenu*)[self.view viewWithTag:786];
-                [_backgroundView addSubview:mneu];
-            }
             [_backgroundView addSubview:_partcipantScrollArrowImageView];
             
             if([self.interestActivity.participantsArray count]>4){
@@ -1296,7 +1287,6 @@ static NSString * const CellIdentifier = @"cell";
                             BeagleUserClass *userClass=[[BeagleUserClass alloc]initWithDictionary:el];
                             [self.interestActivity.participantsArray addObject:userClass];
                         }
-                        reloadParticipants=true;
                         
                     }
                     NSArray *chats=[interest objectForKey:@"chats"];
@@ -1453,7 +1443,6 @@ static NSString * const CellIdentifier = @"cell";
                         }
                     }
                     self.interestActivity.participantsArray=testArray;
-                    reloadParticipants=true;
                     [self.detailedInterestTableView reloadData];
 
                     
@@ -1792,7 +1781,6 @@ static NSString * const CellIdentifier = @"cell";
     [self.contentWrapper _setInitialFrames];
     [self.contentWrapper.inputView setHidden:NO];
     [self.contentWrapper.dummyInputView setHidden:NO];
-    reloadParticipants=true;
     [self.detailedInterestTableView reloadData];
     
 

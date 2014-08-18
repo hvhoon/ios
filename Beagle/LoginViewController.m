@@ -12,11 +12,9 @@
 #import <Social/Social.h>
 #define kJoinBeagle 12
 @interface LoginViewController ()<FacebookLoginSessionDelegate,ServerManagerDelegate>{
-    IBOutlet UIActivityIndicatorView *activityIndicatorView;
-    __weak IBOutlet UIImageView *NextArrow;
-    ServerManager *loginServerManager;
+     UIActivityIndicatorView *loginIndicatorView;
+     ServerManager *loginServerManager;
      NSMutableData *_data;
-    NSInteger test;
 }
 @property(nonatomic,strong)FacebookLoginSession *facebookSession;
 @property(nonatomic,strong)ServerManager *loginServerManager;
@@ -39,14 +37,63 @@
     
     
 }
-
--(IBAction)signInUsingFacebookClicked:(id)sender{
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(facebookAuthComplete:) name:kFacebookSSOLoginAuthentication object:Nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authenticationFailed:) name:kFacebookAuthenticationFailed object:Nil];
     
-    [NextArrow setHidden:YES];
-    [activityIndicatorView setHidden:NO];
-    [activityIndicatorView startAnimating];
-    [Appsee addEvent:@"Login Attempt"];
+    [self.navigationController setNavigationBarHidden:YES];
+    
+    
+    
+        UIButton *facebookButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        if([UIScreen mainScreen].bounds.size.height > 480.0f)
+        facebookButton.frame=CGRectMake(60, 430,
+                                         200,33);
+        else{
+            facebookButton.frame=CGRectMake(60, 430-88,
+                                            200,33);
+            
+        }
+        [self.view addSubview:facebookButton];
+        
+        facebookButton.tag=573;
+        [[facebookButton titleLabel]setFont:[UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0f]];
+        [facebookButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
+        [facebookButton setTitle:@"Login Using Facebook" forState:UIControlStateNormal];
+        
+        // Normal state
+        [facebookButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button-Unfilled"] withColor:[UIColor whiteColor]] forState:UIControlStateNormal];
+        [facebookButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [facebookButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button-Unfilled"] withColor:[[UIColor whiteColor] colorWithAlphaComponent:0.5]] forState:UIControlStateHighlighted];
+        [facebookButton setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:0.5] forState:UIControlStateHighlighted];
+        
+        [facebookButton addTarget:self action:@selector(facebookBtnPressed:) forControlEvents:UIControlEventTouchUpInside];
+        [facebookButton setEnabled:YES];
+    
+    
+    loginIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+            if([UIScreen mainScreen].bounds.size.height > 480.0f)
+    loginIndicatorView.frame=CGRectMake(230, 436.5, 20, 20);
+            else{
+    loginIndicatorView.frame=CGRectMake(230, 436.5-88, 20, 20);
+            }
+    loginIndicatorView.hidesWhenStopped=YES;
+    [self.view addSubview:loginIndicatorView];
+    loginIndicatorView.hidden=YES;
+    
+    
+    
+	// Do any additional setup after loading the view.
+}
 
+-(void)facebookBtnPressed:(id)sender{
+    UIButton *tb=(UIButton*)sender;
+    [tb setTitle:@"Logging you in..." forState:UIControlStateNormal];
+    [loginIndicatorView setHidden:NO];
+    [loginIndicatorView startAnimating];
+    [Appsee addEvent:@"Login Attempt"];
     _facebookSession=[[FacebookLoginSession alloc]init];
     _facebookSession.delegate=self;
     [_facebookSession getUserNativeFacebookSession];
@@ -58,7 +105,7 @@
 #pragma mark Delegate method From FacebookSession
 
 
--(void)checkIfUserAlreadyExists:(NSString*)email{
+-(void)checkIfUserAlreadyExists:(BeagleUserClass*)userData{
     if(_loginServerManager!=nil){
         _loginServerManager.delegate = nil;
         [_loginServerManager releaseServerManager];
@@ -66,7 +113,7 @@
     }
     _loginServerManager=[[ServerManager alloc]init];
     _loginServerManager.delegate=self;
-    [_loginServerManager userInfoOnBeagle:email];
+    [_loginServerManager userInfoOnBeagle:userData.email];
     
 }
 -(void)successfulFacebookLogin:(BeagleUserClass*)data{
@@ -87,22 +134,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         
 #if 1
-        NSString *message = NSLocalizedString (@"Right now beagle requires facebook to login. Please setup your facebook account in Settings > Facebook",
-                                               @"No Facebook Account");
-        
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Oops!"
-                                                        message:message
-                                                       delegate:nil
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles: nil];
-        
-        [alert show];
-        
-        [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
-        [[NSUserDefaults standardUserDefaults]synchronize];
-        [activityIndicatorView stopAnimating];
-        [activityIndicatorView setHidden:YES];
-        [NextArrow setHidden:NO];
+    [(AppDelegate *)[[UIApplication sharedApplication] delegate] checkForFacebookSSOLogin];
 #else
         
         
@@ -115,12 +147,10 @@
         [self.view.window.rootViewController presentViewController:controller animated:NO completion:^{
             [self resignFirstResponder];
             [[controller view] endEditing:YES];
-            test=0;
             [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
             [[NSUserDefaults standardUserDefaults]synchronize];
-            [activityIndicatorView stopAnimating];
-            [activityIndicatorView setHidden:YES];
-            [NextArrow setHidden:NO];
+            [loginIndicatorView stopAnimating];
+            [loginIndicatorView setHidden:YES];
 
         }];
 #endif
@@ -132,54 +162,39 @@
     
         dispatch_async(dispatch_get_main_queue(), ^{
             
-            NSString *message=nil;
-            if(e!=nil){
-                message=[e localizedDescription];
-            }else{
-                
-                message = NSLocalizedString (@"We are not able to retrieve your email from Facebook.Please check your privacy settings",
-                                                       @"No Facebook Account");
-            }
-            
-            
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Oops!"
-                                                            message:message
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"OK"
-                                                  otherButtonTitles: nil];
-            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Beagle" message:@"We need some basic Facebook info to show you what your friends are upto and tell them what you want to do.  We promise to never post anything on your wall or spam your friends. If you change your mind please try logging in again." delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
             [alert show];
             
             [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
             [[NSUserDefaults standardUserDefaults]synchronize];
-            [activityIndicatorView stopAnimating];
-            [activityIndicatorView setHidden:YES];
-            [NextArrow setHidden:NO];
-        });
+            [loginIndicatorView stopAnimating];
+            [loginIndicatorView setHidden:YES];
+            UIButton *fbBtn=(UIButton*)[self.view viewWithTag:586];
+            [fbBtn setTitle:@"Login Using Facebook" forState:UIControlStateNormal];
+   });
         
 }
 
+-(void)facebookAuthComplete:(NSNotification*) note{
+        id obj=[note valueForKey:@"userInfo"];
+        BeagleUserClass *player=[obj valueForKey:@"player"];
+       [self checkIfUserAlreadyExists:player];
+    
+}
+-(void)authenticationFailed:(NSNotification*) note{
+    [self permissionsError:nil];
+}
 -(void)pushToHomeScreen{
     
-    [activityIndicatorView stopAnimating];
-    [activityIndicatorView setHidden:YES];
-    [NextArrow setHidden:NO];
+    [loginIndicatorView stopAnimating];
+    [loginIndicatorView setHidden:YES];
 
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    
     InitialSlidingViewController *initialViewController = [storyboard instantiateViewControllerWithIdentifier:@"initialBeagle"];
     [self.navigationController pushViewController:initialViewController animated:YES];
 
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-
-    [self.navigationController setNavigationBarHidden:YES];
-    activityIndicatorView.hidden=YES;
-	// Do any additional setup after loading the view.
-}
 #pragma mark - server calls
 
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
@@ -237,7 +252,8 @@
             id status=[response objectForKey:@"status"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 if (registered != nil && [status class] != [NSNull class] && [registered boolValue]){
-                    [_facebookSession requestAdditionalPermissions];
+//                    [_facebookSession requestAdditionalPermissions];
+                    [self successfulFacebookLogin:[[BeagleManager SharedInstance]beaglePlayer]];
                 }else{
                     //first time user
                     // show an alert

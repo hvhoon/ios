@@ -56,7 +56,8 @@
 #define kLocationUpdateReceived  @"LocationSuccess"
 #define kNotificationForInterestPost @"InAppInterestPostNotification"
 #define kNotificationHomeAutoRefresh @"NotificationHomeAutoRefresh"
-
+#define kFacebookSSOLoginAuthentication @"FacebookSSOLoginAuthentication"
+#define kFacebookAuthenticationFailed @"FacebookAuthenticationFailed"
 #ifdef DEBUG
 #define herokuHost @"http://obscure-basin-9504.herokuapp.com/"
 #else

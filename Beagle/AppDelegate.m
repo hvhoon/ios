@@ -20,7 +20,6 @@
 
 @implementation AppDelegate
 @synthesize listViewController;
-@synthesize downloadTask;
 @synthesize currentLocation;
 @synthesize _locationManager = locationManager;
 @synthesize notificationServerManager=_notificationServerManager;
@@ -38,6 +37,22 @@ void uncaughtExceptionHandler(NSException *exception) {
         application.applicationIconBadgeNumber = 0;
     }
 
+#if 0
+    // Whenever a person opens the app, check for a cached session
+    if (FBSession.activeSession.state == FBSessionStateCreatedTokenLoaded) {
+        
+        // If there's one, just open the session silently, without showing the user the login UI
+        [FBSession openActiveSessionWithReadPermissions:@[@"public_profile"]
+                                           allowLoginUI:NO
+                                      completionHandler:^(FBSession *session, FBSessionState state, NSError *error) {
+                                          // Handler for session state changes
+                                          // This method will be called EACH time the session state changes,
+                                          // also for intermediate states and NOT just when the session open
+                                          [self sessionStateChanged:session state:state error:error];
+                                      }];
+        
+    }
+#endif
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     
     // Starting crash analytics
@@ -291,7 +306,208 @@ void uncaughtExceptionHandler(NSException *exception) {
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    
+    // Handle the user leaving the app while the Facebook login dialog is being shown
+    // For example: when the user presses the iOS "home" button while the login dialog is active
+    [FBAppCall handleDidBecomeActive];
+}
+
+// This method will handle ALL the session state changes in the app
+- (void)sessionStateChanged:(FBSession *)session state:(FBSessionState) state error:(NSError *)error
+{
+    // If the session was opened successfully
+    if (!error && state == FBSessionStateOpen){
+        NSLog(@"Session opened");
+        // Show the user the logged-in UI
+        [self requestUserInfo];
+        return;
+    }
+    if (state == FBSessionStateClosed || state == FBSessionStateClosedLoginFailed){
+        // If the session is closed
+        NSLog(@"Session closed");
+        // Show the user the logged-out UI
+    }
+    
+    // Handle errors
+    if (error){
+        NSLog(@"Error");
+        NSString *alertText;
+        NSString *alertTitle;
+        // If the error requires people using an app to make an action outside of the app in order to recover
+        if ([FBErrorUtility shouldNotifyUserForError:error] == YES){
+            alertTitle = @"Something went wrong";
+            alertText = [FBErrorUtility userMessageForError:error];
+        } else {
+            
+            // If the user cancelled login, do nothing
+            if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryUserCancelled) {
+                NSLog(@"User cancelled login");
+                
+                // Handle session closures that happen outside of the app
+            } else if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryAuthenticationReopenSession){
+                //Session Error
+                //Your current session is no longer valid. Please log in again.
+                
+                // Here we will handle all other errors with a generic error message.
+                // We recommend you check our Handling Errors guide for more information
+                // https://developers.facebook.com/docs/ios/errors/
+            } else {
+                //Get more error information from the error
+                NSDictionary *errorInformation = [[[error.userInfo objectForKey:@"com.facebook.sdk:ParsedJSONResponseKey"] objectForKey:@"body"] objectForKey:@"error"];
+                NSLog(@"message=%@",[errorInformation objectForKey:@"message"]);
+            }
+        }
+        // Clear this token
+        [FBSession.activeSession closeAndClearTokenInformation];
+    }
+}
+
+-(void)requestUserInfo{
+    
+        // These are the permissions we need:
+        NSArray *permissionsNeeded = @[@"public_profile"];
+        
+        // Request the permissions the user currently has
+        [FBRequestConnection startWithGraphPath:@"/me/permissions"
+                              completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+                                  if (!error){
+                                      // These are the current permissions the user has
+                                      NSDictionary *currentPermissions= [(NSArray *)[result data] objectAtIndex:0];
+                                      
+                                      // We will store here the missing permissions that we will have to request
+                                      NSMutableArray *requestPermissions = [[NSMutableArray alloc] initWithArray:@[]];
+                                      
+                                      // Check if all the permissions we need are present in the user's current permissions
+                                      // If they are not present add them to the permissions to be requested
+                                      for (NSString *permission in permissionsNeeded){
+                                          if (![currentPermissions objectForKey:permission]){
+                                              [requestPermissions addObject:permission];
+                                          }
+                                      }
+                                      
+                                      // If we have permissions to request
+                                      if ([requestPermissions count] > 0){
+                                          // Ask for the missing permissions
+                                          [FBSession.activeSession
+                                           requestNewReadPermissions:requestPermissions
+                                           completionHandler:^(FBSession *session, NSError *error) {
+                                               if (!error) {
+                                                   // Permission granted, we can request the user information
+                                                   [self makeRequestForUserData:session.accessTokenData.accessToken];
+                                               } else {
+                                                   // An error occurred, we need to handle the error
+                                                   // Check out our error handling guide: https://developers.facebook.com/docs/ios/errors/
+                                                   NSLog(@"error %@", error.description);
+                                                   [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kFacebookAuthenticationFailed object:self userInfo:nil]];
+
+                                               }
+                                           }];
+                                      } else {
+                                          // Permissions are present
+                                          // We can request the user information
+                                          [self makeRequestForUserData:FBSession.activeSession.accessTokenData.accessToken];
+                                      }
+                                      
+                                  } else {
+                                      // An error occurred, we need to handle the error
+                                      // Check out our error handling guide: https://developers.facebook.com/docs/ios/errors/
+                                      NSLog(@"error %@", error.description);
+                                      [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kFacebookAuthenticationFailed object:self userInfo:nil]];
+
+
+                                  }
+                              }];
+}
+
+- (void) makeRequestForUserData:(NSString*)accessToken
+{
+    [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id list, NSError *error) {
+        if (!error) {
+            // Success! Include your code to handle the results here
+            NSLog(@"user info: %@", list);
+            BeagleManager *BGM=[BeagleManager SharedInstance];
+            BeagleUserClass *userObject=nil;
+            if([[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"]){
+                userObject= BGM.beaglePlayer;
+            }else{
+                userObject=[[BeagleUserClass alloc]init];
+            }
+            
+            
+            id userName = [list objectForKey:@"username"];
+            if (userName != nil && [userName class] != [NSNull class]) {
+                
+                userObject.userName=userName;
+            }
+            id fullName = [list objectForKey:@"name"];
+            if (fullName != nil && [fullName class] != [NSNull class]) {
+                
+                
+                NSArray *arr = [fullName componentsSeparatedByString:@" "];
+                
+                if([arr count]>=2){
+                    userObject.first_name=[arr objectAtIndex:0];
+                    userObject.last_name=[arr objectAtIndex:1];
+                }
+                else{
+                    userObject.first_name=fullName;
+                }
+                
+            }
+            
+            id userId = [list objectForKey:@"id"];
+            if(userId != nil && [userId class] != [NSNull class]){
+                userObject.fbuid=[userId integerValue];
+            }
+            
+            id first_name = [list objectForKey:@"first_name"];
+            if(first_name != nil && [first_name class] != [NSNull class]){
+                userObject.first_name=first_name;
+            }
+            
+            id last_name = [list objectForKey:@"last_name"];
+            if(last_name != nil && [last_name class] != [NSNull class]){
+                userObject.last_name =last_name;
+            }
+            
+            
+            
+            id location = [list objectForKey:@"location"];
+            if(location != nil && [location class] != [NSNull class]){
+                id country = [location objectForKey:@"name"];
+                if(country != nil && [country class] != [NSNull class]){
+                    userObject.location=country;
+                }
+            }
+            
+            
+            userObject.profileImageUrl= [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", [list objectForKey:@"id"]];
+            
+            
+            
+            userObject.access_token = accessToken;
+            
+            id email = [list objectForKey:@"email"];
+            if (email != nil && [email class] != [NSNull class]) {
+                
+                userObject.email=email;
+            }
+            userObject.permissionsGranted=YES;
+            
+            BGM.beaglePlayer=userObject;
+
+            NSMutableDictionary *test=[NSMutableDictionary new];
+            [test setObject:BGM forKey:@"player"];
+            NSNotification* notification = [NSNotification notificationWithName:kFacebookSSOLoginAuthentication object:self userInfo:test];
+            [[NSNotificationCenter defaultCenter] postNotification:notification];
+
+
+        } else {
+            // An error occurred, we need to handle the error
+            // Check out our error handling guide: https://developers.facebook.com/docs/ios/errors/
+            NSLog(@"error %@", error.description);
+        }
+    }];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -299,6 +515,30 @@ void uncaughtExceptionHandler(NSException *exception) {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+
+-(void)checkForFacebookSSOLogin{
+    // If the session state is any of the two "open" states when the button is clicked
+    if (FBSession.activeSession.state == FBSessionStateOpen
+        || FBSession.activeSession.state == FBSessionStateOpenTokenExtended) {
+        
+        // Close the session and remove the access token from the cache
+        // The session state handler (in the app delegate) will be called automatically
+        [FBSession.activeSession closeAndClearTokenInformation];
+        
+        // If the session state is not any of the two "open" states when the button is clicked
+    } else {
+        // Open a session showing the user the login UI
+        // You must ALWAYS ask for public_profile permissions when opening a session
+        [FBSession openActiveSessionWithReadPermissions:@[@"public_profile"]
+                                           allowLoginUI:YES
+                                      completionHandler:
+         ^(FBSession *session, FBSessionState state, NSError *error) {
+             
+             // Call the app delegate's sessionStateChanged:state:error method to handle session state changes
+             [self sessionStateChanged:session state:state error:error];
+         }];
+    }
+}
 #pragma mark - server calls
 
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
@@ -516,22 +756,6 @@ void uncaughtExceptionHandler(NSException *exception) {
 }
 
 
-- (NSURLSession *)backgroundURLSession
-{
-    static NSURLSession *session = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        NSString *identifier = @"io.objc.backgroundTransferExample";
-        NSURLSessionConfiguration* sessionConfig = [NSURLSessionConfiguration backgroundSessionConfiguration:identifier];
-        session = [NSURLSession sessionWithConfiguration:sessionConfig
-                                                delegate:self
-                                           delegateQueue:[NSOperationQueue mainQueue]];
-    });
-    
-    return session;
-}
-
-
 -(void) application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     
 
@@ -611,62 +835,6 @@ void uncaughtExceptionHandler(NSException *exception) {
     
 }
 
-
-- (void)URLSession:(NSURLSession *)session
-               downloadTask:(NSURLSessionDownloadTask *)downloadTask
-  didFinishDownloadingToURL:(NSURL *)location
-{
-    
-    // Notify your UI
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        
-        
-    });
-}
-
-- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask
-      didWriteData:(int64_t)bytesWritten
- totalBytesWritten:(int64_t)totalBytesWritten
-totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite{
-    
-}
-
-- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask
- didResumeAtOffset:(int64_t)fileOffset
-expectedTotalBytes:(int64_t)expectedTotalBytes{
-    
-}
-
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
-    
-    if (error == nil) {
-        NSLog(@"Task: %@ completed successfully", task);
-    } else {
-        NSLog(@"Task: %@ completed with error: %@", task, [error localizedDescription]);
-    }
-    
-    self.downloadTask = nil;
-}
-
-
-- (void)URLSessionDidFinishEventsForBackgroundURLSession:(NSURLSession *)session {
-    if (self.backgroundSessionCompletionHandler) {
-        void (^completionHandler)() = self.backgroundSessionCompletionHandler;
-        self.backgroundSessionCompletionHandler = nil;
-        completionHandler();
-    }
-    
-    NSLog(@"All tasks are finished");
-}
-
-- (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier
-  completionHandler:(void (^)())completionHandler {
-    self.backgroundSessionCompletionHandler = completionHandler;
-    
-    //add notification
-    [self presentNotification];
-}
 
 -(void)presentNotification{
     UILocalNotification* localNotification = [[UILocalNotification alloc] init];
@@ -794,5 +962,14 @@ expectedTotalBytes:(int64_t)expectedTotalBytes{
 - (void) timeoutLocationFetch {
     NSLog(@"LocationService:timeout");
     [locationManager startUpdatingLocation];
+}
+
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation
+{
+    
+    return [FBAppCall handleOpenURL:url sourceApplication:sourceApplication];
 }
 @end
