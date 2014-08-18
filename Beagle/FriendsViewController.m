@@ -630,7 +630,7 @@
             id status=[response objectForKey:@"status"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 
-                NSString *message = NSLocalizedString (@"Invite sent. You're a good friend!",
+                NSString *message = NSLocalizedString (@"Great! We've sent your friend an invite through Facebook.",
                                                        @"Message sent successfully!");
                 
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Beagle"
