@@ -620,38 +620,31 @@ void uncaughtExceptionHandler(NSException *exception) {
         
         NSLog(@"errorode=%i",[FBErrorUtility errorCategoryForError:error]);
         NSLog(@"Error=%@",[error localizedDescription]);
+        
         // If the error requires people using an app to make an action outside of the app in order to recover
-        if ([FBErrorUtility shouldNotifyUserForError:error] == YES){
-            
-            
-        } else if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryUserCancelled) {
-                NSLog(@"User cancelled login");
-
-                
-                // Handle session closures that happen outside of the app
-            } else if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryAuthenticationReopenSession){
+        if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryAuthenticationReopenSession){
                 //Session Error
                 //Your current session is no longer valid. Please log in again.
                 
                 // Here we will handle all other errors with a generic error message.
                 // We recommend you check our Handling Errors guide for more information
                 // https://developers.facebook.com/docs/ios/errors/
-            }
-            else if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryServer) {
-                NSLog(@"user account on settings setup but denied permission");
-                
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Beagle" message:@"Your Facebook settings have changed so we've logged you out to protect your account.  Please log back in when you are ready." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
-                [alert show];
+        }
+        else if ([FBErrorUtility errorCategoryForError:error]==2) {
+            // Show the logout alert message
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Beagle" message:@"Your Facebook settings have changed so we've logged you out to protect your account.  Please log back in when you are ready." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
+            [alert show];
+        }
+        else if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryUserCancelled || [FBErrorUtility errorCategoryForError:error] == 4) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Beagle" message:@"We need some basic Facebook info to show you what's happening around you and tell your friends what you want to do. We promise to never post anything on your wall or spam your friends. Please go to Settings > Facebook and allow Beagle to use your account." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
+            [alert show];
+        }
+        else {
+            //Get more error information from the error
+            NSDictionary *errorInformation = [[[error.userInfo objectForKey:@"com.facebook.sdk:ParsedJSONResponseKey"] objectForKey:@"body"] objectForKey:@"error"];
+            NSLog(@"message=%@",[errorInformation objectForKey:@"message"]);
 
-                
-                
-                // Handle session closures that happen outside of the app
-            }else {
-                //Get more error information from the error
-                NSDictionary *errorInformation = [[[error.userInfo objectForKey:@"com.facebook.sdk:ParsedJSONResponseKey"] objectForKey:@"body"] objectForKey:@"error"];
-                NSLog(@"message=%@",[errorInformation objectForKey:@"message"]);
-
-            }
+        }
         [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kFacebookAuthenticationFailed object:self userInfo:nil]];
 
         
@@ -808,7 +801,7 @@ void uncaughtExceptionHandler(NSException *exception) {
             // Check out our error handling guide: https://developers.facebook.com/docs/ios/errors/
             NSLog(@"error %@", error.description);
             
-            [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kFacebookAuthenticationFailed object:self userInfo:nil]];
+            //[[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kFacebookAuthenticationFailed object:self userInfo:nil]];
 
         }
     }];
