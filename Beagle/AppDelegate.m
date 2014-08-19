@@ -640,6 +640,10 @@ void uncaughtExceptionHandler(NSException *exception) {
             else if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryServer) {
                 NSLog(@"user account on settings setup but denied permission");
                 
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Beagle" message:@"Your Facebook settings have changed so we've logged you out to protect your account.  Please log back in when you are ready." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
+                [alert show];
+
+                
                 
                 // Handle session closures that happen outside of the app
             }else {
