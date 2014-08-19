@@ -93,6 +93,7 @@
 -(void)authenticationFailed:(NSNotification*) note{
     
     NSLog(@"session has expired");
+    
     UIViewController *newTopViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"loginScreen"];
 
     [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
