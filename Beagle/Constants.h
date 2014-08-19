@@ -60,6 +60,7 @@
 #define kFacebookAuthenticationFailed @"FacebookAuthenticationFailed"
 #ifdef DEBUG
 #define herokuHost @"http://obscure-basin-9504.herokuapp.com/"
+//#define herokuHost @"http://localhost:3000/"
 #else
 #define herokuHost @"http://infinite-spire-6520.herokuapp.com/"
 #endif

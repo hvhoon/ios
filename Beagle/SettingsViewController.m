@@ -128,6 +128,7 @@
         case 8:
         {
             identifier=@"loginScreen";
+            [(AppDelegate *)[[UIApplication sharedApplication] delegate] closeFBSessions];
             [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
             [[NSUserDefaults standardUserDefaults]synchronize];
 

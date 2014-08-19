@@ -21,6 +21,7 @@
        didFailWithError:(NSError *)error;
 - (void)startStandardUpdates;
 -(void)checkForFacebookSSOLogin;
+-(void)closeFBSessions;
 - (void)sessionStateChanged:(FBSession *)session state:(FBSessionState) state error:(NSError *)error;
 
 @end

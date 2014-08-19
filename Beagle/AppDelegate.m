@@ -13,8 +13,10 @@
 @interface AppDelegate ()<ServerManagerDelegate>{
     ServerManager *notificationServerManager;
     NSInteger attempts;
+    
 
 }
+@property(nonatomic,strong)ServerManager *loginServerManager;
 @property(nonatomic,strong)ServerManager *notificationServerManager;
 @end
 
@@ -22,6 +24,7 @@
 @synthesize listViewController;
 @synthesize currentLocation;
 @synthesize _locationManager = locationManager;
+@synthesize loginServerManager=_loginServerManager;
 @synthesize notificationServerManager=_notificationServerManager;
 void uncaughtExceptionHandler(NSException *exception) {
     NSLog(@"CRASH: %@", exception);
@@ -319,7 +322,9 @@ void uncaughtExceptionHandler(NSException *exception) {
     if (!error && state == FBSessionStateOpen){
         NSLog(@"Session opened");
         // Show the user the logged-in UI
-        [self requestUserInfo];
+//        [self requestUserInfo];
+        [self makeRequestForUserData:FBSession.activeSession.accessTokenData.accessToken];
+
         return;
     }
     if (state == FBSessionStateClosed || state == FBSessionStateClosedLoginFailed){
@@ -328,20 +333,34 @@ void uncaughtExceptionHandler(NSException *exception) {
         // Show the user the logged-out UI
     }
     
+    if(state==FBSessionStateCreated){
+        NSLog(@"FBSessionStateCreated");
+    }
+    if(state==FBSessionStateCreatedOpening){
+        NSLog(@"FBSessionStateCreatedOpening");
+    }
+
+    if(state==FBSessionStateOpenTokenExtended){
+        NSLog(@"FBSessionStateOpenTokenExtended");
+    }
+
+    if(state==FBSessionStateCreatedTokenLoaded){
+        NSLog(@"FBSessionStateCreatedTokenLoaded");
+    }
+
     // Handle errors
     if (error){
-        NSLog(@"Error");
-        NSString *alertText;
-        NSString *alertTitle;
+        
+        NSLog(@"errorode=%ld",[FBErrorUtility errorCategoryForError:error]);
+        NSLog(@"Error=%@",[error localizedDescription]);
         // If the error requires people using an app to make an action outside of the app in order to recover
         if ([FBErrorUtility shouldNotifyUserForError:error] == YES){
-            alertTitle = @"Something went wrong";
-            alertText = [FBErrorUtility userMessageForError:error];
-        } else {
             
-            // If the user cancelled login, do nothing
-            if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryUserCancelled) {
+            
+        } else if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryUserCancelled) {
                 NSLog(@"User cancelled login");
+                [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kFacebookAuthenticationFailed object:self userInfo:nil]];
+
                 
                 // Handle session closures that happen outside of the app
             } else if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryAuthenticationReopenSession){
@@ -351,12 +370,22 @@ void uncaughtExceptionHandler(NSException *exception) {
                 // Here we will handle all other errors with a generic error message.
                 // We recommend you check our Handling Errors guide for more information
                 // https://developers.facebook.com/docs/ios/errors/
-            } else {
+            }
+            else if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryServer) {
+                NSLog(@"user account on settings setup but denied permission");
+                [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kFacebookAuthenticationFailed object:self userInfo:nil]];
+                
+                
+                // Handle session closures that happen outside of the app
+            }else {
                 //Get more error information from the error
                 NSDictionary *errorInformation = [[[error.userInfo objectForKey:@"com.facebook.sdk:ParsedJSONResponseKey"] objectForKey:@"body"] objectForKey:@"error"];
                 NSLog(@"message=%@",[errorInformation objectForKey:@"message"]);
+                [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kFacebookAuthenticationFailed object:self userInfo:nil]];
+
             }
-        }
+        
+        
         // Clear this token
         [FBSession.activeSession closeAndClearTokenInformation];
     }
@@ -495,11 +524,13 @@ void uncaughtExceptionHandler(NSException *exception) {
             userObject.permissionsGranted=YES;
             
             BGM.beaglePlayer=userObject;
+            
+            [self successfulFacebookLogin:userObject];
 
-            NSMutableDictionary *test=[NSMutableDictionary new];
-            [test setObject:BGM forKey:@"player"];
-            NSNotification* notification = [NSNotification notificationWithName:kFacebookSSOLoginAuthentication object:self userInfo:test];
-            [[NSNotificationCenter defaultCenter] postNotification:notification];
+//            NSMutableDictionary *test=[NSMutableDictionary new];
+//            [test setObject:BGM forKey:@"player"];
+//            NSNotification* notification = [NSNotification notificationWithName:kFacebookSSOLoginAuthentication object:self userInfo:test];
+//            [[NSNotificationCenter defaultCenter] postNotification:notification];
 
 
         } else {
@@ -510,12 +541,34 @@ void uncaughtExceptionHandler(NSException *exception) {
     }];
 }
 
+-(void)successfulFacebookLogin:(BeagleUserClass*)data{
+    
+    if(_loginServerManager!=nil){
+        _loginServerManager.delegate = nil;
+        [_loginServerManager releaseServerManager];
+        _loginServerManager = nil;
+    }
+    _loginServerManager=[[ServerManager alloc]init];
+    _loginServerManager.delegate=self;
+    [_loginServerManager registerPlayerOnBeagle:data];
+    
+}
+
+
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
-
+-(void)closeFBSessions{
+    if (FBSession.activeSession.state == FBSessionStateOpen
+        || FBSession.activeSession.state == FBSessionStateOpenTokenExtended) {
+        
+        // Close the session and remove the access token from the cache
+        // The session state handler (in the app delegate) will be called automatically
+        [FBSession.activeSession closeAndClearTokenInformation];
+    }
+}
 -(void)checkForFacebookSSOLogin{
     // If the session state is any of the two "open" states when the button is clicked
     if (FBSession.activeSession.state == FBSessionStateOpen
@@ -527,28 +580,36 @@ void uncaughtExceptionHandler(NSException *exception) {
         
         // If the session state is not any of the two "open" states when the button is clicked
     } else {
+        
+        
+        FBSession *session = [[FBSession alloc] initWithAppID:@"500525846725031" permissions:@[@"public_profile"] defaultAudience:FBSessionDefaultAudienceEveryone urlSchemeSuffix:nil tokenCacheStrategy:nil];
+        [FBSession setActiveSession:session];
+        
+        [session openWithBehavior:FBSessionLoginBehaviorUseSystemAccountIfPresent     completionHandler:^(FBSession *session, FBSessionState state, NSError *error) {
+        
+        
         // Open a session showing the user the login UI
         // You must ALWAYS ask for public_profile permissions when opening a session
-        [FBSession openActiveSessionWithReadPermissions:@[@"public_profile"]
-                                           allowLoginUI:YES
-                                      completionHandler:
-         ^(FBSession *session, FBSessionState state, NSError *error) {
+//        [FBSession openActiveSessionWithReadPermissions:@[@"public_profile"]
+//                                           allowLoginUI:YES
+//                                      completionHandler:
+//         ^(FBSession *session, FBSessionState state, NSError *error) {
+            
              
              // Call the app delegate's sessionStateChanged:state:error method to handle session state changes
              [self sessionStateChanged:session state:state error:error];
-         }];
+             }];
     }
 }
 #pragma mark - server calls
 
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
     
-    
-
+if(serverRequest!=kServerCallUserRegisteration){
     _notificationServerManager.delegate = nil;
     [_notificationServerManager releaseServerManager];
     _notificationServerManager = nil;
-    
+    }
     if(serverRequest==kServerCallInAppNotification){
         
         
@@ -693,6 +754,52 @@ void uncaughtExceptionHandler(NSException *exception) {
         
     }
     
+    else if(serverRequest==kServerCallUserRegisteration){
+        
+        _loginServerManager.delegate = nil;
+        [_loginServerManager releaseServerManager];
+        _loginServerManager = nil;
+        
+        if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
+            
+            id status=[response objectForKey:@"status"];
+            if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
+                
+                
+                
+                id player=[response objectForKey:@"player"];
+                if (player != nil && [player class] != [NSNull class]) {
+                    
+                    id beagleId=[player objectForKey:@"id"];
+                    if (beagleId != nil && [beagleId class] != [NSNull class]) {
+                        [[[BeagleManager SharedInstance] beaglePlayer]setBeagleUserId:[beagleId integerValue]];
+                        [[BeagleManager SharedInstance] userProfileDataUpdate];
+                        [[NSUserDefaults standardUserDefaults]setObject:[NSNumber numberWithInteger:[beagleId integerValue]] forKey:@"beagleId"];
+                        [[NSUserDefaults standardUserDefaults]synchronize];
+                        NSLog(@"beagleId=%ld",(long)[beagleId integerValue]);
+                        
+                    }
+                    
+                    NSURL *pictureURL = [NSURL URLWithString:[player objectForKey:@"image_url"]];
+                    
+                    NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:pictureURL
+                                                                              cachePolicy:NSURLRequestUseProtocolCachePolicy
+                                                                          timeoutInterval:2.0f];
+                    // Run network request asynchronously
+                    NSURLConnection *urlConnection = [[NSURLConnection alloc] initWithRequest:urlRequest delegate:self];
+                    if (!urlConnection) {
+                        NSLog(@"Failed to download picture");
+                    }
+                }
+            }
+        }
+        
+        //[self pushToHomeScreen];
+            NSNotification* notification = [NSNotification notificationWithName:kFacebookSSOLoginAuthentication object:self userInfo:nil];
+            [[NSNotificationCenter defaultCenter] postNotification:notification];
+
+    }
+    
     
 }
 
@@ -703,14 +810,36 @@ void uncaughtExceptionHandler(NSException *exception) {
         [_notificationServerManager releaseServerManager];
         _notificationServerManager = nil;
     
+    if(serverRequest==kServerCallUserRegisteration|| serverRequest==kServerGetSignInInfo)
+    {
+        _loginServerManager.delegate = nil;
+        [_loginServerManager releaseServerManager];
+        _loginServerManager = nil;
+        
+        NSString *message = NSLocalizedString (@"Well this is embarrassing. Please try again in a bit.",
+                                               @"NSURLConnection initialization method failed.");
+        BeagleAlertWithMessage(message);
+
+    }
+
+    
 }
 
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
 {
     
+    if(serverRequest==kServerCallUserRegisteration|| serverRequest==kServerGetSignInInfo)
+    {
+        _loginServerManager.delegate = nil;
+        [_loginServerManager releaseServerManager];
+        _loginServerManager = nil;
+    }else{
+
         _notificationServerManager.delegate = nil;
         [_notificationServerManager releaseServerManager];
         _notificationServerManager = nil;
+        
+    }
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
     [alert show];
@@ -878,12 +1007,6 @@ void uncaughtExceptionHandler(NSException *exception) {
 			break;
 		case kCLAuthorizationStatusDenied:
 			NSLog(@"kCLAuthorizationStatusDenied");
-        {
-            /*
-             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Oops!!!" message:@"Beagle can’t access your current location.\nTo view interests nearby, please turn on location services in  Settings under Location Services." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-             [alertView show];
-             */// Disable the post button.
-        }
 			break;
 		case kCLAuthorizationStatusNotDetermined:
 			NSLog(@"kCLAuthorizationStatusNotDetermined");
@@ -894,7 +1017,6 @@ void uncaughtExceptionHandler(NSException *exception) {
 	}
 }
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < _IPHONE_7_0
 - (void)locationManager:(CLLocationManager *)manager
     didUpdateToLocation:(CLLocation *)newLocation
            fromLocation:(CLLocation *)oldLocation {
@@ -902,16 +1024,6 @@ void uncaughtExceptionHandler(NSException *exception) {
     self.currentLocation=newLocation;
     
 }
-#else
-- (void)locationManager:(CLLocationManager *)manager
-     didUpdateLocations:(NSArray *)locations{
-    NSLog(@"%s", __PRETTY_FUNCTION__);
-    CLLocation*newLocation=[locations lastObject];
-    self.currentLocation=newLocation;
-    
-}
-#endif
-
 #define kLocationFetchTimeout 5
 - (void)locationManager:(CLLocationManager *)manager
        didFailWithError:(NSError *)error {

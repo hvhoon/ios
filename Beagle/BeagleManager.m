@@ -156,7 +156,7 @@
     player.fb_ticker=[[array valueForKey:@"facebook_ticker"]boolValue];
     self.beaglePlayer=player;
     
-    [self autoSign];
+//    [self autoSign];
 #endif
 }
 

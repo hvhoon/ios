@@ -94,28 +94,19 @@
     [loginIndicatorView setHidden:NO];
     [loginIndicatorView startAnimating];
     [Appsee addEvent:@"Login Attempt"];
-    _facebookSession=[[FacebookLoginSession alloc]init];
-    _facebookSession.delegate=self;
-    [_facebookSession getUserNativeFacebookSession];
-
+//    _facebookSession=[[FacebookLoginSession alloc]init];
+//    _facebookSession.delegate=self;
+//    [_facebookSession getUserNativeFacebookSession];
+    
+    
+    
+    [(AppDelegate *)[[UIApplication sharedApplication] delegate] checkForFacebookSSOLogin];
     
 }
 
 #pragma mark -
 #pragma mark Delegate method From FacebookSession
 
-
--(void)checkIfUserAlreadyExists:(BeagleUserClass*)userData{
-    if(_loginServerManager!=nil){
-        _loginServerManager.delegate = nil;
-        [_loginServerManager releaseServerManager];
-        _loginServerManager = nil;
-    }
-    _loginServerManager=[[ServerManager alloc]init];
-    _loginServerManager.delegate=self;
-    [_loginServerManager userInfoOnBeagle:userData.email];
-    
-}
 -(void)successfulFacebookLogin:(BeagleUserClass*)data{
     
     if(_loginServerManager!=nil){
@@ -169,16 +160,17 @@
             [[NSUserDefaults standardUserDefaults]synchronize];
             [loginIndicatorView stopAnimating];
             [loginIndicatorView setHidden:YES];
-            UIButton *fbBtn=(UIButton*)[self.view viewWithTag:586];
+            UIButton *fbBtn=(UIButton*)[self.view viewWithTag:573];
             [fbBtn setTitle:@"Login Using Facebook" forState:UIControlStateNormal];
    });
         
 }
 
 -(void)facebookAuthComplete:(NSNotification*) note{
-        id obj=[note valueForKey:@"userInfo"];
-        BeagleUserClass *player=[obj valueForKey:@"player"];
-       [self checkIfUserAlreadyExists:player];
+//        id obj=[note valueForKey:@"userInfo"];
+//        BeagleUserClass *player=[obj valueForKey:@"player"];
+//        [self successfulFacebookLogin:player];
+    [self pushToHomeScreen];
     
 }
 -(void)authenticationFailed:(NSNotification*) note{
@@ -192,7 +184,6 @@
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     InitialSlidingViewController *initialViewController = [storyboard instantiateViewControllerWithIdentifier:@"initialBeagle"];
     [self.navigationController pushViewController:initialViewController animated:YES];
-
 }
 
 #pragma mark - server calls
