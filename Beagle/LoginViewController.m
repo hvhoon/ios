@@ -102,7 +102,7 @@
     
         dispatch_async(dispatch_get_main_queue(), ^{
             
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Beagle" message:@"We need some basic Facebook info to show you what your friends are upto and tell them what you want to do.  We promise to never post anything on your wall or spam your friends. If you change your mind please try logging in again." delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Beagle" message:@"We need some basic Facebook info to show you what's happening around you and tell your friends what you want to do. We promise to never post anything on your wall or spam your friends. If you change your mind please try logging in again." delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
             [alert show];
             
             [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
