@@ -79,25 +79,21 @@
                                     <action selector="loginButtonPressed:" destination="7pi-6C-XLG" eventType="touchUpInside" id="oST-in-9BK"/>
                                 </connections>
                             </button>
-                            <activityIndicatorView hidden="YES" opaque="NO" alpha="0.80000000000000004" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="5e6-gz-YNt">
-                                <rect key="frame" x="231" y="425" width="20" height="20"/>
+                            <activityIndicatorView hidden="YES" opaque="NO" alpha="0.80000000000000004" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="5e6-gz-YNt">
+                                <rect key="frame" x="142" y="265" width="37" height="37"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="20" id="AIh-8O-Rqb"/>
-                                    <constraint firstAttribute="height" constant="20" id="vzJ-OJ-Kxx"/>
-                                </constraints>
                             </activityIndicatorView>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="5e6-gz-YNt" firstAttribute="centerX" secondItem="7Am-pN-Mfi" secondAttribute="centerX" constant="0.5" id="0ly-CU-WSg"/>
                             <constraint firstItem="WbJ-8c-ie4" firstAttribute="centerX" secondItem="7Am-pN-Mfi" secondAttribute="centerX" id="1wM-JI-Ml8"/>
                             <constraint firstItem="7Am-pN-Mfi" firstAttribute="top" secondItem="bIx-1C-8jM" secondAttribute="top" id="2ig-J4-Ybu"/>
                             <constraint firstItem="bB6-JY-WKW" firstAttribute="centerX" secondItem="7Am-pN-Mfi" secondAttribute="centerX" id="5g8-1Z-pFN"/>
-                            <constraint firstItem="5e6-gz-YNt" firstAttribute="leading" secondItem="bIx-1C-8jM" secondAttribute="leading" constant="231" id="AxR-iV-5hQ"/>
                             <constraint firstAttribute="trailing" secondItem="7Am-pN-Mfi" secondAttribute="trailing" id="CZB-2E-9L3"/>
                             <constraint firstItem="7Am-pN-Mfi" firstAttribute="leading" secondItem="bIx-1C-8jM" secondAttribute="leading" id="GDM-z5-uxj"/>
                             <constraint firstAttribute="bottom" secondItem="7Am-pN-Mfi" secondAttribute="bottom" id="MDh-A4-XnC"/>
+                            <constraint firstItem="5e6-gz-YNt" firstAttribute="centerY" secondItem="7Am-pN-Mfi" secondAttribute="centerY" constant="-0.5" id="OaI-0r-GP8"/>
                             <constraint firstItem="7Am-pN-Mfi" firstAttribute="centerX" secondItem="e2t-My-Vcd" secondAttribute="centerX" constant="-0.5" id="SIr-OL-5T6"/>
-                            <constraint firstItem="5e6-gz-YNt" firstAttribute="centerY" secondItem="e2t-My-Vcd" secondAttribute="centerY" constant="0.5" id="Wci-1p-Bqp"/>
                             <constraint firstItem="bB6-JY-WKW" firstAttribute="top" secondItem="bIx-1C-8jM" secondAttribute="top" constant="55" id="YKa-W7-jhZ"/>
                             <constraint firstItem="WbJ-8c-ie4" firstAttribute="top" secondItem="bB6-JY-WKW" secondAttribute="bottom" constant="8" id="ZOL-L5-N2k"/>
                             <constraint firstAttribute="bottom" secondItem="G6G-qf-L6k" secondAttribute="bottom" constant="27" id="a1M-kY-uWP"/>

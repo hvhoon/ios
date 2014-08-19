@@ -46,6 +46,9 @@
     
     [self.navigationController setNavigationBarHidden:YES];
     
+    [_loginButton setTitle:@"Login Using Facebook" forState:UIControlStateNormal];
+
+    
 	// Do any additional setup after loading the view.
 }
 - (IBAction)loginButtonPressed:(id)sender {
