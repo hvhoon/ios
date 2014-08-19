@@ -12,10 +12,11 @@
 #import <Social/Social.h>
 #define kJoinBeagle 12
 @interface LoginViewController ()<FacebookLoginSessionDelegate,ServerManagerDelegate>{
-     UIActivityIndicatorView *loginIndicatorView;
      ServerManager *loginServerManager;
      NSMutableData *_data;
 }
+@property (weak, nonatomic) IBOutlet UIButton *loginButton;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *loginActivity;
 @property(nonatomic,strong)FacebookLoginSession *facebookSession;
 @property(nonatomic,strong)ServerManager *loginServerManager;
 @end
@@ -45,63 +46,13 @@
     
     [self.navigationController setNavigationBarHidden:YES];
     
-    
-    
-        UIButton *facebookButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        if([UIScreen mainScreen].bounds.size.height > 480.0f)
-        facebookButton.frame=CGRectMake(60, 430,
-                                         200,33);
-        else{
-            facebookButton.frame=CGRectMake(60, 430-88,
-                                            200,33);
-            
-        }
-        [self.view addSubview:facebookButton];
-        
-        facebookButton.tag=573;
-        [[facebookButton titleLabel]setFont:[UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0f]];
-        [facebookButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
-        [facebookButton setTitle:@"Login Using Facebook" forState:UIControlStateNormal];
-        
-        // Normal state
-        [facebookButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button-Unfilled"] withColor:[UIColor whiteColor]] forState:UIControlStateNormal];
-        [facebookButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [facebookButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button-Unfilled"] withColor:[[UIColor whiteColor] colorWithAlphaComponent:0.5]] forState:UIControlStateHighlighted];
-        [facebookButton setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:0.5] forState:UIControlStateHighlighted];
-        
-        [facebookButton addTarget:self action:@selector(facebookBtnPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [facebookButton setEnabled:YES];
-    
-    
-    loginIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-            if([UIScreen mainScreen].bounds.size.height > 480.0f)
-    loginIndicatorView.frame=CGRectMake(230, 436.5, 20, 20);
-            else{
-    loginIndicatorView.frame=CGRectMake(230, 436.5-88, 20, 20);
-            }
-    loginIndicatorView.hidesWhenStopped=YES;
-    [self.view addSubview:loginIndicatorView];
-    loginIndicatorView.hidden=YES;
-    
-    
-    
 	// Do any additional setup after loading the view.
 }
-
--(void)facebookBtnPressed:(id)sender{
-    UIButton *tb=(UIButton*)sender;
-    [tb setTitle:@"Logging you in..." forState:UIControlStateNormal];
-    [loginIndicatorView setHidden:NO];
-    [loginIndicatorView startAnimating];
+- (IBAction)loginButtonPressed:(id)sender {
+    [_loginButton setTitle:@"Logging you in..." forState:UIControlStateNormal];
+    [_loginActivity startAnimating];
     [Appsee addEvent:@"Login Attempt"];
-//    _facebookSession=[[FacebookLoginSession alloc]init];
-//    _facebookSession.delegate=self;
-//    [_facebookSession getUserNativeFacebookSession];
-    
-    
-    
     [(AppDelegate *)[[UIApplication sharedApplication] delegate] checkForFacebookSSOLogin];
-    
 }
 
 #pragma mark -
@@ -140,9 +91,7 @@
             [[controller view] endEditing:YES];
             [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
             [[NSUserDefaults standardUserDefaults]synchronize];
-            [loginIndicatorView stopAnimating];
-            [loginIndicatorView setHidden:YES];
-
+            [_loginActivity stopAnimating];
         }];
 #endif
     });
@@ -158,10 +107,8 @@
             
             [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
             [[NSUserDefaults standardUserDefaults]synchronize];
-            [loginIndicatorView stopAnimating];
-            [loginIndicatorView setHidden:YES];
-            UIButton *fbBtn=(UIButton*)[self.view viewWithTag:573];
-            [fbBtn setTitle:@"Login Using Facebook" forState:UIControlStateNormal];
+            [_loginActivity stopAnimating];
+            [_loginButton setTitle:@"Login Using Facebook" forState:UIControlStateNormal];
    });
         
 }
@@ -178,8 +125,8 @@
 }
 -(void)pushToHomeScreen{
     
-    [loginIndicatorView stopAnimating];
-    [loginIndicatorView setHidden:YES];
+    [_loginActivity stopAnimating];
+    [_loginButton setTitle:@"Login Using Facebook" forState:UIControlStateNormal];
 
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     InitialSlidingViewController *initialViewController = [storyboard instantiateViewControllerWithIdentifier:@"initialBeagle"];

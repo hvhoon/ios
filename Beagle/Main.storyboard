@@ -22,7 +22,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KPf-fX-njk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-335" y="-707"/>
+            <point key="canvasLocation" x="35" y="-522"/>
         </scene>
         <!--Login View Controller-->
         <scene sceneID="68F-zi-rSI">
@@ -36,47 +36,84 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="backdrop" translatesAutoresizingMaskIntoConstraints="NO" id="7Am-pN-Mfi">
+                            <imageView userInteractionEnabled="NO" contentMode="bottom" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="backdrop" translatesAutoresizingMaskIntoConstraints="NO" id="7Am-pN-Mfi">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="beagle" translatesAutoresizingMaskIntoConstraints="NO" id="bB6-JY-WKW">
-                                <rect key="frame" x="70" y="45" width="182" height="56"/>
+                            <imageView userInteractionEnabled="NO" alpha="0.80000000000000004" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="beagle" translatesAutoresizingMaskIntoConstraints="NO" id="bB6-JY-WKW">
+                                <rect key="frame" x="69" y="55" width="182" height="56"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Let your interests find you" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WbJ-8c-ie4">
-                                <rect key="frame" x="46" y="105" width="229" height="23"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.80000000000000004" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Let your interests find you" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WbJ-8c-ie4">
+                                <rect key="frame" x="0.0" y="119" width="320" height="23"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="19"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="320" id="CSp-Y3-ny7"/>
+                                    <constraint firstAttribute="height" constant="23" id="kGq-TD-DSb"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="21"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="characterWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="260" translatesAutoresizingMaskIntoConstraints="NO" id="G6G-qf-L6k">
-                                <rect key="frame" x="30" y="476" width="260" height="67"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.59999999999999998" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="characterWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="260" translatesAutoresizingMaskIntoConstraints="NO" id="G6G-qf-L6k">
+                                <rect key="frame" x="30" y="474" width="260" height="67"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="67" id="fxY-jg-sqG"/>
+                                    <constraint firstAttribute="width" constant="260" id="s1q-t2-cHB"/>
+                                </constraints>
                                 <string key="text">We use facebook to find what's happening around you and tell others what you want to do.We promise to never post to your wall or spam your friends</string>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="14"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" alpha="0.80000000000000004" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="e2t-My-Vcd">
+                                <rect key="frame" x="55" y="415" width="211" height="39"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
+                                <state key="normal" title="Login Using Facebook" backgroundImage="Login-Button">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="loginButtonPressed:" destination="7pi-6C-XLG" eventType="touchUpInside" id="oST-in-9BK"/>
+                                </connections>
+                            </button>
+                            <activityIndicatorView hidden="YES" opaque="NO" alpha="0.80000000000000004" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="5e6-gz-YNt">
+                                <rect key="frame" x="231" y="425" width="20" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="20" id="AIh-8O-Rqb"/>
+                                    <constraint firstAttribute="height" constant="20" id="vzJ-OJ-Kxx"/>
+                                </constraints>
+                            </activityIndicatorView>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="WbJ-8c-ie4" firstAttribute="centerX" secondItem="7Am-pN-Mfi" secondAttribute="centerX" id="1wM-JI-Ml8"/>
                             <constraint firstItem="7Am-pN-Mfi" firstAttribute="top" secondItem="bIx-1C-8jM" secondAttribute="top" id="2ig-J4-Ybu"/>
-                            <constraint firstItem="WbJ-8c-ie4" firstAttribute="top" secondItem="bIx-1C-8jM" secondAttribute="top" constant="105" id="4CT-hY-GPi"/>
-                            <constraint firstItem="bB6-JY-WKW" firstAttribute="leading" secondItem="bIx-1C-8jM" secondAttribute="leading" constant="70" id="5db-PD-3Cn"/>
+                            <constraint firstItem="bB6-JY-WKW" firstAttribute="centerX" secondItem="7Am-pN-Mfi" secondAttribute="centerX" id="5g8-1Z-pFN"/>
+                            <constraint firstItem="5e6-gz-YNt" firstAttribute="leading" secondItem="bIx-1C-8jM" secondAttribute="leading" constant="231" id="AxR-iV-5hQ"/>
                             <constraint firstAttribute="trailing" secondItem="7Am-pN-Mfi" secondAttribute="trailing" id="CZB-2E-9L3"/>
                             <constraint firstItem="7Am-pN-Mfi" firstAttribute="leading" secondItem="bIx-1C-8jM" secondAttribute="leading" id="GDM-z5-uxj"/>
                             <constraint firstAttribute="bottom" secondItem="7Am-pN-Mfi" secondAttribute="bottom" id="MDh-A4-XnC"/>
-                            <constraint firstItem="G6G-qf-L6k" firstAttribute="leading" secondItem="bIx-1C-8jM" secondAttribute="leading" constant="30" id="V3D-IQ-oWn"/>
-                            <constraint firstItem="bB6-JY-WKW" firstAttribute="top" secondItem="bIx-1C-8jM" secondAttribute="top" constant="45" id="YKa-W7-jhZ"/>
-                            <constraint firstAttribute="bottom" secondItem="G6G-qf-L6k" secondAttribute="bottom" constant="25" id="a1M-kY-uWP"/>
-                            <constraint firstItem="WbJ-8c-ie4" firstAttribute="leading" secondItem="bIx-1C-8jM" secondAttribute="leading" constant="46" id="lWP-dL-ZSE"/>
+                            <constraint firstItem="7Am-pN-Mfi" firstAttribute="centerX" secondItem="e2t-My-Vcd" secondAttribute="centerX" constant="-0.5" id="SIr-OL-5T6"/>
+                            <constraint firstItem="5e6-gz-YNt" firstAttribute="centerY" secondItem="e2t-My-Vcd" secondAttribute="centerY" constant="0.5" id="Wci-1p-Bqp"/>
+                            <constraint firstItem="bB6-JY-WKW" firstAttribute="top" secondItem="bIx-1C-8jM" secondAttribute="top" constant="55" id="YKa-W7-jhZ"/>
+                            <constraint firstItem="WbJ-8c-ie4" firstAttribute="top" secondItem="bB6-JY-WKW" secondAttribute="bottom" constant="8" id="ZOL-L5-N2k"/>
+                            <constraint firstAttribute="bottom" secondItem="G6G-qf-L6k" secondAttribute="bottom" constant="27" id="a1M-kY-uWP"/>
+                            <constraint firstItem="G6G-qf-L6k" firstAttribute="top" secondItem="e2t-My-Vcd" secondAttribute="bottom" constant="20" id="fQV-uo-Rmn"/>
+                            <constraint firstItem="7Am-pN-Mfi" firstAttribute="centerX" secondItem="G6G-qf-L6k" secondAttribute="centerX" id="gXE-ys-Qhh"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="3u9-9B-H5N"/>
+                    <connections>
+                        <outlet property="loginActivity" destination="5e6-gz-YNt" id="YG0-Fb-k7q"/>
+                        <outlet property="loginButton" destination="e2t-My-Vcd" id="h8E-w7-emH"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6MZ-my-FM8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="418" y="-522"/>
         </scene>
         <!--Home View Controller-->
         <scene sceneID="Hzg-em-yot">
@@ -321,7 +358,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4UB-up-buc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="994" y="-544"/>
+            <point key="canvasLocation" x="1136" y="-516"/>
         </scene>
         <!--Notifications View Controller-->
         <scene sceneID="27z-UY-rOj">
@@ -406,6 +443,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DZs-0R-Od7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="777" y="-522"/>
         </scene>
         <!--Activity View Controller-->
         <scene sceneID="lkI-4L-ged">
@@ -846,6 +884,7 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
         <image name="Home" width="26" height="25"/>
         <image name="Info" width="25" height="25"/>
         <image name="Invite-Friends" width="25" height="21"/>
+        <image name="Login-Button" width="211" height="39"/>
         <image name="Megaphone" width="25" height="23"/>
         <image name="Notifications-Blank" width="149" height="84"/>
         <image name="Signout" width="25" height="27"/>
