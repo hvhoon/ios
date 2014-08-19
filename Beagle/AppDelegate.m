@@ -593,7 +593,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     } else {
         
         
-        FBSession *session = [[FBSession alloc] initWithAppID:@"500525846725031" permissions:@[@"email",@"user_friends"] defaultAudience:FBSessionDefaultAudienceEveryone urlSchemeSuffix:nil tokenCacheStrategy:nil];
+        FBSession *session = [[FBSession alloc] initWithAppID:@"500525846725031" permissions:@[@"public_profile"] defaultAudience:FBSessionDefaultAudienceEveryone urlSchemeSuffix:nil tokenCacheStrategy:nil];
         [FBSession setActiveSession:session];
         
         [session openWithBehavior:FBSessionLoginBehaviorUseSystemAccountIfPresent     completionHandler:^(FBSession *session, FBSessionState state, NSError *error) {
