@@ -33,7 +33,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authenticationFailed:) name:kFacebookAuthenticationFailed object:Nil];
+
     [self.slidingViewController setAnchorRightRevealAmount:270.0f];
      self.slidingViewController.underLeftWidthLayout = ECFullWidth;
     
@@ -84,6 +85,28 @@
     _fbTickerSwitch.on= player.fb_ticker;
 	// Do any additional setup after loading the view.
 }
+
+-(void)viewDidDisappear:(BOOL)animated{
+    [super viewDidDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kFacebookAuthenticationFailed object:nil];
+}
+-(void)authenticationFailed:(NSNotification*) note{
+    
+    NSLog(@"session has expired");
+    UIViewController *newTopViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"loginScreen"];
+
+    [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
+    [[NSUserDefaults standardUserDefaults]synchronize];
+    // Sliding animation
+    [self.slidingViewController anchorTopViewOffScreenTo:ECRight animations:nil onComplete:^{
+        CGRect frame = self.slidingViewController.topViewController.view.frame;
+        self.slidingViewController.topViewController = newTopViewController;
+        self.slidingViewController.topViewController.view.frame = frame;
+        [self.slidingViewController resetTopView];
+    }];
+    
+}
+
 
 
 - (void)loadProfileImage:(NSString*)url {

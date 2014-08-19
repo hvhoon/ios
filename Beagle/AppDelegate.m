@@ -40,22 +40,7 @@ void uncaughtExceptionHandler(NSException *exception) {
         application.applicationIconBadgeNumber = 0;
     }
 
-#if 0
-    // Whenever a person opens the app, check for a cached session
-    if (FBSession.activeSession.state == FBSessionStateCreatedTokenLoaded) {
-        
-        // If there's one, just open the session silently, without showing the user the login UI
-        [FBSession openActiveSessionWithReadPermissions:@[@"public_profile"]
-                                           allowLoginUI:NO
-                                      completionHandler:^(FBSession *session, FBSessionState state, NSError *error) {
-                                          // Handler for session state changes
-                                          // This method will be called EACH time the session state changes,
-                                          // also for intermediate states and NOT just when the session open
-                                          [self sessionStateChanged:session state:state error:error];
-                                      }];
-        
-    }
-#endif
+
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     
     // Starting crash analytics
@@ -104,6 +89,41 @@ void uncaughtExceptionHandler(NSException *exception) {
         [[NSUserDefaults standardUserDefaults] synchronize];
         
     }
+    
+#if 1
+    // Whenever a person opens the app, check for a cached session
+    
+    if([[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"]){
+    
+//    [FBSession renewSystemCredentials:^(ACAccountCredentialRenewResult result, NSError *error) {
+//        if (!error) {
+//            if (result == ACAccountCredentialRenewResultRejected) {
+//                NSLog(@"Facebook app deleted");
+//            }
+//            else if (result==ACAccountCredentialRenewResultRenewed){
+//                NSLog(@"Facebook app Account renewed");
+//            }
+//        }
+//        else {
+//            NSLog(@"Error: %@", error);
+//        }
+//    }];
+    
+    if (FBSession.activeSession.state == FBSessionStateCreatedTokenLoaded) {
+        
+        // If there's one, just open the session silently, without showing the user the login UI
+        [FBSession openActiveSessionWithReadPermissions:@[@"public_profile"]
+                                           allowLoginUI:NO
+                                      completionHandler:^(FBSession *session, FBSessionState state, NSError *error) {
+                                          // Handler for session state changes
+                                          // This method will be called EACH time the session state changes,
+                                          // also for intermediate states and NOT just when the session open
+                                          [self sessionStateChanged:session state:state error:error];
+                                      }];
+        
+    }
+  }
+#endif
 //    [self handlePush:launchOptions];
     return YES;
 }
@@ -292,6 +312,8 @@ void uncaughtExceptionHandler(NSException *exception) {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     
     NSLog(@"applicationWillEnterForeground");
+    
+        if([[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"]){
     [[BeagleManager SharedInstance]setBadgeCount:[[UIApplication sharedApplication]applicationIconBadgeNumber]];
 
     [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
@@ -304,7 +326,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateNotificationStack object:self userInfo:nil];
 
     [[NSNotificationCenter defaultCenter] postNotificationName:kUpdatePostsOnInterest object:self userInfo:nil];
-    
+    }
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
@@ -359,7 +381,6 @@ void uncaughtExceptionHandler(NSException *exception) {
             
         } else if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryUserCancelled) {
                 NSLog(@"User cancelled login");
-                [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kFacebookAuthenticationFailed object:self userInfo:nil]];
 
                 
                 // Handle session closures that happen outside of the app
@@ -373,7 +394,6 @@ void uncaughtExceptionHandler(NSException *exception) {
             }
             else if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryServer) {
                 NSLog(@"user account on settings setup but denied permission");
-                [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kFacebookAuthenticationFailed object:self userInfo:nil]];
                 
                 
                 // Handle session closures that happen outside of the app
@@ -381,10 +401,10 @@ void uncaughtExceptionHandler(NSException *exception) {
                 //Get more error information from the error
                 NSDictionary *errorInformation = [[[error.userInfo objectForKey:@"com.facebook.sdk:ParsedJSONResponseKey"] objectForKey:@"body"] objectForKey:@"error"];
                 NSLog(@"message=%@",[errorInformation objectForKey:@"message"]);
-                [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kFacebookAuthenticationFailed object:self userInfo:nil]];
 
             }
-        
+        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kFacebookAuthenticationFailed object:self userInfo:nil]];
+
         
         // Clear this token
         [FBSession.activeSession closeAndClearTokenInformation];
@@ -537,6 +557,9 @@ void uncaughtExceptionHandler(NSException *exception) {
             // An error occurred, we need to handle the error
             // Check out our error handling guide: https://developers.facebook.com/docs/ios/errors/
             NSLog(@"error %@", error.description);
+            
+            [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kFacebookAuthenticationFailed object:self userInfo:nil]];
+
         }
     }];
 }

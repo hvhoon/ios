@@ -51,6 +51,13 @@
     
 	// Do any additional setup after loading the view.
 }
+
+-(void)viewDidDisappear:(BOOL)animated{
+    [super viewDidDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kFacebookSSOLoginAuthentication object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kFacebookAuthenticationFailed object:nil];
+
+}
 - (IBAction)loginButtonPressed:(id)sender {
     [_loginButton setTitle:@"Logging you in..." forState:UIControlStateNormal];
     [_loginActivity startAnimating];
@@ -105,7 +112,7 @@
     
         dispatch_async(dispatch_get_main_queue(), ^{
             
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Beagle" message:@"We need some basic Facebook info to show you what's happening around you and tell your friends what you want to do. We promise to never post anything on your wall or spam your friends. If you change your mind please try logging in again." delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Beagle" message:@"We need some basic Facebook info to show you what's happening around you and tell your friends what you want to do. We promise to never post anything on your wall or spam your friends. If you change your mind please try logging in again." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
             [alert show];
             
             [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
@@ -117,9 +124,6 @@
 }
 
 -(void)facebookAuthComplete:(NSNotification*) note{
-//        id obj=[note valueForKey:@"userInfo"];
-//        BeagleUserClass *player=[obj valueForKey:@"player"];
-//        [self successfulFacebookLogin:player];
     [self pushToHomeScreen];
     
 }
