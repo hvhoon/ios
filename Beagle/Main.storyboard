@@ -80,25 +80,29 @@
                                 </connections>
                             </button>
                             <activityIndicatorView hidden="YES" opaque="NO" alpha="0.80000000000000004" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="5e6-gz-YNt">
-                                <rect key="frame" x="142" y="265" width="37" height="37"/>
+                                <rect key="frame" x="142" y="162" width="37" height="37"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="37" id="tdI-KS-yh7"/>
+                                    <constraint firstAttribute="width" constant="37" id="xDg-r9-rZG"/>
+                                </constraints>
                             </activityIndicatorView>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="5e6-gz-YNt" firstAttribute="centerX" secondItem="7Am-pN-Mfi" secondAttribute="centerX" constant="0.5" id="0ly-CU-WSg"/>
                             <constraint firstItem="WbJ-8c-ie4" firstAttribute="centerX" secondItem="7Am-pN-Mfi" secondAttribute="centerX" id="1wM-JI-Ml8"/>
                             <constraint firstItem="7Am-pN-Mfi" firstAttribute="top" secondItem="bIx-1C-8jM" secondAttribute="top" id="2ig-J4-Ybu"/>
                             <constraint firstItem="bB6-JY-WKW" firstAttribute="centerX" secondItem="7Am-pN-Mfi" secondAttribute="centerX" id="5g8-1Z-pFN"/>
+                            <constraint firstItem="5e6-gz-YNt" firstAttribute="top" secondItem="WbJ-8c-ie4" secondAttribute="bottom" constant="20" id="9ci-8I-lMS"/>
                             <constraint firstAttribute="trailing" secondItem="7Am-pN-Mfi" secondAttribute="trailing" id="CZB-2E-9L3"/>
                             <constraint firstItem="7Am-pN-Mfi" firstAttribute="leading" secondItem="bIx-1C-8jM" secondAttribute="leading" id="GDM-z5-uxj"/>
                             <constraint firstAttribute="bottom" secondItem="7Am-pN-Mfi" secondAttribute="bottom" id="MDh-A4-XnC"/>
-                            <constraint firstItem="5e6-gz-YNt" firstAttribute="centerY" secondItem="7Am-pN-Mfi" secondAttribute="centerY" constant="-0.5" id="OaI-0r-GP8"/>
                             <constraint firstItem="7Am-pN-Mfi" firstAttribute="centerX" secondItem="e2t-My-Vcd" secondAttribute="centerX" constant="-0.5" id="SIr-OL-5T6"/>
                             <constraint firstItem="bB6-JY-WKW" firstAttribute="top" secondItem="bIx-1C-8jM" secondAttribute="top" constant="55" id="YKa-W7-jhZ"/>
                             <constraint firstItem="WbJ-8c-ie4" firstAttribute="top" secondItem="bB6-JY-WKW" secondAttribute="bottom" constant="8" id="ZOL-L5-N2k"/>
                             <constraint firstAttribute="bottom" secondItem="G6G-qf-L6k" secondAttribute="bottom" constant="27" id="a1M-kY-uWP"/>
                             <constraint firstItem="G6G-qf-L6k" firstAttribute="top" secondItem="e2t-My-Vcd" secondAttribute="bottom" constant="20" id="fQV-uo-Rmn"/>
                             <constraint firstItem="7Am-pN-Mfi" firstAttribute="centerX" secondItem="G6G-qf-L6k" secondAttribute="centerX" id="gXE-ys-Qhh"/>
+                            <constraint firstItem="5e6-gz-YNt" firstAttribute="centerX" secondItem="7Am-pN-Mfi" secondAttribute="centerX" constant="0.5" id="n3f-nr-3jV"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="3u9-9B-H5N"/>
