@@ -20,8 +20,9 @@
 - (void)locationManager:(CLLocationManager *)manager
        didFailWithError:(NSError *)error;
 - (void)startStandardUpdates;
--(void)checkForFacebookSSOLogin;
--(void)closeFBSessions;
+-(void)facebookSignIn;
+-(void)closeAllFBSessions;
 - (void)sessionStateChanged:(FBSession *)session state:(FBSessionState) state error:(NSError *)error;
-
+-(void)requestUserForAdditionalPermissions;
+-(BOOL)checkForFacebookSesssion;
 @end

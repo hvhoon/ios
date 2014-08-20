@@ -11,7 +11,7 @@
 #import "IconDownloader.h"
 #import "DetailInterestViewController.h"
 @interface FriendsViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,FriendsTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate>{
-    NSInteger inviteIndex;
+    NSIndexPath* inviteIndexPath;
 }
 @property(nonatomic,strong)ServerManager*friendsManager;
 @property(nonatomic,strong)ServerManager*inviteManager;
@@ -55,12 +55,17 @@
 -(void)viewDidDisappear:(BOOL)animated{
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kRemoteNotificationReceivedNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationForInterestPost object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kFacebookSSOLoginAuthentication object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kFacebookAuthenticationFailed object:nil];
+
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(facebookAuthComplete:) name:kFacebookSSOLoginAuthentication object:Nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authenticationFailed:) name:kFacebookAuthenticationFailed object:Nil];
+
     self.view.backgroundColor = [[BeagleManager SharedInstance] mediumDominantColor];
     
     self.friendsTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
@@ -488,15 +493,15 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-#pragma mark - Facebook Invite  calls
--(void)inviteFacebookFriendOnBeagle:(NSIndexPath*)indexPath{
-    BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:indexPath.row];
-    inviteIndex=indexPath.row;
-    
-    FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.friendsTableView cellForRowAtIndexPath:indexPath];
-    UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"222%ld",(long)indexPath.row]integerValue]];
-    UIActivityIndicatorView *spinner=(UIActivityIndicatorView*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)indexPath.row]integerValue]];
 
+#pragma mark - Facebook Invite  calls
+
+-(void)facebookAuthComplete:(NSNotification*) note{
+    BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
+    FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.friendsTableView cellForRowAtIndexPath:inviteIndexPath];
+    UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"222%ld",(long)inviteIndexPath.row]integerValue]];
+    UIActivityIndicatorView *spinner=(UIActivityIndicatorView*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)inviteIndexPath.row]integerValue]];
+    
     [button setHidden:YES];
     [spinner setHidden:NO];
     [spinner startAnimating];
@@ -511,6 +516,33 @@
     _inviteManager.delegate=self;
     [_inviteManager sendingAPostMessageOnFacebook:player.fbuid];
 
+}
+-(void)authenticationFailed:(NSNotification*) note{
+    
+    BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
+    player.isInvited=FALSE;
+    [self.friendsTableView reloadData];
+
+}
+
+-(void)inviteFacebookFriendOnBeagle:(NSIndexPath*)indexPath{
+    
+    inviteIndexPath=indexPath;
+    // check if the user has  a valid facebook session
+    
+    if([(AppDelegate *)[[UIApplication sharedApplication] delegate] checkForFacebookSesssion]){
+        // user has a open session
+        
+        //request for additional permissions
+        [(AppDelegate *)[[UIApplication sharedApplication] delegate] requestUserForAdditionalPermissions];
+        
+    }
+    else{
+        
+        // user session is expired need a new token
+        
+        //have to check if this scenarios comes up
+    }
     
 }
 -(void)userProfileSelected:(NSIndexPath*)indexPath{
@@ -635,12 +667,12 @@
                 
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Beagle"
                                                                 message:message
-                                                               delegate:self
+                                                               delegate:nil
                                                       cancelButtonTitle:@"OK"
                                                       otherButtonTitles: nil];
                 [alert show];
 
-                BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndex];
+                BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
                 player.isInvited=TRUE;
                 [self.friendsTableView reloadData];
 
@@ -653,10 +685,15 @@
                 
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Beagle"
                                                                 message:message
-                                                               delegate:self
+                                                               delegate:nil
                                                       cancelButtonTitle:@"OK"
                                                       otherButtonTitles: nil];
                 [alert show];
+                
+                BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
+                player.isInvited=FALSE;
+                [self.friendsTableView reloadData];
+
 
             }
         }
@@ -673,17 +710,28 @@
         _friendsManager.delegate = nil;
         [_friendsManager releaseServerManager];
         _friendsManager = nil;
+        NSString *message = NSLocalizedString (@"Your friends have vanished, was it something I said? Try again in a bit.",
+                                               @"NSURLConnection initialization method failed.");
+        BeagleAlertWithMessage(message);
+
     }
     else if (serverRequest==kServerPostAPrivateMessageOnFacebook){
         _inviteManager.delegate = nil;
         [_inviteManager releaseServerManager];
         _inviteManager = nil;
+        
+        BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
+        player.isInvited=FALSE;
+        [self.friendsTableView reloadData];
+        
+        NSString *message = NSLocalizedString (@"Error inviting your friend.Try again in a bit.",
+                                               @"NSURLConnection initialization method failed.");
+        BeagleAlertWithMessage(message);
+
+
 
     }
     
-    NSString *message = NSLocalizedString (@"Your friends have vanished, was it something I said? Try again in a bit.",
-                                           @"NSURLConnection initialization method failed.");
-    BeagleAlertWithMessage(message);
 }
 
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
@@ -701,6 +749,10 @@
         _inviteManager.delegate = nil;
         [_inviteManager releaseServerManager];
         _inviteManager = nil;
+        BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
+        player.isInvited=FALSE;
+        [self.friendsTableView reloadData];
+
         
     }
     

@@ -62,7 +62,7 @@
     [_loginButton setTitle:@"Logging you in..." forState:UIControlStateNormal];
     [_loginActivity startAnimating];
     [Appsee addEvent:@"Login Attempt"];
-    [(AppDelegate *)[[UIApplication sharedApplication] delegate] checkForFacebookSSOLogin];
+    [(AppDelegate *)[[UIApplication sharedApplication] delegate] facebookSignIn];
 }
 
 #pragma mark -
@@ -86,7 +86,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         
 #if 1
-    [(AppDelegate *)[[UIApplication sharedApplication] delegate] checkForFacebookSSOLogin];
+    [(AppDelegate *)[[UIApplication sharedApplication] delegate] facebookSignIn];
 #else
         
         

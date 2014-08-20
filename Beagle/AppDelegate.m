@@ -583,7 +583,15 @@ void uncaughtExceptionHandler(NSException *exception) {
 #pragma mark - Facebook Session Delegate calls
 
 
--(void)checkForFacebookSSOLogin{
+
+-(BOOL)checkForFacebookSesssion{
+    if(FBSession.activeSession.state == FBSessionStateOpen
+       || FBSession.activeSession.state == FBSessionStateOpenTokenExtended)
+        return YES;
+    
+    return NO;
+}
+-(void)facebookSignIn{
     // If the session state is any of the two "open" states when the button is clicked
     if (FBSession.activeSession.state == FBSessionStateOpen
         || FBSession.activeSession.state == FBSessionStateOpenTokenExtended) {
@@ -678,10 +686,10 @@ void uncaughtExceptionHandler(NSException *exception) {
 }
 
 
--(void)requestUserInfo{
+-(void)requestUserForAdditionalPermissions{
     
         // These are the permissions we need:
-        NSArray *permissionsNeeded = @[@"email",@"user_friends"];
+        NSArray *permissionsNeeded = @[@"xmpp_login"];
         
         // Request the permissions the user currently has
         [FBRequestConnection startWithGraphPath:@"/me/permissions"
@@ -711,22 +719,27 @@ void uncaughtExceptionHandler(NSException *exception) {
                                                    // Permission granted, we can request the user information
                                                    [self makeRequestForUserData:session.accessTokenData.accessToken];
                                                } else {
-                                                   // An error occurred, we need to handle the error
-                                                   // Check out our error handling guide: https://developers.facebook.com/docs/ios/errors/
+                                                   
+                                                   // need to come up with an alert message
+                                                   
+                                                   
                                                    NSLog(@"error %@", error.description);
                                                    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kFacebookAuthenticationFailed object:self userInfo:nil]];
 
                                                }
                                            }];
                                       } else {
-                                          // Permissions are present
+                                          // Permissions are already present
                                           // We can request the user information
-                                          [self makeRequestForUserData:FBSession.activeSession.accessTokenData.accessToken];
+//                                          [self makeRequestForUserData:FBSession.activeSession.accessTokenData.accessToken];
+                                          [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kFacebookSSOLoginAuthentication object:self userInfo:nil]];
+
+                                      
                                       }
                                       
                                   } else {
-                                      // An error occurred, we need to handle the error
-                                      // Check out our error handling guide: https://developers.facebook.com/docs/ios/errors/
+                                      
+                                        // need to come up with an alert message
                                       NSLog(@"error %@", error.description);
                                       [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kFacebookAuthenticationFailed object:self userInfo:nil]];
 
@@ -817,12 +830,7 @@ void uncaughtExceptionHandler(NSException *exception) {
             [self successfulFacebookLogin:userObject];
 
         } else {
-            // An error occurred, we need to handle the error
-            // Check out our error handling guide: https://developers.facebook.com/docs/ios/errors/
             NSLog(@"error %@", error.description);
-            
-            //[[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kFacebookAuthenticationFailed object:self userInfo:nil]];
-
         }
     }];
 }
@@ -842,7 +850,7 @@ void uncaughtExceptionHandler(NSException *exception) {
 
 
 
--(void)closeFBSessions{
+-(void)closeAllFBSessions{
     if (FBSession.activeSession.state == FBSessionStateOpen
         || FBSession.activeSession.state == FBSessionStateOpenTokenExtended) {
         
@@ -1058,9 +1066,7 @@ void uncaughtExceptionHandler(NSException *exception) {
             }
         }
         
-        //[self pushToHomeScreen];
-        NSNotification* notification = [NSNotification notificationWithName:kFacebookSSOLoginAuthentication object:self userInfo:nil];
-        [[NSNotificationCenter defaultCenter] postNotification:notification];
+        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kFacebookSSOLoginAuthentication object:self userInfo:nil]];
         
     }
     
@@ -1083,7 +1089,8 @@ void uncaughtExceptionHandler(NSException *exception) {
         NSString *message = NSLocalizedString (@"Well this is embarrassing. Please try again in a bit.",
                                                @"NSURLConnection initialization method failed.");
         BeagleAlertWithMessage(message);
-        
+        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kFacebookAuthenticationFailed object:self userInfo:nil]];
+
     }
     
     
@@ -1097,6 +1104,8 @@ void uncaughtExceptionHandler(NSException *exception) {
         _loginServerManager.delegate = nil;
         [_loginServerManager releaseServerManager];
         _loginServerManager = nil;
+        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kFacebookAuthenticationFailed object:self userInfo:nil]];
+
     }else{
         
         _notificationServerManager.delegate = nil;
