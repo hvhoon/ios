@@ -10,6 +10,8 @@
 #import "FriendsTableViewCell.h"
 #import "IconDownloader.h"
 #import "DetailInterestViewController.h"
+#import "HomeViewController.h"
+#import "InitialSlidingViewController.h"
 @interface FriendsViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,FriendsTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate>{
     NSIndexPath* inviteIndexPath;
 }
@@ -56,6 +58,8 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kRemoteNotificationReceivedNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationForInterestPost object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kFacebookSSOLoginAuthentication object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kFacebookAddOnPermissionsDenied object:nil];
+
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kFacebookAuthenticationFailed object:nil];
 
 }
@@ -63,8 +67,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(facebookAuthComplete:) name:kFacebookSSOLoginAuthentication object:Nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authenticationFailed:) name:kFacebookAuthenticationFailed object:Nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(facebookAuthComplete:) name:kFacebookSSOLoginAuthentication object:Nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(permissionsDenied:) name:kFacebookAddOnPermissionsDenied object:Nil];
 
     self.view.backgroundColor = [[BeagleManager SharedInstance] mediumDominantColor];
     
@@ -157,6 +163,44 @@
 
     // Do any additional setup after loading the view.
 }
+
+-(void)authenticationFailed:(NSNotification*) note{
+    
+    NSArray *controllerObjects = [[self navigationController]viewControllers];
+    NSInteger index=0;
+    BOOL isFound=false;
+        for(id controller in [controllerObjects reverseObjectEnumerator]){
+            NSLog(@"controller=%@",controller);
+            
+            if([controller isKindOfClass:[InitialSlidingViewController class]]){
+                isFound=true;
+                break;
+            }
+            index++;
+            
+    }
+    if(isFound){
+    for(int i=0;i<index;i++){
+         [[self navigationController] popViewControllerAnimated:NO];
+    }
+   }
+    HomeViewController *list=(HomeViewController*)[(AppDelegate*)[[UIApplication sharedApplication] delegate]listViewController];
+    
+    
+    UIViewController *newTopViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"loginScreen"];
+    [(AppDelegate *)[[UIApplication sharedApplication] delegate] closeAllFBSessions];
+    [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
+    [[NSUserDefaults standardUserDefaults]synchronize];
+    // Sliding animation
+    [list.slidingViewController anchorTopViewOffScreenTo:ECRight animations:nil onComplete:^{
+        CGRect frame = list.slidingViewController.topViewController.view.frame;
+        list.slidingViewController.topViewController = newTopViewController;
+        list.slidingViewController.topViewController.view.frame = frame;
+        [list.slidingViewController resetTopView];
+    }];
+
+}
+
 - (void)loadProfileImage:(NSString*)url {
     NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:url]];
     UIImage* image =[[UIImage alloc] initWithData:imageData];
@@ -498,13 +542,6 @@
 
 -(void)facebookAuthComplete:(NSNotification*) note{
     BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
-    FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.friendsTableView cellForRowAtIndexPath:inviteIndexPath];
-    UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"222%ld",(long)inviteIndexPath.row]integerValue]];
-    UIActivityIndicatorView *spinner=(UIActivityIndicatorView*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)inviteIndexPath.row]integerValue]];
-    
-    [button setHidden:YES];
-    [spinner setHidden:NO];
-    [spinner startAnimating];
     
     if(_inviteManager!=nil){
         _inviteManager.delegate = nil;
@@ -517,7 +554,7 @@
     [_inviteManager sendingAPostMessageOnFacebook:player.fbuid];
 
 }
--(void)authenticationFailed:(NSNotification*) note{
+-(void)permissionsDenied:(NSNotification*) note{
     
     BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
     player.isInvited=FALSE;
@@ -528,6 +565,14 @@
 -(void)inviteFacebookFriendOnBeagle:(NSIndexPath*)indexPath{
     
     inviteIndexPath=indexPath;
+    FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.friendsTableView cellForRowAtIndexPath:inviteIndexPath];
+    UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"222%ld",(long)inviteIndexPath.row]integerValue]];
+    UIActivityIndicatorView *spinner=(UIActivityIndicatorView*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)inviteIndexPath.row]integerValue]];
+    
+    [button setHidden:YES];
+    [spinner setHidden:NO];
+    [spinner startAnimating];
+
     // check if the user has  a valid facebook session
     
     if([(AppDelegate *)[[UIApplication sharedApplication] delegate] checkForFacebookSesssion]){

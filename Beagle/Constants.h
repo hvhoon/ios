@@ -58,6 +58,7 @@
 #define kNotificationHomeAutoRefresh @"NotificationHomeAutoRefresh"
 #define kFacebookSSOLoginAuthentication @"FacebookSSOLoginAuthentication"
 #define kFacebookAuthenticationFailed @"FacebookAuthenticationFailed"
+#define kFacebookAddOnPermissionsDenied @"FacebookPermissionsDenied"
 #ifdef DEBUG
 #define herokuHost @"http://obscure-basin-9504.herokuapp.com/"
 //#define herokuHost @"http://localhost:3000/"

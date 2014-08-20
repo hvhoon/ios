@@ -653,7 +653,7 @@ void uncaughtExceptionHandler(NSException *exception) {
 
     // Handle errors
     if (error){
-        NSLog(@"errorode=%i",[FBErrorUtility errorCategoryForError:error]);
+        NSLog(@"errorode=%li",[FBErrorUtility errorCategoryForError:error]);
         NSLog(@"Error=%@",[error localizedDescription]);
         
         // If the error requires people using an app to make an action outside of the app in order to recover
@@ -724,14 +724,14 @@ void uncaughtExceptionHandler(NSException *exception) {
                                                    
                                                    
                                                    NSLog(@"error %@", error.description);
-                                                   [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kFacebookAuthenticationFailed object:self userInfo:nil]];
+                                                   
+                                                   //error when permissions not granted
+                                                   [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kFacebookAddOnPermissionsDenied object:self userInfo:nil]];
 
                                                }
                                            }];
                                       } else {
-                                          // Permissions are already present
-                                          // We can request the user information
-//                                          [self makeRequestForUserData:FBSession.activeSession.accessTokenData.accessToken];
+                                          // Permissions are already present just invite
                                           [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kFacebookSSOLoginAuthentication object:self userInfo:nil]];
 
                                       
@@ -739,9 +739,8 @@ void uncaughtExceptionHandler(NSException *exception) {
                                       
                                   } else {
                                       
-                                        // need to come up with an alert message
+                                        // need to come up with an alert message probably no internet connection
                                       NSLog(@"error %@", error.description);
-                                      [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kFacebookAuthenticationFailed object:self userInfo:nil]];
 
 
                                   }

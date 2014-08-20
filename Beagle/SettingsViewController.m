@@ -88,14 +88,13 @@
 
 -(void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kFacebookAuthenticationFailed object:nil];
+   // [[NSNotificationCenter defaultCenter] removeObserver:self name:kFacebookAuthenticationFailed object:nil];
 }
 -(void)authenticationFailed:(NSNotification*) note{
     
-    NSLog(@"session has expired");
     
     UIViewController *newTopViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"loginScreen"];
-
+    [(AppDelegate *)[[UIApplication sharedApplication] delegate] closeAllFBSessions];
     [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
     [[NSUserDefaults standardUserDefaults]synchronize];
     // Sliding animation
