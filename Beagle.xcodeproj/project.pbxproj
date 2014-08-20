@@ -46,11 +46,11 @@
 		1854293B196F962E00B1D777 /* CreateAnimationBlurView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1854293A196F962E00B1D777 /* CreateAnimationBlurView.m */; };
 		1854293D196F965000B1D777 /* CreateAnimationBlurView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1854293C196F965000B1D777 /* CreateAnimationBlurView.xib */; };
 		186B11FA1958E02D00FF5A4D /* InterestInviteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 186B11F91958E02D00FF5A4D /* InterestInviteViewController.m */; };
-		1870A47919A2EF6B00C1EBF6 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1870A47819A2EF6B00C1EBF6 /* FacebookSDK.framework */; };
 		18714B371940F1D2008F59DE /* messageReceived.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 18714B351940F1D2008F59DE /* messageReceived.aiff */; };
 		18714B381940F1D2008F59DE /* messageSent.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 18714B361940F1D2008F59DE /* messageSent.aiff */; };
 		18714B3B1940F268008F59DE /* PostSoundEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = 18714B3A1940F268008F59DE /* PostSoundEffect.m */; };
 		187808591954DEA8005E682F /* FriendsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 187808581954DEA8005E682F /* FriendsTableViewCell.m */; };
+		18858BF219A42D45002E6E71 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18858BF119A42D45002E6E71 /* FacebookSDK.framework */; };
 		1889E5EC195A84F70079C3E9 /* InviteTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1889E5EB195A84F60079C3E9 /* InviteTableViewCell.m */; };
 		189EEBBE196B2A2B00681F04 /* ExpressInterestPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = 189EEBBD196B2A2B00681F04 /* ExpressInterestPreview.m */; };
 		18E7AF0918BBAA1700EBBDE2 /* FacebookLoginSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E7AF0818BBAA1700EBBDE2 /* FacebookLoginSession.m */; };
@@ -225,7 +225,6 @@
 		1854293C196F965000B1D777 /* CreateAnimationBlurView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CreateAnimationBlurView.xib; sourceTree = "<group>"; };
 		186B11F81958E02D00FF5A4D /* InterestInviteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InterestInviteViewController.h; sourceTree = "<group>"; };
 		186B11F91958E02D00FF5A4D /* InterestInviteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InterestInviteViewController.m; sourceTree = "<group>"; };
-		1870A47819A2EF6B00C1EBF6 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		18714B351940F1D2008F59DE /* messageReceived.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = messageReceived.aiff; sourceTree = "<group>"; };
 		18714B361940F1D2008F59DE /* messageSent.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = messageSent.aiff; sourceTree = "<group>"; };
 		18714B391940F268008F59DE /* PostSoundEffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostSoundEffect.h; sourceTree = "<group>"; };
@@ -233,6 +232,7 @@
 		187808571954DEA8005E682F /* FriendsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendsTableViewCell.h; sourceTree = "<group>"; };
 		187808581954DEA8005E682F /* FriendsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendsTableViewCell.m; sourceTree = "<group>"; };
 		187846BC19928D7E0091AA70 /* Beagle-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Beagle-Info.plist"; sourceTree = "<group>"; };
+		18858BF119A42D45002E6E71 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../Documents/FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
 		1889E5EA195A84F50079C3E9 /* InviteTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteTableViewCell.h; sourceTree = "<group>"; };
 		1889E5EB195A84F60079C3E9 /* InviteTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteTableViewCell.m; sourceTree = "<group>"; };
 		189EEBBC196B2A2B00681F04 /* ExpressInterestPreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExpressInterestPreview.h; sourceTree = "<group>"; };
@@ -413,7 +413,7 @@
 				18EC233318B5A68200316B6E /* CFNetwork.framework in Frameworks */,
 				18EC233118B5A67800316B6E /* libxml2.dylib in Frameworks */,
 				18EC232F18B5A66E00316B6E /* libz.dylib in Frameworks */,
-				1870A47919A2EF6B00C1EBF6 /* FacebookSDK.framework in Frameworks */,
+				18858BF219A42D45002E6E71 /* FacebookSDK.framework in Frameworks */,
 				18EC22A318B5A0B400316B6E /* CoreGraphics.framework in Frameworks */,
 				18EC22A518B5A0B400316B6E /* UIKit.framework in Frameworks */,
 				18EC22A118B5A0B400316B6E /* Foundation.framework in Frameworks */,
@@ -689,7 +689,7 @@
 		18EC229F18B5A0B400316B6E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				1870A47819A2EF6B00C1EBF6 /* FacebookSDK.framework */,
+				18858BF119A42D45002E6E71 /* FacebookSDK.framework */,
 				68E9CF59197D710B009477B2 /* libsqlite3.dylib */,
 				68E9CF55197D5F35009477B2 /* CoreMedia.framework */,
 				68E9CF53197D5E5B009477B2 /* Appsee.framework */,
@@ -1333,6 +1333,7 @@
 					"$(SRCROOT)",
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					/Users/apple/Documents/FacebookSDK,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Beagle/Beagle-Prefix.pch";
@@ -1361,6 +1362,7 @@
 					"$(SRCROOT)",
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					/Users/apple/Documents/FacebookSDK,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Beagle/Beagle-Prefix.pch";

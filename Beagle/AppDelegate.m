@@ -593,7 +593,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     } else {
         
         
-        FBSession *session = [[FBSession alloc] initWithAppID:@"500525846725031" permissions:@[@"email",@"user_friends"] defaultAudience:FBSessionDefaultAudienceEveryone urlSchemeSuffix:nil tokenCacheStrategy:nil];
+        FBSession *session = [[FBSession alloc] initWithAppID:@"500525846725031" permissions:@[@"email",@"user_friends",@"public_profile"] defaultAudience:FBSessionDefaultAudienceEveryone urlSchemeSuffix:nil tokenCacheStrategy:nil];
         [FBSession setActiveSession:session];
         
         [session openWithBehavior:FBSessionLoginBehaviorUseSystemAccountIfPresent     completionHandler:^(FBSession *session, FBSessionState state, NSError *error) {
@@ -735,7 +735,14 @@ void uncaughtExceptionHandler(NSException *exception) {
 
 - (void) makeRequestForUserData:(NSString*)accessToken
 {
-    [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id list, NSError *error) {
+    FBRequest *request = [FBRequest requestWithGraphPath:@"/me/taggable_friends"
+                                              parameters:nil
+                                              HTTPMethod:@"GET"];
+    
+    [request startWithCompletionHandler:^(FBRequestConnection *connection, id list, NSError *error) {
+
+//    
+//    [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id list, NSError *error) {
         if (!error) {
             // Success! Include your code to handle the results here
             NSLog(@"user info: %@", list);
