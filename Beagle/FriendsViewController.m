@@ -725,7 +725,7 @@
             else if (status != nil && [status class] != [NSNull class] && [status integerValue]==205){
                 // not authorized to send facebook message
                 
-                NSString *message = NSLocalizedString (@"You are not authorized to send facebook message",
+                NSString *message = NSLocalizedString (@"Sorry we had trouble inviting your friend. We use Facebook to send out the invite so please make sure you've granted us permission to do so and try again in a bit.",
                                                        @"Message Failure");
                 
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Beagle"
@@ -769,12 +769,9 @@
         player.isInvited=FALSE;
         [self.friendsTableView reloadData];
         
-        NSString *message = NSLocalizedString (@"Error inviting your friend.Try again in a bit.",
+        NSString *message = NSLocalizedString (@"Sorry we had trouble inviting your friend. We use Facebook to send out the invite so please make sure you've granted us permission to do so and try again in a bit.",
                                                @"NSURLConnection initialization method failed.");
         BeagleAlertWithMessage(message);
-
-
-
     }
     
 }
