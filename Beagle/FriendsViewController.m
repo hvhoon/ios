@@ -738,10 +738,10 @@
                 [button setTitle: @"Invite\nSent" forState: UIControlStateNormal];
                 [button setImage:nil forState:UIControlStateNormal];
                 [button setImage:nil forState:UIControlStateHighlighted];
-                [button setHidden:NO];
-                [button setUserInteractionEnabled:NO];
                 [spinner setHidden:YES];
                 [spinner stopAnimating];
+                [button setHidden:NO];
+                [button setUserInteractionEnabled:NO];
 
 
             }
@@ -763,9 +763,9 @@
                 FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.friendsTableView cellForRowAtIndexPath:inviteIndexPath];
                 UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"222%ld",(long)inviteIndexPath.row]integerValue]];
                 UIActivityIndicatorView *spinner=(UIActivityIndicatorView*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)inviteIndexPath.row]integerValue]];
-                [button setHidden:NO];
                 [spinner setHidden:YES];
                 [spinner stopAnimating];
+                [button setHidden:NO];
 
 
 
@@ -799,9 +799,9 @@
         FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.friendsTableView cellForRowAtIndexPath:inviteIndexPath];
         UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"222%ld",(long)inviteIndexPath.row]integerValue]];
         UIActivityIndicatorView *spinner=(UIActivityIndicatorView*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)inviteIndexPath.row]integerValue]];
-        [button setHidden:NO];
         [spinner setHidden:YES];
         [spinner stopAnimating];
+        [button setHidden:NO];
         
         NSString *message = NSLocalizedString (@"Sorry we had trouble inviting your friend. We use Facebook to send out the invite so please make sure you've granted us permission to do so and try again in a bit.",
                                                @"NSURLConnection initialization method failed.");
@@ -830,9 +830,9 @@
         FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.friendsTableView cellForRowAtIndexPath:inviteIndexPath];
         UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"222%ld",(long)inviteIndexPath.row]integerValue]];
         UIActivityIndicatorView *spinner=(UIActivityIndicatorView*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)inviteIndexPath.row]integerValue]];
-        [button setHidden:NO];
         [spinner setHidden:YES];
         [spinner stopAnimating];
+        [button setHidden:NO];
 
         
     }
