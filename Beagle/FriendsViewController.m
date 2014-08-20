@@ -165,7 +165,7 @@
 }
 
 -(void)authenticationFailed:(NSNotification*) note{
-    
+#if 0
     NSArray *controllerObjects = [[self navigationController]viewControllers];
     NSInteger index=0;
     BOOL isFound=false;
@@ -184,9 +184,9 @@
          [[self navigationController] popViewControllerAnimated:NO];
     }
    }
-    HomeViewController *list=(HomeViewController*)[(AppDelegate*)[[UIApplication sharedApplication] delegate]listViewController];
+//    HomeViewController *list=(HomeViewController*)[(AppDelegate*)[[UIApplication sharedApplication] delegate]listViewController];
     
-    
+    UIViewController *list=[[[self navigationController]viewControllers]objectAtIndex:0];
     UIViewController *newTopViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"loginScreen"];
     [(AppDelegate *)[[UIApplication sharedApplication] delegate] closeAllFBSessions];
     [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
@@ -198,7 +198,7 @@
         list.slidingViewController.topViewController.view.frame = frame;
         [list.slidingViewController resetTopView];
     }];
-
+#endif
 }
 
 - (void)loadProfileImage:(NSString*)url {

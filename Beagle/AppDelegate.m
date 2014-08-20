@@ -1088,7 +1088,6 @@ void uncaughtExceptionHandler(NSException *exception) {
         NSString *message = NSLocalizedString (@"Well this is embarrassing. Please try again in a bit.",
                                                @"NSURLConnection initialization method failed.");
         BeagleAlertWithMessage(message);
-        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kFacebookAuthenticationFailed object:self userInfo:nil]];
 
     }
     

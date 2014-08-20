@@ -11,7 +11,7 @@
 #import "FeedbackReporting.h"
 #import "AboutUsViewController.h"
 #import <Instabug/Instabug.h>
-
+#import "InitialSlidingViewController.h"
 @interface SettingsViewController ()<ServerManagerDelegate>
 @property(nonatomic,strong)ServerManager*updateFBTickerManager;
 @property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
@@ -88,11 +88,30 @@
 
 -(void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
-   // [[NSNotificationCenter defaultCenter] removeObserver:self name:kFacebookAuthenticationFailed object:nil];
+   [[NSNotificationCenter defaultCenter] removeObserver:self name:kFacebookAuthenticationFailed object:nil];
 }
 -(void)authenticationFailed:(NSNotification*) note{
-    
-    
+#if 0
+    NSArray *controllerObjects = [[self navigationController]viewControllers];
+    NSInteger index=0;
+    BOOL isFound=false;
+    for(id controller in [controllerObjects reverseObjectEnumerator]){
+        NSLog(@"controller=%@",controller);
+        
+        if([controller isKindOfClass:[InitialSlidingViewController class]]){
+            isFound=true;
+            break;
+        }
+        index++;
+        
+    }
+    if(isFound){
+        for(int i=0;i<index;i++){
+            [[self navigationController] popViewControllerAnimated:NO];
+        }
+    }
+
+#endif
     UIViewController *newTopViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"loginScreen"];
     [(AppDelegate *)[[UIApplication sharedApplication] delegate] closeAllFBSessions];
     [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
