@@ -688,7 +688,9 @@ void uncaughtExceptionHandler(NSException *exception) {
 
 -(void)requestUserForAdditionalPermissions{
     
-        // These are the permissions we need:
+    
+
+    // These are the permissions we need:
         NSArray *permissionsNeeded = @[@"xmpp_login"];
         
         // Request the permissions the user currently has
@@ -717,7 +719,23 @@ void uncaughtExceptionHandler(NSException *exception) {
                                            completionHandler:^(FBSession *session, NSError *error) {
                                                if (!error) {
                                                    // Permission granted, we can request the user information
-                                                   [self makeRequestForUserData:session.accessTokenData.accessToken];
+                                                   NSLog(@"permissionsGranted=%@",session.permissions);
+                                                   for(id granted in session.permissions){
+                                                       NSLog(@"granted=%@",granted);
+                                                   }
+                                                   NSLog(@"permissionsDeclined=%@",session.declinedPermissions);
+                                                   for(id declined in session.declinedPermissions){
+                                                       NSLog(@"declined=%@",declined);
+                                                   }
+                                                   
+                                                   if([session.declinedPermissions count]==0){
+                                                       [self makeRequestForUserData:session.accessTokenData.accessToken];
+                                                       
+                                                   }else{
+                                                       [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kFacebookAddOnPermissionsDenied object:self userInfo:nil]];
+                                                       
+                                                   }
+
                                                } else {
                                                    NSLog(@"error %@", error.description);
                                                    
@@ -741,6 +759,7 @@ void uncaughtExceptionHandler(NSException *exception) {
 
                                   }
                               }];
+
 }
 
 - (void) makeRequestForUserData:(NSString*)accessToken

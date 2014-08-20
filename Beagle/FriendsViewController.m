@@ -556,14 +556,18 @@
 }
 -(void)permissionsDenied:(NSNotification*) note{
     
+    NSString *message = NSLocalizedString (@"Sorry we had trouble inviting your friend. We use Facebook to send out the invite so please make sure you've granted us permission to do so and try again in a bit.",
+                                           @"NSURLConnection initialization method failed.");
+    BeagleAlertWithMessage(message);
+
     BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
     player.isInvited=FALSE;
     FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.friendsTableView cellForRowAtIndexPath:inviteIndexPath];
     UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"222%ld",(long)inviteIndexPath.row]integerValue]];
     UIActivityIndicatorView *spinner=(UIActivityIndicatorView*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)inviteIndexPath.row]integerValue]];
-    [button setHidden:NO];
     [spinner setHidden:YES];
     [spinner stopAnimating];
+    [button setHidden:NO];
 
 }
 
