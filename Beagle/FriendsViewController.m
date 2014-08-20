@@ -558,7 +558,12 @@
     
     BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
     player.isInvited=FALSE;
-    [self.friendsTableView reloadData];
+    FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.friendsTableView cellForRowAtIndexPath:inviteIndexPath];
+    UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"222%ld",(long)inviteIndexPath.row]integerValue]];
+    UIActivityIndicatorView *spinner=(UIActivityIndicatorView*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)inviteIndexPath.row]integerValue]];
+    [button setHidden:NO];
+    [spinner setHidden:YES];
+    [spinner stopAnimating];
 
 }
 
@@ -719,7 +724,25 @@
 
                 BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
                 player.isInvited=TRUE;
-                [self.friendsTableView reloadData];
+                FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.friendsTableView cellForRowAtIndexPath:inviteIndexPath];
+                UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"222%ld",(long)inviteIndexPath.row]integerValue]];
+                UIActivityIndicatorView *spinner=(UIActivityIndicatorView*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)inviteIndexPath.row]integerValue]];
+                [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
+                button.titleLabel.backgroundColor=[UIColor clearColor];
+                button.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+                button.titleLabel.numberOfLines = 0;
+                button.titleLabel.textColor=[UIColor blackColor];
+                button.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f];
+                [button setTitleColor:[BeagleUtilities returnBeagleColor:3] forState:UIControlStateNormal];
+                button.titleLabel.textAlignment = NSTextAlignmentLeft;
+                [button setTitle: @"Invite\nSent" forState: UIControlStateNormal];
+                [button setImage:nil forState:UIControlStateNormal];
+                [button setImage:nil forState:UIControlStateHighlighted];
+                [button setHidden:NO];
+                [button setUserInteractionEnabled:NO];
+                [spinner setHidden:YES];
+                [spinner stopAnimating];
+
 
             }
             else if (status != nil && [status class] != [NSNull class] && [status integerValue]==205){
@@ -737,7 +760,13 @@
                 
                 BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
                 player.isInvited=FALSE;
-                [self.friendsTableView reloadData];
+                FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.friendsTableView cellForRowAtIndexPath:inviteIndexPath];
+                UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"222%ld",(long)inviteIndexPath.row]integerValue]];
+                UIActivityIndicatorView *spinner=(UIActivityIndicatorView*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)inviteIndexPath.row]integerValue]];
+                [button setHidden:NO];
+                [spinner setHidden:YES];
+                [spinner stopAnimating];
+
 
 
             }
@@ -767,7 +796,12 @@
         
         BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
         player.isInvited=FALSE;
-        [self.friendsTableView reloadData];
+        FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.friendsTableView cellForRowAtIndexPath:inviteIndexPath];
+        UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"222%ld",(long)inviteIndexPath.row]integerValue]];
+        UIActivityIndicatorView *spinner=(UIActivityIndicatorView*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)inviteIndexPath.row]integerValue]];
+        [button setHidden:NO];
+        [spinner setHidden:YES];
+        [spinner stopAnimating];
         
         NSString *message = NSLocalizedString (@"Sorry we had trouble inviting your friend. We use Facebook to send out the invite so please make sure you've granted us permission to do so and try again in a bit.",
                                                @"NSURLConnection initialization method failed.");
@@ -793,7 +827,12 @@
         _inviteManager = nil;
         BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
         player.isInvited=FALSE;
-        [self.friendsTableView reloadData];
+        FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.friendsTableView cellForRowAtIndexPath:inviteIndexPath];
+        UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"222%ld",(long)inviteIndexPath.row]integerValue]];
+        UIActivityIndicatorView *spinner=(UIActivityIndicatorView*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)inviteIndexPath.row]integerValue]];
+        [button setHidden:NO];
+        [spinner setHidden:YES];
+        [spinner stopAnimating];
 
         
     }
