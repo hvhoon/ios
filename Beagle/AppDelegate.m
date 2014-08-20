@@ -737,14 +737,9 @@ void uncaughtExceptionHandler(NSException *exception) {
 
 - (void) makeRequestForUserData:(NSString*)accessToken
 {
-    FBRequest *request = [FBRequest requestWithGraphPath:@"/me/taggable_friends"
-                                              parameters:nil
-                                              HTTPMethod:@"GET"];
-    
-    [request startWithCompletionHandler:^(FBRequestConnection *connection, id list, NSError *error) {
 
-//    
-//    [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id list, NSError *error) {
+    
+    [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id list, NSError *error) {
         if (!error) {
             // Success! Include your code to handle the results here
             NSLog(@"user info: %@", list);
