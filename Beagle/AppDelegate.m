@@ -719,10 +719,6 @@ void uncaughtExceptionHandler(NSException *exception) {
                                                    // Permission granted, we can request the user information
                                                    [self makeRequestForUserData:session.accessTokenData.accessToken];
                                                } else {
-                                                   
-                                                   // need to come up with an alert message
-                                                   
-                                                   
                                                    NSLog(@"error %@", error.description);
                                                    
                                                    //error when permissions not granted
