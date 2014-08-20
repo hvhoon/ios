@@ -52,6 +52,9 @@ void uncaughtExceptionHandler(NSException *exception) {
     // Start AppSee analytics
     [Appsee start:@"d4f6b6daba7e4c3ca8b7ad040c2edaa3"];
     
+    // Facebook SDK settings
+    [FBSettings enablePlatformCompatibility:YES];
+    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = initViewController;
     [self.window makeKeyAndVisible];
@@ -592,12 +595,11 @@ void uncaughtExceptionHandler(NSException *exception) {
         // If the session state is not any of the two "open" states when the button is clicked
     } else {
         
-        
-        FBSession *session = [[FBSession alloc] initWithAppID:@"500525846725031" permissions:@[@"email",@"user_friends",@"public_profile"] defaultAudience:FBSessionDefaultAudienceEveryone urlSchemeSuffix:nil tokenCacheStrategy:nil];
+        NSArray* permissions = [NSArray arrayWithObjects:@"public_profile",@"email",@"user_friends", nil];
+        FBSession *session = [[FBSession alloc] initWithAppID:@"500525846725031" permissions:permissions defaultAudience:FBSessionDefaultAudienceNone urlSchemeSuffix:nil tokenCacheStrategy:nil];
         [FBSession setActiveSession:session];
         
         [session openWithBehavior:FBSessionLoginBehaviorUseSystemAccountIfPresent     completionHandler:^(FBSession *session, FBSessionState state, NSError *error) {
-            
             
             // Open a session showing the user the login UI
             // You must ALWAYS ask for public_profile permissions when opening a session
