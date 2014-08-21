@@ -597,7 +597,7 @@
                     if (friend != nil && [friend class] != [NSNull class] && [friend count]!=0) {
                         for(id user in friend){
                             NSNumber * n = [user objectForKey:@"fbuid"];
-                            self.friendBeagle.fbuid= [n intValue];
+                            self.friendBeagle.fbuid=n;
                         }
                         
                     }

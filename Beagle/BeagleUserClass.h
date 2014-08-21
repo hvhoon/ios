@@ -17,7 +17,7 @@
 @property(nonatomic,strong)NSString *password;
 @property(nonatomic,strong)NSString *profileImageUrl;
 @property(nonatomic,strong)NSString *email;
-@property(nonatomic,assign)NSInteger fbuid;
+@property(nonatomic,strong)NSNumber *fbuid;
 @property(nonatomic,strong)NSString *access_token;
 @property(nonatomic,strong)NSString *location;
 @property(nonatomic,assign)BOOL fb_ticker;
