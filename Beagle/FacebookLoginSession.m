@@ -96,7 +96,7 @@
                             
                             id userId = [list objectForKey:@"id"];
                             if(userId != nil && [userId class] != [NSNull class]){
-                                userObject.fbuid=[userId integerValue];
+                                userObject.fbuid=userId;
                             }
                             
                             id first_name = [list objectForKey:@"first_name"];
@@ -232,7 +232,7 @@
                 
                 id userId = [list objectForKey:@"id"];
                 if(userId != nil && [userId class] != [NSNull class]){
-                    userObject.fbuid=[userId integerValue];
+                    userObject.fbuid=userId;
                 }
 
                  id first_name = [list objectForKey:@"first_name"];

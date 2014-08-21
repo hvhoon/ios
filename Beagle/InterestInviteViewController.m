@@ -241,7 +241,7 @@
     for(BeagleUserClass*data in self.selectedFriendsArray){
         		NSMutableDictionary *dictionary =[[NSMutableDictionary alloc]init];
         			[dictionary setObject:[NSNumber numberWithInteger:data.beagleUserId] forKey:@"id"];
-        			[dictionary setObject:[NSNumber numberWithInteger:data.fbuid] forKey:@"fbuid"];
+        			[dictionary setObject:data.fbuid forKey:@"fbuid"];
         [jsonContentArray addObject:dictionary];
     }
       interestDetail.requestString =[jsonContentArray JSONRepresentation];

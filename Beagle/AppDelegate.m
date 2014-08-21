@@ -663,7 +663,7 @@ void uncaughtExceptionHandler(NSException *exception) {
 
     // Handle errors
     if (error){
-        NSLog(@"errorode=%li",[FBErrorUtility errorCategoryForError:error]);
+        NSLog(@"errorode=%i",[FBErrorUtility errorCategoryForError:error]);
         NSLog(@"Error=%@",[error localizedDescription]);
         
         // If the error requires people using an app to make an action outside of the app in order to recover
@@ -812,7 +812,7 @@ void uncaughtExceptionHandler(NSException *exception) {
             
             id userId = [list objectForKey:@"id"];
             if(userId != nil && [userId class] != [NSNull class]){
-                userObject.fbuid=[userId integerValue];
+                userObject.fbuid=userId;
             }
             
             id first_name = [list objectForKey:@"first_name"];
