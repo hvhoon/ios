@@ -60,14 +60,11 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kFacebookSSOLoginAuthentication object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kFacebookAddOnPermissionsDenied object:nil];
 
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kFacebookAuthenticationFailed object:nil];
-
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authenticationFailed:) name:kFacebookAuthenticationFailed object:Nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(facebookAuthComplete:) name:kFacebookSSOLoginAuthentication object:Nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(permissionsDenied:) name:kFacebookAddOnPermissionsDenied object:Nil];
@@ -162,43 +159,6 @@
     }
 
     // Do any additional setup after loading the view.
-}
-
--(void)authenticationFailed:(NSNotification*) note{
-#if 0
-    NSArray *controllerObjects = [[self navigationController]viewControllers];
-    NSInteger index=0;
-    BOOL isFound=false;
-        for(id controller in [controllerObjects reverseObjectEnumerator]){
-            NSLog(@"controller=%@",controller);
-            
-            if([controller isKindOfClass:[InitialSlidingViewController class]]){
-                isFound=true;
-                break;
-            }
-            index++;
-            
-    }
-    if(isFound){
-    for(int i=0;i<index;i++){
-         [[self navigationController] popViewControllerAnimated:NO];
-    }
-   }
-//    HomeViewController *list=(HomeViewController*)[(AppDelegate*)[[UIApplication sharedApplication] delegate]listViewController];
-    
-    UIViewController *list=[[[self navigationController]viewControllers]objectAtIndex:0];
-    UIViewController *newTopViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"loginScreen"];
-    [(AppDelegate *)[[UIApplication sharedApplication] delegate] closeAllFBSessions];
-    [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
-    [[NSUserDefaults standardUserDefaults]synchronize];
-    // Sliding animation
-    [list.slidingViewController anchorTopViewOffScreenTo:ECRight animations:nil onComplete:^{
-        CGRect frame = list.slidingViewController.topViewController.view.frame;
-        list.slidingViewController.topViewController = newTopViewController;
-        list.slidingViewController.topViewController.view.frame = frame;
-        [list.slidingViewController resetTopView];
-    }];
-#endif
 }
 
 - (void)loadProfileImage:(NSString*)url {

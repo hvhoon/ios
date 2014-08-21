@@ -88,10 +88,12 @@
 
 -(void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
-   [[NSNotificationCenter defaultCenter] removeObserver:self name:kFacebookAuthenticationFailed object:nil];
+   //[[NSNotificationCenter defaultCenter] removeObserver:self name:kFacebookAuthenticationFailed object:nil];
 }
 -(void)authenticationFailed:(NSNotification*) note{
-#if 0
+
+    if([[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"]){
+        
     NSArray *controllerObjects = [[self navigationController]viewControllers];
     NSInteger index=0;
     BOOL isFound=false;
@@ -111,7 +113,6 @@
         }
     }
 
-#endif
     UIViewController *newTopViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"loginScreen"];
     [(AppDelegate *)[[UIApplication sharedApplication] delegate] closeAllFBSessions];
     [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
@@ -124,6 +125,8 @@
     self.slidingViewController.topViewController.view.frame = frame;
     [self.slidingViewController resetTopView];
     }];
+        
+  }
 }
 
 
