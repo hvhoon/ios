@@ -55,14 +55,13 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.59999999999999998" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="characterWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="237" translatesAutoresizingMaskIntoConstraints="NO" id="G6G-qf-L6k">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.59999999999999998" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="We use Facebook to figure out who your friends are. We promise to never post to your wall or spam your friends" textAlignment="center" lineBreakMode="characterWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="237" translatesAutoresizingMaskIntoConstraints="NO" id="G6G-qf-L6k">
                                 <rect key="frame" x="42" y="474" width="237" height="67"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="237" id="NnP-X0-sPY"/>
                                     <constraint firstAttribute="height" constant="67" id="Tgj-gN-6EJ"/>
                                 </constraints>
-                                <string key="text">We use facebook to find what's happening around you and tell others what you want to do. We promise to never post to your wall or spam your friends</string>
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
