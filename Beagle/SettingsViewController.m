@@ -96,23 +96,24 @@
         
     NSArray *controllerObjects = [[self navigationController]viewControllers];
     NSInteger index=0;
-    BOOL isFound=false;
+    NSMutableArray *items=[NSMutableArray new];
     for(id controller in [controllerObjects reverseObjectEnumerator]){
         NSLog(@"controller=%@",controller);
         
         if([controller isKindOfClass:[InitialSlidingViewController class]]){
-            isFound=true;
-            break;
+            [items addObject:[NSNumber numberWithInteger:index]];
         }
         index++;
         
     }
-    if(isFound){
-        for(int i=0;i<index;i++){
+    if([items count]>0){
+        if([items count]==2){
             [[self navigationController] popViewControllerAnimated:NO];
+            [[self navigationController] popViewControllerAnimated:NO];
+        }else{
+            [[self navigationController] popViewControllerAnimated:NO];            
         }
     }
-
     UIViewController *newTopViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"loginScreen"];
     [(AppDelegate *)[[UIApplication sharedApplication] delegate] closeAllFBSessions];
     [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
