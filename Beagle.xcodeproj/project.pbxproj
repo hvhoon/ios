@@ -42,7 +42,6 @@
 		182F0B9019630328001771AD /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 182F0B8F19630328001771AD /* MessageUI.framework */; };
 		1832F9C51953838000B271DB /* FriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1832F9C41953838000B271DB /* FriendsViewController.m */; };
 		183DFEAB19493D76008A556A /* UILabel+WhiteUIDatePickerLabels.m in Sources */ = {isa = PBXBuildFile; fileRef = 183DFEAA19493D76008A556A /* UILabel+WhiteUIDatePickerLabels.m */; };
-		18458DED19A5401C00B6136B /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18458DEC19A5401C00B6136B /* FacebookSDK.framework */; };
 		1849D6B0192FCC540068BEDE /* InAppNotificationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1849D6AF192FCC540068BEDE /* InAppNotificationView.m */; };
 		1854293B196F962E00B1D777 /* CreateAnimationBlurView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1854293A196F962E00B1D777 /* CreateAnimationBlurView.m */; };
 		1854293D196F965000B1D777 /* CreateAnimationBlurView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1854293C196F965000B1D777 /* CreateAnimationBlurView.xib */; };
@@ -130,6 +129,7 @@
 		18FDA352192BDDE000D13667 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18FDA351192BDDE000D13667 /* CoreText.framework */; };
 		682455C3196DD6A800182F50 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 682455C2196DD6A800182F50 /* CoreMotion.framework */; };
 		6891059519632C1E00BE23B7 /* AboutUsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6891059419632C1E00BE23B7 /* AboutUsViewController.m */; };
+		68E5B2D519A656E9001682F1 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68E5B2D419A656E9001682F1 /* FacebookSDK.framework */; };
 		68E9CF54197D5E5B009477B2 /* Appsee.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68E9CF53197D5E5B009477B2 /* Appsee.framework */; };
 		68E9CF56197D5F35009477B2 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68E9CF55197D5F35009477B2 /* CoreMedia.framework */; };
 		68EDF869192AC578008ED9C1 /* Instabug.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 68EDF867192AC578008ED9C1 /* Instabug.bundle */; };
@@ -218,7 +218,6 @@
 		1832F9C41953838000B271DB /* FriendsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendsViewController.m; sourceTree = "<group>"; };
 		183DFEA919493D76008A556A /* UILabel+WhiteUIDatePickerLabels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UILabel+WhiteUIDatePickerLabels.h"; sourceTree = "<group>"; };
 		183DFEAA19493D76008A556A /* UILabel+WhiteUIDatePickerLabels.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UILabel+WhiteUIDatePickerLabels.m"; sourceTree = "<group>"; };
-		18458DEC19A5401C00B6136B /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
 		1849D6AE192FCC540068BEDE /* InAppNotificationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InAppNotificationView.h; sourceTree = "<group>"; };
 		1849D6AF192FCC540068BEDE /* InAppNotificationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InAppNotificationView.m; sourceTree = "<group>"; };
 		18542939196F962E00B1D777 /* CreateAnimationBlurView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateAnimationBlurView.h; sourceTree = "<group>"; };
@@ -373,6 +372,7 @@
 		682455C2196DD6A800182F50 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		6891059319632C1E00BE23B7 /* AboutUsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutUsViewController.h; sourceTree = "<group>"; };
 		6891059419632C1E00BE23B7 /* AboutUsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutUsViewController.m; sourceTree = "<group>"; };
+		68E5B2D419A656E9001682F1 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		68E9CF53197D5E5B009477B2 /* Appsee.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Appsee.framework; sourceTree = "<group>"; };
 		68E9CF55197D5F35009477B2 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		68E9CF59197D710B009477B2 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
@@ -413,7 +413,7 @@
 				18EC233318B5A68200316B6E /* CFNetwork.framework in Frameworks */,
 				18EC233118B5A67800316B6E /* libxml2.dylib in Frameworks */,
 				18EC232F18B5A66E00316B6E /* libz.dylib in Frameworks */,
-				18458DED19A5401C00B6136B /* FacebookSDK.framework in Frameworks */,
+				68E5B2D519A656E9001682F1 /* FacebookSDK.framework in Frameworks */,
 				18EC22A318B5A0B400316B6E /* CoreGraphics.framework in Frameworks */,
 				18EC22A518B5A0B400316B6E /* UIKit.framework in Frameworks */,
 				18EC22A118B5A0B400316B6E /* Foundation.framework in Frameworks */,
@@ -689,7 +689,7 @@
 		18EC229F18B5A0B400316B6E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				18458DEC19A5401C00B6136B /* FacebookSDK.framework */,
+				68E5B2D419A656E9001682F1 /* FacebookSDK.framework */,
 				68E9CF59197D710B009477B2 /* libsqlite3.dylib */,
 				68E9CF55197D5F35009477B2 /* CoreMedia.framework */,
 				68E9CF53197D5E5B009477B2 /* Appsee.framework */,
