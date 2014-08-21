@@ -74,7 +74,7 @@ typedef enum {
 -(void)getPostDetail:(NSInteger)chatId;
 -(void)getMutualFriendsNetwork:(NSInteger)friendId;
 -(void)getDOS1Friends;
--(void)sendingAPostMessageOnFacebook:(NSInteger)fbuid;
+-(void)sendingAPostMessageOnFacebook:(NSNumber*)fbuid;
 -(void)getNearbyAndWorldWideFriends;
 -(void)updateSuggestedPostMembership:(NSInteger)activityId;
 -(void)userInfoOnBeagle:(NSString*)email;

@@ -26,6 +26,7 @@ static NSString * const CellIdentifier = @"cell";
     UIActivityIndicatorView *activityIndicatorView;
     BOOL postsLoadComplete;
     NSTimer *timer;
+    UIImageView *_partcipantScrollArrowImageView;
 }
 
 @property(nonatomic,strong)ServerManager*chatPostManager;
@@ -905,30 +906,27 @@ static NSString * const CellIdentifier = @"cell";
                  [BeagleUtilities returnBeagleColor:4],NSForegroundColorAttributeName,
                  style, NSParagraphStyleAttributeName, nil];
         
-            if(self.interestActivity.ownerid==[[[BeagleManager SharedInstance]beaglePlayer]beagleUserId]){
-            //owner
-                if(self.interestActivity.participantsCount>0){
-                    if(_scrollMenu==nil||scrollViewResize){
-                        _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, fromTheTop, 268, 55)];
-                        scrollViewResize=FALSE;
-                    }
-                    [_backgroundView addSubview:_scrollMenu];
-                    [self setUpPlayerScroll:self.interestActivity.participantsArray];
-                }
+                _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, fromTheTop, 268, 55)];
+                scrollViewResize=FALSE;
+                _scrollMenu.tag=786;
+                _partcipantScrollArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(268+12+16, fromTheTop+13.5, 8, 16)];
+                _partcipantScrollArrowImageView.image = [UIImage imageNamed:@"Right-Scroll"];
+               [_backgroundView addSubview:_scrollMenu];
+               [self setUpPlayerScroll:self.interestActivity.participantsArray];
+
+            [_backgroundView addSubview:_partcipantScrollArrowImageView];
+            
+            if([self.interestActivity.participantsArray count]>4){
+                _partcipantScrollArrowImageView.hidden=NO;
+            }else{
+                _partcipantScrollArrowImageView.hidden=YES;
             }
-            else {
-            //not a owner but a participant
-                if(self.interestActivity.participantsCount>0){
-                    if(_scrollMenu==nil||scrollViewResize){
-                        _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, fromTheTop, 268, 55)];
-                        scrollViewResize=FALSE;
-                    }
-                    [_backgroundView addSubview:_scrollMenu];
-                    [self setUpPlayerScroll:self.interestActivity.participantsArray];
-                }
-            }
+
+
+            
             fromTheTop += 55;
             fromTheTop += 16;
+            
         }
         
         // Draw the Button
@@ -1161,6 +1159,15 @@ static NSString * const CellIdentifier = @"cell";
     }
 }
 
+-(void)showArrowIndicator{
+    _partcipantScrollArrowImageView.hidden=NO;
+}
+-(void)hideArrowIndicator{
+    _partcipantScrollArrowImageView.hidden=YES;
+    
+}
+
+
 // this method is used in case the user scrolled into a set of cells that don't have their app icons yet
 - (void)loadImagesForOnscreenRows{
     if ([self.chatPostsArray count] > 0)
@@ -1280,7 +1287,6 @@ static NSString * const CellIdentifier = @"cell";
                             BeagleUserClass *userClass=[[BeagleUserClass alloc]initWithDictionary:el];
                             [self.interestActivity.participantsArray addObject:userClass];
                         }
-                        
                         
                     }
                     NSArray *chats=[interest objectForKey:@"chats"];
@@ -1437,7 +1443,6 @@ static NSString * const CellIdentifier = @"cell";
                         }
                     }
                     self.interestActivity.participantsArray=testArray;
-                    
                     [self.detailedInterestTableView reloadData];
 
                     
@@ -1776,7 +1781,6 @@ static NSString * const CellIdentifier = @"cell";
     [self.contentWrapper _setInitialFrames];
     [self.contentWrapper.inputView setHidden:NO];
     [self.contentWrapper.dummyInputView setHidden:NO];
-    
     [self.detailedInterestTableView reloadData];
     
 

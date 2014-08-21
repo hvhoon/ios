@@ -139,7 +139,9 @@ static BGFlickrManager *sharedManager = nil;
         self.photos = [inResponseDictionary valueForKeyPath:@"photos.photo"];
         int numberOfPhotos = (int)[self.photos count];
         NSLog(@"Number of photos = %d", numberOfPhotos);
-        int randomPhotoIndex = [BeagleUtilities getRandomIntBetweenLow:0 andHigh:numberOfPhotos-1];
+        int randomPhotoIndex=0;
+        if(numberOfPhotos>0)
+             randomPhotoIndex = [BeagleUtilities getRandomIntBetweenLow:0 andHigh:numberOfPhotos-1];
         
         if([self.photos count]>0){
             [self searchForRequiredSpecRandomly:randomPhotoIndex];

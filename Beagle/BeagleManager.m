@@ -100,7 +100,7 @@
     [array setObject:[NSNumber numberWithBool:self.beaglePlayer.fb_ticker] forKey:@"facebook_ticker"];
     if(self.beaglePlayer.email != nil && [self.beaglePlayer.email class] != [NSNull class])
           [array setObject:self.beaglePlayer.email forKey:@"email"];
-    [array setObject:[NSNumber numberWithInteger:self.beaglePlayer.fbuid ]forKey:@"fbuid"];
+    [array setObject:self.beaglePlayer.fbuid forKey:@"fbuid"];
     
     if(self.beaglePlayer.first_name != nil && [self.beaglePlayer.first_name class] != [NSNull class])
         [array setObject:self.beaglePlayer.first_name forKey:@"first_name"];
@@ -147,7 +147,7 @@
     BeagleUserClass *player=[[BeagleUserClass alloc]init];
     player.access_token=[array valueForKey:@"access_token"];
     player.email=[array valueForKey:@"email"];
-    player.fbuid=[[array valueForKey:@"fbuid"]integerValue];
+    player.fbuid=[array valueForKey:@"fbuid"];
     player.first_name=[array valueForKey:@"first_name"];
     player.last_name=[array valueForKey:@"last_name"];
     player.beagleUserId=[[array valueForKey:@"id"]integerValue];
@@ -156,7 +156,7 @@
     player.fb_ticker=[[array valueForKey:@"facebook_ticker"]boolValue];
     self.beaglePlayer=player;
     
-    [self autoSign];
+//    [self autoSign];
 #endif
 }
 

@@ -11,7 +11,7 @@
 #import "FeedbackReporting.h"
 #import "AboutUsViewController.h"
 #import <Instabug/Instabug.h>
-
+#import "InitialSlidingViewController.h"
 @interface SettingsViewController ()<ServerManagerDelegate>
 @property(nonatomic,strong)ServerManager*updateFBTickerManager;
 @property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
@@ -33,7 +33,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authenticationFailed:) name:kFacebookAuthenticationFailed object:Nil];
+
     [self.slidingViewController setAnchorRightRevealAmount:270.0f];
      self.slidingViewController.underLeftWidthLayout = ECFullWidth;
     
@@ -85,6 +86,51 @@
 	// Do any additional setup after loading the view.
 }
 
+-(void)viewDidDisappear:(BOOL)animated{
+    [super viewDidDisappear:animated];
+   //[[NSNotificationCenter defaultCenter] removeObserver:self name:kFacebookAuthenticationFailed object:nil];
+}
+-(void)authenticationFailed:(NSNotification*) note{
+
+    if([[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"]){
+        
+    NSArray *controllerObjects = [[self navigationController]viewControllers];
+    NSInteger index=0;
+    NSMutableArray *items=[NSMutableArray new];
+    for(id controller in [controllerObjects reverseObjectEnumerator]){
+        NSLog(@"controller=%@",controller);
+        
+        if([controller isKindOfClass:[InitialSlidingViewController class]]){
+            [items addObject:[NSNumber numberWithInteger:index]];
+        }
+        index++;
+        
+    }
+    if([items count]>0){
+        if([items count]==2){
+            [[self navigationController] popViewControllerAnimated:NO];
+            [[self navigationController] popViewControllerAnimated:NO];
+        }else{
+            [[self navigationController] popViewControllerAnimated:NO];            
+        }
+    }
+    UIViewController *newTopViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"loginScreen"];
+    [(AppDelegate *)[[UIApplication sharedApplication] delegate] closeAllFBSessions];
+    [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
+    [[NSUserDefaults standardUserDefaults]synchronize];
+    
+    // Sliding animation
+    [self.slidingViewController anchorTopViewOffScreenTo:ECRight animations:nil onComplete:^{
+    CGRect frame = self.slidingViewController.topViewController.view.frame;
+    self.slidingViewController.topViewController = newTopViewController;
+    self.slidingViewController.topViewController.view.frame = frame;
+    [self.slidingViewController resetTopView];
+    }];
+        
+  }
+}
+
+
 
 - (void)loadProfileImage:(NSString*)url {
     BeagleManager *BG=[BeagleManager SharedInstance];
@@ -128,6 +174,7 @@
         case 8:
         {
             identifier=@"loginScreen";
+            [(AppDelegate *)[[UIApplication sharedApplication] delegate] closeAllFBSessions];
             [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"FacebookLogin"];
             [[NSUserDefaults standardUserDefaults]synchronize];
 
