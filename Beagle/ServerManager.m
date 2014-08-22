@@ -59,8 +59,8 @@
         [playerRegisteration setObject:data.last_name forKey:@"last_name"];
         [playerRegisteration setObject:data.email forKey:@"email"];
         [playerRegisteration setObject:data.profileImageUrl forKey:@"image_url"];
-        [playerRegisteration setObject:[NSNumber numberWithInteger:data.fbuid] forKey:@"fbuid"];
-        [playerRegisteration setObject:[NSNumber numberWithBool:data.permissionsGranted] forKey:@"permissions"];
+        [playerRegisteration setObject:data.fbuid forKey:@"fbuid"];
+//        [playerRegisteration setObject:[NSNumber numberWithBool:data.permissionsGranted] forKey:@"permissions"];
 
         [playerRegisteration setObject:data.access_token forKey:@"access_token"];
             if([data.location length]!=0)
@@ -402,7 +402,7 @@
 
     if([self isInternetAvailable])
     {
-        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/backgroundchat.json?pid=%@&aid=%ld&chatid=%ld&start_time=%@&end_time=%@",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],activId,(long)lastChatPost.chat_id,[dateFormatter stringFromDate:updatedDate],[dateFormatter stringFromDate:[NSDate date]]]
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@activity_chats/backgroundchat.json?pid=%@&aid=%ld&chatid=%ld&start_time=%@&end_time=%@",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],(long)activId,(long)lastChatPost.chat_id,[dateFormatter stringFromDate:updatedDate],[dateFormatter stringFromDate:[NSDate date]]]
                          method:@"GET"
                          params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
     }
@@ -478,11 +478,11 @@
     
 }
 
--(void)sendingAPostMessageOnFacebook:(NSInteger)fbuid{
+-(void)sendingAPostMessageOnFacebook:(NSNumber*)fbuid{
     _serverCallType=kServerPostAPrivateMessageOnFacebook;
     if([self isInternetAvailable])
     {
-        [self callServerWithUrl:[NSString stringWithFormat:@"%@players/send_facebook_message.json?id=%@&fbuid=%ld",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],(long)fbuid]
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@players/send_facebook_message.json?id=%@&fbuid=%@",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],fbuid]
                          method:@"POST"
                          params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
     }

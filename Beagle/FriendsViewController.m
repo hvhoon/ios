@@ -10,8 +10,10 @@
 #import "FriendsTableViewCell.h"
 #import "IconDownloader.h"
 #import "DetailInterestViewController.h"
+#import "HomeViewController.h"
+#import "InitialSlidingViewController.h"
 @interface FriendsViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,FriendsTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate>{
-    NSInteger inviteIndex;
+    NSIndexPath* inviteIndexPath;
 }
 @property(nonatomic,strong)ServerManager*friendsManager;
 @property(nonatomic,strong)ServerManager*inviteManager;
@@ -55,12 +57,18 @@
 -(void)viewDidDisappear:(BOOL)animated{
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kRemoteNotificationReceivedNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationForInterestPost object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kFacebookSSOLoginAuthentication object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kFacebookAddOnPermissionsDenied object:nil];
+
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(facebookAuthComplete:) name:kFacebookSSOLoginAuthentication object:Nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(permissionsDenied:) name:kFacebookAddOnPermissionsDenied object:Nil];
+
     self.view.backgroundColor = [[BeagleManager SharedInstance] mediumDominantColor];
     
     self.friendsTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
@@ -152,6 +160,7 @@
 
     // Do any additional setup after loading the view.
 }
+
 - (void)loadProfileImage:(NSString*)url {
     NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:url]];
     UIImage* image =[[UIImage alloc] initWithData:imageData];
@@ -488,18 +497,11 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-#pragma mark - Facebook Invite  calls
--(void)inviteFacebookFriendOnBeagle:(NSIndexPath*)indexPath{
-    BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:indexPath.row];
-    inviteIndex=indexPath.row;
-    
-    FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.friendsTableView cellForRowAtIndexPath:indexPath];
-    UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"222%ld",(long)indexPath.row]integerValue]];
-    UIActivityIndicatorView *spinner=(UIActivityIndicatorView*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)indexPath.row]integerValue]];
 
-    [button setHidden:YES];
-    [spinner setHidden:NO];
-    [spinner startAnimating];
+#pragma mark - Facebook Invite  calls
+
+-(void)facebookAuthComplete:(NSNotification*) note{
+    BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
     
     if(_inviteManager!=nil){
         _inviteManager.delegate = nil;
@@ -511,6 +513,50 @@
     _inviteManager.delegate=self;
     [_inviteManager sendingAPostMessageOnFacebook:player.fbuid];
 
+}
+-(void)permissionsDenied:(NSNotification*) note{
+    
+    NSString *message = NSLocalizedString (@"Sorry we had trouble inviting your friend. We use Facebook to send out the invite so please make sure you've granted us permission to do so and try again in a bit.",
+                                           @"NSURLConnection initialization method failed.");
+    BeagleAlertWithMessage(message);
+
+    BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
+    player.isInvited=FALSE;
+    FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.friendsTableView cellForRowAtIndexPath:inviteIndexPath];
+    UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"222%ld",(long)inviteIndexPath.row]integerValue]];
+    UIActivityIndicatorView *spinner=(UIActivityIndicatorView*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)inviteIndexPath.row]integerValue]];
+    [spinner setHidden:YES];
+    [spinner stopAnimating];
+    [button setHidden:NO];
+
+}
+
+-(void)inviteFacebookFriendOnBeagle:(NSIndexPath*)indexPath{
+    
+    inviteIndexPath=indexPath;
+    FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.friendsTableView cellForRowAtIndexPath:inviteIndexPath];
+    UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"222%ld",(long)inviteIndexPath.row]integerValue]];
+    UIActivityIndicatorView *spinner=(UIActivityIndicatorView*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)inviteIndexPath.row]integerValue]];
+    
+    [button setHidden:YES];
+    [spinner setHidden:NO];
+    [spinner startAnimating];
+
+    // check if the user has  a valid facebook session
+    
+    if([(AppDelegate *)[[UIApplication sharedApplication] delegate] checkForFacebookSesssion]){
+        // user has a open session
+        
+        //request for additional permissions
+        [(AppDelegate *)[[UIApplication sharedApplication] delegate] requestUserForAdditionalPermissions];
+        
+    }
+    else{
+        
+        // user session is expired need a new token
+        
+        //have to check if this scenarios comes up
+    }
     
 }
 -(void)userProfileSelected:(NSIndexPath*)indexPath{
@@ -551,7 +597,7 @@
                     if (friend != nil && [friend class] != [NSNull class] && [friend count]!=0) {
                         for(id user in friend){
                             NSNumber * n = [user objectForKey:@"fbuid"];
-                            self.friendBeagle.fbuid= [n intValue];
+                            self.friendBeagle.fbuid=n;
                         }
                         
                     }
@@ -630,33 +676,62 @@
             id status=[response objectForKey:@"status"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 
-                NSString *message = NSLocalizedString (@"Invite sent. You're a good friend!",
+                NSString *message = NSLocalizedString (@"Great! We've sent your friend an invite through Facebook.",
                                                        @"Message sent successfully!");
                 
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Beagle"
                                                                 message:message
-                                                               delegate:self
+                                                               delegate:nil
                                                       cancelButtonTitle:@"OK"
                                                       otherButtonTitles: nil];
                 [alert show];
 
-                BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndex];
+                BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
                 player.isInvited=TRUE;
-                [self.friendsTableView reloadData];
+                FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.friendsTableView cellForRowAtIndexPath:inviteIndexPath];
+                UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"222%ld",(long)inviteIndexPath.row]integerValue]];
+                UIActivityIndicatorView *spinner=(UIActivityIndicatorView*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)inviteIndexPath.row]integerValue]];
+                [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
+                button.titleLabel.backgroundColor=[UIColor clearColor];
+                button.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+                button.titleLabel.numberOfLines = 0;
+                button.titleLabel.textColor=[UIColor blackColor];
+                button.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f];
+                [button setTitleColor:[BeagleUtilities returnBeagleColor:3] forState:UIControlStateNormal];
+                button.titleLabel.textAlignment = NSTextAlignmentLeft;
+                [button setTitle: @"Invite\nSent" forState: UIControlStateNormal];
+                [button setImage:nil forState:UIControlStateNormal];
+                [button setImage:nil forState:UIControlStateHighlighted];
+                [spinner setHidden:YES];
+                [spinner stopAnimating];
+                [button setHidden:NO];
+                [button setUserInteractionEnabled:NO];
+
 
             }
             else if (status != nil && [status class] != [NSNull class] && [status integerValue]==205){
                 // not authorized to send facebook message
                 
-                NSString *message = NSLocalizedString (@"You are not authorized to send facebook message",
+                NSString *message = NSLocalizedString (@"Sorry we had trouble inviting your friend. We use Facebook to send out the invite so please make sure you've granted us permission to do so and try again in a bit.",
                                                        @"Message Failure");
                 
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Beagle"
                                                                 message:message
-                                                               delegate:self
+                                                               delegate:nil
                                                       cancelButtonTitle:@"OK"
                                                       otherButtonTitles: nil];
                 [alert show];
+                
+                BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
+                player.isInvited=FALSE;
+                FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.friendsTableView cellForRowAtIndexPath:inviteIndexPath];
+                UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"222%ld",(long)inviteIndexPath.row]integerValue]];
+                UIActivityIndicatorView *spinner=(UIActivityIndicatorView*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)inviteIndexPath.row]integerValue]];
+                [spinner setHidden:YES];
+                [spinner stopAnimating];
+                [button setHidden:NO];
+
+
 
             }
         }
@@ -673,17 +748,30 @@
         _friendsManager.delegate = nil;
         [_friendsManager releaseServerManager];
         _friendsManager = nil;
+        NSString *message = NSLocalizedString (@"Your friends have vanished, was it something I said? Try again in a bit.",
+                                               @"NSURLConnection initialization method failed.");
+        BeagleAlertWithMessage(message);
+
     }
     else if (serverRequest==kServerPostAPrivateMessageOnFacebook){
         _inviteManager.delegate = nil;
         [_inviteManager releaseServerManager];
         _inviteManager = nil;
-
+        
+        BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
+        player.isInvited=FALSE;
+        FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.friendsTableView cellForRowAtIndexPath:inviteIndexPath];
+        UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"222%ld",(long)inviteIndexPath.row]integerValue]];
+        UIActivityIndicatorView *spinner=(UIActivityIndicatorView*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)inviteIndexPath.row]integerValue]];
+        [spinner setHidden:YES];
+        [spinner stopAnimating];
+        [button setHidden:NO];
+        
+        NSString *message = NSLocalizedString (@"Sorry we had trouble inviting your friend. We use Facebook to send out the invite so please make sure you've granted us permission to do so and try again in a bit.",
+                                               @"NSURLConnection initialization method failed.");
+        BeagleAlertWithMessage(message);
     }
     
-    NSString *message = NSLocalizedString (@"Your friends have vanished, was it something I said? Try again in a bit.",
-                                           @"NSURLConnection initialization method failed.");
-    BeagleAlertWithMessage(message);
 }
 
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
@@ -701,6 +789,15 @@
         _inviteManager.delegate = nil;
         [_inviteManager releaseServerManager];
         _inviteManager = nil;
+        BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
+        player.isInvited=FALSE;
+        FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.friendsTableView cellForRowAtIndexPath:inviteIndexPath];
+        UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"222%ld",(long)inviteIndexPath.row]integerValue]];
+        UIActivityIndicatorView *spinner=(UIActivityIndicatorView*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)inviteIndexPath.row]integerValue]];
+        [spinner setHidden:YES];
+        [spinner stopAnimating];
+        [button setHidden:NO];
+
         
     }
     

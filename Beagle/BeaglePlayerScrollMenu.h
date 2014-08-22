@@ -16,7 +16,8 @@
 @optional
 
 - (void)scrollMenu:(BeaglePlayerScrollMenu *)menu didSelectIndex:(NSInteger)selectedIndex;
-
+-(void)showArrowIndicator;
+-(void)hideArrowIndicator;
 @end
 
 @interface BeaglePlayerScrollMenu : UIView <PlayerProfileItemDelegate, UIScrollViewDelegate>{

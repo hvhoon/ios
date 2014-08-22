@@ -16,7 +16,7 @@
     if (self)
     {
         self.beagleUserId = [[dictionary valueForKey:@"id"]integerValue];
-        self.fbuid = [[dictionary valueForKey:@"fbuid"]integerValue];
+        self.fbuid = [dictionary valueForKey:@"fbuid"];
         self.first_name = [dictionary valueForKey:@"first_name"];
         self.last_name = [dictionary valueForKey:@"last_name"];
         self.profileImageUrl = [dictionary valueForKey:@"owner_photo_url"];
@@ -29,7 +29,7 @@
     if (self)
     {
         self.beagleUserId = [[dictionary valueForKey:@"id"]integerValue];
-        self.fbuid = [[dictionary valueForKey:@"fbuid"]integerValue];
+        self.fbuid = [dictionary valueForKey:@"fbuid"];
         self.fullName = [dictionary valueForKey:@"name"];
         self.location=[dictionary valueForKey:@"location"];
         self.profileImageUrl = [dictionary valueForKey:@"photo"];
