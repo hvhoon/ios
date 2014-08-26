@@ -335,27 +335,31 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *CellIdentifier = @"MediaTableCell";
     
-    
+    NSInteger count=0;
     FriendsTableViewCell *cell = [[FriendsTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     cell.selectionStyle=UITableViewCellSelectionStyleNone;
     
     BeagleUserClass *player=nil;
 
     if([self.beagleFriendsArray count]>0 && [self.facebookFriendsArray count]>0){
-        if(indexPath.section==0)
+        if(indexPath.section==0){
             player = (BeagleUserClass *)[self.beagleFriendsArray objectAtIndex:indexPath.row];
+            count=[self.beagleFriendsArray count];
+        }
         else{
             player = (BeagleUserClass *)[self.facebookFriendsArray objectAtIndex:indexPath.row];
+            count=[self.facebookFriendsArray count];
         }
         
     }
     else if([self.beagleFriendsArray count]>0){
         player = (BeagleUserClass *)[self.beagleFriendsArray objectAtIndex:indexPath.row];
-        
+        count=[self.beagleFriendsArray count];
     }
-    else if ([self.facebookFriendsArray count]>0)
+    else if ([self.facebookFriendsArray count]>0){
         player = (BeagleUserClass *)[self.facebookFriendsArray objectAtIndex:indexPath.row];
-
+        count=[self.facebookFriendsArray count];
+    }
     cell.delegate=self;
     cell.cellIndexPath=indexPath;
     cell.bgPlayer = player;
@@ -383,7 +387,11 @@
         player.profileData=UIImagePNGRepresentation(checkImge);
         cell.photoImage =checkImge;
     }
-    
+    if(count!=indexPath.row+1){
+        UIView* lineSeparator = [[UIView alloc] initWithFrame:CGRectMake(16, 60, 288, 1)];
+        lineSeparator.backgroundColor = [BeagleUtilities returnBeagleColor:2];
+        [cell addSubview:lineSeparator];
+    }
 
     [cell setNeedsDisplay];
     return cell;
@@ -659,8 +667,13 @@
                     
                 }
                 if(!inviteFriends){
+                    if(([self.beagleFriendsArray count]+[self.facebookFriendsArray count])>1){
                     [_profileLabel setTitle:[NSString stringWithFormat:@"%ld Mutual Friends",(long)[self.beagleFriendsArray count]+[self.facebookFriendsArray count]] forState:UIControlStateNormal];
                     NSLog(@"%ld Mutual Friends",(long)[self.beagleFriendsArray count]+[self.facebookFriendsArray count]);
+                    }
+                }else{
+                    [_profileLabel setTitle:[NSString stringWithFormat:@"%ld Mutual Friend",(long)[self.beagleFriendsArray count]+[self.facebookFriendsArray count]] forState:UIControlStateNormal];
+                    NSLog(@"%ld Mutual Friend",(long)[self.beagleFriendsArray count]+[self.facebookFriendsArray count]);
                 }
                 [self.friendsTableView reloadData];
             }
