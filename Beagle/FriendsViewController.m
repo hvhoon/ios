@@ -107,7 +107,7 @@
         
         [_profileLabel setHidden:NO];
         [_profileLabel setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"DOS2"] withColor:[UIColor whiteColor]] forState:UIControlStateNormal];
-        [_profileLabel setTitle:@"Mutual Friends" forState:UIControlStateNormal];
+        [_profileLabel setTitle:@"Mutual Friend" forState:UIControlStateNormal];
         
         // Setting up the image
         [self imageCircular:[UIImage imageNamed:@"picbox"]];
@@ -148,19 +148,28 @@
                                             selector:@selector(loadProfileImage:)
                                             object:[tempBG.beaglePlayer profileImageUrl]];
         [queue addOperation:operation];
-        
-        NSString *yourCity = [tempBG.placemark.addressDictionary objectForKey:@"City"];
-        
-        // error checking
-        if(yourCity==nil)
-            yourCity = @"your city";
-        
-        [_inviteLabel setText:[NSString stringWithFormat:@"Rediscover %@ with your friends", yourCity]];
+       
+        [self updateCityLabelText:-1];
     }
 
     // Do any additional setup after loading the view.
 }
 
+-(void)updateCityLabelText:(NSInteger)count{
+    BeagleManager *tempBG = [BeagleManager SharedInstance];
+    NSString *yourCity = [tempBG.placemark.addressDictionary objectForKey:@"City"];
+    
+    // error checking
+    if(yourCity==nil || [yourCity length]==0)
+        yourCity = @"your city";
+    if(count==0)
+        [_inviteLabel setText:[NSString stringWithFormat:@"Rediscover %@ with your friend", yourCity]];
+    else{
+        [_inviteLabel setText:[NSString stringWithFormat:@"Rediscover %@ with your friends", yourCity]];
+        
+    }
+
+}
 - (void)loadProfileImage:(NSString*)url {
     NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:url]];
     UIImage* image =[[UIImage alloc] initWithData:imageData];
@@ -311,19 +320,36 @@
 
     
     if([self.beagleFriendsArray count]>0 && [self.facebookFriendsArray count]>0){
-        if(section==0)
+        if(section==0){
+            if([self.beagleFriendsArray count]>1)
             sectionLabel.text=[NSString stringWithFormat:@"%ld FRIENDS ON BEAGLE",(unsigned long)[self.beagleFriendsArray count]];
+            else
+                sectionLabel.text=[NSString stringWithFormat:@"%ld FRIEND ON BEAGLE",(unsigned long)[self.beagleFriendsArray count]];
+            
+        }
         else{
+             if([self.facebookFriendsArray count]>1)
             sectionLabel.text=[NSString stringWithFormat:@"INVITE %ld FRIENDS TO JOIN THE FUN",(unsigned long)[self.facebookFriendsArray count]];
+            else
+            sectionLabel.text=[NSString stringWithFormat:@"INVITE %ld FRIEND TO JOIN THE FUN",(unsigned long)[self.facebookFriendsArray count]];
+
         }
         
     }
     else if([self.beagleFriendsArray count]>0){
+                    if([self.beagleFriendsArray count]>1)
         sectionLabel.text=[NSString stringWithFormat:@"%ld FRIENDS ON BEAGLE",(unsigned long)[self.beagleFriendsArray count]];
+        else
+            sectionLabel.text=[NSString stringWithFormat:@"%ld FRIEND ON BEAGLE",(unsigned long)[self.beagleFriendsArray count]];
         
     }
-    else if ([self.facebookFriendsArray count]>0)
+    else if ([self.facebookFriendsArray count]>0){
+                     if([self.facebookFriendsArray count]>1)
         sectionLabel.text=[NSString stringWithFormat:@"INVITE %ld FRIENDS TO JOIN THE FUN",(unsigned long)[self.facebookFriendsArray count]];
+        else
+            sectionLabel.text=[NSString stringWithFormat:@"INVITE %ld FRIEND TO JOIN THE FUN",(unsigned long)[self.facebookFriendsArray count]];
+
+    }
 
      return sectionHeaderview;
     
@@ -332,10 +358,49 @@
     
     return 66.0f;
 }
+
+-(BOOL)showBottomLineOrNot:(NSIndexPath*)cellIndexPath{
+    NSInteger count=0;
+
+    if([self.beagleFriendsArray count]>0 && [self.facebookFriendsArray count]>0){
+        if(cellIndexPath.section==0){
+            count=[self.beagleFriendsArray count];
+            return YES;
+        }
+        else{
+            count=[self.facebookFriendsArray count];
+            if(count==cellIndexPath.row+1)
+                return NO;
+            else{
+                return YES;
+            }
+        }
+        
+    }
+    else if([self.beagleFriendsArray count]>0){
+        count=[self.beagleFriendsArray count];
+        if(count==cellIndexPath.row+1)
+            return NO;
+        else{
+            return YES;
+        }
+
+    }
+    else if ([self.facebookFriendsArray count]>0){
+        count=[self.facebookFriendsArray count];
+        if(count==cellIndexPath.row+1)
+            return NO;
+        else{
+            return YES;
+        }
+
+    }
+
+  return YES;
+}
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *CellIdentifier = @"MediaTableCell";
     
-    NSInteger count=0;
     FriendsTableViewCell *cell = [[FriendsTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     cell.selectionStyle=UITableViewCellSelectionStyleNone;
     
@@ -344,21 +409,17 @@
     if([self.beagleFriendsArray count]>0 && [self.facebookFriendsArray count]>0){
         if(indexPath.section==0){
             player = (BeagleUserClass *)[self.beagleFriendsArray objectAtIndex:indexPath.row];
-            count=[self.beagleFriendsArray count];
         }
         else{
             player = (BeagleUserClass *)[self.facebookFriendsArray objectAtIndex:indexPath.row];
-            count=[self.facebookFriendsArray count];
         }
         
     }
     else if([self.beagleFriendsArray count]>0){
         player = (BeagleUserClass *)[self.beagleFriendsArray objectAtIndex:indexPath.row];
-        count=[self.beagleFriendsArray count];
     }
     else if ([self.facebookFriendsArray count]>0){
         player = (BeagleUserClass *)[self.facebookFriendsArray objectAtIndex:indexPath.row];
-        count=[self.facebookFriendsArray count];
     }
     cell.delegate=self;
     cell.cellIndexPath=indexPath;
@@ -387,7 +448,7 @@
         player.profileData=UIImagePNGRepresentation(checkImge);
         cell.photoImage =checkImge;
     }
-    if(count!=indexPath.row+1){
+    if([self showBottomLineOrNot:indexPath]){
         UIView* lineSeparator = [[UIView alloc] initWithFrame:CGRectMake(16, 60, 288, 1)];
         lineSeparator.backgroundColor = [BeagleUtilities returnBeagleColor:2];
         [cell addSubview:lineSeparator];
@@ -671,9 +732,12 @@
                     [_profileLabel setTitle:[NSString stringWithFormat:@"%ld Mutual Friends",(long)[self.beagleFriendsArray count]+[self.facebookFriendsArray count]] forState:UIControlStateNormal];
                     NSLog(@"%ld Mutual Friends",(long)[self.beagleFriendsArray count]+[self.facebookFriendsArray count]);
                     }
-                }else{
+                else{
                     [_profileLabel setTitle:[NSString stringWithFormat:@"%ld Mutual Friend",(long)[self.beagleFriendsArray count]+[self.facebookFriendsArray count]] forState:UIControlStateNormal];
                     NSLog(@"%ld Mutual Friend",(long)[self.beagleFriendsArray count]+[self.facebookFriendsArray count]);
+                }
+                }else{
+                  [self updateCityLabelText:[self.beagleFriendsArray count]+[self.facebookFriendsArray count]];
                 }
                 [self.friendsTableView reloadData];
             }

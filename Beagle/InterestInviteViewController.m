@@ -414,32 +414,161 @@
     
     
     if (isSearching){
-        sectionLabel.text=@"SEARCH RESULTS";
-    
+        if([self.searchResults count]==1)
+            sectionLabel.text=@"SEARCH RESULT";
+        else{
+            sectionLabel.text=@"SEARCH RESULTS";
+        }
     }
-    
     else{
       if([self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0 && [self.selectedFriendsArray count]==0){
-         if(section==0)
-            sectionLabel.text=@"FRIENDS AROUND YOU";
-        else if(section==1)
+          if(section==0){
+              if([self.nearbyFriendsArray count]>1)
+                  sectionLabel.text=@"FRIENDS AROUND YOU";
+              else{
+                  sectionLabel.text=@"FRIEND AROUND YOU";
+              }
+              
+          }
+          else if(section==1){
+         if([self.worldwideFriendsArray count]>1)
             sectionLabel.text=@"FRIENDS WORLDWIDE";
+         else{
+            sectionLabel.text=@"FRIEND WORLDWIDE";
+         }
+             
+        }
       }
-    else if([self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]==0)
-            sectionLabel.text=@"FRIENDS AROUND YOU";
-
-    else if ([self.worldwideFriendsArray count]>0&& [self.nearbyFriendsArray count]==0)
-            sectionLabel.text=@"FRIENDS WORLDWIDE";
+      else if([self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]==0){
+          if([self.nearbyFriendsArray count]>1)
+              sectionLabel.text=@"FRIENDS AROUND YOU";
+          else{
+              sectionLabel.text=@"FRIEND AROUND YOU";
+          }
+      }
+      else if ([self.worldwideFriendsArray count]>0&& [self.nearbyFriendsArray count]==0){
+          if([self.worldwideFriendsArray count]>1)
+              sectionLabel.text=@"FRIENDS WORLDWIDE";
+          else{
+              sectionLabel.text=@"FRIEND WORLDWIDE";
+          }
+          
+      }
     else if([self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0 && [self.selectedFriendsArray count]>0){
-        if(section==1)
-            sectionLabel.text=@"FRIENDS AROUND YOU";
-        else if(section==2)
-            sectionLabel.text=@"FRIENDS WORLDWIDE";
+        if(section==1){
+            if([self.nearbyFriendsArray count]>1)
+                sectionLabel.text=@"FRIENDS AROUND YOU";
+            else{
+                sectionLabel.text=@"FRIEND AROUND YOU";
+            }
+            
+        }
+        else if(section==2){
+            if([self.worldwideFriendsArray count]>1)
+                sectionLabel.text=@"FRIENDS WORLDWIDE";
+            else{
+                sectionLabel.text=@"FRIEND WORLDWIDE";
+            }
+            
+        }
      }
 
     }
     return sectionHeaderview;
     
+}
+
+-(BOOL)showBottomLineOrNot:(NSIndexPath*)cellIndexPath{
+    NSInteger count=0;
+    
+    
+    if(isSearching){
+        count=[self.searchResults count];
+        if(count==cellIndexPath.row+1){
+            return NO;
+        }
+        return YES;
+    }else{
+        if([self.selectedFriendsArray count]>0 && [self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0){
+            if(cellIndexPath.section==0){
+                count = [self.selectedFriendsArray count];
+                return YES;
+            }
+            else if(cellIndexPath.section==1){
+                count = [self.nearbyFriendsArray count];
+                return YES;
+            }
+            else{
+                count = [self.worldwideFriendsArray count];
+                if(cellIndexPath.row+1==count){
+                    return NO;
+                }
+                return YES;
+            }
+            
+        }
+        else if([self.selectedFriendsArray count]>0 &&[self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]==0){
+            if(cellIndexPath.section==0)
+                return YES;
+            else{
+                count = [self.nearbyFriendsArray count];
+                if(cellIndexPath.row+1==count){
+                    return NO;
+                }
+                return YES;
+            }
+            
+            
+        }
+        else if ([self.selectedFriendsArray count]>0 && [self.worldwideFriendsArray count]>0&& [self.nearbyFriendsArray count]==0){
+            if(cellIndexPath.section==0)
+                return YES;
+            else{
+                count = [self.worldwideFriendsArray count];
+                if(cellIndexPath.row+1==count){
+                    return NO;
+                }
+                return YES;
+            }
+        }
+        else if([self.selectedFriendsArray count]==0 && [self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]>0){
+            if(cellIndexPath.section==0)
+                return YES;
+            else{
+                count = [self.worldwideFriendsArray count];
+                if(cellIndexPath.row+1==count){
+                    return NO;
+                }
+                return YES;
+            }
+            
+        }
+        else if([self.selectedFriendsArray count]==0 && [self.nearbyFriendsArray count]>0 && [self.worldwideFriendsArray count]==0){
+            count = [self.nearbyFriendsArray count];
+            if(cellIndexPath.row+1==count){
+                return NO;
+            }
+            return YES;
+
+            
+        }
+        else if ([self.selectedFriendsArray count]==0 && [self.nearbyFriendsArray count]==0 && [self.worldwideFriendsArray count]>0){
+            count = [self.worldwideFriendsArray count];
+            if(cellIndexPath.row+1==count){
+                return NO;
+            }
+            return YES;
+        }
+        
+        else if ([self.selectedFriendsArray count]>0 && [self.nearbyFriendsArray count]==0 && [self.worldwideFriendsArray count]==0){
+            count = [self.selectedFriendsArray count];
+            if(cellIndexPath.row+1==count){
+                return NO;
+            }
+            return YES;
+        }
+    }
+    return YES;
 }
 -(CGFloat)tableView:(UITableView*)tableView heightForRowAtIndexPath:(NSIndexPath*)indexPath {
     
@@ -531,6 +660,15 @@
     }else{
         player.profileData=UIImagePNGRepresentation(checkImge);
         cell.photoImage =checkImge;
+    }
+    if([self showBottomLineOrNot:indexPath]){
+        UIView* lineSeparator = [[UIView alloc] initWithFrame:CGRectMake(16, 65, 288, 1)];
+        if(player.isInvited)
+            lineSeparator.backgroundColor = [UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:0];
+        else{
+            lineSeparator.backgroundColor = [UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1.0];
+        }
+        [cell addSubview:lineSeparator];
     }
     
     [cell setNeedsDisplay];
