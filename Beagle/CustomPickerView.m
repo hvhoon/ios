@@ -67,7 +67,7 @@
      year =[components year]; // gives you year
     
     NSLog(@"month=%li,year=%li",(long)month,(long)year);
-
+    pickerView.minuteInterval=5.0f;
     monthNow=month;
     yearNow=year;
     yearArray=[NSArray arrayWithObjects:[NSNumber numberWithInteger:year],[NSNumber numberWithInteger:year+1],[NSNumber numberWithInteger:year+2], nil];
