@@ -999,7 +999,9 @@ enum Weeks {
     [components setSecond:[components second]];
     
     self.bg_activity.startActivityDate=[dateFormatter stringFromDate:[calendar dateFromComponents:components]];
-
+    [components setHour: [components hour]+3];
+    [components setMinute:[components minute]+1];
+    [components setSecond:[components second]+1];
     self.bg_activity.endActivityDate=[dateFormatter stringFromDate:[calendar dateFromComponents:components]];
     
     

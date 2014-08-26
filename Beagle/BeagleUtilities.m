@@ -504,7 +504,7 @@
     
     // When pick a date option is selected
     
-    if([startActivityDate timeIntervalSinceDate:endActivityDate]==0.0){
+    if([endActivityDate timeIntervalSinceDate:startActivityDate]==10861.0){
         NSCalendar* calendar = [NSCalendar currentCalendar];
         
         NSString *eventDateString = [dateFormatter stringFromDate:startActivityDate];

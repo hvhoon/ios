@@ -27,10 +27,9 @@
 #define kSuggestedPost 24
 #define waitBeforeLoadingDefaultImage 20.0f
 
-@interface HomeViewController ()<UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,HomeTableViewCellDelegate,ServerManagerDelegate,IconDownloaderDelegate,BlankHomePageViewDelegate,EventInterestFilterBlurViewDelegate,InAppNotificationViewDelegate,CreateAnimationBlurViewDelegate>{
+@interface HomeViewController ()<UITableViewDataSource,UITableViewDelegate,HomeTableViewCellDelegate,ServerManagerDelegate,IconDownloaderDelegate,BlankHomePageViewDelegate,EventInterestFilterBlurViewDelegate,InAppNotificationViewDelegate,CreateAnimationBlurViewDelegate>{
     UIView *topNavigationView;
     UIView*bottomNavigationView;
-    BOOL footerActivated;
     ServerManager *homeActivityManager;
     NSMutableDictionary *imageDownloadsInProgress;
     NSInteger count;
@@ -757,6 +756,7 @@
 
 }
 - (void)refresh {
+    
     NSLog(@"Starting up query");
     if(isPushAuto) {
         
@@ -1286,72 +1286,6 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-- (void)searchBarCancelButtonClicked:(UISearchBar *)aSearchBar
-{
-    [self hideSearchBarAndAnimateWithListViewInMiddle];
-
-    
-}
-
--(void)searchIconClicked:(id)sender{
-    
-    //[self showSearchBarAndAnimateWithListViewInMiddle];
-}
--(void)showSearchBarAndAnimateWithListViewInMiddle{
-    
-    if (!footerActivated) {
-		[UIView beginAnimations:@"expandFooter" context:nil];
-		[UIView setAnimationDelegate:self];
-		[UIView setAnimationDuration:0.3];
-		[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-        
-        CGRect tableViewFrame = self.tableView.frame;
-        tableViewFrame.origin.y = 64;
-        
-        
-		[bottomNavigationView setHidden:YES];
-        [self.tableView setFrame:tableViewFrame];
-        
-        self.tableView.tableHeaderView=nil;
-        
-        UISearchBar *headerView = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-        headerView.hidden = NO;
-        headerView.delegate=self;
-        self.tableView.tableHeaderView = headerView;
-        headerView.showsCancelButton=YES;
-        [headerView becomeFirstResponder];
-
-		[UIView commitAnimations];
-		footerActivated = YES;
-	}
-
-}
-
--(void)hideSearchBarAndAnimateWithListViewInMiddle{
-    
-    if (footerActivated) {
-		[UIView beginAnimations:@"collapseFooter" context:nil];
-		[UIView setAnimationDelegate:self];
-		[UIView setAnimationDuration:0.3];
-		[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-		[bottomNavigationView setHidden:NO];
-        CGRect tableViewFrame = self.tableView.frame;
-        tableViewFrame.origin.y = 211;
-        
-        [self.tableView setFrame:tableViewFrame];
-		[UIView commitAnimations];
-		footerActivated = NO;
-	}
-}
-
-- (NSInteger)tableViewHeight
-{
-	[self.tableView layoutIfNeeded];
-	NSInteger tableheight;
-	tableheight=[self.tableView contentSize].height;
-    [[NSUserDefaults standardUserDefaults]setObject:[NSNumber numberWithInteger:tableheight] forKey:@"height"];
-	return tableheight;
-}
 #pragma mark - EventInterestFilterBlurView delegate calls
 
 -(void)changeInterestFilter:(NSInteger)index{
@@ -1431,7 +1365,6 @@
 
 
 -(void)filterByCategoryType:(NSInteger)type{
-    footerActivated=TRUE;
     firstTime=FALSE;
     self.imageDownloadsInProgress = [NSMutableDictionary dictionary];
     switch (type) {
@@ -1564,10 +1497,7 @@
     }
     if([self.tableData count]!=0){
         
-        if([self.tableData count]>=3){
-            footerActivated=FALSE;
-        }
-            self.tableView.scrollEnabled=YES;
+        self.tableView.scrollEnabled=YES;
     }
     else{
         self.tableView.scrollEnabled=NO;
