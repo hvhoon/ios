@@ -18,10 +18,12 @@
     NSInteger year;
     NSInteger month;
 }
+@property(nonatomic,strong)NSDate *lastPickDate;
 @end
 
 @implementation CustomPickerView
 @synthesize delegate=_delegate;
+@synthesize lastPickDate;
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
@@ -44,6 +46,7 @@
     [self addGestureRecognizer:singleTap];
 
     [ pickerView setMinimumDate:[NSDate date]];
+    lastPickDate=pickerView.date;
     NSDate *today = [[NSDate alloc] init];
     NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     NSDateComponents *offsetComponents = [[NSDateComponents alloc] init];
@@ -148,14 +151,28 @@
 }
 -(void)dateChange:(id)sender{
     
-    NSDate *currentDate = pickerView.date;
     NSCalendar* calendar = [NSCalendar currentCalendar];
-    NSDateComponents* components = [calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:currentDate]; // Get necessary date components
+    NSDateComponents* components = [calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit|NSHourCalendarUnit|NSMinuteCalendarUnit|NSSecondCalendarUnit fromDate:pickerView.date]; // Get necessary date components
     
     monthNow =[components month]; //gives you month
     yearNow =[components year]; // gives you year
     
     monthYearLabel.text=[NSString stringWithFormat:@"%@ %li",[monthArray objectAtIndex:monthNow-1],(long)yearNow];
+    
+    NSDateComponents*lastDatecomponents = [calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit|NSHourCalendarUnit|NSMinuteCalendarUnit|NSSecondCalendarUnit fromDate:lastPickDate]; // Get necessary date components
+    
+    
+    if(([lastDatecomponents day]-[components day])!=0){
+        [components setHour:9];
+        [components setMinute:0];
+        [components setSecond:0];
+
+        [pickerView setDate:[[NSCalendar currentCalendar] dateFromComponents:components] animated:YES];
+    }
+    
+    
+    lastPickDate = pickerView.date;
+
 }
 -(IBAction)pickDateSelected:(id)sender{
     if (self.delegate && [self.delegate respondsToSelector:@selector(datePicked:)])
