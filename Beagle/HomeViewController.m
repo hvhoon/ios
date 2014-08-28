@@ -644,6 +644,17 @@
 
 }
 
+-(void) beginIgnoringIteractions {
+    if (![[UIApplication sharedApplication] isIgnoringInteractionEvents]) {
+        [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+    }
+}
+-(void) endIgnoringInteractions {
+    if ([[UIApplication sharedApplication] isIgnoringInteractionEvents]) {
+        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+    }
+}
+
 #pragma mark InAppNotificationView Handler
 - (void)notificationView:(InAppNotificationView *)inAppNotification didDismissWithButtonIndex:(NSInteger)buttonIndex{
     
@@ -1625,7 +1636,9 @@
     ExpressInterestPreview *preview=[[ExpressInterestPreview alloc]initWithFrame:CGRectMake(0, 0, 320, play.heightRow) orgn:play.organizerName];
     preview.tag=1374;
     [cell insertSubview:preview aboveSubview:cell.contentView];
-    self.tableView.scrollEnabled=NO;
+//    self.tableView.scrollEnabled=NO;
+    
+    [self beginIgnoringIteractions];
     
     // Animation
     CATransition *animation = [CATransition animation];
@@ -1656,7 +1669,7 @@
     [animation setDuration:0.75];
     [[cell layer] addAnimation:animation forKey:@"UITableViewReloadDataAnimationKey"];
 
-    [self performSelector:@selector(hideView:) withObject:preview afterDelay:3];
+    [self performSelector:@selector(hideView:) withObject:preview afterDelay:3.0f];
 
     
     
@@ -1676,7 +1689,8 @@
                      completion:^(BOOL finished) {
                          // Completion Block
 
-                         self.tableView.scrollEnabled=YES;
+//                         self.tableView.scrollEnabled=YES;
+                             [self endIgnoringInteractions];
                          [self filterByCategoryType:categoryFilterType];
                          [pView removeFromSuperview];
                          
@@ -1983,7 +1997,8 @@
 
                     ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
                     [preview removeFromSuperview];
-                    self.tableView.scrollEnabled=YES;
+//                    self.tableView.scrollEnabled=YES;
+                     [self endIgnoringInteractions];
                     NSString *message = NSLocalizedString (@"You have already joined.",
                                                            @"Already Joined");
                     BeagleAlertWithMessage(message);
@@ -2056,7 +2071,8 @@
                     
                     ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
                     [preview removeFromSuperview];
-                    self.tableView.scrollEnabled=YES;
+//                    self.tableView.scrollEnabled=YES;
+                     [self endIgnoringInteractions];
 
                 }
             }
@@ -2191,7 +2207,8 @@
             ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
             
             [preview removeFromSuperview];
-            self.tableView.scrollEnabled=YES;
+//            self.tableView.scrollEnabled=YES;
+             [self endIgnoringInteractions];
         }
     }
 }
@@ -2235,7 +2252,8 @@
         ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
         
         [preview removeFromSuperview];
-        self.tableView.scrollEnabled=YES;
+//        self.tableView.scrollEnabled=YES;
+         [self endIgnoringInteractions];
         }
     }
 
