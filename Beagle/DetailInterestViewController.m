@@ -69,7 +69,7 @@ static NSString * const CellIdentifier = @"cell";
 
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     [self.navigationController.navigationBar setTintColor:[[BeagleManager SharedInstance] darkDominantColor]];
-    
+
     BeagleManager *BG=[BeagleManager SharedInstance];
     if(BG.activityDeleted){
         BG.activityDeleted=FALSE;
@@ -362,8 +362,10 @@ static NSString * const CellIdentifier = @"cell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(0, -60)
+                                                         forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.topItem.title = @"";
-    
+
     if(!isRedirected)
       [self createInterestInitialCard];
 
