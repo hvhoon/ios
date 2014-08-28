@@ -45,7 +45,13 @@
     singleTap.numberOfTapsRequired = 1;
     [self addGestureRecognizer:singleTap];
 
-    [ pickerView setMinimumDate:[NSDate date]];
+    NSDateComponents *time = [[NSCalendar currentCalendar]
+                              components:NSHourCalendarUnit | NSMinuteCalendarUnit
+                              fromDate:[NSDate date]];
+    
+    NSInteger minutes = [time minute];
+    int remain = minutes % 5;
+    [ pickerView setMinimumDate:[[NSDate date] dateByAddingTimeInterval:60*(5-remain)]];
     lastPickDate=pickerView.date;
     NSDate *today = [[NSDate alloc] init];
     NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
@@ -78,6 +84,17 @@
     monthYearLabel.text=[NSString stringWithFormat:@"%@ %@",[monthArray objectAtIndex:month-1],[yearArray objectAtIndex:0]];
 }
 
+
+-(void)updateTheDateInEditMode{
+    NSDateComponents *time = [[NSCalendar currentCalendar]
+                              components:NSHourCalendarUnit | NSMinuteCalendarUnit
+                              fromDate:[NSDate date]];
+    
+    NSInteger minutes = [time minute];
+    int remain = minutes % 5;
+    [ pickerView setMinimumDate:[[NSDate date] dateByAddingTimeInterval:60*(5-remain)]];
+
+}
 -(IBAction)leftButtonClicked:(id)sender{
     if(yearNow-year==0 && month-monthNow==0){
         return;
@@ -103,9 +120,9 @@
     [comps setDay:[components day]];
     [comps setMonth:monthNow];
     [comps setYear:yearNow];
-    [comps setHour:[components hour]];
-    [comps setMinute:[components minute]];
-    [comps setSecond:[components second]];
+    [comps setHour:9];
+    [comps setMinute:0];
+    [comps setSecond:0];
 
     [pickerView setDate:[[NSCalendar currentCalendar] dateFromComponents:comps] animated:YES];
     
@@ -134,9 +151,9 @@
     [comps setDay:[components day]];
     [comps setMonth:monthNow];
     [comps setYear:yearNow];
-    [comps setHour:[components hour]];
-    [comps setMinute:[components minute]];
-    [comps setSecond:[components second]];
+    [comps setHour:9];
+    [comps setMinute:0];
+    [comps setSecond:0];
 
     [pickerView setDate:[[NSCalendar currentCalendar] dateFromComponents:comps] animated:YES];
 
@@ -151,6 +168,7 @@
 }
 -(void)dateChange:(id)sender{
     
+    [self updateTheDateInEditMode];
     NSCalendar* calendar = [NSCalendar currentCalendar];
     NSDateComponents* components = [calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit|NSHourCalendarUnit|NSMinuteCalendarUnit|NSSecondCalendarUnit fromDate:pickerView.date]; // Get necessary date components
     

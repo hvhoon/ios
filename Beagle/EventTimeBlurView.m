@@ -17,12 +17,12 @@
 @property(nonatomic, assign) CGPoint location;
 @property(nonatomic, strong) BlurColorComponents *colorComponents;
 @property(nonatomic, strong) dispatch_source_t timer;
-
+@property(nonatomic,strong)CustomPickerView *pickerView;
 @end
 
 @implementation EventTimeBlurView
 @synthesize delegate;
-
+@synthesize pickerView;
 -(id)initWithFrame:(CGRect)frame parentView:(UIView*)view{
     
     self = [super initWithFrame:frame];
@@ -75,15 +75,15 @@
                         [customPickerView setBackgroundColor:[UIColor clearColor]];
                         
                         NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"CustomPickerView" owner:self options:nil];
-                        CustomPickerView *view=[nib objectAtIndex:0];
-                        view.frame=CGRectMake(0, 0,frame.size.width,frame.size.height);
-                        view.userInteractionEnabled=YES;
+                        pickerView=[nib objectAtIndex:0];
+                        pickerView.frame=CGRectMake(0, 0,frame.size.width,frame.size.height);
+                        pickerView.userInteractionEnabled=YES;
                         
                         customPickerView.userInteractionEnabled=YES;
                         [_scrollView addSubview:customPickerView];
-                        [customPickerView addSubview:view];
-                        [view buildTheLogic];
-                        view.delegate=self;
+                        [customPickerView addSubview:pickerView];
+                        [pickerView buildTheLogic];
+                         pickerView.delegate=self;
                         
                     }
                         break;
@@ -159,7 +159,7 @@
                         CustomPickerView *view=[nib objectAtIndex:0];
                         view.frame=CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
                         view.userInteractionEnabled=YES;
-                        
+                        view.tag=542;
                         customPickerView.userInteractionEnabled=YES;
                         [_scrollView addSubview:customPickerView];
                         [customPickerView addSubview:view];
@@ -190,7 +190,9 @@
     
     return self;
 }
-
+-(void)updatePickerDateForEditState{
+    [pickerView updateTheDateInEditMode];
+}
 -(void) filterIndex:(NSInteger) index{
     
     switch (index) {

@@ -23,6 +23,7 @@
 + (EventTimeBlurView *) loadTimeFilter:(UIView *) view;
 + (EventTimeBlurView *) loadWithLocation:(CGPoint) point parent:(UIView *) view;
 - (void) unload;
+-(void)updatePickerDateForEditState;
 - (void) crossDissolveShow;
 - (void) crossDissolveHide;
 - (void) blurWithColor:(BlurColorComponents *) components;

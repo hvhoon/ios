@@ -11,6 +11,7 @@
 @interface CustomPickerView : UIView
 @property (nonatomic, assign) id<CustomPickerViewDelegate> delegate;
 -(void)buildTheLogic;
+-(void)updateTheDateInEditMode;
 @end
 @protocol CustomPickerViewDelegate<NSObject>
 @optional
