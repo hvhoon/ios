@@ -1668,7 +1668,7 @@
     [animation setFillMode:kCAFillModeBoth];
     [animation setDuration:0.75];
     [[cell layer] addAnimation:animation forKey:@"UITableViewReloadDataAnimationKey"];
-
+    [self endIgnoringInteractions];
     [self performSelector:@selector(hideView:) withObject:preview afterDelay:3.0f];
 
     
@@ -1690,7 +1690,7 @@
                          // Completion Block
 
 //                         self.tableView.scrollEnabled=YES;
-                             [self endIgnoringInteractions];
+//                             [self endIgnoringInteractions];
                          [self filterByCategoryType:categoryFilterType];
                          [pView removeFromSuperview];
                          
