@@ -37,7 +37,6 @@ enum Weeks {
     IBOutlet UIImageView *backgroundView;
     ServerManager *activityServerManager;
     ServerManager *deleteActivityManager;
-    IBOutlet UIImageView *visibilityImageView;
     NSInteger timeIndex;
     NSInteger visibilityIndex;
     NSTimer *timer;
@@ -213,7 +212,6 @@ enum Weeks {
         [timeFilterButton setTitle:[BeagleUtilities activityTime:self.bg_activity.startActivityDate endate:self.bg_activity.endActivityDate] forState:UIControlStateNormal];
         visibilityFilterButton.hidden=YES;
         deleteButton.hidden=NO;
-        visibilityImageView.hidden=YES;
         
         // Setting up the correct privacy text
         if([bg_activity.visibility isEqualToString:@"public"])
@@ -837,6 +835,12 @@ enum Weeks {
     [self.blrTimeView blurWithColor:[BlurColorComponents darkEffect]];
     [self.blrTimeView crossDissolveShow];
     [self.blrTimeView updatePickerDateForEditState];
+
+    if(editState){
+        if([BeagleUtilities checkIfTheDateHasBeenSetUsingAPicker:self.bg_activity.startActivityDate endDate:self.bg_activity.endActivityDate]){
+            [self.blrTimeView updatePickerTime:self.bg_activity.startActivityDate];
+        }
+    }
     UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
     
     [keyboard addSubview:self.blrTimeView];

@@ -193,6 +193,10 @@
 -(void)updatePickerDateForEditState{
     [pickerView updateTheDateInEditMode];
 }
+
+-(void)updatePickerTime:(NSString*)date{
+    [pickerView updateDatePicker:date];
+}
 -(void) filterIndex:(NSInteger) index{
     
     switch (index) {

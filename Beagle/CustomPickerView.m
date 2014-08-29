@@ -109,6 +109,28 @@
     [ pickerView setMinimumDate:[[NSDate date] dateByAddingTimeInterval:60*(5-remain)]];
 
 }
+
+-(void)updateDatePicker:(NSString*)interestDate{
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+    [dateFormatter setTimeZone:utcTimeZone];
+    NSDate *startActivityDate = [dateFormatter dateFromString:interestDate];
+    if([startActivityDate timeIntervalSinceDate:[NSDate date]]>0){
+            [pickerView setDate:startActivityDate animated:NO];
+    }else{
+        NSDateComponents *time = [[NSCalendar currentCalendar]
+                                  components:NSHourCalendarUnit | NSMinuteCalendarUnit
+                                  fromDate:[NSDate date]];
+        
+        NSInteger minutes = [time minute];
+        int remain = minutes % 5;
+        [pickerView setDate:[[NSDate date] dateByAddingTimeInterval:60*(5-remain)]];
+
+    }
+    lastPickDate=pickerView.minimumDate;
+
+}
 -(IBAction)leftButtonClicked:(id)sender{
     if(yearNow-year==0 && month-monthNow==0){
         return;

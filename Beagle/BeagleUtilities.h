@@ -34,4 +34,5 @@
 +(UIColor*)returnShadeOfColor:(UIColor*)inputColor withShade:(CGFloat)inputShade;
 +(UIColor*)returnLightColor:(UIColor*)inputColor withWhiteness:(CGFloat)white;
 +(BOOL)checkIfTheTextIsBlank:(NSString*)text;
++(BOOL)checkIfTheDateHasBeenSetUsingAPicker:(NSString*)startDate endDate:(NSString*)endDate;
 @end
