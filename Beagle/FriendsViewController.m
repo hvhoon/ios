@@ -728,13 +728,13 @@
                     
                 }
                 if(!inviteFriends){
-                    if(([self.beagleFriendsArray count]+[self.facebookFriendsArray count])>1){
-                    [_profileLabel setTitle:[NSString stringWithFormat:@"%ld Mutual Friends",(long)[self.beagleFriendsArray count]+[self.facebookFriendsArray count]] forState:UIControlStateNormal];
-                    NSLog(@"%ld Mutual Friends",(long)[self.beagleFriendsArray count]+[self.facebookFriendsArray count]);
+                    if(([self.beagleFriendsArray count]+[self.facebookFriendsArray count])==1){
+                        [_profileLabel setTitle:[NSString stringWithFormat:@"%ld Mutual Friend",(long)[self.beagleFriendsArray count]+[self.facebookFriendsArray count]] forState:UIControlStateNormal];
+                        NSLog(@"%ld Mutual Friend",(long)[self.beagleFriendsArray count]+[self.facebookFriendsArray count]);
                     }
-                else{
-                    [_profileLabel setTitle:[NSString stringWithFormat:@"%ld Mutual Friend",(long)[self.beagleFriendsArray count]+[self.facebookFriendsArray count]] forState:UIControlStateNormal];
-                    NSLog(@"%ld Mutual Friend",(long)[self.beagleFriendsArray count]+[self.facebookFriendsArray count]);
+                    else{
+                        [_profileLabel setTitle:[NSString stringWithFormat:@"%ld Mutual Friends",(long)[self.beagleFriendsArray count]+[self.facebookFriendsArray count]] forState:UIControlStateNormal];
+                        NSLog(@"%ld Mutual Friends",(long)[self.beagleFriendsArray count]+[self.facebookFriendsArray count]);
                 }
                 }else{
                   [self updateCityLabelText:[self.beagleFriendsArray count]+[self.facebookFriendsArray count]];
