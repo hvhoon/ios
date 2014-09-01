@@ -37,7 +37,6 @@ enum Weeks {
     IBOutlet UIImageView *backgroundView;
     ServerManager *activityServerManager;
     ServerManager *deleteActivityManager;
-    IBOutlet UIImageView *visibilityImageView;
     NSInteger timeIndex;
     NSInteger visibilityIndex;
     NSTimer *timer;
@@ -99,6 +98,8 @@ enum Weeks {
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    
     
     // All the variables we need to present this screen correctly
     self.blrTimeView=[[EventTimeBlurView alloc]initWithFrame:self.view.frame parentView:self.view];
@@ -191,7 +192,7 @@ enum Weeks {
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:248.0/255.0 green:248.0/255.0 blue:248.0/255.0 alpha:1.0]];
     [self.navigationController.navigationBar setTintColor:clickable];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(cancelButtonClicked:)];
-    
+        
     // Either way update the count given the text in the description field
     countTextLabel.text= [[NSString alloc] initWithFormat:@"%lu",(unsigned long)140-[descriptionTextView.text length]];
     [countTextLabel setTextAlignment:NSTextAlignmentRight];
@@ -213,7 +214,6 @@ enum Weeks {
         [timeFilterButton setTitle:[BeagleUtilities activityTime:self.bg_activity.startActivityDate endate:self.bg_activity.endActivityDate] forState:UIControlStateNormal];
         visibilityFilterButton.hidden=YES;
         deleteButton.hidden=NO;
-        visibilityImageView.hidden=YES;
         
         // Setting up the correct privacy text
         if([bg_activity.visibility isEqualToString:@"public"])
@@ -836,6 +836,13 @@ enum Weeks {
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
     [self.blrTimeView blurWithColor:[BlurColorComponents darkEffect]];
     [self.blrTimeView crossDissolveShow];
+    [self.blrTimeView updatePickerDateForEditState];
+
+    if(editState){
+        if([BeagleUtilities checkIfTheDateHasBeenSetUsingAPicker:self.bg_activity.startActivityDate endDate:self.bg_activity.endActivityDate]){
+            [self.blrTimeView updatePickerTime:self.bg_activity.startActivityDate];
+        }
+    }
     UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
     
     [keyboard addSubview:self.blrTimeView];
@@ -999,7 +1006,9 @@ enum Weeks {
     [components setSecond:[components second]];
     
     self.bg_activity.startActivityDate=[dateFormatter stringFromDate:[calendar dateFromComponents:components]];
-
+    [components setHour: [components hour]+3];
+    [components setMinute:[components minute]+1];
+    [components setSecond:[components second]+1];
     self.bg_activity.endActivityDate=[dateFormatter stringFromDate:[calendar dateFromComponents:components]];
     
     

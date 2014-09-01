@@ -27,10 +27,9 @@
 #define kSuggestedPost 24
 #define waitBeforeLoadingDefaultImage 20.0f
 
-@interface HomeViewController ()<UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,HomeTableViewCellDelegate,ServerManagerDelegate,IconDownloaderDelegate,BlankHomePageViewDelegate,EventInterestFilterBlurViewDelegate,InAppNotificationViewDelegate,CreateAnimationBlurViewDelegate>{
+@interface HomeViewController ()<UITableViewDataSource,UITableViewDelegate,HomeTableViewCellDelegate,ServerManagerDelegate,IconDownloaderDelegate,BlankHomePageViewDelegate,EventInterestFilterBlurViewDelegate,InAppNotificationViewDelegate,CreateAnimationBlurViewDelegate>{
     UIView *topNavigationView;
     UIView*bottomNavigationView;
-    BOOL footerActivated;
     ServerManager *homeActivityManager;
     NSMutableDictionary *imageDownloadsInProgress;
     NSInteger count;
@@ -645,6 +644,17 @@
 
 }
 
+-(void) beginIgnoringIteractions {
+    if (![[UIApplication sharedApplication] isIgnoringInteractionEvents]) {
+        [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+    }
+}
+-(void) endIgnoringInteractions {
+    if ([[UIApplication sharedApplication] isIgnoringInteractionEvents]) {
+        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+    }
+}
+
 #pragma mark InAppNotificationView Handler
 - (void)notificationView:(InAppNotificationView *)inAppNotification didDismissWithButtonIndex:(NSInteger)buttonIndex{
     
@@ -757,6 +767,7 @@
 
 }
 - (void)refresh {
+    
     NSLog(@"Starting up query");
     if(isPushAuto) {
         
@@ -1286,72 +1297,6 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-- (void)searchBarCancelButtonClicked:(UISearchBar *)aSearchBar
-{
-    [self hideSearchBarAndAnimateWithListViewInMiddle];
-
-    
-}
-
--(void)searchIconClicked:(id)sender{
-    
-    //[self showSearchBarAndAnimateWithListViewInMiddle];
-}
--(void)showSearchBarAndAnimateWithListViewInMiddle{
-    
-    if (!footerActivated) {
-		[UIView beginAnimations:@"expandFooter" context:nil];
-		[UIView setAnimationDelegate:self];
-		[UIView setAnimationDuration:0.3];
-		[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-        
-        CGRect tableViewFrame = self.tableView.frame;
-        tableViewFrame.origin.y = 64;
-        
-        
-		[bottomNavigationView setHidden:YES];
-        [self.tableView setFrame:tableViewFrame];
-        
-        self.tableView.tableHeaderView=nil;
-        
-        UISearchBar *headerView = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-        headerView.hidden = NO;
-        headerView.delegate=self;
-        self.tableView.tableHeaderView = headerView;
-        headerView.showsCancelButton=YES;
-        [headerView becomeFirstResponder];
-
-		[UIView commitAnimations];
-		footerActivated = YES;
-	}
-
-}
-
--(void)hideSearchBarAndAnimateWithListViewInMiddle{
-    
-    if (footerActivated) {
-		[UIView beginAnimations:@"collapseFooter" context:nil];
-		[UIView setAnimationDelegate:self];
-		[UIView setAnimationDuration:0.3];
-		[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-		[bottomNavigationView setHidden:NO];
-        CGRect tableViewFrame = self.tableView.frame;
-        tableViewFrame.origin.y = 211;
-        
-        [self.tableView setFrame:tableViewFrame];
-		[UIView commitAnimations];
-		footerActivated = NO;
-	}
-}
-
-- (NSInteger)tableViewHeight
-{
-	[self.tableView layoutIfNeeded];
-	NSInteger tableheight;
-	tableheight=[self.tableView contentSize].height;
-    [[NSUserDefaults standardUserDefaults]setObject:[NSNumber numberWithInteger:tableheight] forKey:@"height"];
-	return tableheight;
-}
 #pragma mark - EventInterestFilterBlurView delegate calls
 
 -(void)changeInterestFilter:(NSInteger)index{
@@ -1431,7 +1376,6 @@
 
 
 -(void)filterByCategoryType:(NSInteger)type{
-    footerActivated=TRUE;
     firstTime=FALSE;
     self.imageDownloadsInProgress = [NSMutableDictionary dictionary];
     switch (type) {
@@ -1564,10 +1508,7 @@
     }
     if([self.tableData count]!=0){
         
-        if([self.tableData count]>=3){
-            footerActivated=FALSE;
-        }
-            self.tableView.scrollEnabled=YES;
+        self.tableView.scrollEnabled=YES;
     }
     else{
         self.tableView.scrollEnabled=NO;
@@ -1695,7 +1636,9 @@
     ExpressInterestPreview *preview=[[ExpressInterestPreview alloc]initWithFrame:CGRectMake(0, 0, 320, play.heightRow) orgn:play.organizerName];
     preview.tag=1374;
     [cell insertSubview:preview aboveSubview:cell.contentView];
-    self.tableView.scrollEnabled=NO;
+//    self.tableView.scrollEnabled=NO;
+    
+    [self beginIgnoringIteractions];
     
     // Animation
     CATransition *animation = [CATransition animation];
@@ -1725,8 +1668,8 @@
     [animation setFillMode:kCAFillModeBoth];
     [animation setDuration:0.75];
     [[cell layer] addAnimation:animation forKey:@"UITableViewReloadDataAnimationKey"];
-
-    [self performSelector:@selector(hideView:) withObject:preview afterDelay:3];
+    [self endIgnoringInteractions];
+    [self performSelector:@selector(hideView:) withObject:preview afterDelay:3.0f];
 
     
     
@@ -1746,7 +1689,8 @@
                      completion:^(BOOL finished) {
                          // Completion Block
 
-                         self.tableView.scrollEnabled=YES;
+//                         self.tableView.scrollEnabled=YES;
+//                             [self endIgnoringInteractions];
                          [self filterByCategoryType:categoryFilterType];
                          [pView removeFromSuperview];
                          
@@ -2053,7 +1997,8 @@
 
                     ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
                     [preview removeFromSuperview];
-                    self.tableView.scrollEnabled=YES;
+//                    self.tableView.scrollEnabled=YES;
+                     [self endIgnoringInteractions];
                     NSString *message = NSLocalizedString (@"You have already joined.",
                                                            @"Already Joined");
                     BeagleAlertWithMessage(message);
@@ -2126,7 +2071,8 @@
                     
                     ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
                     [preview removeFromSuperview];
-                    self.tableView.scrollEnabled=YES;
+//                    self.tableView.scrollEnabled=YES;
+                     [self endIgnoringInteractions];
 
                 }
             }
@@ -2261,7 +2207,8 @@
             ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
             
             [preview removeFromSuperview];
-            self.tableView.scrollEnabled=YES;
+//            self.tableView.scrollEnabled=YES;
+             [self endIgnoringInteractions];
         }
     }
 }
@@ -2305,7 +2252,8 @@
         ExpressInterestPreview *preview=(ExpressInterestPreview*) [cell viewWithTag:1374];
         
         [preview removeFromSuperview];
-        self.tableView.scrollEnabled=YES;
+//        self.tableView.scrollEnabled=YES;
+         [self endIgnoringInteractions];
         }
     }
 

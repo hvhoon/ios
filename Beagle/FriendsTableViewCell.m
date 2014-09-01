@@ -128,9 +128,6 @@ static UIFont *secondTextFont = nil;
     
     }
     
-    UIView* lineSeparator = [[UIView alloc] initWithFrame:CGRectMake(16, 60, 288, 1)];
-    lineSeparator.backgroundColor = [BeagleUtilities returnBeagleColor:2];
-    [self addSubview:lineSeparator];
 }
 
 

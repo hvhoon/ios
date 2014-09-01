@@ -117,16 +117,6 @@ static UIFont *secondTextFont = nil;
         }
     
         [self setAccessoryView:accesoryButton];
-
-    CGRect seperatorRect = {16, 65, 288, 1};
-    
-    if (self.bgPlayer.isInvited)
-        CGContextSetRGBFillColor(context, 230.0/255.0, 230.0/255.0, 230.0/255.0, 0.0);
-    else
-        CGContextSetRGBFillColor(context, 230.0/255.0, 230.0/255.0, 230.0/255.0, 1.0);
-
-    CGContextFillRect(context, seperatorRect);
-    
 }
 
 -(void)accessoryButtonClickedToInvite:(id)sender{

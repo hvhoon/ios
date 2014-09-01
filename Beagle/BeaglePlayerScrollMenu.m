@@ -254,8 +254,8 @@
         }
     }
     else {
-        NSInteger value =(scrollView.contentOffset.x/55);
-        if([self.menuArray count]>=(value+4)){
+        NSInteger value =(scrollView.contentOffset.x/66);
+        if([self.menuArray count]>(value+4)){
             if ([_delegate respondsToSelector:@selector(showArrowIndicator)]) {
                 [_delegate showArrowIndicator];
             }

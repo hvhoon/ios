@@ -28,6 +28,8 @@
 - (void) blurWithColor:(BlurColorComponents *) components;
 - (void) blurWithColor:(BlurColorComponents *) components updateInterval:(float) interval;
 -(id)initWithFrame:(CGRect)frame parentView:(UIView*)view;
+-(void)updatePickerDateForEditState;
+-(void)updatePickerTime:(NSString*)date;
 @end
 
 @interface BlurColorComponents : NSObject

@@ -504,7 +504,7 @@
     
     // When pick a date option is selected
     
-    if([startActivityDate timeIntervalSinceDate:endActivityDate]==0.0){
+    if([endActivityDate timeIntervalSinceDate:startActivityDate]==10861.0){
         NSCalendar* calendar = [NSCalendar currentCalendar];
         
         NSString *eventDateString = [dateFormatter stringFromDate:startActivityDate];
@@ -824,5 +824,19 @@
     
     return NO;
 }
++(BOOL)checkIfTheDateHasBeenSetUsingAPicker:(NSString*)startDate endDate:(NSString*)endDate{
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+    [dateFormatter setTimeZone:utcTimeZone];
+    NSDate *startActivityDate = [dateFormatter dateFromString:startDate];
+    NSDate *endActivityDate = [dateFormatter dateFromString:endDate];
+    if([endActivityDate timeIntervalSinceDate:startActivityDate]==10861.0){
 
+    return YES;
+    }
+    return NO;
+
+}
 @end

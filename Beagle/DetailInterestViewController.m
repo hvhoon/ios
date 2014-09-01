@@ -69,7 +69,7 @@ static NSString * const CellIdentifier = @"cell";
 
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     [self.navigationController.navigationBar setTintColor:[[BeagleManager SharedInstance] darkDominantColor]];
-    
+
     BeagleManager *BG=[BeagleManager SharedInstance];
     if(BG.activityDeleted){
         BG.activityDeleted=FALSE;
@@ -362,8 +362,10 @@ static NSString * const CellIdentifier = @"cell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(0, -60)
+                                                         forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.topItem.title = @"";
-    
+
     if(!isRedirected)
       [self createInterestInitialCard];
 
@@ -906,10 +908,10 @@ static NSString * const CellIdentifier = @"cell";
                  [BeagleUtilities returnBeagleColor:4],NSForegroundColorAttributeName,
                  style, NSParagraphStyleAttributeName, nil];
         
-                _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, fromTheTop, 268, 55)];
+                _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, fromTheTop, 264, 53)];
                 scrollViewResize=FALSE;
                 _scrollMenu.tag=786;
-                _partcipantScrollArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(268+12+16, fromTheTop+13.5, 8, 16)];
+                _partcipantScrollArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(264+16+8, fromTheTop+13.5, 15, 20)];
                 _partcipantScrollArrowImageView.image = [UIImage imageNamed:@"Right-Scroll"];
                [_backgroundView addSubview:_scrollMenu];
                [self setUpPlayerScroll:self.interestActivity.participantsArray];
