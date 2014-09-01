@@ -911,7 +911,7 @@ static NSString * const CellIdentifier = @"cell";
                 _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, fromTheTop, 264, 53)];
                 scrollViewResize=FALSE;
                 _scrollMenu.tag=786;
-                _partcipantScrollArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(264+16+12, fromTheTop+13.5, 8, 16)];
+                _partcipantScrollArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(264+16+8, fromTheTop+13.5, 15, 20)];
                 _partcipantScrollArrowImageView.image = [UIImage imageNamed:@"Right-Scroll"];
                [_backgroundView addSubview:_scrollMenu];
                [self setUpPlayerScroll:self.interestActivity.participantsArray];
