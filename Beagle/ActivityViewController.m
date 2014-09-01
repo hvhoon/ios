@@ -99,6 +99,8 @@ enum Weeks {
 {
     [super viewDidLoad];
     
+    
+    
     // All the variables we need to present this screen correctly
     self.blrTimeView=[[EventTimeBlurView alloc]initWithFrame:self.view.frame parentView:self.view];
     self.blrVisbilityView=[EventVisibilityBlurView loadVisibilityFilter:self.view];
@@ -190,7 +192,7 @@ enum Weeks {
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:248.0/255.0 green:248.0/255.0 blue:248.0/255.0 alpha:1.0]];
     [self.navigationController.navigationBar setTintColor:clickable];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(cancelButtonClicked:)];
-    
+        
     // Either way update the count given the text in the description field
     countTextLabel.text= [[NSString alloc] initWithFormat:@"%lu",(unsigned long)140-[descriptionTextView.text length]];
     [countTextLabel setTextAlignment:NSTextAlignmentRight];
