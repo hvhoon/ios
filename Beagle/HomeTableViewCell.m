@@ -15,6 +15,8 @@ static UIFont *firstTextFont = nil;
 static UIFont *secondTextFont = nil;
 static UIFont *thirdTextFont = nil;
 static UIFont *forthTextFont = nil;
+static UIFont *dateTextFont = nil;
+
 #define DISABLED_ALPHA 0.5f
 + (void)initialize
 {
@@ -23,6 +25,7 @@ static UIFont *forthTextFont = nil;
         secondTextFont=[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
         thirdTextFont=[UIFont fontWithName:@"HelveticaNeue-Medium" size:15.0f];
         forthTextFont=[UIFont fontWithName:@"HelveticaNeue" size:15.0f];
+        dateTextFont =[UIFont fontWithName:@"HelveticaNeue" size:12.0f];
         
     }
 }
@@ -87,18 +90,18 @@ static UIFont *forthTextFont = nil;
     // Drawing the time label
     [style setAlignment:NSTextAlignmentRight];
     attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                            secondTextFont, NSFontAttributeName,
-                            [BeagleUtilities returnBeagleColor:4],NSForegroundColorAttributeName,
+                            dateTextFont, NSFontAttributeName,
+                            [[BeagleManager SharedInstance] darkDominantColor],NSForegroundColorAttributeName,
                             style, NSParagraphStyleAttributeName, nil];
     
-    CGSize dateTextSize = [[BeagleUtilities activityTime:bg_activity.startActivityDate endate:bg_activity.endActivityDate] boundingRectWithSize:CGSizeMake(300, r.size.height)
+    CGSize dateTextSize = [[[BeagleUtilities activityTime:bg_activity.startActivityDate endate:bg_activity.endActivityDate] uppercaseString] boundingRectWithSize:CGSizeMake(300, r.size.height)
                                                    options:NSStringDrawingUsesLineFragmentOrigin
                                                 attributes:attrs
                                                    context:nil].size;
     
     
-    [[BeagleUtilities activityTime:bg_activity.startActivityDate endate:bg_activity.endActivityDate] drawInRect:CGRectMake(304-dateTextSize.width,
-                                          fromTheTop,
+    [[[BeagleUtilities activityTime:bg_activity.startActivityDate endate:bg_activity.endActivityDate] uppercaseString] drawInRect:CGRectMake(304-dateTextSize.width,
+                                          fromTheTop+5,
                                           dateTextSize.width,dateTextSize.height) withAttributes:attrs];
 
     
