@@ -230,10 +230,10 @@ enum Weeks {
         self.navigationItem.rightBarButtonItem.enabled=NO;
         
         // Setting up the labels for a new activity
-        timeIndex=6;
+        timeIndex=1;
         visibilityIndex=2;
         [visibilityFilterButton setTitle:@"Friends" forState:UIControlStateNormal];
-        [timeFilterButton setTitle:@"This Weekend" forState:UIControlStateNormal];
+        [timeFilterButton setTitle:@"Later Today" forState:UIControlStateNormal];
         
         // Setting the visibility label
         switch (visibilityIndex) {

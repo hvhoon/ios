@@ -404,7 +404,7 @@ static NSString * const CellIdentifier = @"cell";
     NSString* screenTitle = [BeagleUtilities activityTime:self.interestActivity.startActivityDate endate:self.interestActivity.endActivityDate];
     self.navigationItem.title = screenTitle;
     
-    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [BeagleUtilities returnBeagleColor:4]}];
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [[BeagleManager SharedInstance] darkDominantColor]}];
     
     self.detailedInterestTableView = [[UITableView alloc] initWithFrame:CGRectZero
                                                                   style:UITableViewStylePlain];
@@ -1015,6 +1015,31 @@ static NSString * const CellIdentifier = @"cell";
         
         // Add button
         [_backgroundView addSubview:interestedButton];
+        
+        // Indicate if the activity is Invite only
+        if([self.interestActivity.visibility isEqualToString:@"custom"]) {
+            
+            // Text attributes
+            [style setAlignment:NSTextAlignmentRight];
+            attrs=[NSDictionary dictionaryWithObjectsAndKeys:
+                   [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f], NSFontAttributeName,
+                   [BeagleUtilities returnBeagleColor:6],NSForegroundColorAttributeName,
+                   style, NSParagraphStyleAttributeName, nil];
+            
+            // Adding the lock image
+            UIImageView *inviteOnlyIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Invite-only-icon"]];
+            inviteOnlyIcon.frame = CGRectMake(292, fromTheTop+10, 12, 15);
+            [_backgroundView addSubview:inviteOnlyIcon];
+            
+            // Adding the # of Friends
+            NSString* inviteText = @"Invite Only";
+            CGSize inviteOnlyTextSize = [inviteText boundingRectWithSize:CGSizeMake(288, 999) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
+            
+            UILabel* inviteOnlyText = [[UILabel alloc] initWithFrame:CGRectMake((320-(35+inviteOnlyTextSize.width)), fromTheTop+10, inviteOnlyTextSize.width, inviteOnlyTextSize.height)];
+            inviteOnlyText.attributedText = [[NSAttributedString alloc] initWithString:inviteText attributes:attrs];
+            [_backgroundView addSubview:inviteOnlyText];
+        }
+
     
         // Space left after the button
         fromTheTop += 33+20;

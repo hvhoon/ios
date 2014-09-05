@@ -122,6 +122,7 @@ static UIFont *dateTextFont = nil;
     
     [bg_activity.organizerName drawInRect:nameRect withAttributes:attrs];
     
+    // Removing the friends icons for now
     if(bg_activity.dosRelation!=0 && self.bg_activity.activityType!=2){
         if(bg_activity.dosRelation==1) {
             [[UIImage imageNamed:@"DOS2"] drawInRect:CGRectMake(75+8+organizerNameSize.width, 43, 27, 15)];
@@ -197,7 +198,6 @@ static UIFont *dateTextFont = nil;
         [suggestedButton addTarget:self action:@selector(suggestedBtnPressed:) forControlEvents:UIControlEventTouchUpInside];
         [suggestedButton setEnabled:YES];
 
-        
 }
     else{
 
