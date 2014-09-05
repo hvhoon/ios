@@ -25,7 +25,7 @@ static UIFont *dateTextFont = nil;
         secondTextFont=[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
         thirdTextFont=[UIFont fontWithName:@"HelveticaNeue-Medium" size:15.0f];
         forthTextFont=[UIFont fontWithName:@"HelveticaNeue" size:15.0f];
-        dateTextFont =[UIFont fontWithName:@"HelveticaNeue" size:12.0f];
+        dateTextFont =[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0f];
         
     }
 }
@@ -94,14 +94,14 @@ static UIFont *dateTextFont = nil;
                             [[BeagleManager SharedInstance] darkDominantColor],NSForegroundColorAttributeName,
                             style, NSParagraphStyleAttributeName, nil];
     
-    CGSize dateTextSize = [[[BeagleUtilities activityTime:bg_activity.startActivityDate endate:bg_activity.endActivityDate] uppercaseString] boundingRectWithSize:CGSizeMake(300, r.size.height)
+    CGSize dateTextSize = [[BeagleUtilities activityTime:bg_activity.startActivityDate endate:bg_activity.endActivityDate] boundingRectWithSize:CGSizeMake(300, r.size.height)
                                                    options:NSStringDrawingUsesLineFragmentOrigin
                                                 attributes:attrs
                                                    context:nil].size;
     
     
-    [[[BeagleUtilities activityTime:bg_activity.startActivityDate endate:bg_activity.endActivityDate] uppercaseString] drawInRect:CGRectMake(304-dateTextSize.width,
-                                          fromTheTop+5,
+    [[BeagleUtilities activityTime:bg_activity.startActivityDate endate:bg_activity.endActivityDate] drawInRect:CGRectMake(304-dateTextSize.width,
+                                          fromTheTop,
                                           dateTextSize.width,dateTextSize.height) withAttributes:attrs];
 
     
@@ -348,6 +348,25 @@ static UIFont *dateTextFont = nil;
         [interestedButton setImageEdgeInsets:UIEdgeInsetsMake(0.0f, -12.0f, 0.0f, 0.0f)];
         [interestedButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f)];
         }
+    }
+    
+    // Indicate if the activity is Invite only
+    if([self.bg_activity.visibility isEqualToString:@"custom"]) {
+        
+        // Text attributes
+        [style setAlignment:NSTextAlignmentRight];
+        attrs=[NSDictionary dictionaryWithObjectsAndKeys:
+               secondTextFont, NSFontAttributeName,
+               [BeagleUtilities returnBeagleColor:6],NSForegroundColorAttributeName,
+               style, NSParagraphStyleAttributeName, nil];
+        
+        // Adding the lock image
+        [[UIImage imageNamed:@"Invite-only-icon"] drawInRect:CGRectMake(292, fromTheTop+10, 12, 15)];
+        
+        // Adding the # of Friends
+        CGSize inviteOnlyTextSize = [@"Invite Only" boundingRectWithSize:CGSizeMake(288, r.size.height) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
+        
+        [@"Invite Only" drawInRect:CGRectMake((320-(35+inviteOnlyTextSize.width)), fromTheTop+10, inviteOnlyTextSize.width, inviteOnlyTextSize.height) withAttributes:attrs];
     }
 
     // Space left after the button
