@@ -503,8 +503,7 @@
     NSTimeInterval Interval=[endActivityDate timeIntervalSinceDate:[NSDate date]];
     
     // When pick a date option is selected
-    
-    if([endActivityDate timeIntervalSinceDate:startActivityDate]==10861.0){
+    if([endActivityDate timeIntervalSinceDate:startActivityDate]==10861.0 || [endActivityDate timeIntervalSinceDate:startActivityDate]==0){
         NSCalendar* calendar = [NSCalendar currentCalendar];
         
         NSString *eventDateString = [dateFormatter stringFromDate:startActivityDate];
@@ -526,8 +525,6 @@
         NSInteger differenceInDays =
         [calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSEraCalendarUnit forDate:destinationDate]-
         [calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSEraCalendarUnit forDate:currentDateTime];
-
-        
         
         if(differenceInDays==0){
             NSDateFormatter *localDateFormatter = [[NSDateFormatter alloc] init];
@@ -583,6 +580,7 @@
     else if ([[NSDate date] timeIntervalSinceDate:startActivityDate]>=0 && [endActivityDate timeIntervalSinceDate:endOfNextWeekend]>0)
         return @"This Month";
     
+    // If it doesn't fit in anywhere
     dateFormatter.dateFormat=@"EEE, MMM d";
     return [dateFormatter stringFromDate:endActivityDate];
 
