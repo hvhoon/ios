@@ -142,6 +142,11 @@ void uncaughtExceptionHandler(NSException *exception) {
 	// Set a movement threshold for new events.
 	locationManager.distanceFilter = kCLLocationAccuracyThreeKilometers;
     
+    // IOS 8 Support
+    if([locationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
+        [locationManager requestAlwaysAuthorization];
+    }
+    
 	[locationManager startUpdatingLocation];
     
 	CLLocation *currentLoc = locationManager.location;
