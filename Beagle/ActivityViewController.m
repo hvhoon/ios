@@ -117,6 +117,7 @@ enum Weeks {
     NSString *visibilityText = nil;
     [self.blrVisbilityView updateConstraints];
     UIColor* clickable = [[BeagleManager SharedInstance] darkDominantColor];
+    UIColor* outlineColor = [[BeagleManager SharedInstance] mediumDominantColor];
     
     self.animationBlurView=[CreateAnimationBlurView loadCreateAnimationView:self.view];
     self.animationBlurView.delegate=self;
@@ -140,12 +141,16 @@ enum Weeks {
     [visibilityFilterButton setTitleColor:[clickable colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
     [visibilityFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Visibility"] withColor:clickable] forState:UIControlStateNormal];
     [visibilityFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Visibility"] withColor:[clickable colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+    [visibilityFilterButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button-Outline-Visibility"] withColor:outlineColor] forState:UIControlStateNormal];
+    [visibilityFilterButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button-Outline-Visibility"] withColor:[outlineColor colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
     
     // Time text and image
     [timeFilterButton setTitleColor:clickable forState:UIControlStateNormal];
     [timeFilterButton setTitleColor:[clickable colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
     [timeFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Time"] withColor:clickable] forState:UIControlStateNormal];
     [timeFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Time"] withColor:[clickable colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+    [timeFilterButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button-Outline-Time"] withColor:outlineColor] forState:UIControlStateNormal];
+    [timeFilterButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button-Outline-Time"] withColor:[outlineColor colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
     
     // Delete button
     [deleteButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Delete"] withColor:clickable] forState:UIControlStateNormal];
