@@ -25,7 +25,7 @@ static UIFont *dateTextFont = nil;
         secondTextFont=[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
         thirdTextFont=[UIFont fontWithName:@"HelveticaNeue-Medium" size:15.0f];
         forthTextFont=[UIFont fontWithName:@"HelveticaNeue" size:15.0f];
-        dateTextFont =[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0f];
+        dateTextFont =[UIFont fontWithName:@"HelveticaNeue" size:14.0f];
         
     }
 }
