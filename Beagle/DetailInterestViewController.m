@@ -404,7 +404,7 @@ static NSString * const CellIdentifier = @"cell";
     NSString* screenTitle = [BeagleUtilities activityTime:self.interestActivity.startActivityDate endate:self.interestActivity.endActivityDate];
     self.navigationItem.title = screenTitle;
     
-    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [[BeagleManager SharedInstance] darkDominantColor]}];
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [BeagleUtilities returnBeagleColor:4]}];
     
     self.detailedInterestTableView = [[UITableView alloc] initWithFrame:CGRectZero
                                                                   style:UITableViewStylePlain];
