@@ -537,7 +537,7 @@
                                     <constraint firstAttribute="height" constant="34" id="IOJ-dv-tyG"/>
                                     <constraint firstAttribute="width" constant="96" id="ymm-Et-Fbs"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="14"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="10" maxY="0.0"/>
                                 <state key="normal" title="Private" image="Visibility" backgroundImage="Button-Outline-Visibility"/>
                                 <connections>
@@ -551,7 +551,7 @@
                                     <constraint firstAttribute="height" constant="34" id="89j-GU-bwS"/>
                                     <constraint firstAttribute="width" constant="181" id="n28-r2-mJU"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="14"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="10" maxY="0.0"/>
                                 <state key="normal" title="Fri, Jan 20, 10:30pm" image="Time" backgroundImage="Button-Outline-Time"/>
                                 <state key="highlighted" image="Time-Highlighted"/>
