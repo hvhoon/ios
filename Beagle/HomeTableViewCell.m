@@ -123,6 +123,7 @@ static UIFont *dateTextFont = nil;
     [bg_activity.organizerName drawInRect:nameRect withAttributes:attrs];
     
     // Removing the friends icons for now
+    /*
     if(bg_activity.dosRelation!=0 && self.bg_activity.activityType!=2){
         if(bg_activity.dosRelation==1) {
             [[UIImage imageNamed:@"DOS2"] drawInRect:CGRectMake(75+8+organizerNameSize.width, 43, 27, 15)];
@@ -130,6 +131,7 @@ static UIFont *dateTextFont = nil;
             [[UIImage imageNamed:@"DOS3"] drawInRect:CGRectMake(75+8+organizerNameSize.width, 43, 32, 15)];
         }
     }
+    */
     
     // Adding the height of the profile picture
     fromTheTop = fromTheTop+thisRect.size.height;
