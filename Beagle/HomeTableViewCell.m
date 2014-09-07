@@ -374,12 +374,12 @@ static UIFont *dateTextFont = nil;
     else if([self.bg_activity.visibility isEqualToString:@"public"] && self.bg_activity.activityType != 2) {
         
         // Adding the globe icon
-        [[UIImage imageNamed:@"Public"] drawInRect:CGRectMake(292, fromTheTop+10, 15, 15)];
+        [[UIImage imageNamed:@"Public"] drawInRect:CGRectMake(289, fromTheTop+10, 15, 15)];
         
         // Adding the # of Friends
         CGSize publicTextSize = [@"Public" boundingRectWithSize:CGSizeMake(288, r.size.height) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
         
-        [@"Public" drawInRect:CGRectMake((320-(35+publicTextSize.width)), fromTheTop+9, publicTextSize.width, publicTextSize.height) withAttributes:attrs];
+        [@"Public" drawInRect:CGRectMake((320-(37+publicTextSize.width)), fromTheTop+9, publicTextSize.width, publicTextSize.height) withAttributes:attrs];
     }
     else {
         // Do not add any icon!

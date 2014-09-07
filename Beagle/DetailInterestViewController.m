@@ -1043,14 +1043,14 @@ static NSString * const CellIdentifier = @"cell";
             
             // Adding the globe icon
             UIImageView *publicIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Public"]];
-            publicIcon.frame = CGRectMake(292, fromTheTop+10, 15, 15);
+            publicIcon.frame = CGRectMake(289, fromTheTop+10, 15, 15);
             [_backgroundView addSubview:publicIcon];
             
             // Adding the public text
             NSString* publicText = @"Public";
             CGSize publicTextSize = [publicText boundingRectWithSize:CGSizeMake(288, 999) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
             
-            UILabel* publicTextLabel = [[UILabel alloc] initWithFrame:CGRectMake((320-(35+publicTextSize.width)), fromTheTop+9, publicTextSize.width, publicTextSize.height)];
+            UILabel* publicTextLabel = [[UILabel alloc] initWithFrame:CGRectMake((320-(37+publicTextSize.width)), fromTheTop+9, publicTextSize.width, publicTextSize.height)];
             publicTextLabel.attributedText = [[NSAttributedString alloc] initWithString:publicText attributes:attrs];
             [_backgroundView addSubview:publicTextLabel];
         }
