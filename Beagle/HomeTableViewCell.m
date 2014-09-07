@@ -352,15 +352,16 @@ static UIFont *dateTextFont = nil;
         }
     }
     
+    // Adding the public and invite only icons when necessary!
+    // Text attributes
+    [style setAlignment:NSTextAlignmentRight];
+    attrs=[NSDictionary dictionaryWithObjectsAndKeys:
+           secondTextFont, NSFontAttributeName,
+           [BeagleUtilities returnBeagleColor:6],NSForegroundColorAttributeName,
+           style, NSParagraphStyleAttributeName, nil];
+    
     // Indicate if the activity is Invite only
     if([self.bg_activity.visibility isEqualToString:@"custom"]) {
-        
-        // Text attributes
-        [style setAlignment:NSTextAlignmentRight];
-        attrs=[NSDictionary dictionaryWithObjectsAndKeys:
-               secondTextFont, NSFontAttributeName,
-               [BeagleUtilities returnBeagleColor:6],NSForegroundColorAttributeName,
-               style, NSParagraphStyleAttributeName, nil];
         
         // Adding the lock image
         [[UIImage imageNamed:@"Invite-only-icon"] drawInRect:CGRectMake(292, fromTheTop+10, 12, 15)];
@@ -369,6 +370,19 @@ static UIFont *dateTextFont = nil;
         CGSize inviteOnlyTextSize = [@"Invite Only" boundingRectWithSize:CGSizeMake(288, r.size.height) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
         
         [@"Invite Only" drawInRect:CGRectMake((320-(35+inviteOnlyTextSize.width)), fromTheTop+10, inviteOnlyTextSize.width, inviteOnlyTextSize.height) withAttributes:attrs];
+    }
+    else if([self.bg_activity.visibility isEqualToString:@"public"] && self.bg_activity.activityType != 2) {
+        
+        // Adding the globe icon
+        [[UIImage imageNamed:@"Public"] drawInRect:CGRectMake(292, fromTheTop+10, 15, 15)];
+        
+        // Adding the # of Friends
+        CGSize publicTextSize = [@"Public" boundingRectWithSize:CGSizeMake(288, r.size.height) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
+        
+        [@"Public" drawInRect:CGRectMake((320-(35+publicTextSize.width)), fromTheTop+9, publicTextSize.width, publicTextSize.height) withAttributes:attrs];
+    }
+    else {
+        // Do not add any icon!
     }
 
     // Space left after the button
