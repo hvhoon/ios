@@ -58,8 +58,20 @@ void uncaughtExceptionHandler(NSException *exception) {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = initViewController;
     [self.window makeKeyAndVisible];
-    [self registerForNotifications];
     
+    if ([application respondsToSelector:@selector(registerUserNotificationSettings:)]) {
+        // use registerUserNotificationSettings
+        [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+        [[UIApplication sharedApplication] registerForRemoteNotifications];
+    }
+    else{
+        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+         (
+          UIRemoteNotificationTypeBadge |
+          UIRemoteNotificationTypeSound |
+          UIRemoteNotificationTypeAlert)];
+
+    }
     // Instabug integration
     [Instabug startWithToken:@"0fe55a803d01c2d223d89b450dcae674" captureSource:IBGCaptureSourceUIKit invocationEvent:IBGInvocationEventShake];
     [Instabug setEmailIsRequired:NO];
@@ -243,14 +255,6 @@ void uncaughtExceptionHandler(NSException *exception) {
 }
 #pragma mark - push Notifications calls
 
--(void)registerForNotifications {
-    
-    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
-    (
-     UIRemoteNotificationTypeBadge |
-     UIRemoteNotificationTypeSound |
-     UIRemoteNotificationTypeAlert)];
-}
 - (void)handlePush:(NSDictionary *)launchOptions {
     
     // If the app was launched in response to a push notification, we'll handle the payload here
@@ -461,6 +465,7 @@ void uncaughtExceptionHandler(NSException *exception) {
 -(void) application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     
     
+    
     NSLog(@"didReceiveRemoteNotification");
     if([userInfo[@"aps"][@"alert"] length]== 0){
 #if 0
@@ -505,7 +510,6 @@ void uncaughtExceptionHandler(NSException *exception) {
         }
         
         //         [self presentNotification];
-        completionHandler(UIBackgroundFetchResultNewData);
         
         
     }else{
@@ -526,7 +530,8 @@ void uncaughtExceptionHandler(NSException *exception) {
             [self handleOfflineNotifications:userInfo];
         }
     }
-    
+    completionHandler(UIBackgroundFetchResultNewData);
+
 }
 
 

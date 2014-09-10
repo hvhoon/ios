@@ -412,6 +412,15 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
     self.dummyInputView.textView.text=@"Join the conversation";
     self.dummyInputView.textView.textColor = [BeagleUtilities returnBeagleColor:3];
     [self addSubview:self.dummyInputView];
+    
+    
+    self.dummyInputView.textView.keyboardType=UIKeyboardTypeDefault;
+    self.dummyInputView.textView.autocorrectionType=UITextAutocorrectionTypeNo;
+    
+    _inputView.textView.keyboardType=UIKeyboardTypeDefault;
+    _inputView.textView.autocorrectionType=UITextAutocorrectionTypeNo;
+
+
 }
 
 - (void)_setInitialFrames
