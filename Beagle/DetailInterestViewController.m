@@ -366,6 +366,7 @@ static NSString * const CellIdentifier = @"cell";
                                                          forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.topItem.title = @"";
 
+    self.automaticallyAdjustsScrollViewInsets = NO;
     if(!isRedirected)
       [self createInterestInitialCard];
 
