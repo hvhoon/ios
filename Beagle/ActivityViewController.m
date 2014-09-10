@@ -269,6 +269,9 @@ enum Weeks {
         [self reverseGeocode];
     }
 
+    descriptionTextView.keyboardType=UIKeyboardTypeDefault;
+    descriptionTextView.autocorrectionType=UITextAutocorrectionTypeNo;
+
 }
 	// Do any additional setup after loading the view.
 
