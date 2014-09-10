@@ -140,12 +140,16 @@ enum Weeks {
     [visibilityFilterButton setTitleColor:[clickable colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
     [visibilityFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Visibility"] withColor:clickable] forState:UIControlStateNormal];
     [visibilityFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Visibility"] withColor:[clickable colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+    [visibilityFilterButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button-Outline-Visibility"] withColor:clickable] forState:UIControlStateNormal];
+    [visibilityFilterButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button-Outline-Visibility"] withColor:[clickable colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
     
     // Time text and image
     [timeFilterButton setTitleColor:clickable forState:UIControlStateNormal];
     [timeFilterButton setTitleColor:[clickable colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
     [timeFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Time"] withColor:clickable] forState:UIControlStateNormal];
     [timeFilterButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Time"] withColor:[clickable colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+    [timeFilterButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button-Outline-Time"] withColor:clickable] forState:UIControlStateNormal];
+    [timeFilterButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button-Outline-Time"] withColor:[clickable colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
     
     // Delete button
     [deleteButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Delete"] withColor:clickable] forState:UIControlStateNormal];
@@ -230,10 +234,10 @@ enum Weeks {
         self.navigationItem.rightBarButtonItem.enabled=NO;
         
         // Setting up the labels for a new activity
-        timeIndex=6;
+        timeIndex=1;
         visibilityIndex=2;
         [visibilityFilterButton setTitle:@"Friends" forState:UIControlStateNormal];
-        [timeFilterButton setTitle:@"This Weekend" forState:UIControlStateNormal];
+        [timeFilterButton setTitle:@"Later Today" forState:UIControlStateNormal];
         
         // Setting the visibility label
         switch (visibilityIndex) {

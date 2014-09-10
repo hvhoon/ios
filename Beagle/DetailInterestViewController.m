@@ -912,7 +912,7 @@ static NSString * const CellIdentifier = @"cell";
                 _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, fromTheTop, 264, 53)];
                 scrollViewResize=FALSE;
                 _scrollMenu.tag=786;
-                _partcipantScrollArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(264+16+8, fromTheTop+13.5, 15, 20)];
+                _partcipantScrollArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(264+16+7, fromTheTop+13.5, 16, 21)];
                 _partcipantScrollArrowImageView.image = [UIImage imageNamed:@"Right-Scroll"];
                [_backgroundView addSubview:_scrollMenu];
                [self setUpPlayerScroll:self.interestActivity.participantsArray];
@@ -1016,6 +1016,49 @@ static NSString * const CellIdentifier = @"cell";
         
         // Add button
         [_backgroundView addSubview:interestedButton];
+        
+        // Adding a a label for public and invite only interests
+        [style setAlignment:NSTextAlignmentRight];
+        attrs=[NSDictionary dictionaryWithObjectsAndKeys:
+               [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f], NSFontAttributeName,
+               [BeagleUtilities returnBeagleColor:6],NSForegroundColorAttributeName,
+               style, NSParagraphStyleAttributeName, nil];
+        
+        // Indicate if the activity is Invite only
+        if([self.interestActivity.visibility isEqualToString:@"custom"]) {
+            
+            // Adding the lock image
+            UIImageView *inviteOnlyIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Invite-only-icon"]];
+            inviteOnlyIcon.frame = CGRectMake(292, fromTheTop+10, 12, 15);
+            [_backgroundView addSubview:inviteOnlyIcon];
+            
+            // Adding the # of Friends
+            NSString* inviteText = @"Invite Only";
+            CGSize inviteOnlyTextSize = [inviteText boundingRectWithSize:CGSizeMake(288, 999) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
+            
+            UILabel* inviteOnlyText = [[UILabel alloc] initWithFrame:CGRectMake((320-(35+inviteOnlyTextSize.width)), fromTheTop+10, inviteOnlyTextSize.width, inviteOnlyTextSize.height)];
+            inviteOnlyText.attributedText = [[NSAttributedString alloc] initWithString:inviteText attributes:attrs];
+            [_backgroundView addSubview:inviteOnlyText];
+        }
+        else if([self.interestActivity.visibility isEqualToString:@"public"] && self.interestActivity.activityType != 2) {
+            
+            // Adding the globe icon
+            UIImageView *publicIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Public"]];
+            publicIcon.frame = CGRectMake(289, fromTheTop+10, 15, 15);
+            [_backgroundView addSubview:publicIcon];
+            
+            // Adding the public text
+            NSString* publicText = @"Public";
+            CGSize publicTextSize = [publicText boundingRectWithSize:CGSizeMake(288, 999) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
+            
+            UILabel* publicTextLabel = [[UILabel alloc] initWithFrame:CGRectMake((320-(37+publicTextSize.width)), fromTheTop+9, publicTextSize.width, publicTextSize.height)];
+            publicTextLabel.attributedText = [[NSAttributedString alloc] initWithString:publicText attributes:attrs];
+            [_backgroundView addSubview:publicTextLabel];
+        }
+        else {
+            // Do not add any icon
+        }
+
     
         // Space left after the button
         fromTheTop += 33+20;

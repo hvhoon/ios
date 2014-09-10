@@ -15,6 +15,8 @@ static UIFont *firstTextFont = nil;
 static UIFont *secondTextFont = nil;
 static UIFont *thirdTextFont = nil;
 static UIFont *forthTextFont = nil;
+static UIFont *dateTextFont = nil;
+
 #define DISABLED_ALPHA 0.5f
 + (void)initialize
 {
@@ -23,6 +25,7 @@ static UIFont *forthTextFont = nil;
         secondTextFont=[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
         thirdTextFont=[UIFont fontWithName:@"HelveticaNeue-Medium" size:15.0f];
         forthTextFont=[UIFont fontWithName:@"HelveticaNeue" size:15.0f];
+        dateTextFont =[UIFont fontWithName:@"HelveticaNeue" size:14.0f];
         
     }
 }
@@ -87,8 +90,8 @@ static UIFont *forthTextFont = nil;
     // Drawing the time label
     [style setAlignment:NSTextAlignmentRight];
     attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                            secondTextFont, NSFontAttributeName,
-                            [BeagleUtilities returnBeagleColor:4],NSForegroundColorAttributeName,
+                            dateTextFont, NSFontAttributeName,
+                            [[BeagleManager SharedInstance] darkDominantColor],NSForegroundColorAttributeName,
                             style, NSParagraphStyleAttributeName, nil];
     
     CGSize dateTextSize = [[BeagleUtilities activityTime:bg_activity.startActivityDate endate:bg_activity.endActivityDate] boundingRectWithSize:CGSizeMake(300, r.size.height)
@@ -119,6 +122,8 @@ static UIFont *forthTextFont = nil;
     
     [bg_activity.organizerName drawInRect:nameRect withAttributes:attrs];
     
+    // Removing the friends icons for now
+    /*
     if(bg_activity.dosRelation!=0 && self.bg_activity.activityType!=2){
         if(bg_activity.dosRelation==1) {
             [[UIImage imageNamed:@"DOS2"] drawInRect:CGRectMake(75+8+organizerNameSize.width, 43, 27, 15)];
@@ -126,6 +131,7 @@ static UIFont *forthTextFont = nil;
             [[UIImage imageNamed:@"DOS3"] drawInRect:CGRectMake(75+8+organizerNameSize.width, 43, 32, 15)];
         }
     }
+    */
     
     // Adding the height of the profile picture
     fromTheTop = fromTheTop+thisRect.size.height;
@@ -194,7 +200,6 @@ static UIFont *forthTextFont = nil;
         [suggestedButton addTarget:self action:@selector(suggestedBtnPressed:) forControlEvents:UIControlEventTouchUpInside];
         [suggestedButton setEnabled:YES];
 
-        
 }
     else{
 
@@ -345,6 +350,39 @@ static UIFont *forthTextFont = nil;
         [interestedButton setImageEdgeInsets:UIEdgeInsetsMake(0.0f, -12.0f, 0.0f, 0.0f)];
         [interestedButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f)];
         }
+    }
+    
+    // Adding the public and invite only icons when necessary!
+    // Text attributes
+    [style setAlignment:NSTextAlignmentRight];
+    attrs=[NSDictionary dictionaryWithObjectsAndKeys:
+           secondTextFont, NSFontAttributeName,
+           [BeagleUtilities returnBeagleColor:6],NSForegroundColorAttributeName,
+           style, NSParagraphStyleAttributeName, nil];
+    
+    // Indicate if the activity is Invite only
+    if([self.bg_activity.visibility isEqualToString:@"custom"]) {
+        
+        // Adding the lock image
+        [[UIImage imageNamed:@"Invite-only-icon"] drawInRect:CGRectMake(292, fromTheTop+10, 12, 15)];
+        
+        // Adding the # of Friends
+        CGSize inviteOnlyTextSize = [@"Invite Only" boundingRectWithSize:CGSizeMake(288, r.size.height) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
+        
+        [@"Invite Only" drawInRect:CGRectMake((320-(35+inviteOnlyTextSize.width)), fromTheTop+10, inviteOnlyTextSize.width, inviteOnlyTextSize.height) withAttributes:attrs];
+    }
+    else if([self.bg_activity.visibility isEqualToString:@"public"] && self.bg_activity.activityType != 2) {
+        
+        // Adding the globe icon
+        [[UIImage imageNamed:@"Public"] drawInRect:CGRectMake(289, fromTheTop+10, 15, 15)];
+        
+        // Adding the # of Friends
+        CGSize publicTextSize = [@"Public" boundingRectWithSize:CGSizeMake(288, r.size.height) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
+        
+        [@"Public" drawInRect:CGRectMake((320-(37+publicTextSize.width)), fromTheTop+9, publicTextSize.width, publicTextSize.height) withAttributes:attrs];
+    }
+    else {
+        // Do not add any icon!
     }
 
     // Space left after the button

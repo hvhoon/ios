@@ -41,12 +41,11 @@
     // Extract App Name
     NSDictionary *appMetaData = [[NSBundle mainBundle] infoDictionary];
     NSString* bundleName = [appMetaData objectForKey:@"CFBundleShortVersionString"];
-    NSString* buildNumber = [appMetaData objectForKey:@"CFBundleVersion"];
     
     [_version setTextColor:[BeagleUtilities returnBeagleColor:3]];
     
     // Build text
-    _version.text = [NSString stringWithFormat:@"Beagle v%@ (%@)", bundleName, buildNumber];
+    _version.text = [NSString stringWithFormat:@"Beagle v%@", bundleName];
     
     if([[[BeagleManager SharedInstance]beaglePlayer]profileData]==nil){
         
