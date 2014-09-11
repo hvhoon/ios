@@ -168,21 +168,21 @@ void uncaughtExceptionHandler(NSException *exception) {
 }
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
 	NSLog(@"%s", __PRETTY_FUNCTION__);
-	switch (status) {
-		case kCLAuthorizationStatusAuthorized:
-			NSLog(@"kCLAuthorizationStatusAuthorized");
+    
+    if (status == kCLAuthorizationStatusDenied || status == kCLAuthorizationStatusRestricted||status==kCLAuthorizationStatusNotDetermined) {
+        // Clear out any pending location requests (which will execute the blocks with a status that reflects
+        // the unavailability of location services) since we now no longer have location services permissions
+    NSLog(@"kCLAuthorizationStatusNotDetermined Restricted");
+    }
+    
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
+    else if (status == kCLAuthorizationStatusAuthorizedAlways || status == kCLAuthorizationStatusAuthorizedWhenInUse) {
+#else
+    else if (status == kCLAuthorizationStatusAuthorized) {
+#endif /* __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1 */
+
 			[locationManager startUpdatingLocation];
-			break;
-		case kCLAuthorizationStatusDenied:
-			NSLog(@"kCLAuthorizationStatusDenied");
-			break;
-		case kCLAuthorizationStatusNotDetermined:
-			NSLog(@"kCLAuthorizationStatusNotDetermined");
-			break;
-		case kCLAuthorizationStatusRestricted:
-			NSLog(@"kCLAuthorizationStatusRestricted");
-			break;
-	}
+    }
 }
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < _IPHONE_7_0
