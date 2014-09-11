@@ -61,8 +61,10 @@ void uncaughtExceptionHandler(NSException *exception) {
     
     if ([application respondsToSelector:@selector(registerUserNotificationSettings:)]) {
         // use registerUserNotificationSettings
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
         [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
         [[UIApplication sharedApplication] registerForRemoteNotifications];
+#endif
     }
     else{
         [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
