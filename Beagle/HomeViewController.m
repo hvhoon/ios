@@ -1635,7 +1635,13 @@
     HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:indexpath];
     ExpressInterestPreview *preview=[[ExpressInterestPreview alloc]initWithFrame:CGRectMake(0, 0, 320, play.heightRow) orgn:play.organizerName];
     preview.tag=1374;
-    [cell insertSubview:preview aboveSubview:cell.contentView];
+    
+    NSOperatingSystemVersion ios8_0_0 = (NSOperatingSystemVersion){8, 0, 0};
+    if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:ios8_0_0])
+       [cell insertSubview:preview aboveSubview:cell];
+    else{
+       [cell insertSubview:preview aboveSubview:cell.contentView];
+      }
 //    self.tableView.scrollEnabled=NO;
     
     [self beginIgnoringIteractions];

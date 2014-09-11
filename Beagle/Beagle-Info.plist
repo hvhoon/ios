@@ -20,10 +20,29 @@
 	<string>1.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb500525846725031</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
+	<key>FacebookAppID</key>
+	<string>500525846725031</string>
+	<key>FacebookDisplayName</key>
+	<string>Beagle</string>
+	<key>LSApplicationCategoryType</key>
+	<string>NSLocationAlwaysUsageDescription</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationUsageDescription</key>
+	<string>This string is optional but recommended on iOS 6 &amp; 7 and should describe how your app uses location services</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This string is required to gain permission to access location services on iOS 8+ and should describe how your app uses location services</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
@@ -42,24 +61,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>fb500525846725031</string>
-			</array>
-		</dict>
-	</array>
-	<key>FacebookAppID</key>
-	<string>500525846725031</string>
-	<key>FacebookDisplayName</key>
-	<string>Beagle</string>
-	<key>LSApplicationCategoryType</key>
-	<string>NSLocationAlwaysUsageDescription</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>This string is required to gain permission to access location services on iOS 8+ and should describe how your app uses location services</string>
-	<key>NSLocationUsageDescription</key>
-	<string>This string is optional but recommended on iOS 6 &amp; 7 and should describe how your app uses location services. Set this string in the Info.plist</string>
 </dict>
 </plist>

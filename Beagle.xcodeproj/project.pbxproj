@@ -52,6 +52,8 @@
 		187808591954DEA8005E682F /* FriendsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 187808581954DEA8005E682F /* FriendsTableViewCell.m */; };
 		1889E5EC195A84F70079C3E9 /* InviteTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1889E5EB195A84F60079C3E9 /* InviteTableViewCell.m */; };
 		189EEBBE196B2A2B00681F04 /* ExpressInterestPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = 189EEBBD196B2A2B00681F04 /* ExpressInterestPreview.m */; };
+		18B5DD4F19C1E71B000DEF0E /* Instabug.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 18B5DD4D19C1E71B000DEF0E /* Instabug.bundle */; };
+		18B5DD5019C1E71B000DEF0E /* Instabug.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18B5DD4E19C1E71B000DEF0E /* Instabug.framework */; };
 		18E7AF0918BBAA1700EBBDE2 /* FacebookLoginSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E7AF0818BBAA1700EBBDE2 /* FacebookLoginSession.m */; };
 		18E7AF0D18BBAA6600EBBDE2 /* BeagleUserClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E7AF0C18BBAA6600EBBDE2 /* BeagleUserClass.m */; };
 		18EBCFDB18CE350600FDC624 /* CustomPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EBCFD518CE350600FDC624 /* CustomPickerView.m */; };
@@ -132,8 +134,6 @@
 		68E5B2D519A656E9001682F1 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68E5B2D419A656E9001682F1 /* FacebookSDK.framework */; };
 		68E9CF54197D5E5B009477B2 /* Appsee.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68E9CF53197D5E5B009477B2 /* Appsee.framework */; };
 		68E9CF56197D5F35009477B2 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68E9CF55197D5F35009477B2 /* CoreMedia.framework */; };
-		68EDF869192AC578008ED9C1 /* Instabug.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 68EDF867192AC578008ED9C1 /* Instabug.bundle */; };
-		68EDF86A192AC578008ED9C1 /* Instabug.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68EDF868192AC578008ED9C1 /* Instabug.framework */; };
 		68EDF86C192AC760008ED9C1 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68EDF86B192AC760008ED9C1 /* CoreFoundation.framework */; };
 		68EDF86E192AC76D008ED9C1 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68EDF86D192AC76D008ED9C1 /* OpenGLES.framework */; };
 		68EDF870192AC775008ED9C1 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68EDF86F192AC775008ED9C1 /* GLKit.framework */; };
@@ -236,6 +236,8 @@
 		1889E5EB195A84F60079C3E9 /* InviteTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteTableViewCell.m; sourceTree = "<group>"; };
 		189EEBBC196B2A2B00681F04 /* ExpressInterestPreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExpressInterestPreview.h; sourceTree = "<group>"; };
 		189EEBBD196B2A2B00681F04 /* ExpressInterestPreview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExpressInterestPreview.m; sourceTree = "<group>"; };
+		18B5DD4D19C1E71B000DEF0E /* Instabug.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Instabug.bundle; sourceTree = "<group>"; };
+		18B5DD4E19C1E71B000DEF0E /* Instabug.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Instabug.framework; sourceTree = "<group>"; };
 		18E7AF0718BBAA1700EBBDE2 /* FacebookLoginSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookLoginSession.h; sourceTree = "<group>"; };
 		18E7AF0818BBAA1700EBBDE2 /* FacebookLoginSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookLoginSession.m; sourceTree = "<group>"; };
 		18E7AF0B18BBAA6600EBBDE2 /* BeagleUserClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeagleUserClass.h; sourceTree = "<group>"; };
@@ -376,8 +378,6 @@
 		68E9CF53197D5E5B009477B2 /* Appsee.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Appsee.framework; sourceTree = "<group>"; };
 		68E9CF55197D5F35009477B2 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		68E9CF59197D710B009477B2 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		68EDF867192AC578008ED9C1 /* Instabug.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Instabug.bundle; sourceTree = "<group>"; };
-		68EDF868192AC578008ED9C1 /* Instabug.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Instabug.framework; sourceTree = "<group>"; };
 		68EDF86B192AC760008ED9C1 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		68EDF86D192AC76D008ED9C1 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		68EDF86F192AC775008ED9C1 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
@@ -399,6 +399,7 @@
 				18EC232B18B5A65C00316B6E /* AudioToolbox.framework in Frameworks */,
 				68EDF872192AC78D008ED9C1 /* AVFoundation.framework in Frameworks */,
 				68EDF870192AC775008ED9C1 /* GLKit.framework in Frameworks */,
+				18B5DD5019C1E71B000DEF0E /* Instabug.framework in Frameworks */,
 				68EDF86E192AC76D008ED9C1 /* OpenGLES.framework in Frameworks */,
 				68EDF86C192AC760008ED9C1 /* CoreFoundation.framework in Frameworks */,
 				18F8F4DD18DA07F800B26AC6 /* Accelerate.framework in Frameworks */,
@@ -409,7 +410,6 @@
 				18EC233918B5A6A000316B6E /* CoreLocation.framework in Frameworks */,
 				18EC233718B5A69900316B6E /* QuartzCore.framework in Frameworks */,
 				18EC233518B5A68C00316B6E /* SystemConfiguration.framework in Frameworks */,
-				68EDF86A192AC578008ED9C1 /* Instabug.framework in Frameworks */,
 				18EC233318B5A68200316B6E /* CFNetwork.framework in Frameworks */,
 				18EC233118B5A67800316B6E /* libxml2.dylib in Frameworks */,
 				18EC232F18B5A66E00316B6E /* libz.dylib in Frameworks */,
@@ -689,8 +689,10 @@
 		18EC229F18B5A0B400316B6E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				18B5DD4E19C1E71B000DEF0E /* Instabug.framework */,
 				68E5B2D419A656E9001682F1 /* FacebookSDK.framework */,
 				68E9CF59197D710B009477B2 /* libsqlite3.dylib */,
+				18B5DD4D19C1E71B000DEF0E /* Instabug.bundle */,
 				68E9CF55197D5F35009477B2 /* CoreMedia.framework */,
 				68E9CF53197D5E5B009477B2 /* Appsee.framework */,
 				682455C2196DD6A800182F50 /* CoreMotion.framework */,
@@ -701,8 +703,6 @@
 				68EDF86F192AC775008ED9C1 /* GLKit.framework */,
 				68EDF86D192AC76D008ED9C1 /* OpenGLES.framework */,
 				68EDF86B192AC760008ED9C1 /* CoreFoundation.framework */,
-				68EDF867192AC578008ED9C1 /* Instabug.bundle */,
-				68EDF868192AC578008ED9C1 /* Instabug.framework */,
 				18F8F4DC18DA07F800B26AC6 /* Accelerate.framework */,
 				1806EA4118B9E32B00A47BF1 /* Crashlytics.framework */,
 				18EC233E18B5A6BD00316B6E /* Social.framework */,
@@ -1083,11 +1083,11 @@
 				18F2B74F191D3AF500245C5A /* EventVisibilityBlurView.xib in Resources */,
 				18F8697E192136DB000C8A37 /* EventInterestFilterBlurView.xib in Resources */,
 				18F889951902C7FF00C80011 /* PlayerProfileItem.xib in Resources */,
+				18B5DD4F19C1E71B000DEF0E /* Instabug.bundle in Resources */,
 				18EC22B318B5A0B400316B6E /* Images.xcassets in Resources */,
 				1805CED918C8D25800AC8556 /* TimeFilterView.xib in Resources */,
 				180AF0B318DC7FB200EE87D6 /* BlankHomePageView.xib in Resources */,
 				180F604D1923D1D800B3807F /* LocationBlurView.xib in Resources */,
-				68EDF869192AC578008ED9C1 /* Instabug.bundle in Resources */,
 				180AF0C018DC809E00EE87D6 /* User.plist in Resources */,
 				18714B381940F1D2008F59DE /* messageSent.aiff in Resources */,
 			);

@@ -275,12 +275,16 @@ enum Weeks {
 }
 	// Do any additional setup after loading the view.
 
+
+- (BOOL)disablesAutomaticKeyboardDismissal
+{
+    return NO;
+}
 -(void)viewDidDisappear:(BOOL)animated{
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kRemoteNotificationReceivedNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationForInterestPost object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kLocationUpdateReceived object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kErrorToGetLocation object:nil];
-
 }
 
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
@@ -398,8 +402,11 @@ enum Weeks {
 }
 
 -(void)cancelButtonClicked:(id)sender{
-    
-    [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
+    [self.navigationController dismissViewControllerAnimated:NO completion:^{
+        [descriptionTextView becomeFirstResponder];
+        [descriptionTextView resignFirstResponder];
+        
+    }];
 }
 -(void)updateCreateEventParameters{
     bg_activity.activityDesc=descriptionTextView.text;
