@@ -59,21 +59,22 @@ void uncaughtExceptionHandler(NSException *exception) {
     self.window.rootViewController = initViewController;
     [self.window makeKeyAndVisible];
     
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
     if ([application respondsToSelector:@selector(registerUserNotificationSettings:)]) {
         // use registerUserNotificationSettings
-#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
         [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
         [[UIApplication sharedApplication] registerForRemoteNotifications];
+    }
+#else
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+     (
+      UIRemoteNotificationTypeBadge |
+      UIRemoteNotificationTypeSound |
+      UIRemoteNotificationTypeAlert)];
+    
 #endif
-    }
-    else{
-        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
-         (
-          UIRemoteNotificationTypeBadge |
-          UIRemoteNotificationTypeSound |
-          UIRemoteNotificationTypeAlert)];
-
-    }
+    
+    
     // Instabug integration
     [Instabug startWithToken:@"0fe55a803d01c2d223d89b450dcae674" captureSource:IBGCaptureSourceUIKit invocationEvent:IBGInvocationEventShake];
     [Instabug setEmailIsRequired:NO];
@@ -144,10 +145,11 @@ void uncaughtExceptionHandler(NSException *exception) {
 	locationManager.distanceFilter = kCLLocationAccuracyThreeKilometers;
     
     // IOS 8 Support
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
     if([locationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
         [locationManager requestAlwaysAuthorization];
     }
-    
+#endif
 	[locationManager startUpdatingLocation];
     
 	CLLocation *currentLoc = locationManager.location;

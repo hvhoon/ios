@@ -402,11 +402,16 @@ enum Weeks {
 }
 
 -(void)cancelButtonClicked:(id)sender{
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
     [self.navigationController dismissViewControllerAnimated:NO completion:^{
         [descriptionTextView becomeFirstResponder];
         [descriptionTextView resignFirstResponder];
         
     }];
+#else
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+#endif
+
 }
 -(void)updateCreateEventParameters{
     bg_activity.activityDesc=descriptionTextView.text;
@@ -1131,11 +1136,15 @@ enum Weeks {
                                                            userInfo: nil repeats:NO];
 
                 }else if (serverRequest==kServerCallEditActivity){
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
                     [self.navigationController dismissViewControllerAnimated:NO completion:^{
                         [descriptionTextView becomeFirstResponder];
                         [descriptionTextView resignFirstResponder];
                         
                     }];
+#else
+                    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+#endif
                 }
 
             }
@@ -1154,11 +1163,17 @@ enum Weeks {
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 BeagleManager *BG=[BeagleManager SharedInstance];
                 BG.activityDeleted=TRUE;
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
                 [self.navigationController dismissViewControllerAnimated:NO completion:^{
                     [descriptionTextView becomeFirstResponder];
                     [descriptionTextView resignFirstResponder];
                     
                 }];
+#else
+                [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+#endif
+                
+                
                 
             }
         }

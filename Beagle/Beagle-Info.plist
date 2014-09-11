@@ -40,9 +40,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationUsageDescription</key>
-	<string>This string is optional but recommended on iOS 6 &amp; 7 and should describe how your app uses location services</string>
+	<string>This is optional but recommended as it describes how the app uses location services</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This string is required to gain permission to access location services on iOS 8+ and should describe how your app uses location services</string>
+	<string>This  is required to gain permission to access location services on iOS 8+ and it describes how the app uses location services</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
