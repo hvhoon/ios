@@ -1131,7 +1131,11 @@ enum Weeks {
                                                            userInfo: nil repeats:NO];
 
                 }else if (serverRequest==kServerCallEditActivity){
-                    [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
+                    [self.navigationController dismissViewControllerAnimated:NO completion:^{
+                        [descriptionTextView becomeFirstResponder];
+                        [descriptionTextView resignFirstResponder];
+                        
+                    }];
                 }
 
             }
@@ -1150,7 +1154,11 @@ enum Weeks {
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 BeagleManager *BG=[BeagleManager SharedInstance];
                 BG.activityDeleted=TRUE;
-                [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
+                [self.navigationController dismissViewControllerAnimated:NO completion:^{
+                    [descriptionTextView becomeFirstResponder];
+                    [descriptionTextView resignFirstResponder];
+                    
+                }];
                 
             }
         }

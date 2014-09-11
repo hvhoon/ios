@@ -109,19 +109,6 @@ void uncaughtExceptionHandler(NSException *exception) {
     
     if([[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"]){
     
-//    [FBSession renewSystemCredentials:^(ACAccountCredentialRenewResult result, NSError *error) {
-//        if (!error) {
-//            if (result == ACAccountCredentialRenewResultRejected) {
-//                NSLog(@"Facebook app deleted");
-//            }
-//            else if (result==ACAccountCredentialRenewResultRenewed){
-//                NSLog(@"Facebook app Account renewed");
-//            }
-//        }
-//        else {
-//            NSLog(@"Error: %@", error);
-//        }
-//    }];
     if (FBSession.activeSession.state == FBSessionStateCreatedTokenLoaded) {
         
         // If there's one, just open the session silently, without showing the user the login UI
@@ -179,7 +166,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     else if (status == kCLAuthorizationStatusAuthorizedAlways || status == kCLAuthorizationStatusAuthorizedWhenInUse) {
 #else
     else if (status == kCLAuthorizationStatusAuthorized) {
-#endif /* __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1 */
+#endif
 
 			[locationManager startUpdatingLocation];
     }
