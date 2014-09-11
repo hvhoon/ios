@@ -414,11 +414,11 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
     [self addSubview:self.dummyInputView];
     
     
-    self.dummyInputView.textView.keyboardType=UIKeyboardTypeDefault;
-    self.dummyInputView.textView.autocorrectionType=UITextAutocorrectionTypeNo;
-    
-    _inputView.textView.keyboardType=UIKeyboardTypeDefault;
-    _inputView.textView.autocorrectionType=UITextAutocorrectionTypeNo;
+//    self.dummyInputView.textView.keyboardType=UIKeyboardTypeDefault;
+//    self.dummyInputView.textView.autocorrectionType=UITextAutocorrectionTypeNo;
+//    
+//    _inputView.textView.keyboardType=UIKeyboardTypeDefault;
+//    _inputView.textView.autocorrectionType=UITextAutocorrectionTypeNo;
 
 
 }
@@ -543,6 +543,8 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
     
     [self _keyboardWillSwitch:notification];
 }
+
+    
 
 - (void)_keyboardWillHide:(NSNotification *)notification
 {
