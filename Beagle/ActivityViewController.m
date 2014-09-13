@@ -1249,14 +1249,31 @@ enum Weeks {
     [self.animationBlurView hide];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
 
-    [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
+    [self.navigationController dismissViewControllerAnimated:NO completion:^{
+        [descriptionTextView becomeFirstResponder];
+        [descriptionTextView resignFirstResponder];
+        
+    }];
+#else
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+#endif
 
 }
 -(void)dismissCreateAnimationBlurView{
     [timer invalidate];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
     
-    [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
+    [self.navigationController dismissViewControllerAnimated:NO completion:^{
+        [descriptionTextView becomeFirstResponder];
+        [descriptionTextView resignFirstResponder];
+        
+    }];
+#else
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+#endif
+
     
 }
 @end
