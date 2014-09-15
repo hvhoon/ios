@@ -403,11 +403,8 @@ enum Weeks {
 
 -(void)cancelButtonClicked:(id)sender{
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
-    [self.navigationController dismissViewControllerAnimated:NO completion:^{
-        [descriptionTextView becomeFirstResponder];
-        [descriptionTextView resignFirstResponder];
-    }];
-
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
+    [self.navigationController dismissViewControllerAnimated:NO completion:nil];
 #else
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 #endif
