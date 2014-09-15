@@ -269,7 +269,7 @@ enum Weeks {
         [self reverseGeocode];
     }
 
-    descriptionTextView.keyboardType=UIKeyboardTypeDefault;
+    //descriptionTextView.keyboardType=UIKeyboardTypeDefault;
     descriptionTextView.autocorrectionType=UITextAutocorrectionTypeNo;
 
 }
@@ -406,8 +406,8 @@ enum Weeks {
     [self.navigationController dismissViewControllerAnimated:YES completion:^{
         [descriptionTextView becomeFirstResponder];
         [descriptionTextView resignFirstResponder];
-        
     }];
+
 #else
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 #endif
