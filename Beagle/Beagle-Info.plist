@@ -35,8 +35,6 @@
 	<string>500525846725031</string>
 	<key>FacebookDisplayName</key>
 	<string>Beagle</string>
-	<key>LSApplicationCategoryType</key>
-	<string>NSLocationAlwaysUsageDescription</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationUsageDescription</key>

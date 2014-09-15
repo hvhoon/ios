@@ -146,8 +146,8 @@ void uncaughtExceptionHandler(NSException *exception) {
     
     // IOS 8 Support
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
-    if([locationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
-        [locationManager requestAlwaysAuthorization];
+    if([locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+        [locationManager requestWhenInUseAuthorization];
     }
 #endif
 	[locationManager startUpdatingLocation];
