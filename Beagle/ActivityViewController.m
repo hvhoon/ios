@@ -269,7 +269,7 @@ enum Weeks {
         [self reverseGeocode];
     }
 
-    //descriptionTextView.keyboardType=UIKeyboardTypeDefault;
+    descriptionTextView.keyboardType=UIKeyboardTypeDefault;
     descriptionTextView.autocorrectionType=UITextAutocorrectionTypeNo;
 
 }
