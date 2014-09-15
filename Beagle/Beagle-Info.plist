@@ -38,9 +38,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationUsageDescription</key>
-	<string>This is optional but recommended as it describes how the app uses location services</string>
+	<string>Beagle uses your location to figure out what&apos;s happening around you.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This  is required to gain permission to access location services on iOS 8+ and it describes how the app uses location services</string>
+	<string>Beagle uses your location to figure out what&apos;s happening around you.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
