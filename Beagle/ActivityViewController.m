@@ -715,12 +715,12 @@ enum Weeks {
     if (frame.size.height==253.0f) {
         [UIView animateWithDuration:0.1f animations:^ {
             
-            backgroundView.frame=CGRectMake(0, 312-33, 320, 40);
-            locationFilterButton.frame=CGRectMake(16, 317-33, 244, 30);
-            timeFilterButton.frame=CGRectMake(16, 262-33, 181, 34);
-            visibilityFilterButton.frame=CGRectMake(208, 262-33, 96, 34);
+            backgroundView.frame=CGRectMake(0, 312-37, 320, 40);
+            locationFilterButton.frame=CGRectMake(16, 317-37, 244, 30);
+            timeFilterButton.frame=CGRectMake(16, 262-37, 181, 34);
+            visibilityFilterButton.frame=CGRectMake(208, 262-37, 96, 34);
             if(editState){
-                deleteButton.frame=CGRectMake(270, 264-33, 50, 40);
+                deleteButton.frame=CGRectMake(270, 264-37, 50, 40);
             }
             
             
