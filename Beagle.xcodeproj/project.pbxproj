@@ -52,6 +52,11 @@
 		187808591954DEA8005E682F /* FriendsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 187808581954DEA8005E682F /* FriendsTableViewCell.m */; };
 		1889E5EC195A84F70079C3E9 /* InviteTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1889E5EB195A84F60079C3E9 /* InviteTableViewCell.m */; };
 		1891F62E19C1EEAC00C83ECE /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1891F62D19C1EEAC00C83ECE /* libc++.dylib */; };
+		1893D41619C9E18A00128A94 /* DismissiveTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1893D40D19C9E18A00128A94 /* DismissiveTextView.m */; };
+		1893D41719C9E18A00128A94 /* MessageInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1893D40F19C9E18A00128A94 /* MessageInputView.m */; };
+		1893D41819C9E18A00128A94 /* MessageTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1893D41119C9E18A00128A94 /* MessageTextView.m */; };
+		1893D41919C9E18A00128A94 /* NSString+MessagesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1893D41319C9E18A00128A94 /* NSString+MessagesView.m */; };
+		1893D41A19C9E18A00128A94 /* UIButton+MessagesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1893D41519C9E18A00128A94 /* UIButton+MessagesView.m */; };
 		189EEBBE196B2A2B00681F04 /* ExpressInterestPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = 189EEBBD196B2A2B00681F04 /* ExpressInterestPreview.m */; };
 		18B5DD5719C1EE08000DEF0E /* Instabug.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18B5DD5519C1EE07000DEF0E /* Instabug.framework */; };
 		18B5DD5819C1EE08000DEF0E /* Instabug.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 18B5DD5619C1EE07000DEF0E /* Instabug.bundle */; };
@@ -236,6 +241,16 @@
 		1889E5EA195A84F50079C3E9 /* InviteTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteTableViewCell.h; sourceTree = "<group>"; };
 		1889E5EB195A84F60079C3E9 /* InviteTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteTableViewCell.m; sourceTree = "<group>"; };
 		1891F62D19C1EEAC00C83ECE /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
+		1893D40C19C9E18A00128A94 /* DismissiveTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DismissiveTextView.h; sourceTree = "<group>"; };
+		1893D40D19C9E18A00128A94 /* DismissiveTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DismissiveTextView.m; sourceTree = "<group>"; };
+		1893D40E19C9E18A00128A94 /* MessageInputView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageInputView.h; sourceTree = "<group>"; };
+		1893D40F19C9E18A00128A94 /* MessageInputView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageInputView.m; sourceTree = "<group>"; };
+		1893D41019C9E18A00128A94 /* MessageTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageTextView.h; sourceTree = "<group>"; };
+		1893D41119C9E18A00128A94 /* MessageTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageTextView.m; sourceTree = "<group>"; };
+		1893D41219C9E18A00128A94 /* NSString+MessagesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+MessagesView.h"; sourceTree = "<group>"; };
+		1893D41319C9E18A00128A94 /* NSString+MessagesView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MessagesView.m"; sourceTree = "<group>"; };
+		1893D41419C9E18A00128A94 /* UIButton+MessagesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+MessagesView.h"; sourceTree = "<group>"; };
+		1893D41519C9E18A00128A94 /* UIButton+MessagesView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+MessagesView.m"; sourceTree = "<group>"; };
 		189EEBBC196B2A2B00681F04 /* ExpressInterestPreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExpressInterestPreview.h; sourceTree = "<group>"; };
 		189EEBBD196B2A2B00681F04 /* ExpressInterestPreview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExpressInterestPreview.m; sourceTree = "<group>"; };
 		18B5DD5519C1EE07000DEF0E /* Instabug.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Instabug.framework; sourceTree = "<group>"; };
@@ -491,6 +506,8 @@
 				18007F0A18C6567F00230C23 /* MBProgressHUD.m */,
 				18007EF518C6511000230C23 /* BeagleUtilities.h */,
 				18007EF618C6511000230C23 /* BeagleUtilities.m */,
+				18714B391940F268008F59DE /* PostSoundEffect.h */,
+				18714B3A1940F268008F59DE /* PostSoundEffect.m */,
 				189EEBBC196B2A2B00681F04 /* ExpressInterestPreview.h */,
 				189EEBBD196B2A2B00681F04 /* ExpressInterestPreview.m */,
 			);
@@ -500,6 +517,10 @@
 		18007F0418C6542000230C23 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				1893D41219C9E18A00128A94 /* NSString+MessagesView.h */,
+				1893D41319C9E18A00128A94 /* NSString+MessagesView.m */,
+				1893D41419C9E18A00128A94 /* UIButton+MessagesView.h */,
+				1893D41519C9E18A00128A94 /* UIButton+MessagesView.m */,
 				1805009B191BE592003AAD47 /* UIScreen+Screenshot.h */,
 				1805009C191BE592003AAD47 /* UIScreen+Screenshot.m */,
 				18007EFB18C6541200230C23 /* UIImage+Alpha.h */,
@@ -646,6 +667,19 @@
 			path = Sounds;
 			sourceTree = "<group>";
 		};
+		1893D41B19C9E7A600128A94 /* Keyboard Message View */ = {
+			isa = PBXGroup;
+			children = (
+				1893D40C19C9E18A00128A94 /* DismissiveTextView.h */,
+				1893D40D19C9E18A00128A94 /* DismissiveTextView.m */,
+				1893D40E19C9E18A00128A94 /* MessageInputView.h */,
+				1893D40F19C9E18A00128A94 /* MessageInputView.m */,
+				1893D41019C9E18A00128A94 /* MessageTextView.h */,
+				1893D41119C9E18A00128A94 /* MessageTextView.m */,
+			);
+			name = "Keyboard Message View";
+			sourceTree = "<group>";
+		};
 		18E7AF0618BBAA0400EBBDE2 /* Facebook */ = {
 			isa = PBXGroup;
 			children = (
@@ -730,6 +764,9 @@
 		18EC22A618B5A0B400316B6E /* Beagle */ = {
 			isa = PBXGroup;
 			children = (
+				18EC22AF18B5A0B400316B6E /* AppDelegate.h */,
+				18EC22B018B5A0B400316B6E /* AppDelegate.m */,
+				18EC234018B5A71000316B6E /* Storyboard */,
 				6891059619632C3000BE23B7 /* About */,
 				182F0B8B19630059001771AD /* Feedback */,
 				186B11FB1958E03300FF5A4D /* Invitees */,
@@ -754,9 +791,6 @@
 				18007F0418C6542000230C23 /* Categories */,
 				18FADB8A18B6625A00A62287 /* Login Screen */,
 				18EC232918B5A43700316B6E /* Web Services */,
-				18EC234018B5A71000316B6E /* Storyboard */,
-				18EC22AF18B5A0B400316B6E /* AppDelegate.h */,
-				18EC22B018B5A0B400316B6E /* AppDelegate.m */,
 				18EC22B218B5A0B400316B6E /* Images.xcassets */,
 				18EC22A718B5A0B400316B6E /* Supporting Files */,
 			);
@@ -906,14 +940,15 @@
 		18F889891902C14000C80011 /* Detailed Interest */ = {
 			isa = PBXGroup;
 			children = (
-				18F8898D1902C71500C80011 /* Scroll Menu */,
+				1893D41B19C9E7A600128A94 /* Keyboard Message View */,
+				18F8898D1902C71500C80011 /* Participants Scroll */,
 				18F8898A1902C15400C80011 /* DetailInterestViewController.h */,
 				18F8898B1902C15400C80011 /* DetailInterestViewController.m */,
 			);
 			name = "Detailed Interest";
 			sourceTree = "<group>";
 		};
-		18F8898D1902C71500C80011 /* Scroll Menu */ = {
+		18F8898D1902C71500C80011 /* Participants Scroll */ = {
 			isa = PBXGroup;
 			children = (
 				18F3CEFC1909774D00AE3C47 /* MessageKeyboardView.h */,
@@ -923,10 +958,8 @@
 				18F889931902C7FF00C80011 /* PlayerProfileItem.xib */,
 				18F8898F1902C72400C80011 /* BeaglePlayerScrollMenu.h */,
 				18F8898E1902C72400C80011 /* BeaglePlayerScrollMenu.m */,
-				18714B391940F268008F59DE /* PostSoundEffect.h */,
-				18714B3A1940F268008F59DE /* PostSoundEffect.m */,
 			);
-			name = "Scroll Menu";
+			name = "Participants Scroll";
 			sourceTree = "<group>";
 		};
 		18F9FE5E18DB40D2004BFE4E /* Beagle Manager */ = {
@@ -1144,7 +1177,9 @@
 				18EC231118B5A42D00316B6E /* ServerManager.m in Sources */,
 				18007F0118C6541200230C23 /* UIImage+Alpha.m in Sources */,
 				18EC231718B5A42D00316B6E /* ASIHTTPRequest.m in Sources */,
+				1893D41919C9E18A00128A94 /* NSString+MessagesView.m in Sources */,
 				18EC232318B5A42D00316B6E /* NSObject+SBJSON.m in Sources */,
+				1893D41819C9E18A00128A94 /* MessageTextView.m in Sources */,
 				18F8898C1902C15400C80011 /* DetailInterestViewController.m in Sources */,
 				18007ED818C64EDD00230C23 /* BGFlickrManager.m in Sources */,
 				18FADB9618B668A500A62287 /* ECSlidingViewController.m in Sources */,
@@ -1163,6 +1198,7 @@
 				180F604C1923D1D800B3807F /* LocationBlurView.m in Sources */,
 				18007EFA18C653C000230C23 /* UIImage+Resize.m in Sources */,
 				18FDA350192BDD9A00D13667 /* AttributedTableViewCell.m in Sources */,
+				1893D41619C9E18A00128A94 /* DismissiveTextView.m in Sources */,
 				18EC231F18B5A42D00316B6E /* ASICloudFilesObjectRequest.m in Sources */,
 				18F9FE6118DB40E4004BFE4E /* BeagleManager.m in Sources */,
 				180F604B1923D1D800B3807F /* GooglePlacesAutocompleteUtilities.m in Sources */,
@@ -1190,6 +1226,8 @@
 				1889E5EC195A84F70079C3E9 /* InviteTableViewCell.m in Sources */,
 				18FADB9B18B669E500A62287 /* HomeViewController.m in Sources */,
 				18F3394F190825A500CCCB18 /* InterestChatClass.m in Sources */,
+				1893D41719C9E18A00128A94 /* MessageInputView.m in Sources */,
+				1893D41A19C9E18A00128A94 /* UIButton+MessagesView.m in Sources */,
 				18EBCFDB18CE350600FDC624 /* CustomPickerView.m in Sources */,
 				180AF0B418DC7FB200EE87D6 /* BlankHomePageView.m in Sources */,
 				18007F0318C6541200230C23 /* UIImage+RoundedCorner.m in Sources */,
@@ -1348,11 +1386,11 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "armv7 armv7s arm64";
+				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1379,11 +1417,11 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "armv7 armv7s arm64";
+				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

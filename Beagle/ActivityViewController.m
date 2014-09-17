@@ -66,6 +66,8 @@ enum Weeks {
 }
 -(void)viewWillAppear:(BOOL)animated{
     
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangePredictiveTextFrame:) name:UIKeyboardDidChangeFrameNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (createButtonClicked:) name:kLocationUpdateReceived object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showLocationError) name:kErrorToGetLocation object:nil];
@@ -269,18 +271,18 @@ enum Weeks {
         [self reverseGeocode];
     }
 
-    descriptionTextView.keyboardType=UIKeyboardTypeDefault;
-    descriptionTextView.autocorrectionType=UITextAutocorrectionTypeNo;
+//    descriptionTextView.keyboardType=UIKeyboardTypeDefault;
+//    descriptionTextView.autocorrectionType=UITextAutocorrectionTypeYes;
+    
+//    [descriptionTextView becomeFirstResponder];
 
 }
 	// Do any additional setup after loading the view.
 
 
-- (BOOL)disablesAutomaticKeyboardDismissal
-{
-    return NO;
-}
 -(void)viewDidDisappear:(BOOL)animated{
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardDidChangeFrameNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kRemoteNotificationReceivedNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationForInterestPost object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kLocationUpdateReceived object:nil];
@@ -700,6 +702,45 @@ enum Weeks {
     [alert show];
     [Appsee addEvent:@"Delete Activity"];
 
+}
+
+
+- (void)didChangePredictiveTextFrame:(NSNotification *)notification
+{
+    
+    CGRect frame;
+    [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] getValue:&frame];
+    
+    // prediction view opening
+    if (frame.size.height==253.0f) {
+        [UIView animateWithDuration:0.1f animations:^ {
+            
+            backgroundView.frame=CGRectMake(0, 312-33, 320, 40);
+            locationFilterButton.frame=CGRectMake(16, 317-33, 244, 30);
+            timeFilterButton.frame=CGRectMake(16, 262-33, 181, 34);
+            visibilityFilterButton.frame=CGRectMake(208, 262-33, 96, 34);
+            if(editState){
+                deleteButton.frame=CGRectMake(270, 264-33, 50, 40);
+            }
+            
+            
+        }];
+        
+    }
+    else if (frame.size.height==224.0f) // prediction text closing
+    {
+        [UIView animateWithDuration:0.1f animations:^ {
+            
+            backgroundView.frame=CGRectMake(0, 312, 320, 40);
+            locationFilterButton.frame=CGRectMake(16, 317, 244, 30);
+            timeFilterButton.frame=CGRectMake(16, 262, 181, 34);
+            visibilityFilterButton.frame=CGRectMake(208, 262, 96, 34);
+            if(editState){
+                deleteButton.frame=CGRectMake(270, 264, 50, 40);
+            }
+
+        }];
+    }
 }
 
 #pragma mark -

@@ -413,27 +413,19 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
     self.dummyInputView.textView.textColor = [BeagleUtilities returnBeagleColor:3];
     [self addSubview:self.dummyInputView];
     
-    
-//    self.dummyInputView.textView.keyboardType=UIKeyboardTypeDefault;
-//    self.dummyInputView.textView.autocorrectionType=UITextAutocorrectionTypeNo;
-//    
-//    _inputView.textView.keyboardType=UIKeyboardTypeDefault;
-//    _inputView.textView.autocorrectionType=UITextAutocorrectionTypeNo;
-
-
 }
 
 - (void)_setInitialFrames
 {
     CGRect scrollViewFrame = CGRectZero;
-    scrollViewFrame.origin.y=64;
+    scrollViewFrame.origin.y=0;
     scrollViewFrame.size.width = self.frame.size.width;
     if(interested){
 
-    scrollViewFrame.size.height = self.frame.size.height - self.inputView.frame.size.height-64;
+    scrollViewFrame.size.height = self.frame.size.height - self.inputView.frame.size.height;
     }
     else{
-        scrollViewFrame.size.height = self.frame.size.height-64;
+        scrollViewFrame.size.height = self.frame.size.height;
 
     }
     self.scrollView.frame = scrollViewFrame;
@@ -713,7 +705,7 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
     // Propagate the height change
     // Update the scrollview's frame
     CGRect scrollViewFrame = self.scrollView.frame;
-    scrollViewFrame.size.height = self.frame.size.height - newInputViewHeight-64;
+    scrollViewFrame.size.height = self.frame.size.height - newInputViewHeight;
     self.scrollView.frame = scrollViewFrame;
     
     // The new input view height is different from the current.
@@ -721,16 +713,26 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
     CGRect dummyInputViewFrame = self.dummyInputView.frame;
     dummyInputViewFrame.size.height = newInputViewHeight;
     dummyInputViewFrame.origin.y = self.frame.size.height - newInputViewHeight;
+    NSLog(@"self.frame.size.height=%f",self.frame.size.height);
+    NSLog(@"newInputViewHeight=%f",newInputViewHeight);
     self.dummyInputView.frame = dummyInputViewFrame;
     
     CGRect inputViewFrame = self.inputView.frame;
     inputViewFrame.size.height = newInputViewHeight;
     self.inputView.frame = inputViewFrame;
     
+    
+//    [self.scrollView rdr_scrollToBottomWithOptions:7
+//                                          duration:0.3
+//                                   completionBlock:nil];
+
+    
     if (reload) {
+//        [self.dummyInputView.textView setNeedsDisplay];
+//        [self.dummyInputView.textView setNeedsLayout];
         [self.dummyInputView.textView becomeFirstResponder];
-        [self.dummyInputView.textView reloadInputViews];
-        [self.inputView.textView becomeFirstResponder];
+//        [self.dummyInputView.textView reloadInputViews];
+//        [self.inputView.textView becomeFirstResponder];
     }
 }
 
@@ -759,7 +761,7 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
 - (void)textViewDidChange:(UITextView *)textView
 {
     [self _updateInputViewFrameWithKeyboardFrame:CGRectZero
-                                     forceReload:NO];
+                                     forceReload:YES];
 }
 
 @end
