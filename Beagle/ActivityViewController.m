@@ -67,13 +67,9 @@ enum Weeks {
 -(void)viewWillAppear:(BOOL)animated{
     
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangePredictiveTextFrame:) name:UIKeyboardDidChangeFrameNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (createButtonClicked:) name:kLocationUpdateReceived object:nil];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showLocationError) name:kErrorToGetLocation object:nil];
-
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBackgroundInNotification:) name:kRemoteNotificationReceivedNotification object:Nil];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(postInAppNotification:) name:kNotificationForInterestPost object:Nil];
     
     [self.navigationController setNavigationBarHidden:NO];
@@ -702,45 +698,6 @@ enum Weeks {
     [alert show];
     [Appsee addEvent:@"Delete Activity"];
 
-}
-
-
-- (void)didChangePredictiveTextFrame:(NSNotification *)notification
-{
-    
-    CGRect frame;
-    [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] getValue:&frame];
-    
-    // prediction view opening
-    if (frame.size.height==253.0f) {
-        [UIView animateWithDuration:0.1f animations:^ {
-            
-            backgroundView.frame=CGRectMake(0, 312-37, 320, 40);
-            locationFilterButton.frame=CGRectMake(16, 317-37, 244, 30);
-            timeFilterButton.frame=CGRectMake(16, 262-37, 181, 34);
-            visibilityFilterButton.frame=CGRectMake(208, 262-37, 96, 34);
-            if(editState){
-                deleteButton.frame=CGRectMake(270, 264-37, 50, 40);
-            }
-            
-            
-        }];
-        
-    }
-    else if (frame.size.height==224.0f) // prediction text closing
-    {
-        [UIView animateWithDuration:0.1f animations:^ {
-            
-            backgroundView.frame=CGRectMake(0, 312, 320, 40);
-            locationFilterButton.frame=CGRectMake(16, 317, 244, 30);
-            timeFilterButton.frame=CGRectMake(16, 262, 181, 34);
-            visibilityFilterButton.frame=CGRectMake(208, 262, 96, 34);
-            if(editState){
-                deleteButton.frame=CGRectMake(270, 264, 50, 40);
-            }
-
-        }];
-    }
 }
 
 #pragma mark -
