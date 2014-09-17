@@ -112,7 +112,7 @@ static NSString * const CellIdentifier = @"cell";
     }
     
     // Setup the progress indicator
-    _sendMessage = [[UIProgressView alloc] initWithFrame:CGRectMake(0, 0, 320, 1)];
+    _sendMessage = [[UIProgressView alloc] initWithFrame:CGRectMake(0, 64, 320, 1)];
     [_sendMessage setProgressTintColor:[BeagleUtilities returnBeagleColor:13]];
     [self.view addSubview:_sendMessage];
     [_sendMessage setHidden:YES];
@@ -429,15 +429,6 @@ static NSString * const CellIdentifier = @"cell";
 {
     [super viewDidLoad];
     
-    CGRect frame = [UIScreen mainScreen].bounds;
-    if (OSVersionIsAtLeastiOS7 == YES) {
-        self.edgesForExtendedLayout = UIRectEdgeNone;
-    }else{
-        frame.size.height -= 20 + 44;
-    }
-    
-    self.view.frame = frame;
-    self.view.bounds = frame;
 
     [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(0, -60)
                                                          forBarMetrics:UIBarMetricsDefault];
@@ -1206,9 +1197,9 @@ static NSString * const CellIdentifier = @"cell";
         [activityIndicatorView setColor:[BeagleUtilities returnBeagleColor:12]];
         activityIndicatorView.hidesWhenStopped=YES;
              if(self.interestActivity.isParticipant)
-                 activityIndicatorView.frame=CGRectMake(141.5,fromTheTop-25+(self.view.frame.size.height-(47+fromTheTop))/2, 37, 37);
+                 activityIndicatorView.frame=CGRectMake(141.5,64+fromTheTop-25+(self.view.frame.size.height-(64+47+fromTheTop))/2, 37, 37);
              else{
-                 activityIndicatorView.frame=CGRectMake(141.5,fromTheTop-25+(self.view.frame.size.height-(fromTheTop))/2, 37, 37);
+                 activityIndicatorView.frame=CGRectMake(141.5,64+fromTheTop-25+(self.view.frame.size.height-(64+fromTheTop))/2, 37, 37);
                  
              }
         [self.view insertSubview:activityIndicatorView aboveSubview:self.contentWrapper];
