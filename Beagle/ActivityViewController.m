@@ -251,8 +251,8 @@ enum Weeks {
     }
     
     // Setting the visibility text all the way at the end
+    [locationFilterButton setTitleColor:[[BeagleManager SharedInstance] darkDominantColor]  forState:UIControlStateNormal];
     [locationFilterButton setTitle:visibilityText forState:UIControlStateNormal];
-
     
     if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude==0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude==0.0f){
         locationType=1;
