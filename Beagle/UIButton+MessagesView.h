@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface UIButton (MessagesView)
-+ (UIButton *)defaultSendButton;
++ (UIButton *)defaultPostButton;
 @end

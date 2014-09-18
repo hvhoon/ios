@@ -9,19 +9,15 @@
 #import "UIButton+MessagesView.h"
 #import "MessageInputView.h"
 @implementation UIButton (MessagesView)
-+ (UIButton *)defaultSendButton
-{
-    UIButton *sendButton;
++ (UIButton *)defaultPostButton{
     
-    if ([MessageInputView inputBarStyle] == InputBarStyleFlat)
-    {
-        sendButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    }
-    [sendButton setTitle:@"Send" forState:UIControlStateNormal];
-    [sendButton setTitle:@"Send" forState:UIControlStateHighlighted];
-    [sendButton setTitle:@"Send" forState:UIControlStateDisabled];
-    sendButton.autoresizingMask = (UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin);
-    
-    return sendButton;
+        UIButton *_rightButton = [UIButton buttonWithType:UIButtonTypeSystem];
+        _rightButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0f];
+        _rightButton.titleLabel.textColor=[BeagleUtilities returnBeagleColor:13];
+        [_rightButton setTitle:NSLocalizedString(@"Post", nil)
+                      forState:UIControlStateNormal];
+        
+        return _rightButton;
 }
+
 @end

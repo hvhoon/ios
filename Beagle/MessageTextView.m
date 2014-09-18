@@ -24,7 +24,7 @@
                                                  name:UITextViewTextDidChangeNotification
                                                object:self];
     
-    _placeHolderTextColor = [UIColor lightGrayColor];
+    _placeHolderTextColor = [UIColor grayColor];
     
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     self.scrollIndicatorInsets = UIEdgeInsetsMake(10.0f, 0.0f, 10.0f, 8.0f);
@@ -32,13 +32,15 @@
     self.scrollEnabled = YES;
     self.scrollsToTop = NO;
     self.userInteractionEnabled = YES;
-    self.font = [UIFont systemFontOfSize:16.0f];
+    self.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0f];
     self.textColor = [UIColor blackColor];
-    self.backgroundColor = [UIColor whiteColor];
+    self.backgroundColor = [UIColor clearColor];
     self.keyboardAppearance = UIKeyboardAppearanceDefault;
     self.keyboardType = UIKeyboardTypeDefault;
     self.returnKeyType = UIReturnKeyDefault;
     self.textAlignment = NSTextAlignmentLeft;
+    
+    [[UITextView appearance] setTintColor:[UIColor blueColor]];
 }
 
 - (id)initWithFrame:(CGRect)frame

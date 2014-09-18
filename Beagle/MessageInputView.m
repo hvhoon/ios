@@ -35,11 +35,6 @@ static id<MessageInputViewDelegate> __delegate;
     return self;
 }
 
-+ (InputBarStyle)inputBarStyle
-{
-    return InputBarStyleFlat;
-}
-
 - (void)dealloc
 {
     self.textView = nil;
@@ -54,8 +49,8 @@ static id<MessageInputViewDelegate> __delegate;
 #pragma mark - Setup
 - (void)setup
 {
-    self.image = [UIImage imageNamed:@"input-bar-flat"];
-    self.backgroundColor = [UIColor whiteColor];
+//    self.image = [UIImage imageNamed:@"input-bar-flat"];
+    self.backgroundColor = [UIColor clearColor];
     self.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin);
     self.opaque = YES;
     self.userInteractionEnabled = YES;
@@ -67,38 +62,14 @@ static id<MessageInputViewDelegate> __delegate;
     CGFloat width = self.frame.size.width - SEND_BUTTON_WIDTH;
     CGFloat height = [MessageInputView textViewLineHeight];
     
-    InputBarStyle style = [MessageInputView inputBarStyle];
+    self.textView = [[MessageTextView  alloc] initWithFrame:CGRectMake(6.0f, 3.0f, width, height)];
+    self.textView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     
-    if (style == InputBarStyleDefault)
-    {
-        self.textView = [[MessageTextView  alloc] initWithFrame:CGRectMake(6.0f, 3.0f, width, height)];
-        self.textView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-        self.textView.backgroundColor = [UIColor redColor];
-    }
-    else
-    {
-        self.textView = [[MessageTextView  alloc] initWithFrame:CGRectMake(8.0f, 6.0f, width, height)];
-        self.textView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-        self.textView.backgroundColor = [UIColor clearColor];
-        
-        self.textView.layer.borderColor = [[UIColor colorWithWhite:.8 alpha:1.0] CGColor];
-        self.textView.layer.borderWidth = 0.65f;
-        self.textView.layer.cornerRadius = 6.0f;
-    }
-    
+    self.textView.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0f];
+    self.textView.textColor=[UIColor blackColor];
+    self.textView.backgroundColor=[UIColor clearColor];
     [self addSubview:self.textView];
     
-    if (style == InputBarStyleDefault)
-    {
-        UIImageView *inputFieldBack = [[UIImageView alloc] initWithFrame:CGRectMake(self.textView.frame.origin.x - 1.0f,
-                                                                                    0.0f,
-                                                                                    self.textView.frame.size.width + 2.0f,
-                                                                                    self.frame.size.height)];
-        inputFieldBack.image = nil;
-        inputFieldBack.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
-        inputFieldBack.backgroundColor = [UIColor clearColor];
-        [self addSubview:inputFieldBack];
-    }
 }
 
 #pragma mark - Setters
@@ -119,7 +90,7 @@ static id<MessageInputViewDelegate> __delegate;
     NSInteger numLines = MAX([self.textView numberOfLinesOfText],
                        [self.textView.text numberOfLines]);
     
-    NSLog(@"number line == %ld",numLines);
+    NSLog(@"number line == %ld",(long)numLines);
     
     self.textView.frame = CGRectMake(prevFrame.origin.x,
                                      prevFrame.origin.y,

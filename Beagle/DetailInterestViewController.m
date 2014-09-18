@@ -55,9 +55,6 @@ static NSString * const CellIdentifier = @"cell";
 
 - (void)setup;
 
-#pragma mark - Initialization
-- (UIButton *)sendButton;
-
 #pragma mark - Actions
 - (void)sendPressed:(UIButton *)sender;
 
@@ -457,7 +454,12 @@ static NSString * const CellIdentifier = @"cell";
     
     CGRect tableFrame = CGRectMake(0.0f, 0.0f, size.width, size.height - INPUT_HEIGHT);
     self.detailedInterestTableView = [[UITableView alloc] initWithFrame:tableFrame style:UITableViewStylePlain];
-    self.detailedInterestTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    self.detailedInterestTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
+    self.detailedInterestTableView.separatorInset = UIEdgeInsetsZero;
+    self.detailedInterestTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth
+    |UIViewAutoresizingFlexibleHeight;
+    [self.detailedInterestTableView setBackgroundColor:[BeagleUtilities returnBeagleColor:2]];
+
     self.detailedInterestTableView.dataSource = self;
     self.detailedInterestTableView.delegate = self;
     [self.view addSubview:self.detailedInterestTableView];
@@ -465,12 +467,11 @@ static NSString * const CellIdentifier = @"cell";
     CGRect inputFrame = CGRectMake(0.0f, size.height - INPUT_HEIGHT, size.width, INPUT_HEIGHT);
     self.inputToolBarView = [[MessageInputView alloc] initWithFrame:inputFrame delegate:self];
     
-    // TODO: refactor
     self.inputToolBarView.textView.keyboardDelegate = self;
     
-    self.inputToolBarView.textView.placeHolder = @"Join a conversation";
+    self.inputToolBarView.textView.placeHolder = @"Join the conversation";
     
-    UIButton *sendButton = [self sendButton];
+    UIButton *sendButton = [UIButton defaultPostButton];
     sendButton.enabled = NO;
     sendButton.frame = CGRectMake(self.inputToolBarView.frame.size.width - 65.0f, 8.0f, 59.0f, 26.0f);
     [sendButton addTarget:self
@@ -480,12 +481,6 @@ static NSString * const CellIdentifier = @"cell";
     [self.view addSubview:self.inputToolBarView];
     
 }
-
-- (UIButton *)sendButton
-{
-    return [UIButton defaultSendButton];
-}
-
 
 -(void)createInterestInitialCard{
     
@@ -1940,7 +1935,6 @@ static NSString * const CellIdentifier = @"cell";
             
             // Gray out 'Post' button
 
-            self.sendButton.enabled=NO;
             // Show progress indicator
             [_sendMessage setProgress:0.0f];
             [_sendMessage setHidden:NO];

@@ -278,7 +278,6 @@ enum Weeks {
 
 -(void)viewDidDisappear:(BOOL)animated{
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardDidChangeFrameNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kRemoteNotificationReceivedNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationForInterestPost object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kLocationUpdateReceived object:nil];

@@ -660,7 +660,7 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
                                    forceReload:(BOOL)reload
 {
     
-
+#if 0
 #ifdef DEBUG
     NSCAssert(!(CGRectEqualToRect(keyboardFrame, CGRectZero) &&
                 self.inputView.superview == nil), nil);
@@ -721,6 +721,7 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
         [self.dummyInputView.textView reloadInputViews];
         [self.inputView.textView becomeFirstResponder];
     }
+#endif
 }
 
 -(void)resize{

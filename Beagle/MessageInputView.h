@@ -8,17 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "MessageTextView.h"
-typedef enum
-{
-    InputBarStyleDefault,
-    InputBarStyleFlat
-} InputBarStyle;
 
 @protocol MessageInputViewDelegate <NSObject>
-
-@optional
-- (InputBarStyle)inputBarStyle;
-
 @end
 
 @interface MessageInputView : UIImageView
@@ -33,7 +24,6 @@ typedef enum
 + (CGFloat)textViewLineHeight;
 + (CGFloat)maxLines;
 + (CGFloat)maxHeight;
-+ (InputBarStyle)inputBarStyle;
 
 
 @end
