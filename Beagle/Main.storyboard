@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="Tvt-5e-zCq">
     <dependencies>
-        <deployment defaultVersion="1808" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
     </dependencies>
     <scenes>
@@ -451,7 +450,7 @@
                                 <size key="shadowOffset" width="0.0" height="0.0"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1A7-qG-45x">
-                                <rect key="frame" x="16" y="278" width="288" height="28"/>
+                                <rect key="frame" x="16" y="280" width="288" height="28"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="28" id="DNX-ob-VHd"/>
                                     <constraint firstAttribute="width" constant="288" id="kdD-5Y-7aO"/>
@@ -533,7 +532,7 @@
                             <constraint firstAttribute="trailing" secondItem="3MQ-a9-lKU" secondAttribute="trailing" constant="16" id="Bu4-WS-C1h"/>
                             <constraint firstItem="FOF-FV-DTm" firstAttribute="top" secondItem="NHs-Eo-wtu" secondAttribute="bottom" constant="16" id="F5N-YV-uqm"/>
                             <constraint firstAttribute="trailing" secondItem="BsK-la-ctD" secondAttribute="trailing" id="N95-uo-cv6"/>
-                            <constraint firstItem="sqL-0B-EFK" firstAttribute="top" secondItem="1A7-qG-45x" secondAttribute="bottom" constant="10" id="TFE-rO-WBh"/>
+                            <constraint firstItem="sqL-0B-EFK" firstAttribute="top" secondItem="1A7-qG-45x" secondAttribute="bottom" constant="8" id="TFE-rO-WBh"/>
                             <constraint firstItem="BsK-la-ctD" firstAttribute="top" secondItem="9iY-EO-BXw" secondAttribute="bottom" constant="14" id="VVH-kl-5KG"/>
                             <constraint firstItem="NHs-Eo-wtu" firstAttribute="top" secondItem="9iY-EO-BXw" secondAttribute="bottom" constant="16" id="Vpl-gl-aW7"/>
                             <constraint firstItem="3MQ-a9-lKU" firstAttribute="top" secondItem="9iY-EO-BXw" secondAttribute="bottom" constant="16" id="Xsc-6o-XYV"/>
