@@ -153,9 +153,6 @@ enum Weeks {
     [deleteButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Delete"] withColor:clickable] forState:UIControlStateNormal];
     [deleteButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Delete"] withColor:[clickable colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
     
-    // Color the Background view appropriately
-    [backgroundView setBackgroundColor:[[BeagleManager SharedInstance] mediumDominantColor]];
-    
     // If we are in CREATE mode
     if(!editState){
         bg_activity=[[BeagleActivityClass alloc]init];
