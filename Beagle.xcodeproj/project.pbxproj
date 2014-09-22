@@ -51,7 +51,15 @@
 		18714B3B1940F268008F59DE /* PostSoundEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = 18714B3A1940F268008F59DE /* PostSoundEffect.m */; };
 		187808591954DEA8005E682F /* FriendsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 187808581954DEA8005E682F /* FriendsTableViewCell.m */; };
 		1889E5EC195A84F70079C3E9 /* InviteTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1889E5EB195A84F60079C3E9 /* InviteTableViewCell.m */; };
+		1891F62E19C1EEAC00C83ECE /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1891F62D19C1EEAC00C83ECE /* libc++.dylib */; };
+		1893D41619C9E18A00128A94 /* DismissiveTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1893D40D19C9E18A00128A94 /* DismissiveTextView.m */; };
+		1893D41719C9E18A00128A94 /* MessageInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1893D40F19C9E18A00128A94 /* MessageInputView.m */; };
+		1893D41819C9E18A00128A94 /* MessageTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1893D41119C9E18A00128A94 /* MessageTextView.m */; };
+		1893D41919C9E18A00128A94 /* NSString+MessagesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1893D41319C9E18A00128A94 /* NSString+MessagesView.m */; };
+		1893D41A19C9E18A00128A94 /* UIButton+MessagesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1893D41519C9E18A00128A94 /* UIButton+MessagesView.m */; };
 		189EEBBE196B2A2B00681F04 /* ExpressInterestPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = 189EEBBD196B2A2B00681F04 /* ExpressInterestPreview.m */; };
+		18B5DD5719C1EE08000DEF0E /* Instabug.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18B5DD5519C1EE07000DEF0E /* Instabug.framework */; };
+		18B5DD5819C1EE08000DEF0E /* Instabug.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 18B5DD5619C1EE07000DEF0E /* Instabug.bundle */; };
 		18E7AF0918BBAA1700EBBDE2 /* FacebookLoginSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E7AF0818BBAA1700EBBDE2 /* FacebookLoginSession.m */; };
 		18E7AF0D18BBAA6600EBBDE2 /* BeagleUserClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E7AF0C18BBAA6600EBBDE2 /* BeagleUserClass.m */; };
 		18EBCFDB18CE350600FDC624 /* CustomPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EBCFD518CE350600FDC624 /* CustomPickerView.m */; };
@@ -62,7 +70,6 @@
 		18EC22AD18B5A0B400316B6E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EC22AC18B5A0B400316B6E /* main.m */; };
 		18EC22B118B5A0B400316B6E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EC22B018B5A0B400316B6E /* AppDelegate.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		18EC22B318B5A0B400316B6E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18EC22B218B5A0B400316B6E /* Images.xcassets */; };
-		18EC22BA18B5A0B400316B6E /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC22B918B5A0B400316B6E /* XCTest.framework */; };
 		18EC22BB18B5A0B400316B6E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC22A018B5A0B400316B6E /* Foundation.framework */; };
 		18EC22BC18B5A0B400316B6E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC22A418B5A0B400316B6E /* UIKit.framework */; };
 		18EC22C418B5A0B400316B6E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 18EC22C218B5A0B400316B6E /* InfoPlist.strings */; };
@@ -129,11 +136,9 @@
 		18FDA352192BDDE000D13667 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18FDA351192BDDE000D13667 /* CoreText.framework */; };
 		682455C3196DD6A800182F50 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 682455C2196DD6A800182F50 /* CoreMotion.framework */; };
 		6891059519632C1E00BE23B7 /* AboutUsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6891059419632C1E00BE23B7 /* AboutUsViewController.m */; };
+		6892276C19CC6A1500D98F50 /* Appsee.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6892276B19CC6A1500D98F50 /* Appsee.framework */; };
 		68E5B2D519A656E9001682F1 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68E5B2D419A656E9001682F1 /* FacebookSDK.framework */; };
-		68E9CF54197D5E5B009477B2 /* Appsee.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68E9CF53197D5E5B009477B2 /* Appsee.framework */; };
 		68E9CF56197D5F35009477B2 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68E9CF55197D5F35009477B2 /* CoreMedia.framework */; };
-		68EDF869192AC578008ED9C1 /* Instabug.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 68EDF867192AC578008ED9C1 /* Instabug.bundle */; };
-		68EDF86A192AC578008ED9C1 /* Instabug.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68EDF868192AC578008ED9C1 /* Instabug.framework */; };
 		68EDF86C192AC760008ED9C1 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68EDF86B192AC760008ED9C1 /* CoreFoundation.framework */; };
 		68EDF86E192AC76D008ED9C1 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68EDF86D192AC76D008ED9C1 /* OpenGLES.framework */; };
 		68EDF870192AC775008ED9C1 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68EDF86F192AC775008ED9C1 /* GLKit.framework */; };
@@ -234,8 +239,21 @@
 		187846BC19928D7E0091AA70 /* Beagle-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Beagle-Info.plist"; sourceTree = "<group>"; };
 		1889E5EA195A84F50079C3E9 /* InviteTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteTableViewCell.h; sourceTree = "<group>"; };
 		1889E5EB195A84F60079C3E9 /* InviteTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteTableViewCell.m; sourceTree = "<group>"; };
+		1891F62D19C1EEAC00C83ECE /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
+		1893D40C19C9E18A00128A94 /* DismissiveTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DismissiveTextView.h; sourceTree = "<group>"; };
+		1893D40D19C9E18A00128A94 /* DismissiveTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DismissiveTextView.m; sourceTree = "<group>"; };
+		1893D40E19C9E18A00128A94 /* MessageInputView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageInputView.h; sourceTree = "<group>"; };
+		1893D40F19C9E18A00128A94 /* MessageInputView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageInputView.m; sourceTree = "<group>"; };
+		1893D41019C9E18A00128A94 /* MessageTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageTextView.h; sourceTree = "<group>"; };
+		1893D41119C9E18A00128A94 /* MessageTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageTextView.m; sourceTree = "<group>"; };
+		1893D41219C9E18A00128A94 /* NSString+MessagesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+MessagesView.h"; sourceTree = "<group>"; };
+		1893D41319C9E18A00128A94 /* NSString+MessagesView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MessagesView.m"; sourceTree = "<group>"; };
+		1893D41419C9E18A00128A94 /* UIButton+MessagesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+MessagesView.h"; sourceTree = "<group>"; };
+		1893D41519C9E18A00128A94 /* UIButton+MessagesView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+MessagesView.m"; sourceTree = "<group>"; };
 		189EEBBC196B2A2B00681F04 /* ExpressInterestPreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExpressInterestPreview.h; sourceTree = "<group>"; };
 		189EEBBD196B2A2B00681F04 /* ExpressInterestPreview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExpressInterestPreview.m; sourceTree = "<group>"; };
+		18B5DD5519C1EE07000DEF0E /* Instabug.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Instabug.framework; sourceTree = "<group>"; };
+		18B5DD5619C1EE07000DEF0E /* Instabug.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Instabug.bundle; sourceTree = "<group>"; };
 		18E7AF0718BBAA1700EBBDE2 /* FacebookLoginSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookLoginSession.h; sourceTree = "<group>"; };
 		18E7AF0818BBAA1700EBBDE2 /* FacebookLoginSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookLoginSession.m; sourceTree = "<group>"; };
 		18E7AF0B18BBAA6600EBBDE2 /* BeagleUserClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeagleUserClass.h; sourceTree = "<group>"; };
@@ -254,7 +272,6 @@
 		18EC22B018B5A0B400316B6E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		18EC22B218B5A0B400316B6E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		18EC22B818B5A0B400316B6E /* BeagleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BeagleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		18EC22B918B5A0B400316B6E /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		18EC22C118B5A0B400316B6E /* BeagleTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "BeagleTests-Info.plist"; sourceTree = "<group>"; };
 		18EC22C318B5A0B400316B6E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		18EC22C518B5A0B400316B6E /* BeagleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BeagleTests.m; sourceTree = "<group>"; };
@@ -372,12 +389,10 @@
 		682455C2196DD6A800182F50 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		6891059319632C1E00BE23B7 /* AboutUsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutUsViewController.h; sourceTree = "<group>"; };
 		6891059419632C1E00BE23B7 /* AboutUsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutUsViewController.m; sourceTree = "<group>"; };
+		6892276B19CC6A1500D98F50 /* Appsee.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Appsee.framework; sourceTree = "<group>"; };
 		68E5B2D419A656E9001682F1 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
-		68E9CF53197D5E5B009477B2 /* Appsee.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Appsee.framework; sourceTree = "<group>"; };
 		68E9CF55197D5F35009477B2 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		68E9CF59197D710B009477B2 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		68EDF867192AC578008ED9C1 /* Instabug.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Instabug.bundle; sourceTree = "<group>"; };
-		68EDF868192AC578008ED9C1 /* Instabug.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Instabug.framework; sourceTree = "<group>"; };
 		68EDF86B192AC760008ED9C1 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		68EDF86D192AC76D008ED9C1 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		68EDF86F192AC775008ED9C1 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
@@ -390,15 +405,16 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				68EDF870192AC775008ED9C1 /* GLKit.framework in Frameworks */,
+				1891F62E19C1EEAC00C83ECE /* libc++.dylib in Frameworks */,
 				68E9CF56197D5F35009477B2 /* CoreMedia.framework in Frameworks */,
-				68E9CF54197D5E5B009477B2 /* Appsee.framework in Frameworks */,
 				682455C3196DD6A800182F50 /* CoreMotion.framework in Frameworks */,
 				182F0B9019630328001771AD /* MessageUI.framework in Frameworks */,
 				18FDA352192BDDE000D13667 /* CoreText.framework in Frameworks */,
 				68EDF874192AC7A0008ED9C1 /* CoreTelephony.framework in Frameworks */,
 				18EC232B18B5A65C00316B6E /* AudioToolbox.framework in Frameworks */,
 				68EDF872192AC78D008ED9C1 /* AVFoundation.framework in Frameworks */,
-				68EDF870192AC775008ED9C1 /* GLKit.framework in Frameworks */,
+				18B5DD5719C1EE08000DEF0E /* Instabug.framework in Frameworks */,
 				68EDF86E192AC76D008ED9C1 /* OpenGLES.framework in Frameworks */,
 				68EDF86C192AC760008ED9C1 /* CoreFoundation.framework in Frameworks */,
 				18F8F4DD18DA07F800B26AC6 /* Accelerate.framework in Frameworks */,
@@ -409,13 +425,13 @@
 				18EC233918B5A6A000316B6E /* CoreLocation.framework in Frameworks */,
 				18EC233718B5A69900316B6E /* QuartzCore.framework in Frameworks */,
 				18EC233518B5A68C00316B6E /* SystemConfiguration.framework in Frameworks */,
-				68EDF86A192AC578008ED9C1 /* Instabug.framework in Frameworks */,
 				18EC233318B5A68200316B6E /* CFNetwork.framework in Frameworks */,
 				18EC233118B5A67800316B6E /* libxml2.dylib in Frameworks */,
 				18EC232F18B5A66E00316B6E /* libz.dylib in Frameworks */,
 				68E5B2D519A656E9001682F1 /* FacebookSDK.framework in Frameworks */,
 				18EC22A318B5A0B400316B6E /* CoreGraphics.framework in Frameworks */,
 				18EC22A518B5A0B400316B6E /* UIKit.framework in Frameworks */,
+				6892276C19CC6A1500D98F50 /* Appsee.framework in Frameworks */,
 				18EC22A118B5A0B400316B6E /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -424,7 +440,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				18EC22BA18B5A0B400316B6E /* XCTest.framework in Frameworks */,
 				18EC22BC18B5A0B400316B6E /* UIKit.framework in Frameworks */,
 				18EC22BB18B5A0B400316B6E /* Foundation.framework in Frameworks */,
 			);
@@ -488,6 +503,8 @@
 				18007F0A18C6567F00230C23 /* MBProgressHUD.m */,
 				18007EF518C6511000230C23 /* BeagleUtilities.h */,
 				18007EF618C6511000230C23 /* BeagleUtilities.m */,
+				18714B391940F268008F59DE /* PostSoundEffect.h */,
+				18714B3A1940F268008F59DE /* PostSoundEffect.m */,
 				189EEBBC196B2A2B00681F04 /* ExpressInterestPreview.h */,
 				189EEBBD196B2A2B00681F04 /* ExpressInterestPreview.m */,
 			);
@@ -497,6 +514,10 @@
 		18007F0418C6542000230C23 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				1893D41219C9E18A00128A94 /* NSString+MessagesView.h */,
+				1893D41319C9E18A00128A94 /* NSString+MessagesView.m */,
+				1893D41419C9E18A00128A94 /* UIButton+MessagesView.h */,
+				1893D41519C9E18A00128A94 /* UIButton+MessagesView.m */,
 				1805009B191BE592003AAD47 /* UIScreen+Screenshot.h */,
 				1805009C191BE592003AAD47 /* UIScreen+Screenshot.m */,
 				18007EFB18C6541200230C23 /* UIImage+Alpha.h */,
@@ -643,6 +664,19 @@
 			path = Sounds;
 			sourceTree = "<group>";
 		};
+		1893D41B19C9E7A600128A94 /* Keyboard Message View */ = {
+			isa = PBXGroup;
+			children = (
+				1893D40C19C9E18A00128A94 /* DismissiveTextView.h */,
+				1893D40D19C9E18A00128A94 /* DismissiveTextView.m */,
+				1893D40E19C9E18A00128A94 /* MessageInputView.h */,
+				1893D40F19C9E18A00128A94 /* MessageInputView.m */,
+				1893D41019C9E18A00128A94 /* MessageTextView.h */,
+				1893D41119C9E18A00128A94 /* MessageTextView.m */,
+			);
+			name = "Keyboard Message View";
+			sourceTree = "<group>";
+		};
 		18E7AF0618BBAA0400EBBDE2 /* Facebook */ = {
 			isa = PBXGroup;
 			children = (
@@ -689,10 +723,13 @@
 		18EC229F18B5A0B400316B6E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6892276B19CC6A1500D98F50 /* Appsee.framework */,
+				1891F62D19C1EEAC00C83ECE /* libc++.dylib */,
+				18B5DD5519C1EE07000DEF0E /* Instabug.framework */,
+				18B5DD5619C1EE07000DEF0E /* Instabug.bundle */,
 				68E5B2D419A656E9001682F1 /* FacebookSDK.framework */,
 				68E9CF59197D710B009477B2 /* libsqlite3.dylib */,
 				68E9CF55197D5F35009477B2 /* CoreMedia.framework */,
-				68E9CF53197D5E5B009477B2 /* Appsee.framework */,
 				682455C2196DD6A800182F50 /* CoreMotion.framework */,
 				182F0B8F19630328001771AD /* MessageUI.framework */,
 				18FDA351192BDDE000D13667 /* CoreText.framework */,
@@ -701,8 +738,6 @@
 				68EDF86F192AC775008ED9C1 /* GLKit.framework */,
 				68EDF86D192AC76D008ED9C1 /* OpenGLES.framework */,
 				68EDF86B192AC760008ED9C1 /* CoreFoundation.framework */,
-				68EDF867192AC578008ED9C1 /* Instabug.bundle */,
-				68EDF868192AC578008ED9C1 /* Instabug.framework */,
 				18F8F4DC18DA07F800B26AC6 /* Accelerate.framework */,
 				1806EA4118B9E32B00A47BF1 /* Crashlytics.framework */,
 				18EC233E18B5A6BD00316B6E /* Social.framework */,
@@ -718,7 +753,6 @@
 				18EC22A018B5A0B400316B6E /* Foundation.framework */,
 				18EC22A218B5A0B400316B6E /* CoreGraphics.framework */,
 				18EC22A418B5A0B400316B6E /* UIKit.framework */,
-				18EC22B918B5A0B400316B6E /* XCTest.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -726,6 +760,9 @@
 		18EC22A618B5A0B400316B6E /* Beagle */ = {
 			isa = PBXGroup;
 			children = (
+				18EC22AF18B5A0B400316B6E /* AppDelegate.h */,
+				18EC22B018B5A0B400316B6E /* AppDelegate.m */,
+				18EC234018B5A71000316B6E /* Storyboard */,
 				6891059619632C3000BE23B7 /* About */,
 				182F0B8B19630059001771AD /* Feedback */,
 				186B11FB1958E03300FF5A4D /* Invitees */,
@@ -750,9 +787,6 @@
 				18007F0418C6542000230C23 /* Categories */,
 				18FADB8A18B6625A00A62287 /* Login Screen */,
 				18EC232918B5A43700316B6E /* Web Services */,
-				18EC234018B5A71000316B6E /* Storyboard */,
-				18EC22AF18B5A0B400316B6E /* AppDelegate.h */,
-				18EC22B018B5A0B400316B6E /* AppDelegate.m */,
 				18EC22B218B5A0B400316B6E /* Images.xcassets */,
 				18EC22A718B5A0B400316B6E /* Supporting Files */,
 			);
@@ -902,14 +936,15 @@
 		18F889891902C14000C80011 /* Detailed Interest */ = {
 			isa = PBXGroup;
 			children = (
-				18F8898D1902C71500C80011 /* Scroll Menu */,
+				1893D41B19C9E7A600128A94 /* Keyboard Message View */,
+				18F8898D1902C71500C80011 /* Participants Scroll */,
 				18F8898A1902C15400C80011 /* DetailInterestViewController.h */,
 				18F8898B1902C15400C80011 /* DetailInterestViewController.m */,
 			);
 			name = "Detailed Interest";
 			sourceTree = "<group>";
 		};
-		18F8898D1902C71500C80011 /* Scroll Menu */ = {
+		18F8898D1902C71500C80011 /* Participants Scroll */ = {
 			isa = PBXGroup;
 			children = (
 				18F3CEFC1909774D00AE3C47 /* MessageKeyboardView.h */,
@@ -919,10 +954,8 @@
 				18F889931902C7FF00C80011 /* PlayerProfileItem.xib */,
 				18F8898F1902C72400C80011 /* BeaglePlayerScrollMenu.h */,
 				18F8898E1902C72400C80011 /* BeaglePlayerScrollMenu.m */,
-				18714B391940F268008F59DE /* PostSoundEffect.h */,
-				18714B3A1940F268008F59DE /* PostSoundEffect.m */,
 			);
-			name = "Scroll Menu";
+			name = "Participants Scroll";
 			sourceTree = "<group>";
 		};
 		18F9FE5E18DB40D2004BFE4E /* Beagle Manager */ = {
@@ -1035,7 +1068,7 @@
 		18EC229518B5A0B400316B6E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0600;
 				ORGANIZATIONNAME = soclivity;
 				TargetAttributes = {
 					18EC229C18B5A0B400316B6E = {
@@ -1083,11 +1116,11 @@
 				18F2B74F191D3AF500245C5A /* EventVisibilityBlurView.xib in Resources */,
 				18F8697E192136DB000C8A37 /* EventInterestFilterBlurView.xib in Resources */,
 				18F889951902C7FF00C80011 /* PlayerProfileItem.xib in Resources */,
+				18B5DD5819C1EE08000DEF0E /* Instabug.bundle in Resources */,
 				18EC22B318B5A0B400316B6E /* Images.xcassets in Resources */,
 				1805CED918C8D25800AC8556 /* TimeFilterView.xib in Resources */,
 				180AF0B318DC7FB200EE87D6 /* BlankHomePageView.xib in Resources */,
 				180F604D1923D1D800B3807F /* LocationBlurView.xib in Resources */,
-				68EDF869192AC578008ED9C1 /* Instabug.bundle in Resources */,
 				180AF0C018DC809E00EE87D6 /* User.plist in Resources */,
 				18714B381940F1D2008F59DE /* messageSent.aiff in Resources */,
 			);
@@ -1140,7 +1173,9 @@
 				18EC231118B5A42D00316B6E /* ServerManager.m in Sources */,
 				18007F0118C6541200230C23 /* UIImage+Alpha.m in Sources */,
 				18EC231718B5A42D00316B6E /* ASIHTTPRequest.m in Sources */,
+				1893D41919C9E18A00128A94 /* NSString+MessagesView.m in Sources */,
 				18EC232318B5A42D00316B6E /* NSObject+SBJSON.m in Sources */,
+				1893D41819C9E18A00128A94 /* MessageTextView.m in Sources */,
 				18F8898C1902C15400C80011 /* DetailInterestViewController.m in Sources */,
 				18007ED818C64EDD00230C23 /* BGFlickrManager.m in Sources */,
 				18FADB9618B668A500A62287 /* ECSlidingViewController.m in Sources */,
@@ -1159,6 +1194,7 @@
 				180F604C1923D1D800B3807F /* LocationBlurView.m in Sources */,
 				18007EFA18C653C000230C23 /* UIImage+Resize.m in Sources */,
 				18FDA350192BDD9A00D13667 /* AttributedTableViewCell.m in Sources */,
+				1893D41619C9E18A00128A94 /* DismissiveTextView.m in Sources */,
 				18EC231F18B5A42D00316B6E /* ASICloudFilesObjectRequest.m in Sources */,
 				18F9FE6118DB40E4004BFE4E /* BeagleManager.m in Sources */,
 				180F604B1923D1D800B3807F /* GooglePlacesAutocompleteUtilities.m in Sources */,
@@ -1186,6 +1222,8 @@
 				1889E5EC195A84F70079C3E9 /* InviteTableViewCell.m in Sources */,
 				18FADB9B18B669E500A62287 /* HomeViewController.m in Sources */,
 				18F3394F190825A500CCCB18 /* InterestChatClass.m in Sources */,
+				1893D41719C9E18A00128A94 /* MessageInputView.m in Sources */,
+				1893D41A19C9E18A00128A94 /* UIButton+MessagesView.m in Sources */,
 				18EBCFDB18CE350600FDC624 /* CustomPickerView.m in Sources */,
 				180AF0B418DC7FB200EE87D6 /* BlankHomePageView.m in Sources */,
 				18007F0318C6541200230C23 /* UIImage+RoundedCorner.m in Sources */,
@@ -1283,7 +1321,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
@@ -1316,7 +1354,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1328,12 +1366,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Dev";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_IDENTIFIER_SUFFIX = com.beagle.dev;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Harish Hoon (B99DQ79SBX)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Harish Hoon (B99DQ79SBX)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)",
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					/Users/Harish/Downloads/Appsee,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Beagle/Beagle-Prefix.pch";
@@ -1344,8 +1383,11 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SDKROOT = iphoneos;
+				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1356,12 +1398,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_IDENTIFIER_SUFFIX = com.app.beagle;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Soclivity, LLC (RLC9X36TPX)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Soclivity, LLC (RLC9X36TPX)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)",
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					/Users/Harish/Downloads/Appsee,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Beagle/Beagle-Prefix.pch";
@@ -1372,8 +1415,11 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SDKROOT = iphoneos;
+				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

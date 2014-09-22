@@ -58,7 +58,22 @@ void uncaughtExceptionHandler(NSException *exception) {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = initViewController;
     [self.window makeKeyAndVisible];
-    [self registerForNotifications];
+    
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
+    if ([application respondsToSelector:@selector(registerUserNotificationSettings:)]) {
+        // use registerUserNotificationSettings
+        [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+        [[UIApplication sharedApplication] registerForRemoteNotifications];
+    }
+#else
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+     (
+      UIRemoteNotificationTypeBadge |
+      UIRemoteNotificationTypeSound |
+      UIRemoteNotificationTypeAlert)];
+    
+#endif
+    
     
     // Instabug integration
     [Instabug startWithToken:@"0fe55a803d01c2d223d89b450dcae674" captureSource:IBGCaptureSourceUIKit invocationEvent:IBGInvocationEventShake];
@@ -97,19 +112,6 @@ void uncaughtExceptionHandler(NSException *exception) {
     
     if([[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"]){
     
-//    [FBSession renewSystemCredentials:^(ACAccountCredentialRenewResult result, NSError *error) {
-//        if (!error) {
-//            if (result == ACAccountCredentialRenewResultRejected) {
-//                NSLog(@"Facebook app deleted");
-//            }
-//            else if (result==ACAccountCredentialRenewResultRenewed){
-//                NSLog(@"Facebook app Account renewed");
-//            }
-//        }
-//        else {
-//            NSLog(@"Error: %@", error);
-//        }
-//    }];
     if (FBSession.activeSession.state == FBSessionStateCreatedTokenLoaded) {
         
         // If there's one, just open the session silently, without showing the user the login UI
@@ -142,6 +144,12 @@ void uncaughtExceptionHandler(NSException *exception) {
 	// Set a movement threshold for new events.
 	locationManager.distanceFilter = kCLLocationAccuracyThreeKilometers;
     
+    // IOS 8 Support
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
+    if([locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+        [locationManager requestWhenInUseAuthorization];
+    }
+#endif
 	[locationManager startUpdatingLocation];
     
 	CLLocation *currentLoc = locationManager.location;
@@ -151,21 +159,21 @@ void uncaughtExceptionHandler(NSException *exception) {
 }
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
 	NSLog(@"%s", __PRETTY_FUNCTION__);
-	switch (status) {
-		case kCLAuthorizationStatusAuthorized:
-			NSLog(@"kCLAuthorizationStatusAuthorized");
+    
+    if (status == kCLAuthorizationStatusDenied || status == kCLAuthorizationStatusRestricted||status==kCLAuthorizationStatusNotDetermined) {
+        // Clear out any pending location requests (which will execute the blocks with a status that reflects
+        // the unavailability of location services) since we now no longer have location services permissions
+    NSLog(@"kCLAuthorizationStatusNotDetermined Restricted");
+    }
+    
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
+    else if (status == kCLAuthorizationStatusAuthorizedAlways || status == kCLAuthorizationStatusAuthorizedWhenInUse) {
+#else
+    else if (status == kCLAuthorizationStatusAuthorized) {
+#endif
+
 			[locationManager startUpdatingLocation];
-			break;
-		case kCLAuthorizationStatusDenied:
-			NSLog(@"kCLAuthorizationStatusDenied");
-			break;
-		case kCLAuthorizationStatusNotDetermined:
-			NSLog(@"kCLAuthorizationStatusNotDetermined");
-			break;
-		case kCLAuthorizationStatusRestricted:
-			NSLog(@"kCLAuthorizationStatusRestricted");
-			break;
-	}
+    }
 }
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < _IPHONE_7_0
@@ -238,14 +246,6 @@ void uncaughtExceptionHandler(NSException *exception) {
 }
 #pragma mark - push Notifications calls
 
--(void)registerForNotifications {
-    
-    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
-    (
-     UIRemoteNotificationTypeBadge |
-     UIRemoteNotificationTypeSound |
-     UIRemoteNotificationTypeAlert)];
-}
 - (void)handlePush:(NSDictionary *)launchOptions {
     
     // If the app was launched in response to a push notification, we'll handle the payload here
@@ -456,6 +456,7 @@ void uncaughtExceptionHandler(NSException *exception) {
 -(void) application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     
     
+    
     NSLog(@"didReceiveRemoteNotification");
     if([userInfo[@"aps"][@"alert"] length]== 0){
 #if 0
@@ -500,7 +501,6 @@ void uncaughtExceptionHandler(NSException *exception) {
         }
         
         //         [self presentNotification];
-        completionHandler(UIBackgroundFetchResultNewData);
         
         
     }else{
@@ -521,7 +521,8 @@ void uncaughtExceptionHandler(NSException *exception) {
             [self handleOfflineNotifications:userInfo];
         }
     }
-    
+    completionHandler(UIBackgroundFetchResultNewData);
+
 }
 
 

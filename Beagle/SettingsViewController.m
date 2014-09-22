@@ -160,7 +160,7 @@
 
         case 4:
         {
-            [Instabug showFeedbackFormWithScreenshotAnnotation:NO];
+            [Instabug invokeFeedbackSender];
             return;
 
         }

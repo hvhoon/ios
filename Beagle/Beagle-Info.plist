@@ -20,10 +20,27 @@
 	<string>1.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb500525846725031</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
+	<key>FacebookAppID</key>
+	<string>500525846725031</string>
+	<key>FacebookDisplayName</key>
+	<string>Beagle</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationUsageDescription</key>
+	<string>Beagle uses your location to figure out what&apos;s happening around you.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Beagle uses your location to figure out what&apos;s happening around you.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
@@ -42,18 +59,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>fb500525846725031</string>
-			</array>
-		</dict>
-	</array>
-	<key>FacebookAppID</key>
-	<string>500525846725031</string>
-	<key>FacebookDisplayName</key>
-	<string>Beagle</string>
 </dict>
 </plist>

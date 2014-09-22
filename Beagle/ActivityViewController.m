@@ -66,12 +66,10 @@ enum Weeks {
 }
 -(void)viewWillAppear:(BOOL)animated{
     
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (createButtonClicked:) name:kLocationUpdateReceived object:nil];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showLocationError) name:kErrorToGetLocation object:nil];
-
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBackgroundInNotification:) name:kRemoteNotificationReceivedNotification object:Nil];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(postInAppNotification:) name:kNotificationForInterestPost object:Nil];
     
     [self.navigationController setNavigationBarHidden:NO];
@@ -154,9 +152,6 @@ enum Weeks {
     // Delete button
     [deleteButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Delete"] withColor:clickable] forState:UIControlStateNormal];
     [deleteButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Delete"] withColor:[clickable colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
-    
-    // Color the Background view appropriately
-    [backgroundView setBackgroundColor:[[BeagleManager SharedInstance] mediumDominantColor]];
     
     // If we are in CREATE mode
     if(!editState){
@@ -253,8 +248,8 @@ enum Weeks {
     }
     
     // Setting the visibility text all the way at the end
+    [locationFilterButton setTitleColor:[[BeagleManager SharedInstance] darkDominantColor] forState:UIControlStateNormal];
     [locationFilterButton setTitle:visibilityText forState:UIControlStateNormal];
-
     
     if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude==0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude==0.0f){
         locationType=1;
@@ -269,15 +264,21 @@ enum Weeks {
         [self reverseGeocode];
     }
 
+//    descriptionTextView.keyboardType=UIKeyboardTypeDefault;
+//    descriptionTextView.autocorrectionType=UITextAutocorrectionTypeYes;
+    
+//    [descriptionTextView becomeFirstResponder];
+
 }
 	// Do any additional setup after loading the view.
 
+
 -(void)viewDidDisappear:(BOOL)animated{
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kRemoteNotificationReceivedNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationForInterestPost object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kLocationUpdateReceived object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kErrorToGetLocation object:nil];
-
 }
 
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
@@ -395,8 +396,13 @@ enum Weeks {
 }
 
 -(void)cancelButtonClicked:(id)sender{
-    
-    [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
+    [self.navigationController dismissViewControllerAnimated:NO completion:nil];
+#else
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+#endif
+
 }
 -(void)updateCreateEventParameters{
     bg_activity.activityDesc=descriptionTextView.text;
@@ -1121,7 +1127,15 @@ enum Weeks {
                                                            userInfo: nil repeats:NO];
 
                 }else if (serverRequest==kServerCallEditActivity){
-                    [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
+                    [self.navigationController dismissViewControllerAnimated:NO completion:^{
+                        [descriptionTextView becomeFirstResponder];
+                        [descriptionTextView resignFirstResponder];
+                        
+                    }];
+#else
+                    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+#endif
                 }
 
             }
@@ -1140,7 +1154,17 @@ enum Weeks {
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 BeagleManager *BG=[BeagleManager SharedInstance];
                 BG.activityDeleted=TRUE;
-                [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
+                [self.navigationController dismissViewControllerAnimated:NO completion:^{
+                    [descriptionTextView becomeFirstResponder];
+                    [descriptionTextView resignFirstResponder];
+                    
+                }];
+#else
+                [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+#endif
+                
+                
                 
             }
         }
@@ -1216,14 +1240,31 @@ enum Weeks {
     [self.animationBlurView hide];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
 
-    [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
+    [self.navigationController dismissViewControllerAnimated:NO completion:^{
+        [descriptionTextView becomeFirstResponder];
+        [descriptionTextView resignFirstResponder];
+        
+    }];
+#else
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+#endif
 
 }
 -(void)dismissCreateAnimationBlurView{
     [timer invalidate];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
     
-    [self.navigationController dismissViewControllerAnimated:YES completion:Nil];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
+    [self.navigationController dismissViewControllerAnimated:NO completion:^{
+        [descriptionTextView becomeFirstResponder];
+        [descriptionTextView resignFirstResponder];
+        
+    }];
+#else
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+#endif
+
     
 }
 @end

@@ -1635,7 +1635,14 @@
     HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:indexpath];
     ExpressInterestPreview *preview=[[ExpressInterestPreview alloc]initWithFrame:CGRectMake(0, 0, 320, play.heightRow) orgn:play.organizerName];
     preview.tag=1374;
+    
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
+    [cell insertSubview:preview aboveSubview:cell];
+#else
     [cell insertSubview:preview aboveSubview:cell.contentView];
+    
+#endif
+    
 //    self.tableView.scrollEnabled=NO;
     
     [self beginIgnoringIteractions];
