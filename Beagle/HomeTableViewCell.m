@@ -100,7 +100,7 @@ static UIFont *dateTextFont = nil;
                                                    context:nil].size;
     
     
-    [[BeagleUtilities activityTime:bg_activity.startActivityDate endate:bg_activity.endActivityDate] drawInRect:CGRectMake(304-dateTextSize.width,
+    [[BeagleUtilities activityTime:bg_activity.startActivityDate endate:bg_activity.endActivityDate] drawInRect:CGRectMake(([UIScreen mainScreen].bounds.size.width-16)-dateTextSize.width,
                                           fromTheTop,
                                           dateTextSize.width,dateTextSize.height) withAttributes:attrs];
 
@@ -118,20 +118,7 @@ static UIFont *dateTextFont = nil;
                                  context:nil].size;
     
     nameRect = CGRectMake(75,organizerName_y-organizerNameSize.height, organizerNameSize.width, organizerNameSize.height);
-
-    
     [bg_activity.organizerName drawInRect:nameRect withAttributes:attrs];
-    
-    // Removing the friends icons for now
-    /*
-    if(bg_activity.dosRelation!=0 && self.bg_activity.activityType!=2){
-        if(bg_activity.dosRelation==1) {
-            [[UIImage imageNamed:@"DOS2"] drawInRect:CGRectMake(75+8+organizerNameSize.width, 43, 27, 15)];
-        }else if(bg_activity.dosRelation==2){
-            [[UIImage imageNamed:@"DOS3"] drawInRect:CGRectMake(75+8+organizerNameSize.width, 43, 32, 15)];
-        }
-    }
-    */
     
     // Adding the height of the profile picture
     fromTheTop = fromTheTop+thisRect.size.height;
@@ -145,7 +132,7 @@ static UIFont *dateTextFont = nil;
                              [UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
                              style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
     
-    CGSize maximumLabelSize = CGSizeMake(288,999);
+    CGSize maximumLabelSize = CGSizeMake([UIScreen mainScreen].bounds.size.width-32,999);
     
     CGRect commentTextRect = [self.bg_activity.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
                                                                attributes:attrs
@@ -364,22 +351,22 @@ static UIFont *dateTextFont = nil;
     if([self.bg_activity.visibility isEqualToString:@"custom"]) {
         
         // Adding the lock image
-        [[UIImage imageNamed:@"Invite-only-icon"] drawInRect:CGRectMake(292, fromTheTop+10, 12, 15)];
+        [[UIImage imageNamed:@"Invite-only-icon"] drawInRect:CGRectMake([UIScreen mainScreen].bounds.size.width-12-16, fromTheTop+10, 12, 15)];
         
         // Adding the # of Friends
         CGSize inviteOnlyTextSize = [@"Invite Only" boundingRectWithSize:CGSizeMake(288, r.size.height) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
         
-        [@"Invite Only" drawInRect:CGRectMake((320-(35+inviteOnlyTextSize.width)), fromTheTop+10, inviteOnlyTextSize.width, inviteOnlyTextSize.height) withAttributes:attrs];
+        [@"Invite Only" drawInRect:CGRectMake(([UIScreen mainScreen].bounds.size.width-(35+inviteOnlyTextSize.width)), fromTheTop+10, inviteOnlyTextSize.width, inviteOnlyTextSize.height) withAttributes:attrs];
     }
     else if([self.bg_activity.visibility isEqualToString:@"public"] && self.bg_activity.activityType != 2) {
         
         // Adding the globe icon
-        [[UIImage imageNamed:@"Public"] drawInRect:CGRectMake(289, fromTheTop+10, 15, 15)];
+        [[UIImage imageNamed:@"Public"] drawInRect:CGRectMake([UIScreen mainScreen].bounds.size.width-15-16, fromTheTop+10, 15, 15)];
         
         // Adding the # of Friends
         CGSize publicTextSize = [@"Public" boundingRectWithSize:CGSizeMake(288, r.size.height) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
         
-        [@"Public" drawInRect:CGRectMake((320-(37+publicTextSize.width)), fromTheTop+9, publicTextSize.width, publicTextSize.height) withAttributes:attrs];
+        [@"Public" drawInRect:CGRectMake(([UIScreen mainScreen].bounds.size.width-(37+publicTextSize.width)), fromTheTop+9, publicTextSize.width, publicTextSize.height) withAttributes:attrs];
     }
     else {
         // Do not add any icon!
@@ -389,7 +376,7 @@ static UIFont *dateTextFont = nil;
     fromTheTop += 33+20;
     
     // Drawing the card seperator
-    CGRect stripRect = {0, fromTheTop, 320, 1};
+    CGRect stripRect = {0, fromTheTop, [UIScreen mainScreen].bounds.size.width, 1};
     CGContextSetRGBFillColor(context, 230.0/255.0, 230.0/255.0, 230.0/255.0, 1.0);
     CGContextFillRect(context, stripRect);
     
