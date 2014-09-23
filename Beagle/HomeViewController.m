@@ -145,21 +145,13 @@
     categoryFilterType=1;
     self.filterBlurView = [EventInterestFilterBlurView loadEventInterestFilter:self.view];
     self.filterBlurView.delegate=self;
-
     self.filterBlurView.frame=CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
     
     self.animationBlurView=[CreateAnimationBlurView loadCreateAnimationView:self.view];
     self.animationBlurView.delegate=self;
-    
-    // If it's a 3.5" screen use the bounds below
-    self.animationBlurView.frame=CGRectMake(0, 0, 320, 480);
-    
-    // Else use these bounds for the 4" screen
-    if([UIScreen mainScreen].bounds.size.height > 480.0f)
-        self.animationBlurView.frame=CGRectMake(0, 0, 320, 568);
+    self.animationBlurView.frame=CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
     
     if([[[BeagleManager SharedInstance]beaglePlayer]profileData]==nil){
-        
         
         NSOperationQueue *queue = [NSOperationQueue new];
         NSInvocationOperation *operation = [[NSInvocationOperation alloc]
@@ -196,17 +188,17 @@
     }
       [self.view addGestureRecognizer:self.slidingViewController.panGesture];
     
-    _topSection = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)];
+    _topSection = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 200)];
     _topSection.backgroundColor = [UIColor grayColor];
     [self.view addSubview:_topSection];
     
-    UIImageView *stockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)];
+    UIImageView *stockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 200)];
     stockImageView.backgroundColor = [UIColor grayColor];
     stockImageView.tag=3456;
     [_topSection addSubview:stockImageView];
      
     UIImageView *topGradient=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"gradient"]];
-    topGradient.frame = CGRectMake(0, 0, 320, 64);
+    topGradient.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 64);
     [_topSection addSubview:topGradient];
     
 
@@ -219,12 +211,12 @@
     UIButton *eventButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [eventButton setBackgroundImage:[UIImage imageNamed:@"add"] forState:UIControlStateNormal];
     [eventButton addTarget:self action:@selector(createANewActivity:)forControlEvents:UIControlEventTouchUpInside];
-    eventButton.frame = CGRectMake(263.0, 0.0, 57.0, 57.0);
+    eventButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-57.0, 0.0, 57.0, 57.0);
     
     [_topSection addSubview:eventButton];
     
     // Setting up the filter pane
-    _filterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    _filterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 44)];
     [_filterView addSubview:[self renderFilterHeaderView]];
     _filterView.backgroundColor=[UIColor grayColor];
     
@@ -669,7 +661,7 @@
             UIButton *notificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];
             [notificationsButton addTarget:self action:@selector(revealUnderRight:)forControlEvents:UIControlEventTouchUpInside];
             [notificationsButton setBackgroundImage:[UIImage imageNamed:@"Bell-(No-Notications)"] forState:UIControlStateNormal];
-            notificationsButton.frame = CGRectMake(272, 0, 44, 44);
+            notificationsButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-48, 0, 44, 44);
             notificationsButton.alpha = 0.6;
             notificationsButton.tag=5346;
             [headerView addSubview:notificationsButton];
@@ -681,7 +673,7 @@
             
         UIButton *updateNotificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [updateNotificationsButton addTarget:self action:@selector(revealUnderRight:)forControlEvents:UIControlEventTouchUpInside];
-        updateNotificationsButton.frame = CGRectMake(276, 11, 33, 22);
+        updateNotificationsButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-44, 11, 33, 22);
         [updateNotificationsButton setTitle:[NSString stringWithFormat:@"%ld",(long)BG.badgeCount] forState:UIControlStateNormal];
         [updateNotificationsButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         updateNotificationsButton.titleLabel.font = [UIFont boldSystemFontOfSize:14.0f];
@@ -922,7 +914,7 @@
 
 -(UIView*)renderFilterHeaderView {
 
-    UIView *headerView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 44)];
+    UIView *headerView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 44)];
     CGSize size = CGSizeMake(220,999);
     NSString* filterText = @"Happening Around You";
     
@@ -959,7 +951,7 @@
         UIButton *notificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [notificationsButton addTarget:self action:@selector(revealUnderRight:)forControlEvents:UIControlEventTouchUpInside];
         [notificationsButton setBackgroundImage:[UIImage imageNamed:@"Bell-(No-Notications)"] forState:UIControlStateNormal];
-        notificationsButton.frame = CGRectMake(272, 0, 44, 44);
+        notificationsButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-48, 0, 44, 44);
         notificationsButton.alpha = 0.6;
         notificationsButton.tag=5346;
         [headerView addSubview:notificationsButton];
@@ -984,11 +976,11 @@
         UIButton *updateNotificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [updateNotificationsButton addTarget:self action:@selector(revealUnderRight:)forControlEvents:UIControlEventTouchUpInside];
         if(badgeCountSize.width>32.0f){
-            updateNotificationsButton.frame = CGRectMake(272, 0, 44, 44);
+            updateNotificationsButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-48, 0, 44, 44);
             
         }
         else{
-            updateNotificationsButton.frame = CGRectMake(272, 0, 44, 44);
+            updateNotificationsButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-48, 0, 44, 44);
             
         }
         
@@ -1104,10 +1096,10 @@
 {
     
         if(section==0){
-            UIView *translucentView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 44)];
+            UIView *translucentView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 44)];
             translucentView.backgroundColor=[UIColor clearColor];
 
-            translucentView.frame=CGRectMake(0, 0, 320, 92);
+            translucentView.frame=CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 92);
             return translucentView;
 
         }else{
@@ -1164,13 +1156,7 @@
         NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"BlankHomePageView" owner:self options:nil];
         BlankHomePageView *blankHomePageView=[nib objectAtIndex:0];
         
-        // If it's a 3.5" screen use the bounds below
-        blankHomePageView.frame=CGRectMake(0, 0, 320, 280);
-        
-        // Else use these bounds for the 4" screen
-        if([UIScreen mainScreen].bounds.size.height > 480.0f)
-            blankHomePageView.frame=CGRectMake(0, 0, 320, 368);
-        
+        blankHomePageView.frame=CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height-200);
         blankHomePageView.delegate=self;
         blankHomePageView.userInteractionEnabled=YES;
         blankHomePageView.tag=1245;
@@ -1627,7 +1613,7 @@
 -(void)createAnOverlayOnAUITableViewCell:(NSIndexPath*)indexpath {
     BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexpath.row];
     HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:indexpath];
-    ExpressInterestPreview *preview=[[ExpressInterestPreview alloc]initWithFrame:CGRectMake(0, 0, 320, play.heightRow) orgn:play.organizerName];
+    ExpressInterestPreview *preview=[[ExpressInterestPreview alloc]initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, play.heightRow) orgn:play.organizerName];
     preview.tag=1374;
     
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
