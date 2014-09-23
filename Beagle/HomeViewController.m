@@ -26,6 +26,7 @@
 #define kLeaveInterest 23
 #define kSuggestedPost 24
 #define waitBeforeLoadingDefaultImage 20.0f
+#define goldenRatio 1.6f
 
 @interface HomeViewController ()<UITableViewDataSource,UITableViewDelegate,HomeTableViewCellDelegate,ServerManagerDelegate,IconDownloaderDelegate,BlankHomePageViewDelegate,EventInterestFilterBlurViewDelegate,InAppNotificationViewDelegate,CreateAnimationBlurViewDelegate>{
     UIView *topNavigationView;
@@ -188,19 +189,19 @@
     }
       [self.view addGestureRecognizer:self.slidingViewController.panGesture];
     
-    _topSection = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, roundf([UIScreen mainScreen].bounds.size.width/16*9))];
+    _topSection = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, roundf([UIScreen mainScreen].bounds.size.width/goldenRatio))];
     _topSection.backgroundColor = [UIColor grayColor];
     [self.view addSubview:_topSection];
     
-    UIImageView *stockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, roundf([UIScreen mainScreen].bounds.size.width/16*9))];
+    UIImageView *stockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, roundf([UIScreen mainScreen].bounds.size.width/goldenRatio))];
     stockImageView.backgroundColor = [UIColor grayColor];
     stockImageView.tag=3456;
     [_topSection addSubview:stockImageView];
     
     // Dynamic cover image height calculations!
-    NSLog(@"The Header height is %f", roundf([UIScreen mainScreen].bounds.size.width/16*9));
-    NSLog(@"The List height is %f", [UIScreen mainScreen].bounds.size.height - roundf([UIScreen mainScreen].bounds.size.width/16*9));
-    NSLog(@"The Screen height is %f", roundf([UIScreen mainScreen].bounds.size.width/16*9)+ ([UIScreen mainScreen].bounds.size.height - roundf([UIScreen mainScreen].bounds.size.width/16*9)));
+    NSLog(@"The Header height is %f", roundf([UIScreen mainScreen].bounds.size.width/goldenRatio));
+    NSLog(@"The List height is %f", [UIScreen mainScreen].bounds.size.height - roundf([UIScreen mainScreen].bounds.size.width/goldenRatio));
+    NSLog(@"The Screen height is %f", roundf([UIScreen mainScreen].bounds.size.width/goldenRatio)+ ([UIScreen mainScreen].bounds.size.height - roundf([UIScreen mainScreen].bounds.size.width/goldenRatio)));
      
     UIImageView *topGradient=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"gradient"]];
     topGradient.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 64);
@@ -1046,7 +1047,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     if(section==0)
-        return roundf([UIScreen mainScreen].bounds.size.width/16*9)-44-64;
+        return roundf([UIScreen mainScreen].bounds.size.width/goldenRatio)-44-64;
     else{
         return 44.0f;
         
@@ -1086,7 +1087,7 @@
     play.heightRow=rowHeight+16+20+(int)textRect.size.height;
     return rowHeight+16+20+(int)textRect.size.height;
     }else if (indexPath.section==1 && [self.tableData count]==0){
-        return ([UIScreen mainScreen].bounds.size.height - roundf([UIScreen mainScreen].bounds.size.width/16*9));
+        return ([UIScreen mainScreen].bounds.size.height - roundf([UIScreen mainScreen].bounds.size.width/goldenRatio));
     }
      return 0.0f;
 }
@@ -1098,7 +1099,7 @@
             UIView *translucentView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 44)];
             translucentView.backgroundColor=[UIColor clearColor];
 
-            translucentView.frame=CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, roundf([UIScreen mainScreen].bounds.size.width/16*9)-44-64);
+            translucentView.frame=CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, roundf([UIScreen mainScreen].bounds.size.width/goldenRatio)-44-64);
             return translucentView;
 
         }else{
@@ -1155,7 +1156,7 @@
         NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"BlankHomePageView" owner:self options:nil];
         BlankHomePageView *blankHomePageView=[nib objectAtIndex:0];
         
-        blankHomePageView.frame=CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height-200);
+        blankHomePageView.frame=CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height-roundf([UIScreen mainScreen].bounds.size.width/goldenRatio));
         blankHomePageView.delegate=self;
         blankHomePageView.userInteractionEnabled=YES;
         blankHomePageView.tag=1245;
@@ -1242,12 +1243,12 @@
     // Let the scrolling begin, keep track of where you are
     // If the user scrolls up, increase the opacity of the filter bar
     if (scrollView.contentOffset.y >= 0.0) {
-        if (scrollView.contentOffset.y >=(roundf([UIScreen mainScreen].bounds.size.width/16*9)-44-64))
-            yOffset = roundf([UIScreen mainScreen].bounds.size.width/16*9)-44-64;
+        if (scrollView.contentOffset.y >=(roundf([UIScreen mainScreen].bounds.size.width/goldenRatio)-44-64))
+            yOffset = roundf([UIScreen mainScreen].bounds.size.width/goldenRatio)-44-64;
         else
             yOffset = scrollView.contentOffset.y;
         
-        deltaAlpha = 0.8 + (0.18 * (yOffset/(roundf([UIScreen mainScreen].bounds.size.width/16*9)-44-64)));
+        deltaAlpha = 0.8 + (0.18 * (yOffset/(roundf([UIScreen mainScreen].bounds.size.width/goldenRatio)-44-64)));
     }
     // If the user scrolls down, descrease the opacity of the filter bar
     else {
@@ -1259,7 +1260,7 @@
             yOffset = scrollView.contentOffset.y;
         
         // Always keep the height of the top section in sync with how far down the user is pulling
-        topFrame.size.height = roundf([UIScreen mainScreen].bounds.size.width/16*9) - (scrollView.contentOffset.y);
+        topFrame.size.height = roundf([UIScreen mainScreen].bounds.size.width/goldenRatio) - (scrollView.contentOffset.y);
         _topSection.frame = topFrame;
         deltaAlpha = 0.8 + (0.2 * (yOffset/-22.0));
     }
