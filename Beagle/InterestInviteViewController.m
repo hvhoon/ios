@@ -121,7 +121,7 @@
                              [BeagleUtilities returnBeagleColor:4],NSForegroundColorAttributeName,
                              style, NSParagraphStyleAttributeName, nil];
         
-        CGSize maximumLabelSize = CGSizeMake(288,999);
+        CGSize maximumLabelSize = CGSizeMake([UIScreen mainScreen].bounds.size.width-32,999);
         
         CGRect inviteFriendsTextRect = [@"Selected" boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
                                                                     attributes:attrs
@@ -399,11 +399,11 @@
         return [[UIView alloc]initWithFrame:CGRectZero];
     }
     }
-    UIView *sectionHeaderview=[[UIView alloc]initWithFrame:CGRectMake(0,0,320,kSectionHeaderHeight)];
+    UIView *sectionHeaderview=[[UIView alloc]initWithFrame:CGRectMake(0,0,[UIScreen mainScreen].bounds.size.width,kSectionHeaderHeight)];
     sectionHeaderview.backgroundColor=[UIColor whiteColor];
     
     
-    CGRect sectionLabelRect=CGRectMake(16,16,240,15);
+    CGRect sectionLabelRect=CGRectMake(16,16,[UIScreen mainScreen].bounds.size.width-80,15);
     UILabel *sectionLabel=[[UILabel alloc] initWithFrame:sectionLabelRect];
     sectionLabel.textAlignment=NSTextAlignmentLeft;
     
@@ -662,7 +662,7 @@
         cell.photoImage =checkImge;
     }
     if([self showBottomLineOrNot:indexPath]){
-        UIView* lineSeparator = [[UIView alloc] initWithFrame:CGRectMake(16, 65, 288, 1)];
+        UIView* lineSeparator = [[UIView alloc] initWithFrame:CGRectMake(16, 65, [UIScreen mainScreen].bounds.size.width-32, 1)];
         if(player.isInvited)
             lineSeparator.backgroundColor = [UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:0];
         else{
