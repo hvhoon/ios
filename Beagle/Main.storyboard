@@ -320,8 +320,8 @@
                             <constraint firstAttribute="bottom" secondItem="FIn-5f-J2w" secondAttribute="bottom" constant="35" id="Vm6-km-J0R"/>
                             <constraint firstItem="8Fx-wv-yU7" firstAttribute="leading" secondItem="PeB-fg-zhq" secondAttribute="leading" constant="16" id="Xwg-kZ-pPg"/>
                             <constraint firstItem="DWN-BO-M9m" firstAttribute="leading" secondItem="PeB-fg-zhq" secondAttribute="leading" constant="68" id="a90-Iz-eVX"/>
+                            <constraint firstAttribute="centerY" secondItem="J4t-Pv-vP8" secondAttribute="centerY" constant="-38" id="bf5-ys-90H"/>
                             <constraint firstItem="J4t-Pv-vP8" firstAttribute="leading" secondItem="PeB-fg-zhq" secondAttribute="leading" id="ffh-qk-Qjs"/>
-                            <constraint firstItem="8Ie-f1-ZUL" firstAttribute="top" secondItem="n0w-kW-vyK" secondAttribute="bottom" constant="24" id="gwT-wA-G4v"/>
                             <constraint firstItem="iO2-Mz-GFm" firstAttribute="top" secondItem="8Ie-f1-ZUL" secondAttribute="bottom" constant="1" id="nxI-gE-hyH"/>
                             <constraint firstAttribute="bottom" secondItem="4SE-Rr-0qy" secondAttribute="bottom" constant="25" id="wG6-B5-COX"/>
                             <constraint firstItem="dJT-BZ-2dL" firstAttribute="top" secondItem="J4t-Pv-vP8" secondAttribute="bottom" id="wQp-FR-miu"/>
