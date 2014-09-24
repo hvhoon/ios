@@ -740,8 +740,12 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
                                     <action selector="settingsButtonPressed:" destination="C0I-BK-P16" eventType="touchUpInside" id="zyb-df-FnR"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jDX-tR-tNd">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jDX-tR-tNd">
                                 <rect key="frame" x="16" y="156" width="288" height="22"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="22" id="KGe-9D-iqd"/>
+                                    <constraint firstAttribute="width" constant="288" id="nww-2N-S0f"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                                 <inset key="imageEdgeInsets" minX="-10" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 <state key="normal">
@@ -773,10 +777,14 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
                             <constraint firstAttribute="trailing" secondItem="gYY-S2-Laa" secondAttribute="trailing" id="Bpk-vL-Pv5"/>
                             <constraint firstItem="gYY-S2-Laa" firstAttribute="leading" secondItem="oeL-fM-YwJ" secondAttribute="leading" id="EZh-Eq-D88"/>
                             <constraint firstItem="6LM-iL-5zX" firstAttribute="top" secondItem="grI-4m-J2y" secondAttribute="bottom" constant="44" id="N6Q-fH-ZqU"/>
+                            <constraint firstAttribute="trailing" secondItem="jDX-tR-tNd" secondAttribute="trailing" constant="16" id="QEK-WY-60X"/>
                             <constraint firstItem="gYY-S2-Laa" firstAttribute="top" secondItem="grI-4m-J2y" secondAttribute="bottom" constant="200" id="Vvz-AC-4an"/>
                             <constraint firstAttribute="centerY" secondItem="Iee-i6-3dL" secondAttribute="centerY" id="W8p-T7-qO0"/>
+                            <constraint firstAttribute="centerX" secondItem="jDX-tR-tNd" secondAttribute="centerX" id="WIu-H0-vtb"/>
                             <constraint firstItem="gYY-S2-Laa" firstAttribute="leading" secondItem="oeL-fM-YwJ" secondAttribute="leading" id="d8K-O5-eNn"/>
+                            <constraint firstItem="jDX-tR-tNd" firstAttribute="leading" secondItem="oeL-fM-YwJ" secondAttribute="leading" constant="16" id="e1W-at-Km5"/>
                             <constraint firstItem="t72-YL-qgA" firstAttribute="top" secondItem="grI-4m-J2y" secondAttribute="bottom" constant="8" id="hVx-Sr-UpQ"/>
+                            <constraint firstItem="jDX-tR-tNd" firstAttribute="top" secondItem="6LM-iL-5zX" secondAttribute="bottom" constant="12" id="n6O-s6-Lsh"/>
                             <constraint firstItem="MCX-jm-2QR" firstAttribute="top" secondItem="6LM-iL-5zX" secondAttribute="bottom" constant="6" id="p8o-Aq-MeO"/>
                             <constraint firstAttribute="centerX" secondItem="6LM-iL-5zX" secondAttribute="centerX" id="poI-n5-IXv"/>
                             <constraint firstAttribute="centerX" secondItem="MCX-jm-2QR" secondAttribute="centerX" id="qnk-bT-LhH"/>
