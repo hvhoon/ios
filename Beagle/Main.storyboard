@@ -721,10 +721,6 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="gYY-S2-Laa">
                                 <rect key="frame" x="0.0" y="200" width="320" height="368"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="368" id="2Ri-cY-2Bb"/>
-                                    <constraint firstAttribute="width" constant="320" id="vtQ-qd-aj0"/>
-                                </constraints>
                                 <connections>
                                     <outlet property="dataSource" destination="C0I-BK-P16" id="IQP-6Q-vLs"/>
                                     <outlet property="delegate" destination="C0I-BK-P16" id="aOW-1X-ROX"/>
@@ -753,8 +749,12 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                             </button>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Rediscover New York with your friends " textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="220" translatesAutoresizingMaskIntoConstraints="NO" id="MCX-jm-2QR">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Rediscover New York with your friends " textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="220" translatesAutoresizingMaskIntoConstraints="NO" id="MCX-jm-2QR">
                                 <rect key="frame" x="50" y="150" width="220" height="39"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="39" id="AnL-is-vPo"/>
+                                    <constraint firstAttribute="width" constant="220" id="Rqs-jI-3PV"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -768,13 +768,18 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="ccL-ds-xyd" firstAttribute="top" secondItem="gYY-S2-Laa" secondAttribute="bottom" id="3Gg-A8-bE8"/>
                             <constraint firstItem="t72-YL-qgA" firstAttribute="leading" secondItem="oeL-fM-YwJ" secondAttribute="leading" id="Aa3-U3-xBL"/>
+                            <constraint firstAttribute="trailing" secondItem="gYY-S2-Laa" secondAttribute="trailing" id="Bpk-vL-Pv5"/>
+                            <constraint firstItem="gYY-S2-Laa" firstAttribute="leading" secondItem="oeL-fM-YwJ" secondAttribute="leading" id="EZh-Eq-D88"/>
                             <constraint firstItem="6LM-iL-5zX" firstAttribute="top" secondItem="grI-4m-J2y" secondAttribute="bottom" constant="44" id="N6Q-fH-ZqU"/>
                             <constraint firstItem="gYY-S2-Laa" firstAttribute="top" secondItem="grI-4m-J2y" secondAttribute="bottom" constant="200" id="Vvz-AC-4an"/>
-                            <constraint firstAttribute="centerY" secondItem="Iee-i6-3dL" secondAttribute="centerY" constant="-0.5" id="W8p-T7-qO0"/>
+                            <constraint firstAttribute="centerY" secondItem="Iee-i6-3dL" secondAttribute="centerY" id="W8p-T7-qO0"/>
                             <constraint firstItem="gYY-S2-Laa" firstAttribute="leading" secondItem="oeL-fM-YwJ" secondAttribute="leading" id="d8K-O5-eNn"/>
                             <constraint firstItem="t72-YL-qgA" firstAttribute="top" secondItem="grI-4m-J2y" secondAttribute="bottom" constant="8" id="hVx-Sr-UpQ"/>
+                            <constraint firstItem="MCX-jm-2QR" firstAttribute="top" secondItem="6LM-iL-5zX" secondAttribute="bottom" constant="6" id="p8o-Aq-MeO"/>
                             <constraint firstAttribute="centerX" secondItem="6LM-iL-5zX" secondAttribute="centerX" id="poI-n5-IXv"/>
+                            <constraint firstAttribute="centerX" secondItem="MCX-jm-2QR" secondAttribute="centerX" id="qnk-bT-LhH"/>
                             <constraint firstAttribute="centerX" secondItem="Iee-i6-3dL" secondAttribute="centerX" id="sV1-Ka-Jzx"/>
                         </constraints>
                     </view>
