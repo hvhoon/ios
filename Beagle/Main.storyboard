@@ -482,7 +482,6 @@
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" relation="lessThanOrEqual" constant="184" id="6iw-Nm-uHD"/>
-                                    <constraint firstAttribute="width" constant="248" id="fHD-yn-82s"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences" autocorrectionType="yes"/>
@@ -539,6 +538,7 @@
                             <constraint firstAttribute="trailing" secondItem="5Kw-tX-RGq" secondAttribute="trailing" constant="16" id="ZxY-Xo-Izb"/>
                             <constraint firstItem="8k2-Wd-CIH" firstAttribute="top" secondItem="NHs-Eo-wtu" secondAttribute="bottom" constant="10" id="gea-9s-CFK"/>
                             <constraint firstItem="1A7-qG-45x" firstAttribute="top" secondItem="8k2-Wd-CIH" secondAttribute="bottom" constant="16" id="hJZ-ca-TRh"/>
+                            <constraint firstAttribute="trailing" secondItem="8k2-Wd-CIH" secondAttribute="trailing" constant="16" id="it9-qr-WLn"/>
                             <constraint firstItem="sqL-0B-EFK" firstAttribute="top" secondItem="5Kw-tX-RGq" secondAttribute="bottom" constant="-24" id="jDo-1i-h7v"/>
                             <constraint firstItem="hMI-Wc-Jow" firstAttribute="top" secondItem="sqL-0B-EFK" secondAttribute="bottom" constant="216" id="k4m-Me-IYJ"/>
                             <constraint firstItem="NHs-Eo-wtu" firstAttribute="leading" secondItem="ygx-zD-J8O" secondAttribute="leading" constant="16" id="lKi-F5-ABn"/>
