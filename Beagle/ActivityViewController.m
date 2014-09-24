@@ -109,6 +109,7 @@ enum Weeks {
     [self.blrVisbilityView updateConstraints];
     UIColor* clickable = [[BeagleManager SharedInstance] darkDominantColor];
     self.animationBlurView=[CreateAnimationBlurView loadCreateAnimationView:self.view];
+    self.animationBlurView.frame=CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
     self.animationBlurView.delegate=self;
     self.blrLocationView=[LocationBlurView loadLocationFilter:self.view];
     self.blrLocationView.delegate=self;
