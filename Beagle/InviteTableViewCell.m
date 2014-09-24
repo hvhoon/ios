@@ -70,7 +70,7 @@ static UIFont *secondTextFont = nil;
     
     // Drawing the organizer name
     
-    CGSize organizerNameSize=[self.bgPlayer.fullName boundingRectWithSize:CGSizeMake(288, r.size.height)
+    CGSize organizerNameSize=[self.bgPlayer.fullName boundingRectWithSize:CGSizeMake([UIScreen mainScreen].bounds.size.width-32, r.size.height)
                                                                   options:NSStringDrawingUsesLineFragmentOrigin
                                                                attributes:attrs
                                                                   context:nil].size;
@@ -88,7 +88,7 @@ static UIFont *secondTextFont = nil;
              [BeagleUtilities returnBeagleColor:3],NSForegroundColorAttributeName,
              style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
     
-    CGSize maximumLabelSize = CGSizeMake(288,r.size.height);
+    CGSize maximumLabelSize = CGSizeMake([UIScreen mainScreen].bounds.size.width-32,r.size.height);
     
     CGRect locationTextRect = [self.bgPlayer.location boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
                                                                 attributes:attrs
@@ -99,7 +99,7 @@ static UIFont *secondTextFont = nil;
     }
     
     UIButton *accesoryButton=[UIButton buttonWithType:UIButtonTypeCustom];
-    accesoryButton.frame=CGRectMake(320-65, 0, 65, 65);
+    accesoryButton.frame=CGRectMake([UIScreen mainScreen].bounds.size.width-65, 0, 65, 65);
     [accesoryButton setImageEdgeInsets:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 16.0f)];
     [accesoryButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
      

@@ -100,7 +100,7 @@ enum Weeks {
     
     
     // All the variables we need to present this screen correctly
-    self.blrTimeView=[[EventTimeBlurView alloc]initWithFrame:self.view.frame parentView:self.view];
+    self.blrTimeView=[[EventTimeBlurView alloc]initWithFrame:[UIScreen mainScreen].bounds parentView:self.view];
     self.blrVisbilityView=[EventVisibilityBlurView loadVisibilityFilter:self.view];
     self.blrVisbilityView.frame=CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
     self.blrVisbilityView.delegate=self;

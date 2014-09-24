@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="Tvt-5e-zCq">
     <dependencies>
+        <deployment defaultVersion="1808" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
     </dependencies>
     <scenes>
@@ -809,7 +810,7 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="9IQ-Dh-jKp">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="9IQ-Dh-jKp">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <searchBar key="tableHeaderView" contentMode="redraw" placeholder="Search for people" id="c5W-Y0-h92">
@@ -831,6 +832,12 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Vvp-SQ-9b8" firstAttribute="top" secondItem="9IQ-Dh-jKp" secondAttribute="bottom" id="5FZ-eD-nFE"/>
+                            <constraint firstItem="9IQ-Dh-jKp" firstAttribute="top" secondItem="yPc-rK-Snj" secondAttribute="top" id="DRE-QI-yk2"/>
+                            <constraint firstAttribute="trailing" secondItem="9IQ-Dh-jKp" secondAttribute="trailing" id="PKx-Al-wnb"/>
+                            <constraint firstItem="9IQ-Dh-jKp" firstAttribute="leading" secondItem="yPc-rK-Snj" secondAttribute="leading" id="eII-t8-6J3"/>
+                        </constraints>
                     </view>
                     <connections>
                         <outlet property="inviteTableView" destination="9IQ-Dh-jKp" id="9Nm-Le-Yza"/>
