@@ -1069,7 +1069,7 @@
     
     BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexPath.row];
     
-    CGSize maximumLabelSize = CGSizeMake(288,999);
+    CGSize maximumLabelSize = CGSizeMake([UIScreen mainScreen].bounds.size.width-32,999);
     
     CGRect textRect = [play.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
                                                      attributes:attrs context:nil];
