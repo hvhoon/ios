@@ -109,7 +109,7 @@ static NSString * const CellIdentifier = @"cell";
     }
     
     // Setup the progress indicator
-    _sendMessage = [[UIProgressView alloc] initWithFrame:CGRectMake(0, 64, 320, 1)];
+    _sendMessage = [[UIProgressView alloc] initWithFrame:CGRectMake(0, 64, [UIScreen mainScreen].bounds.size.width, 1)];
     [_sendMessage setProgressTintColor:[BeagleUtilities returnBeagleColor:13]];
     [self.view addSubview:_sendMessage];
     [_sendMessage setHidden:YES];
@@ -492,14 +492,7 @@ static NSString * const CellIdentifier = @"cell";
         
         self.animationBlurView=[CreateAnimationBlurView loadCreateAnimationView:self.view];
         self.animationBlurView.delegate=self;
-        
-        // If it's a 3.5" screen use the bounds below
-        self.animationBlurView.frame=CGRectMake(0, 0, 320, 480);
-        
-        // Else use these bounds for the 4" screen
-        if([UIScreen mainScreen].bounds.size.height > 480.0f)
-            self.animationBlurView.frame=CGRectMake(0, 0, 320, 568);
-        
+        self.animationBlurView.frame=CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
         [self.animationBlurView loadDetailedInterestAnimationView:self.interestActivity.organizerName];
         
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Flag" style:UIBarButtonItemStylePlain target:self action:@selector(flagButtonClicked:)];
@@ -777,7 +770,7 @@ static NSString * const CellIdentifier = @"cell";
                            [UIColor blackColor],NSForegroundColorAttributeName,
                            style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
     
-        CGSize maximumLabelSize = CGSizeMake(288,999);
+        CGSize maximumLabelSize = CGSizeMake([UIScreen mainScreen].bounds.size.width-32,999);
     
         CGRect textRect = [self.interestActivity.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
         
@@ -800,7 +793,7 @@ static NSString * const CellIdentifier = @"cell";
                                    [UIColor blackColor],NSForegroundColorAttributeName,
                                    style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
             
-            CGSize maximumLabelSize = CGSizeMake(245,999);
+            CGSize maximumLabelSize = CGSizeMake([UIScreen mainScreen].bounds.size.width-32,999);
             
             CGRect textRect = [chatCell.text boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
                                                                             attributes:attrs
@@ -838,7 +831,7 @@ static NSString * const CellIdentifier = @"cell";
                                style, NSParagraphStyleAttributeName, nil];
         
         // Setting up the card (background)
-        UIView *_backgroundView=[[UIView alloc]initWithFrame:CGRectMake(0, fromTheTop, 320, 400)];
+        UIView *_backgroundView=[[UIView alloc]initWithFrame:CGRectMake(0, fromTheTop, [UIScreen mainScreen].bounds.size.width, 400)];
         _backgroundView.backgroundColor=[UIColor whiteColor];
         
         // Profile picture
@@ -874,12 +867,12 @@ static NSString * const CellIdentifier = @"cell";
                  color,NSForegroundColorAttributeName,
                  style, NSParagraphStyleAttributeName, nil];
         
-        CGSize locationTextSize = [interestActivity.locationName boundingRectWithSize:CGSizeMake(300, 999)
+        CGSize locationTextSize = [interestActivity.locationName boundingRectWithSize:CGSizeMake([UIScreen mainScreen].bounds.size.width-20, 999)
                                                                               options:NSStringDrawingUsesLineFragmentOrigin
                                                                            attributes:attrs
                                                                               context:nil].size;
         
-        UILabel *locationLabel = [[UILabel alloc] initWithFrame:CGRectMake(304-locationTextSize.width, fromTheTop, locationTextSize.width, locationTextSize.height)];
+        UILabel *locationLabel = [[UILabel alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width-locationTextSize.width-16, fromTheTop, locationTextSize.width, locationTextSize.height)];
         locationLabel.backgroundColor = [UIColor clearColor];
         locationLabel.text = interestActivity.locationName;
         locationLabel.textColor = color;
@@ -894,7 +887,7 @@ static NSString * const CellIdentifier = @"cell";
                [BeagleUtilities returnBeagleColor:4],NSForegroundColorAttributeName,
                style, NSParagraphStyleAttributeName, nil];
         
-        CGSize organizerNameSize=[interestActivity.organizerName boundingRectWithSize:CGSizeMake(300, 999)
+        CGSize organizerNameSize=[interestActivity.organizerName boundingRectWithSize:CGSizeMake([UIScreen mainScreen].bounds.size.width-20, 999)
                                                                               options:NSStringDrawingUsesLineFragmentOrigin
                                                                            attributes:attrs
                                                                               context:nil].size;
@@ -939,7 +932,7 @@ static NSString * const CellIdentifier = @"cell";
                  [UIColor blackColor],NSForegroundColorAttributeName,
                  style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
         
-        CGSize maximumLabelSize = CGSizeMake(288,999);
+        CGSize maximumLabelSize = CGSizeMake([UIScreen mainScreen].bounds.size.width-32,999);
         
         CGRect commentTextRect = [self.interestActivity.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
                                                                                attributes:attrs
@@ -1028,10 +1021,10 @@ static NSString * const CellIdentifier = @"cell";
                  [BeagleUtilities returnBeagleColor:4],NSForegroundColorAttributeName,
                  style, NSParagraphStyleAttributeName, nil];
         
-                _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, fromTheTop, 264, 53)];
+                _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, fromTheTop, [UIScreen mainScreen].bounds.size.width-56, 53)];
                 scrollViewResize=FALSE;
                 _scrollMenu.tag=786;
-                _partcipantScrollArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(264+16+7, fromTheTop+13.5, 16, 21)];
+                _partcipantScrollArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width-56)+16+7, fromTheTop+13.5, 16, 21)];
                 _partcipantScrollArrowImageView.image = [UIImage imageNamed:@"Right-Scroll"];
                [_backgroundView addSubview:_scrollMenu];
                [self setUpPlayerScroll:self.interestActivity.participantsArray];
@@ -1148,14 +1141,14 @@ static NSString * const CellIdentifier = @"cell";
             
             // Adding the lock image
             UIImageView *inviteOnlyIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Invite-only-icon"]];
-            inviteOnlyIcon.frame = CGRectMake(292, fromTheTop+10, 12, 15);
+            inviteOnlyIcon.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-12-16, fromTheTop+10, 12, 15);
             [_backgroundView addSubview:inviteOnlyIcon];
             
             // Adding the # of Friends
             NSString* inviteText = @"Invite Only";
             CGSize inviteOnlyTextSize = [inviteText boundingRectWithSize:CGSizeMake(288, 999) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
             
-            UILabel* inviteOnlyText = [[UILabel alloc] initWithFrame:CGRectMake((320-(35+inviteOnlyTextSize.width)), fromTheTop+10, inviteOnlyTextSize.width, inviteOnlyTextSize.height)];
+            UILabel* inviteOnlyText = [[UILabel alloc] initWithFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width-(35+inviteOnlyTextSize.width)), fromTheTop+10, inviteOnlyTextSize.width, inviteOnlyTextSize.height)];
             inviteOnlyText.attributedText = [[NSAttributedString alloc] initWithString:inviteText attributes:attrs];
             [_backgroundView addSubview:inviteOnlyText];
         }
@@ -1163,14 +1156,14 @@ static NSString * const CellIdentifier = @"cell";
             
             // Adding the globe icon
             UIImageView *publicIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Public"]];
-            publicIcon.frame = CGRectMake(289, fromTheTop+10, 15, 15);
+            publicIcon.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-15-16, fromTheTop+10, 15, 15);
             [_backgroundView addSubview:publicIcon];
             
             // Adding the public text
             NSString* publicText = @"Public";
             CGSize publicTextSize = [publicText boundingRectWithSize:CGSizeMake(288, 999) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
             
-            UILabel* publicTextLabel = [[UILabel alloc] initWithFrame:CGRectMake((320-(37+publicTextSize.width)), fromTheTop+9, publicTextSize.width, publicTextSize.height)];
+            UILabel* publicTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width-(37+publicTextSize.width)), fromTheTop+9, publicTextSize.width, publicTextSize.height)];
             publicTextLabel.attributedText = [[NSAttributedString alloc] initWithString:publicText attributes:attrs];
             [_backgroundView addSubview:publicTextLabel];
         }
@@ -1183,7 +1176,7 @@ static NSString * const CellIdentifier = @"cell";
         fromTheTop += 33+20;
 
         // Add the view to the cell
-        _backgroundView.frame=CGRectMake(0, 0, 320, fromTheTop);
+        _backgroundView.frame=CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, fromTheTop);
         [cell.contentView addSubview:_backgroundView];
         
         if(!postsLoadComplete){
@@ -1296,7 +1289,7 @@ static NSString * const CellIdentifier = @"cell";
                  [UIColor blackColor],NSForegroundColorAttributeName,
                  style, NSParagraphStyleAttributeName, NSLineBreakByWordWrapping, nil];
         
-        CGSize maximumLabelSize = CGSizeMake(245,999);
+        CGSize maximumLabelSize = CGSizeMake([UIScreen mainScreen].bounds.size.width-75,999);
         
         CGRect commentTextRect = [chatCell.text boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
         

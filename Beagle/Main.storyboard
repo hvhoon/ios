@@ -764,8 +764,8 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="Iee-i6-3dL">
                                 <rect key="frame" x="0.0" y="266" width="320" height="37"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="320" id="bUF-vM-kiu"/>
                                     <constraint firstAttribute="height" constant="37" id="rsh-wA-HxS"/>
+                                    <constraint firstAttribute="width" constant="320" id="wmL-ri-4KR"/>
                                 </constraints>
                             </activityIndicatorView>
                         </subviews>
