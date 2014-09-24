@@ -66,7 +66,7 @@ static UIFont *secondTextFont = nil;
     
     // Drawing the organizer name
     
-    CGSize organizerNameSize=[self.bgPlayer.fullName boundingRectWithSize:CGSizeMake(288, r.size.height)
+    CGSize organizerNameSize=[self.bgPlayer.fullName boundingRectWithSize:CGSizeMake([UIScreen mainScreen].bounds.size.width-32-80-67, r.size.height)
                                                                      options:NSStringDrawingUsesLineFragmentOrigin
                                                                   attributes:attrs
                                                                      context:nil].size;
@@ -97,7 +97,7 @@ static UIFont *secondTextFont = nil;
     
     if(self.bgPlayer.beagleUserId==0){
         UIButton *inviteStatusButton=[UIButton buttonWithType:UIButtonTypeCustom];
-        inviteStatusButton.frame=CGRectMake(320-80, 0, 80, 54);
+        inviteStatusButton.frame=CGRectMake([UIScreen mainScreen].bounds.size.width-80, 0, 80, 54);
         inviteStatusButton.tag=[[NSString stringWithFormat:@"222%ld",(long)cellIndexPath.row]integerValue];
 
         UIActivityIndicatorView *spinningWheel = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];

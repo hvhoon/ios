@@ -306,10 +306,10 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     
-    UIView *sectionHeaderview=[[UIView alloc]initWithFrame:CGRectMake(0,0,320,kSectionHeaderHeight)];
+    UIView *sectionHeaderview=[[UIView alloc]initWithFrame:CGRectMake(0,0,[UIScreen mainScreen].bounds.size.width,kSectionHeaderHeight)];
     sectionHeaderview.backgroundColor=[UIColor whiteColor];
     
-    CGRect sectionLabelRect=CGRectMake(16,12,240,15);
+    CGRect sectionLabelRect=CGRectMake(16,12,[UIScreen mainScreen].bounds.size.width-80,15);
     UILabel *sectionLabel=[[UILabel alloc] initWithFrame:sectionLabelRect];
     sectionLabel.textAlignment=NSTextAlignmentLeft;
     
@@ -449,7 +449,7 @@
         cell.photoImage =checkImge;
     }
     if([self showBottomLineOrNot:indexPath]){
-        UIView* lineSeparator = [[UIView alloc] initWithFrame:CGRectMake(16, 60, 288, 1)];
+        UIView* lineSeparator = [[UIView alloc] initWithFrame:CGRectMake(16, 60, [UIScreen mainScreen].bounds.size.width-32, 1)];
         lineSeparator.backgroundColor = [BeagleUtilities returnBeagleColor:2];
         [cell addSubview:lineSeparator];
     }
