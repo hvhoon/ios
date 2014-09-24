@@ -530,14 +530,12 @@
                         <constraints>
                             <constraint firstItem="sqL-0B-EFK" firstAttribute="leading" secondItem="ygx-zD-J8O" secondAttribute="leading" id="1Ob-jc-PcF"/>
                             <constraint firstAttribute="trailing" secondItem="sqL-0B-EFK" secondAttribute="trailing" id="1uz-u3-mUC"/>
-                            <constraint firstAttribute="trailing" secondItem="3MQ-a9-lKU" secondAttribute="trailing" constant="16" id="Bu4-WS-C1h"/>
                             <constraint firstItem="FOF-FV-DTm" firstAttribute="top" secondItem="NHs-Eo-wtu" secondAttribute="bottom" constant="16" id="F5N-YV-uqm"/>
                             <constraint firstAttribute="trailing" secondItem="BsK-la-ctD" secondAttribute="trailing" id="N95-uo-cv6"/>
                             <constraint firstItem="sqL-0B-EFK" firstAttribute="top" secondItem="1A7-qG-45x" secondAttribute="bottom" constant="8" id="TFE-rO-WBh"/>
                             <constraint firstItem="BsK-la-ctD" firstAttribute="top" secondItem="9iY-EO-BXw" secondAttribute="bottom" constant="14" id="VVH-kl-5KG"/>
                             <constraint firstItem="NHs-Eo-wtu" firstAttribute="top" secondItem="9iY-EO-BXw" secondAttribute="bottom" constant="16" id="Vpl-gl-aW7"/>
                             <constraint firstItem="3MQ-a9-lKU" firstAttribute="top" secondItem="9iY-EO-BXw" secondAttribute="bottom" constant="16" id="Xsc-6o-XYV"/>
-                            <constraint firstAttribute="trailing" secondItem="8k2-Wd-CIH" secondAttribute="trailing" constant="16" id="YSG-CB-rrS"/>
                             <constraint firstAttribute="trailing" secondItem="5Kw-tX-RGq" secondAttribute="trailing" constant="16" id="ZxY-Xo-Izb"/>
                             <constraint firstItem="8k2-Wd-CIH" firstAttribute="top" secondItem="NHs-Eo-wtu" secondAttribute="bottom" constant="10" id="gea-9s-CFK"/>
                             <constraint firstItem="1A7-qG-45x" firstAttribute="top" secondItem="8k2-Wd-CIH" secondAttribute="bottom" constant="16" id="hJZ-ca-TRh"/>
@@ -545,7 +543,9 @@
                             <constraint firstItem="hMI-Wc-Jow" firstAttribute="top" secondItem="sqL-0B-EFK" secondAttribute="bottom" constant="216" id="k4m-Me-IYJ"/>
                             <constraint firstItem="NHs-Eo-wtu" firstAttribute="leading" secondItem="ygx-zD-J8O" secondAttribute="leading" constant="16" id="lKi-F5-ABn"/>
                             <constraint firstItem="1A7-qG-45x" firstAttribute="leading" secondItem="ygx-zD-J8O" secondAttribute="leading" constant="16" id="liH-n1-N9G"/>
+                            <constraint firstItem="8k2-Wd-CIH" firstAttribute="leading" secondItem="FOF-FV-DTm" secondAttribute="trailing" constant="5" id="nQ4-rK-Bk0"/>
                             <constraint firstItem="FOF-FV-DTm" firstAttribute="leading" secondItem="ygx-zD-J8O" secondAttribute="leading" constant="16" id="qff-NO-TDF"/>
+                            <constraint firstItem="3MQ-a9-lKU" firstAttribute="leading" secondItem="NHs-Eo-wtu" secondAttribute="trailing" constant="11" id="u69-Db-Iy5"/>
                         </constraints>
                     </view>
                     <connections>
@@ -607,11 +607,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="beagle" translatesAutoresizingMaskIntoConstraints="NO" id="i4Z-Fg-wfy">
-                                <rect key="frame" x="69" y="46" width="182" height="56"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="beagle" translatesAutoresizingMaskIntoConstraints="NO" id="i4Z-Fg-wfy">
+                                <rect key="frame" x="69" y="52" width="182" height="56"/>
                             </imageView>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CLd-Bp-XYt">
-                                <rect key="frame" x="20" y="110" width="280" height="438"/>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="CLd-Bp-XYt">
+                                <rect key="frame" x="16" y="116" width="288" height="432"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <string key="text">LICENSED APPLICATION END USER LICENSE AGREEMENT
 
@@ -663,7 +663,13 @@ i. The laws of the State of California, excluding its conflicts of law rules, go
                         </subviews>
                         <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
                         <constraints>
+                            <constraint firstAttribute="centerX" secondItem="i4Z-Fg-wfy" secondAttribute="centerX" id="8cn-jp-XlZ"/>
                             <constraint firstItem="632-KC-6sK" firstAttribute="leading" secondItem="IJw-qU-tbf" secondAttribute="leading" id="C66-se-8qv"/>
+                            <constraint firstItem="i4Z-Fg-wfy" firstAttribute="top" secondItem="632-KC-6sK" secondAttribute="bottom" id="IH2-sS-MIG"/>
+                            <constraint firstItem="CLd-Bp-XYt" firstAttribute="top" secondItem="i4Z-Fg-wfy" secondAttribute="bottom" constant="8" id="K8S-cB-KFW"/>
+                            <constraint firstItem="CLd-Bp-XYt" firstAttribute="leading" secondItem="IJw-qU-tbf" secondAttribute="leading" constant="16" id="Rcv-ci-3b5"/>
+                            <constraint firstAttribute="trailing" secondItem="CLd-Bp-XYt" secondAttribute="trailing" constant="16" id="Shf-WI-JDl"/>
+                            <constraint firstItem="gHg-d4-vQU" firstAttribute="top" secondItem="CLd-Bp-XYt" secondAttribute="bottom" constant="20" id="ddd-dp-Jhx"/>
                             <constraint firstItem="632-KC-6sK" firstAttribute="top" secondItem="IJw-qU-tbf" secondAttribute="top" constant="8" id="nJW-gy-DAb"/>
                         </constraints>
                     </view>
