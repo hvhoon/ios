@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="13D65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6245" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+        <deployment defaultVersion="1808" identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -12,7 +13,6 @@
             <subviews>
                 <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JEY-WC-9J9">
                     <rect key="frame" x="73" y="175" width="174" height="62"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="62" id="SCe-zz-KdR"/>
                         <constraint firstAttribute="width" constant="174" id="bnq-TW-Fwo"/>
@@ -30,7 +30,6 @@
                 </button>
                 <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AWA-ip-eOL">
                     <rect key="frame" x="73" y="253" width="174" height="62"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="62" id="7Bh-5q-C7q"/>
                         <constraint firstAttribute="width" constant="174" id="qhg-Q7-sbp"/>
@@ -48,7 +47,6 @@
                 </button>
                 <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ui9-OY-frL">
                     <rect key="frame" x="73" y="331" width="174" height="62"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="174" id="7QQ-dz-9ik"/>
                         <constraint firstAttribute="height" constant="62" id="Yvc-6M-d1L"/>
@@ -64,9 +62,8 @@
                         <action selector="visibilityIndex:" destination="0Fv-D3-riT" eventType="touchUpInside" id="fIu-Ub-Tep"/>
                     </connections>
                 </button>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="   We will notify your friends in the city unless you select private" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="266" translatesAutoresizingMaskIntoConstraints="NO" id="KXJ-Xs-lV7">
-                    <rect key="frame" x="30" y="513" width="266" height="35"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="We will notify your friends in the city unless you select private" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="266" translatesAutoresizingMaskIntoConstraints="NO" id="KXJ-Xs-lV7">
+                    <rect key="frame" x="27" y="513" width="266" height="35"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="266" id="LmF-Ld-Rbt"/>
                         <constraint firstAttribute="height" constant="35" id="cCG-La-4GB"/>
@@ -75,38 +72,28 @@
                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <imageView userInteractionEnabled="NO" alpha="0.80000000000000004" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Bell-(No-Notications)" translatesAutoresizingMaskIntoConstraints="NO" id="0pU-hY-LUx">
-                    <rect key="frame" x="20" y="512" width="44" height="44"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="44" id="Hmd-Wn-7ur"/>
-                        <constraint firstAttribute="width" constant="44" id="kxS-Gu-Iab"/>
-                    </constraints>
-                </imageView>
             </subviews>
             <constraints>
-                <constraint firstItem="0pU-hY-LUx" firstAttribute="leading" secondItem="0Fv-D3-riT" secondAttribute="leading" constant="20" id="0xm-X0-Csi"/>
-                <constraint firstAttribute="bottom" secondItem="0pU-hY-LUx" secondAttribute="bottom" constant="12" id="5Fu-dN-hmV"/>
-                <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="Ui9-OY-frL" secondAttribute="bottom" constant="131" id="9P2-Wh-O3t"/>
                 <constraint firstItem="Ui9-OY-frL" firstAttribute="top" secondItem="AWA-ip-eOL" secondAttribute="bottom" constant="16" id="JbX-vx-pbx"/>
-                <constraint firstItem="JEY-WC-9J9" firstAttribute="top" relation="greaterThanOrEqual" secondItem="0Fv-D3-riT" secondAttribute="top" constant="131" id="OEW-AR-qaE"/>
                 <constraint firstAttribute="centerX" secondItem="JEY-WC-9J9" secondAttribute="centerX" id="Uj8-DN-ksu"/>
-                <constraint firstAttribute="bottom" relation="lessThanOrEqual" secondItem="Ui9-OY-frL" secondAttribute="bottom" constant="175" id="Y63-sA-aXW"/>
-                <constraint firstItem="JEY-WC-9J9" firstAttribute="top" relation="lessThanOrEqual" secondItem="0Fv-D3-riT" secondAttribute="top" constant="175" id="e2C-OU-aNN"/>
+                <constraint firstAttribute="bottom" secondItem="KXJ-Xs-lV7" secondAttribute="bottom" constant="20" id="ZfG-q4-Kwk"/>
                 <constraint firstAttribute="centerX" secondItem="AWA-ip-eOL" secondAttribute="centerX" id="jOt-jV-Tne"/>
-                <constraint firstAttribute="bottom" secondItem="KXJ-Xs-lV7" secondAttribute="bottom" constant="20" id="p1Y-NQ-tHA"/>
+                <constraint firstAttribute="centerX" secondItem="KXJ-Xs-lV7" secondAttribute="centerX" id="n5s-oR-b34"/>
                 <constraint firstAttribute="centerX" secondItem="Ui9-OY-frL" secondAttribute="centerX" id="qFB-Cv-WBK"/>
-                <constraint firstItem="KXJ-Xs-lV7" firstAttribute="leading" secondItem="0Fv-D3-riT" secondAttribute="leading" constant="30" id="rYr-E3-VAp"/>
+                <constraint firstAttribute="centerY" secondItem="AWA-ip-eOL" secondAttribute="centerY" id="tDQ-tu-chs"/>
                 <constraint firstItem="AWA-ip-eOL" firstAttribute="top" secondItem="JEY-WC-9J9" secondAttribute="bottom" constant="16" id="ui9-pC-GsN"/>
-                <constraint firstAttribute="trailing" secondItem="KXJ-Xs-lV7" secondAttribute="trailing" constant="24" id="yLh-cz-d3J"/>
             </constraints>
-            <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+            <nil key="simulatedStatusBarMetrics"/>
         </view>
     </objects>
     <resources>
-        <image name="Bell-(No-Notications)" width="44" height="44"/>
         <image name="Everybody" width="62" height="62"/>
         <image name="Friends-Only" width="62" height="62"/>
         <image name="Private" width="62" height="62"/>
     </resources>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4"/>
+    </simulatedMetricsContainer>
 </document>
