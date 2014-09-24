@@ -126,7 +126,7 @@ void uncaughtExceptionHandler(NSException *exception) {
         
     }
   }
-//    [self handlePush:launchOptions];
+    //[self handlePush:launchOptions];
     return YES;
 }
 
