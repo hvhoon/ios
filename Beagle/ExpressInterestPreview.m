@@ -24,7 +24,7 @@
         self.backgroundColor=[BeagleUtilities returnBeagleColor:13];
 		
         // Initialization code.
-		UIImageView* bigStarImageView =[[UIImageView alloc]initWithFrame:CGRectMake((320-89)/2,(frame.size.height-83)/2-30,89,83)];
+		UIImageView* bigStarImageView =[[UIImageView alloc]initWithFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width-89)/2,(frame.size.height-83)/2-30,89,83)];
         bigStarImageView.image=[UIImage imageNamed:@"Big-Star"];
 		bigStarImageView.tag = kBigStarImageView;
 		[bigStarImageView setHidden:YES];
@@ -47,13 +47,13 @@
         
         
         
-       CGSize textSize = [@"Awesome!" boundingRectWithSize:CGSizeMake(320, frame.size.height)
+       CGSize textSize = [@"Awesome!" boundingRectWithSize:CGSizeMake([UIScreen mainScreen].bounds.size.width, frame.size.height)
                                                                      options:NSStringDrawingUsesLineFragmentOrigin
                                                                   attributes:attrs
                                                                      context:nil].size;
             
 
-		CGRect awesomeLabelRect=CGRectMake((320-textSize.width)/2,(frame.size.height+83)/2-20,textSize.width,textSize.height);
+		CGRect awesomeLabelRect=CGRectMake(([UIScreen mainScreen].bounds.size.width-textSize.width)/2,(frame.size.height+83)/2-20,textSize.width,textSize.height);
 		UILabel *awesomeLabel=[[UILabel alloc] initWithFrame:awesomeLabelRect];
 		awesomeLabel.textAlignment=NSTextAlignmentCenter;
 		awesomeLabel.tag = kAwesomeLabel;
@@ -78,7 +78,7 @@
                                                                              context:nil];
 
 		
-		CGRect infoLabelRect=CGRectMake((320-commentTextRect.size.width)/2,(frame.size.height+83)/2+textSize.height-20,commentTextRect.size.width,commentTextRect.size.height);
+		CGRect infoLabelRect=CGRectMake(([UIScreen mainScreen].bounds.size.width-commentTextRect.size.width)/2,(frame.size.height+83)/2+textSize.height-20,commentTextRect.size.width,commentTextRect.size.height);
 		UILabel *infoLabel=[[UILabel alloc] initWithFrame:infoLabelRect];
 		infoLabel.textAlignment=NSTextAlignmentCenter;
 		infoLabel.tag = kInfoLabel;
