@@ -391,12 +391,12 @@
                         </subviews>
                         <color key="backgroundColor" red="0.21520465353260865" green="0.21520465353260865" blue="0.21520465353260865" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="H4D-QW-SeK" firstAttribute="top" secondItem="Xhw-a6-Het" secondAttribute="bottom" constant="10" id="Bb2-gj-LRn"/>
                             <constraint firstItem="dR7-UU-LV5" firstAttribute="leading" secondItem="90f-oJ-SVu" secondAttribute="leading" constant="60" id="Kwj-y3-X8t"/>
                             <constraint firstItem="GqQ-4M-5Oh" firstAttribute="top" secondItem="90f-oJ-SVu" secondAttribute="top" constant="30" id="WaL-4d-sji"/>
                             <constraint firstAttribute="trailing" secondItem="H4D-QW-SeK" secondAttribute="trailing" constant="16" id="ZNY-Vf-Ubi"/>
                             <constraint firstItem="GqQ-4M-5Oh" firstAttribute="leading" secondItem="90f-oJ-SVu" secondAttribute="leading" constant="142" id="cb1-PZ-Vb5"/>
                             <constraint firstItem="dR7-UU-LV5" firstAttribute="top" secondItem="90f-oJ-SVu" secondAttribute="top" constant="242" id="fxf-U9-Q1d"/>
+                            <constraint firstItem="H4D-QW-SeK" firstAttribute="centerY" secondItem="GqQ-4M-5Oh" secondAttribute="centerY" id="nMD-bV-GN8"/>
                         </constraints>
                     </view>
                     <connections>
