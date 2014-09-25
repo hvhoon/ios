@@ -240,12 +240,15 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
+    // Figuring out where the end of the scollview is
+    int endOfTheScrollView = ([self.menuArray count]*66 - scrollView.bounds.size.width);
+    
+    // if the user is at the first item in the scrollview
     if(scrollView.contentOffset.x<=0){
-        if([self.menuArray count]>4){
+        if([self.menuArray count]*66>scrollView.bounds.size.width){
             if ([_delegate respondsToSelector:@selector(showArrowIndicator)]) {
                 [_delegate showArrowIndicator];
             }
-            
         }
         else{
             if ([_delegate respondsToSelector:@selector(hideArrowIndicator)]) {
@@ -253,21 +256,18 @@
             }
         }
     }
+    // If the user has scrolled all the way to the end
+    else if (scrollView.contentOffset.x>=endOfTheScrollView) {
+        if ([_delegate respondsToSelector:@selector(hideArrowIndicator)]) {
+            [_delegate hideArrowIndicator];
+        }
+    }
+    // If the user is scrolling in between the beginning and end of the scrollview
     else {
-        NSInteger value =(scrollView.contentOffset.x/66);
-        if([self.menuArray count]>(value+4)){
-            if ([_delegate respondsToSelector:@selector(showArrowIndicator)]) {
+        if ([_delegate respondsToSelector:@selector(showArrowIndicator)]) {
                 [_delegate showArrowIndicator];
-            }
-            
+    
         }
-        else{
-            if ([_delegate respondsToSelector:@selector(hideArrowIndicator)]) {
-                [_delegate hideArrowIndicator];
-            }
-            
-        }
-
     }
 
 }
