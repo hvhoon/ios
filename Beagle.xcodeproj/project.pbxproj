@@ -1148,7 +1148,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "./Crashlytics.framework/run e8e7ac59367e936ecae821876cc411ec67427e47 08236531678c31ca74e7c85b34c7078a9a24c4405410163bcf0c6351af3086b6";
+			shellScript = "./Crashlytics.framework/run e8e7ac59367e936ecae821876cc411ec67427e47 08236531678c31ca74e7c85b34c7078a9a24c4405410163bcf0c6351af3086b6\nGIT_RELEASE_VERSION=$(git describe --abbrev=0)\nCOMMITS=$(git rev-list HEAD | wc -l)\nCOMMITS=$(($COMMITS))\ndefaults write \"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH%.*}\" \"CFBundleShortVersionString\" \"${GIT_RELEASE_VERSION#*v}\"\ndefaults write \"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH%.*}\" \"CFBundleVersion\" \"${COMMITS}\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
