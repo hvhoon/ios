@@ -293,7 +293,7 @@
 }
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
     
-    [Appsee addEvent:@"Offline Notification Received"];
+    [Appsee addEvent:@"Notification Received"];
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
 
     if(!hideInAppNotification && notifObject.notifType==1){
@@ -697,9 +697,25 @@
     if(notificationsButton!=nil){
         [notificationsButton removeFromSuperview];
     }
-
+    if(notificationsButton==nil){
+    for(UIView *views in self.view.subviews){
+        if([views isKindOfClass:[UIButton class]]){
+            if(views.tag==5346){
+                notificationsButton=(UIButton*)views;
+            }
+        }
+    }
+    }
     UIView*headerView=(UIView*)[self.view viewWithTag:43567];
-
+    if(headerView==nil){
+    for(UIView *views in self.view.subviews){
+        if([views isKindOfClass:[UIView class]]){
+            if(views.tag==43567){
+                headerView=views;
+            }
+        }
+    }
+  }
     if(BG.badgeCount==0){
         
             UIButton *notificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];
