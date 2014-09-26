@@ -337,7 +337,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     NSLog(@"userInfo=%@",userInfo);
 //    UIAlertView *alert=[[UIAlertView alloc]initWithTitle:@"test" message:[userInfo description] delegate:nil cancelButtonTitle:@"OK"otherButtonTitles:nil];
 //    [alert show];
-
+//
     
         if([[[userInfo valueForKey:@"p"] valueForKey:@"nty"]integerValue]==CHAT_TYPE){
             
@@ -361,13 +361,15 @@ void uncaughtExceptionHandler(NSException *exception) {
            [dictionary setObject:[NSNumber numberWithInteger:[[[userInfo valueForKey:@"p"] valueForKey:@"aid"]integerValue]] forKey:@"activity_id"];
   
             [dictionary setObject:[[userInfo valueForKey:@"p"] valueForKey:@"cid"] forKey:@"chatid"];
+;
+#ifdef __IPHONE_8_0
+          [self performSelector:@selector(AddADelayForIOS8ForOfflinePostNotification:) withObject:dictionary afterDelay:4.0];
+#else
             [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
             
-            [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kNotificationForInterestPost object:nil userInfo:dictionary]];
-
-
+            [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kNotificationForInterestPost object:nil userInfo:dictionary]]
             
-            
+#endif
         }else{
             
 //            UIAlertView *alert=[[UIAlertView alloc]initWithTitle:@"test2" message:@"No CHat" delegate:nil cancelButtonTitle:@"OK"otherButtonTitles:nil];
@@ -391,11 +393,14 @@ void uncaughtExceptionHandler(NSException *exception) {
             NSMutableDictionary *activity=[NSMutableDictionary new];
             [activity setObject:[NSNumber numberWithInteger:[[[userInfo valueForKey:@"p"] valueForKey:@"aid"]integerValue]] forKey:@"id"];
             [dictionary setObject:activity forKey:@"activity"];
-            
+
+#ifdef __IPHONE_8_0
+            [self performSelector:@selector(AddADelayForIOS8ForOfflineNotification:) withObject:dictionary afterDelay:4.0];
+#else
             [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
             
             [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:nil userInfo:dictionary]];
-            
+#endif
 
         }
 //            else
@@ -405,8 +410,21 @@ void uncaughtExceptionHandler(NSException *exception) {
         
     
 }
+#ifdef __IPHONE_8_0
+-(void)AddADelayForIOS8ForOfflinePostNotification:(NSDictionary*)apsDictionary{
+    [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
+    
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kNotificationForInterestPost object:nil userInfo:apsDictionary]];
+    
+}
 
+-(void)AddADelayForIOS8ForOfflineNotification:(NSDictionary*)apsDictionary{
+    [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
+    
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:nil userInfo:apsDictionary]];
 
+}
+#endif
 -(void)handleSilentNotifications:(NSDictionary*)userInfo{
         NSLog(@"userInfo=%@",userInfo);
         
@@ -571,7 +589,6 @@ void uncaughtExceptionHandler(NSException *exception) {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     
     NSLog(@"applicationWillEnterForeground");
-    
         if([[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"]){
     [[BeagleManager SharedInstance]setBadgeCount:[[UIApplication sharedApplication]applicationIconBadgeNumber]];
 

@@ -1107,6 +1107,9 @@
 					18EC229C18B5A0B400316B6E = {
 						DevelopmentTeam = RLC9X36TPX;
 						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
 							com.apple.InAppPurchase = {
 								enabled = 0;
 							};

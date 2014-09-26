@@ -694,28 +694,33 @@
 -(void)UpdateBadgeCount{
     BeagleManager *BG=[BeagleManager SharedInstance];
     UIButton *notificationsButton=(UIButton*)[self.view viewWithTag:5346];
+    
     if(notificationsButton!=nil){
         [notificationsButton removeFromSuperview];
     }
-    if(notificationsButton==nil){
-    for(UIView *views in self.view.subviews){
-        if([views isKindOfClass:[UIButton class]]){
-            if(views.tag==5346){
-                notificationsButton=(UIButton*)views;
-            }
-        }
-    }
-    }
+//    if(notificationsButton==nil){
+//    for(UIView *views in self.view.subviews){
+//        if([views isKindOfClass:[UIButton class]]){
+//            if(views.tag==5346){
+//                notificationsButton=(UIButton*)views;
+//            }
+//        }
+//    }
+//    }
     UIView*headerView=(UIView*)[self.view viewWithTag:43567];
-    if(headerView==nil){
-    for(UIView *views in self.view.subviews){
-        if([views isKindOfClass:[UIView class]]){
-            if(views.tag==43567){
-                headerView=views;
-            }
-        }
-    }
-  }
+//    if(headerView==nil){
+//    for(UIView *views in self.view.subviews){
+//        if([views isKindOfClass:[UIView class]]){
+//            if(views.tag==43567){
+//                headerView=views;
+//            }
+//        }
+//    }
+//  }
+#ifdef __IPHONE_8_0
+    if(notificationsButton==nil||headerView==nil)
+          return;
+#endif
     if(BG.badgeCount==0){
         
             UIButton *notificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];
