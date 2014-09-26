@@ -335,8 +335,15 @@ void uncaughtExceptionHandler(NSException *exception) {
     
     // app was just brought from background to foreground
     NSLog(@"userInfo=%@",userInfo);
+//    UIAlertView *alert=[[UIAlertView alloc]initWithTitle:@"test" message:[userInfo description] delegate:nil cancelButtonTitle:@"OK"otherButtonTitles:nil];
+//    [alert show];
+
     
         if([[[userInfo valueForKey:@"p"] valueForKey:@"nty"]integerValue]==CHAT_TYPE){
+            
+//            UIAlertView *alert=[[UIAlertView alloc]initWithTitle:@"test2" message:@"Chat" delegate:nil cancelButtonTitle:@"OK"otherButtonTitles:nil];
+//            [alert show];
+
 //            [_notificationServerManager requestInAppNotificationForPosts:[[[userInfo valueForKey:@"p"] valueForKey:@"cid"]integerValue]notifType:2];
             
             NSMutableDictionary *dictionary=[NSMutableDictionary new];
@@ -355,14 +362,17 @@ void uncaughtExceptionHandler(NSException *exception) {
   
             [dictionary setObject:[[userInfo valueForKey:@"p"] valueForKey:@"cid"] forKey:@"chatid"];
             
-            NSNotification* notification = [NSNotification notificationWithName:kNotificationForInterestPost object:nil userInfo:dictionary];
-            [[NSNotificationCenter defaultCenter] postNotification:notification];
+            [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kNotificationForInterestPost object:nil userInfo:dictionary]];
 
             [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
 
             
             
         }else{
+            
+//            UIAlertView *alert=[[UIAlertView alloc]initWithTitle:@"test2" message:@"No CHat" delegate:nil cancelButtonTitle:@"OK"otherButtonTitles:nil];
+//            [alert show];
+
 //        else if([[[userInfo valueForKey:@"p"] valueForKey:@"nty"]integerValue]==CANCEL_ACTIVITY_TYPE){
         
             NSMutableDictionary *dictionary=[NSMutableDictionary new];
@@ -518,6 +528,9 @@ void uncaughtExceptionHandler(NSException *exception) {
             [self handleOnlineNotifications:userInfo];
         }
         else{
+//            NSInteger test=[UIApplication sharedApplication].applicationState;
+//            UIAlertView *testView=[[UIAlertView alloc]initWithTitle:@"test" message:[NSString stringWithFormat:@"%ld",(long)test] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+//            [testView show];
             [self handleOfflineNotifications:userInfo];
         }
     }

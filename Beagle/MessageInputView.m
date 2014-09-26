@@ -49,7 +49,7 @@ static id<MessageInputViewDelegate> __delegate;
 #pragma mark - Setup
 - (void)setup
 {
-//    self.image = [UIImage imageNamed:@"input-bar-flat"];
+   self.image = [UIImage imageNamed:@"input-bar-flat"];
     self.backgroundColor = [UIColor clearColor];
     self.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin);
     self.opaque = YES;

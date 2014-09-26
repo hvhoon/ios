@@ -18,6 +18,8 @@
 #import "FriendsViewController.h"
 #import "FeedbackReporting.h"
 #import "CreateAnimationBlurView.h"
+#import "BeagleLabel.h"
+#import "LinkViewController.h"
 #if kPostInterface || 1
     #import "MessageInputView.h"
     #import "DismissiveTextView.h"
@@ -938,6 +940,23 @@ static NSString * const CellIdentifier = @"cell";
                                                                                attributes:attrs
                                                                                   context:nil];
         
+        
+        BeagleLabel *beagleLabel = [[BeagleLabel alloc] initWithFrame:CGRectMake(16, fromTheTop, commentTextRect.size.width,commentTextRect.size.height) fontType:1];
+        [beagleLabel setText:self.interestActivity.activityDesc];
+        beagleLabel.textAlignment = NSTextAlignmentLeft;
+        beagleLabel.numberOfLines = 0;
+        beagleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        
+        [_backgroundView addSubview:beagleLabel];
+        
+        [beagleLabel setDetectionBlock:^(BeagleHotWord hotWord, NSString *string, NSString *protocol, NSRange range) {
+                [self redirectToWebPage:string];
+            
+            
+            
+        }];
+
+#if 0
         UILabel *activityDescLabel = [[UILabel alloc] initWithFrame:CGRectMake(16,fromTheTop,commentTextRect.size.width,commentTextRect.size.height)];
         activityDescLabel.numberOfLines=0;
         activityDescLabel.lineBreakMode=NSLineBreakByWordWrapping;
@@ -948,7 +967,7 @@ static NSString * const CellIdentifier = @"cell";
         activityDescLabel.textAlignment = NSTextAlignmentLeft;
         activityDescLabel.tag=3569;
         [_backgroundView addSubview:activityDescLabel];
-        
+#endif
         fromTheTop = fromTheTop+commentTextRect.size.height;
         fromTheTop = fromTheTop+16.0f; // buffer after the description
 
@@ -1185,9 +1204,9 @@ static NSString * const CellIdentifier = @"cell";
         [activityIndicatorView setColor:[BeagleUtilities returnBeagleColor:12]];
         activityIndicatorView.hidesWhenStopped=YES;
              if(self.interestActivity.isParticipant)
-                 activityIndicatorView.frame=CGRectMake(141.5,64+fromTheTop-25+(self.view.frame.size.height-(64+47+fromTheTop))/2, 37, 37);
+                 activityIndicatorView.frame=CGRectMake((self.view.frame.size.width-37)/2,64+fromTheTop-25+(self.view.frame.size.height-(64+47+fromTheTop))/2, 37, 37);
              else{
-                 activityIndicatorView.frame=CGRectMake(141.5,64+fromTheTop-25+(self.view.frame.size.height-(64+fromTheTop))/2, 37, 37);
+                 activityIndicatorView.frame=CGRectMake((self.view.frame.size.width-37)/2,64+fromTheTop-25+(self.view.frame.size.height-(64+fromTheTop))/2, 37, 37);
                  
              }
         [self.view insertSubview:activityIndicatorView aboveSubview:self.contentWrapper];
@@ -1293,10 +1312,30 @@ static NSString * const CellIdentifier = @"cell";
         
         CGRect commentTextRect = [chatCell.text boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
         
+        
+        
+        BeagleLabel *beagleLabel = [[BeagleLabel alloc] initWithFrame:CGRectMake(59, cellTop, commentTextRect.size.width, commentTextRect.size.height) fontType:2];
+        [beagleLabel setText:chatCell.text];
+        beagleLabel.textAlignment = NSTextAlignmentLeft;
+        beagleLabel.numberOfLines = 0;
+        beagleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        
+        [cell.contentView addSubview:beagleLabel];
+        
+        [beagleLabel setDetectionBlock:^(BeagleHotWord hotWord, NSString *string, NSString *protocol, NSRange range) {
+            [self redirectToWebPage:string];
+            
+            
+            
+        }];
+
+        
+#if 0
         UILabel *chatDescLabel = [[UILabel alloc] initWithFrame:CGRectMake(59, cellTop, commentTextRect.size.width, commentTextRect.size.height)];
         chatDescLabel.attributedText = [[NSAttributedString alloc] initWithString:chatCell.text attributes:attrs];
         chatDescLabel.numberOfLines = 0;
         [cell.contentView addSubview:chatDescLabel];
+#endif
         
         cellTop = cellTop + commentTextRect.size.height;
         cellTop = cellTop + 16.0f;
@@ -1393,6 +1432,20 @@ static NSString * const CellIdentifier = @"cell";
     [self.navigationController pushViewController:viewController animated:YES];
 
 }
+
+#pragma mark -
+#pragma mark redirectToWebPage method
+
+-(void)redirectToWebPage:(NSString*)webLink{
+    
+    NSLog(@"webLink=%@",webLink);
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    LinkViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"webLinkScreen"];
+    viewController.linkString=webLink;
+    [self.navigationController pushViewController:viewController animated:YES];
+    
+}
+
 #pragma mark - server calls
 
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{

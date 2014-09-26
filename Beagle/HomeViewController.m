@@ -21,6 +21,7 @@
 #import "ExpressInterestPreview.h"
 #import "JSON.h"
 #import "CreateAnimationBlurView.h"
+#import "LinkViewController.h"
 #define kTimerIntervalInSeconds 10
 #define rowHeight 164
 #define kLeaveInterest 23
@@ -94,6 +95,11 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+//    
+//    UIAlertView *alert=[[UIAlertView alloc]initWithTitle:@"test4" message:@"Home View" delegate:nil cancelButtonTitle:@"OK"otherButtonTitles:nil];
+//    [alert show];
+
+
     [super viewWillAppear:animated];
     _tableViewController.refreshControl.tintColor=[UIColor whiteColor];
 
@@ -595,7 +601,15 @@
 }
 
 -(void)postInAppNotification:(NSNotification*)note{
+    
+//    UIAlertView *alert=[[UIAlertView alloc]initWithTitle:@"test" message:[[note userInfo]description] delegate:nil cancelButtonTitle:@"OK"otherButtonTitles:nil];
+//    [alert show];
+
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
+    
+//    UIAlertView *alert2=[[UIAlertView alloc]initWithTitle:[NSString stringWithFormat:@"%ld",(long)notifObject.notifType] message:[[note userInfo]description] delegate:nil cancelButtonTitle:@"OK"otherButtonTitles:nil];
+//    [alert2 show];
+    
     if(!hideInAppNotification && notifObject.notifType==1){
         InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
         notifView.delegate=self;
@@ -604,6 +618,8 @@
         }
     else if(!hideInAppNotification && notifObject.notifType==2 && (notifObject.notificationType==CHAT_TYPE) && notifObject.activity.activityId!=0){
         NSLog(@"DetailInterestViewController redirect postInAppNotification");
+        
+
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
         viewController.interestServerManager=[[ServerManager alloc]init];
@@ -618,6 +634,28 @@
     }
     if(notifObject.notifType!=2)
         [self updateHomeScreen:notifObject];
+    
+    
+//#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
+//    if(!hideInAppNotification && (notifObject.notificationType==CHAT_TYPE) && notifObject.activity.activityId!=0){
+//        NSLog(@"DetailInterestViewController redirect postInAppNotification");
+//        
+//        UIAlertView *alert=[[UIAlertView alloc]initWithTitle:@"Detailed Interest" message:@"Beale" delegate:nil cancelButtonTitle:@"OK"otherButtonTitles:nil];
+//        [alert show];
+//        
+//        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+//        DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
+//        viewController.interestServerManager=[[ServerManager alloc]init];
+//        viewController.interestServerManager.delegate=viewController;
+//        viewController.isRedirected=TRUE;
+//        viewController.toLastPost=TRUE;
+//        [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
+//        [self.navigationController pushViewController:viewController animated:YES];
+//        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+//    }
+//#endif
+
+    
 
 }
 -(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
@@ -1697,6 +1735,18 @@
                                                    delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes, do it!",nil];
     alert.tag=kSuggestedPost;
     [alert show];
+}
+
+#pragma mark -
+#pragma mark redirectToWebPage method
+
+-(void)redirectToWebPage:(NSString*)webLink{
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    LinkViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"webLinkScreen"];
+    viewController.linkString=webLink;
+    [self.navigationController pushViewController:viewController animated:YES];
+
 }
 
 #pragma mark -
