@@ -69,7 +69,7 @@
     
     self.animationBlurView=[CreateAnimationBlurView loadCreateAnimationView:self.view];
     self.animationBlurView.delegate=self;
-
+    self.animationBlurView.frame=CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
     [self.animationBlurView loadCustomAnimationView:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
 
     if([self.interestDetail.participantsArray count]==0)
