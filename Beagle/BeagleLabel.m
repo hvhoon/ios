@@ -9,7 +9,8 @@
 #import "BeagleLabel.h"
 #import "BeagleTextStorage.h"
 
-#define STURLRegex @"(?i)\\b((?:[a-z][\\w-]+:(?:/{1,3}|[a-z0-9%])|www\\d{0,3}[.]|[a-z0-9.\\-]+[.][a-z]{2,4}/)(?:[^\\s()<>]+|\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\))+(?:\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\)|[^\\s`!()\\[\\]{};:'\".,<>?«»“”‘’]))"
+#define STURLRegex @"(?i)\\b((?:[a-z][\\w-]+:(?:/{1,3}|[a-z0-9%])|www\\d{0,3}[.]|[a-z0-9.\\-]+[.][a-z]{2,4}/)(?:[^\\s()<>]+|\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\))+(?:\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\)|[^\\s`!()\\[\\]{};:'\".,<>?«»“”‘’])|([a-z0-9.\\-]+[.]com)|([a-z0-9.\\-]+[.]buzz))"
+
 
 #pragma mark -
 #pragma mark STTweetLabel
@@ -111,7 +112,7 @@
             break;
     }
     
-    self.validProtocols = @[@"http", @"https"];
+    self.validProtocols = @[@"http", @"https",@"www"];
 }
 
 #pragma mark -
@@ -206,7 +207,6 @@
         }
     }];
 }
-
 - (void)updateText
 {
     NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:_cleanText];

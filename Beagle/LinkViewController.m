@@ -23,8 +23,47 @@
     
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     [self.navigationController.navigationBar setTintColor:[[BeagleManager SharedInstance] darkDominantColor]];
-    [self.linkWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:linkString]]];
+    
+    [self.linkWebView setScalesPageToFit:YES];
+    
+    NSString *outputString = [linkString stringByReplacingOccurrencesOfString:@" " withString:@"+"];
+    
+    if ([linkString hasPrefix:@"http://"]||[linkString hasPrefix:@"www"]) {
+        //Has Prefix
+       [self.linkWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:outputString]]];
+
+    }
+    else if (([linkString hasSuffix:@"com"]||[linkString hasSuffix:@"buzz"])){
+        NSString *prefixString = @"http://www.";
+        NSString *searchString = [NSString stringWithFormat:@"%@%@", prefixString, outputString];
+        [self.linkWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:searchString]]];
+        
+    }
+    else
+    {
+        //Does not have prefix. Do what you want here. I google it.
+        NSString *googleString = @"http://google.com/search?q=";
+        NSString *searchString = [NSString stringWithFormat:@"%@%@", googleString, outputString];
+        [self.linkWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:searchString]]];
+        
+    }
+    
     // Do any additional setup after loading the view.
+}
+
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+{
+    return YES;
+}
+
+-(void)webViewDidFinishLoad:(UIWebView *)webView{
+    NSLog(@"webViewDidFinishLoad");
+}
+-(void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error{
+    NSLog(@"didFailLoadWithError");
+}
+-(void)webViewDidStartLoad:(UIWebView *)webView{
+    NSLog(@"webViewDidStartLoad");
 }
 
 - (void)didReceiveMemoryWarning {

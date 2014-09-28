@@ -442,19 +442,19 @@ static NSString * const CellIdentifier = @"cell";
 #pragma mark - Initialization
 - (void)setup
 {
-    CGRect frame = [UIScreen mainScreen].bounds;
-    if (OSVersionIsAtLeastiOS7 == YES) {
-        self.edgesForExtendedLayout = UIRectEdgeNone;
-    }else{
-        frame.size.height -= 20 + 44;
-    }
-    
-    self.view.frame = frame;
-    self.view.bounds = frame;
+//    CGRect frame = [UIScreen mainScreen].bounds;
+//    if (OSVersionIsAtLeastiOS7 == YES) {
+//        self.edgesForExtendedLayout = UIRectEdgeNone;
+//    }else{
+//        frame.size.height -= 20 + 44;
+//    }
+//    
+//    self.view.frame = frame;
+//    self.view.bounds = frame;
     
     CGSize size = self.view.frame.size;
     
-    CGRect tableFrame = CGRectMake(0.0f, 0.0f, size.width, size.height - INPUT_HEIGHT);
+    CGRect tableFrame = CGRectMake(0.0f, 64.0f, size.width, size.height - INPUT_HEIGHT-64.0f);
     self.detailedInterestTableView = [[UITableView alloc] initWithFrame:tableFrame style:UITableViewStylePlain];
     self.detailedInterestTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
     self.detailedInterestTableView.separatorInset = UIEdgeInsetsZero;
@@ -1443,6 +1443,10 @@ static NSString * const CellIdentifier = @"cell";
     LinkViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"webLinkScreen"];
     viewController.linkString=webLink;
     [self.navigationController pushViewController:viewController animated:YES];
+    if([self.contentWrapper iskeyboardVisible]){
+        [self doneButtonClicked:nil];
+    }
+
     
 }
 
@@ -2086,6 +2090,12 @@ static NSString * const CellIdentifier = @"cell";
                                               atScrollPosition:UITableViewScrollPositionTop
                                                       animated:YES];
     }
+    else{
+        [self.detailedInterestTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow: 0 inSection:0]
+                                              atScrollPosition:UITableViewScrollPositionTop
+                                                      animated:YES];
+        
+    }
 }
 
 
@@ -2230,7 +2240,7 @@ static NSString * const CellIdentifier = @"cell";
                                                                   inputViewFrame.size.height);
                          
                          UIEdgeInsets insets = self.originalTableViewContentInset;
-                         insets.bottom = self.view.frame.size.height - self.inputToolBarView.frame.origin.y - inputViewFrame.size.height;
+                         insets.bottom = self.view.frame.size.height - self.inputToolBarView.frame.origin.y - inputViewFrame.size.height-64.0f;
                          
                          self.detailedInterestTableView.contentInset = insets;
                          self.detailedInterestTableView.scrollIndicatorInsets = insets;
