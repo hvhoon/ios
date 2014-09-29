@@ -1315,12 +1315,21 @@ static NSString * const CellIdentifier = @"cell";
         
         
         BeagleLabel *beagleLabel = [[BeagleLabel alloc] initWithFrame:CGRectMake(59, cellTop, commentTextRect.size.width, commentTextRect.size.height) fontType:2];
+        [beagleLabel setTextColor:[UIColor blackColor]];
+        [beagleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:15.0f]];
+        [beagleLabel setAttributes:attrs];
         [beagleLabel setText:chatCell.text];
         beagleLabel.textAlignment = NSTextAlignmentLeft;
         beagleLabel.numberOfLines = 0;
         beagleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         
         [cell.contentView addSubview:beagleLabel];
+        
+        CGSize size = [beagleLabel suggestedFrameSizeToFitEntireStringConstraintedToWidth:commentTextRect.size.width];
+        CGRect frame = beagleLabel.frame;
+        frame.size.height = size.height;
+        beagleLabel.frame = frame;
+
         
         [beagleLabel setDetectionBlock:^(BeagleHotWord hotWord, NSString *string, NSString *protocol, NSRange range) {
             [self redirectToWebPage:string];
@@ -2085,6 +2094,25 @@ static NSString * const CellIdentifier = @"cell";
 
 - (void)scrollToBottomAnimated:(BOOL)animated
 {
+    
+    
+    CGPoint contentOffset = self.detailedInterestTableView.contentOffset;
+    
+    CGFloat contentHeight = self.detailedInterestTableView.contentSize.height;
+    CGFloat scrollViewHeight = self.detailedInterestTableView.bounds.size.height;
+    
+    UIEdgeInsets contentInset = self.detailedInterestTableView.contentInset;
+    CGFloat bottomInset = contentInset.bottom;
+    CGFloat topInset = contentInset.top;
+    
+    CGFloat contentOffsetY;
+    contentOffsetY = contentHeight - (scrollViewHeight - bottomInset);
+    contentOffsetY = MAX(contentOffsetY, -topInset);
+
+    contentOffset.y = contentOffsetY;
+    self.detailedInterestTableView.contentOffset = contentOffset;
+
+#if 0
     if([self.chatPostsArray count]>0){
         [self.detailedInterestTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow: [self.chatPostsArray count] inSection:0]
                                               atScrollPosition:UITableViewScrollPositionTop
@@ -2096,6 +2124,7 @@ static NSString * const CellIdentifier = @"cell";
                                                       animated:YES];
         
     }
+#endif
 }
 
 
@@ -2240,7 +2269,7 @@ static NSString * const CellIdentifier = @"cell";
                                                                   inputViewFrame.size.height);
                          
                          UIEdgeInsets insets = self.originalTableViewContentInset;
-                         insets.bottom = self.view.frame.size.height - self.inputToolBarView.frame.origin.y - inputViewFrame.size.height-64.0f;
+                         insets.bottom = self.view.frame.size.height - self.inputToolBarView.frame.origin.y - inputViewFrame.size.height;
                          
                          self.detailedInterestTableView.contentInset = insets;
                          self.detailedInterestTableView.scrollIndicatorInsets = insets;

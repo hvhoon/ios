@@ -293,17 +293,9 @@
 }
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
     
-    UIAlertView *alert=[[UIAlertView alloc]initWithTitle:@"test" message:[[note userInfo]description] delegate:nil cancelButtonTitle:@"OK"otherButtonTitles:nil];
-    [alert show];
-    
-    
-
     [Appsee addEvent:@"Notification Received"];
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
     
-    UIAlertView *alert2=[[UIAlertView alloc]initWithTitle:[NSString stringWithFormat:@"%ld",(long)notifObject.notifType] message:[[note userInfo]description] delegate:nil cancelButtonTitle:@"OK"otherButtonTitles:nil];
-    [alert2 show];
-
     if(!hideInAppNotification && notifObject.notifType==1){
         
         InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
@@ -610,13 +602,8 @@
 
 -(void)postInAppNotification:(NSNotification*)note{
     
-//    UIAlertView *alert=[[UIAlertView alloc]initWithTitle:@"test" message:[[note userInfo]description] delegate:nil cancelButtonTitle:@"OK"otherButtonTitles:nil];
-//    [alert show];
-
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
     
-//    UIAlertView *alert2=[[UIAlertView alloc]initWithTitle:[NSString stringWithFormat:@"%ld",(long)notifObject.notifType] message:[[note userInfo]description] delegate:nil cancelButtonTitle:@"OK"otherButtonTitles:nil];
-//    [alert2 show];
     
     if(!hideInAppNotification && notifObject.notifType==1){
         InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];

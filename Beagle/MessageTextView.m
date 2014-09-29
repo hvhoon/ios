@@ -40,7 +40,6 @@
     self.returnKeyType = UIReturnKeyDefault;
     self.textAlignment = NSTextAlignmentLeft;
     
-    [[UITextView appearance] setTintColor:[UIColor blueColor]];
 }
 
 - (id)initWithFrame:(CGRect)frame

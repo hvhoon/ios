@@ -9,7 +9,7 @@
 #import "BeagleLabel.h"
 #import "BeagleTextStorage.h"
 
-#define STURLRegex @"(?i)\\b((?:[a-z][\\w-]+:(?:/{1,3}|[a-z0-9%])|www\\d{0,3}[.]|[a-z0-9.\\-]+[.][a-z]{2,4}/)(?:[^\\s()<>]+|\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\))+(?:\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\)|[^\\s`!()\\[\\]{};:'\".,<>?«»“”‘’])|([a-z0-9.\\-]+[.]com)|([a-z0-9.\\-]+[.]buzz))"
+#define STURLRegex @"(?i)\\b((?:[a-z][\\w-]+:(?:/{1,3}|[a-z0-9%])|www\\d{0,3}[.]|[a-z0-9.\\-]+[.][a-z]{2,4}/)(?:[^\\s()<>]+|\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\))+(?:\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\)|[^\\s`!()\\[\\]{};:'\".,<>?«»“”‘’])|([a-z0-9.\\-]+[.]com)|([a-z0-9.\\-]+[.]buzz)|([a-z0-9.\\-]+[.]org))"
 
 
 #pragma mark -
@@ -227,7 +227,7 @@
     if (_textView != nil)
         [_textView removeFromSuperview];
     
-    _textView = [[UITextView alloc] initWithFrame:self.bounds textContainer:_textContainer];
+    _textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height) textContainer:_textContainer];
     _textView.delegate = self;
     _textView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     _textView.backgroundColor = [UIColor clearColor];

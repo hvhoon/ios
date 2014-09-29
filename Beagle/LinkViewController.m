@@ -33,7 +33,7 @@
        [self.linkWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:outputString]]];
 
     }
-    else if (([linkString hasSuffix:@"com"]||[linkString hasSuffix:@"buzz"])){
+    else if (([linkString hasSuffix:@"com"]||[linkString hasSuffix:@"buzz"]||[linkString hasSuffix:@"org"])){
         NSString *prefixString = @"http://www.";
         NSString *searchString = [NSString stringWithFormat:@"%@%@", prefixString, outputString];
         [self.linkWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:searchString]]];
