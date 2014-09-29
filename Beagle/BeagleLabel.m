@@ -252,32 +252,9 @@
     if (_textView != nil)
         [_textView removeFromSuperview];
     
-    NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-    [style setAlignment:NSTextAlignmentLeft];
-
-    NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-             [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0f], NSFontAttributeName,
-             [UIColor blackColor],NSForegroundColorAttributeName,
-             style, NSParagraphStyleAttributeName, NSLineBreakByWordWrapping, nil];
-    
-    CGSize maximumLabelSize = CGSizeMake([UIScreen mainScreen].bounds.size.width-75,999);
-    
-    if(fontType==1){
-        attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                 [UIFont fontWithName:@"HelveticaNeue" size:17.0f], NSFontAttributeName,
-                 [UIColor blackColor],NSForegroundColorAttributeName,
-                 style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
-        
-        
-        maximumLabelSize = CGSizeMake([UIScreen mainScreen].bounds.size.width-32,999);
-        
-
-    }
-    
-    CGRect commentTextRect = [_cleanText boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
 
     
-    _textView = [[UITextView alloc] initWithFrame:commentTextRect textContainer:_textContainer];
+    _textView = [[UITextView alloc] initWithFrame:self.bounds textContainer:_textContainer];
     _textView.delegate = self;
     _textView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     _textView.backgroundColor = [UIColor clearColor];
