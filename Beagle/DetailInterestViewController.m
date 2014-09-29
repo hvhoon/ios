@@ -941,7 +941,7 @@ static NSString * const CellIdentifier = @"cell";
                                                                                   context:nil];
         
         
-        BeagleLabel *beagleLabel = [[BeagleLabel alloc] initWithFrame:CGRectMake(16, fromTheTop, commentTextRect.size.width,commentTextRect.size.height) fontType:1];
+        BeagleLabel *beagleLabel = [[BeagleLabel alloc] initWithFrame:CGRectMake(16, fromTheTop, commentTextRect.size.width,commentTextRect.size.height) type:1];
         [beagleLabel setText:self.interestActivity.activityDesc];
         beagleLabel.textAlignment = NSTextAlignmentLeft;
         beagleLabel.numberOfLines = 0;
@@ -1314,7 +1314,7 @@ static NSString * const CellIdentifier = @"cell";
         
         
         
-        BeagleLabel *beagleLabel = [[BeagleLabel alloc] initWithFrame:CGRectMake(59, cellTop, commentTextRect.size.width, commentTextRect.size.height) fontType:2];
+        BeagleLabel *beagleLabel = [[BeagleLabel alloc] initWithFrame:CGRectMake(59, cellTop, commentTextRect.size.width, commentTextRect.size.height) type:2];
         [beagleLabel setTextColor:[UIColor blackColor]];
         [beagleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:15.0f]];
         [beagleLabel setAttributes:attrs];
@@ -1325,10 +1325,10 @@ static NSString * const CellIdentifier = @"cell";
         
         [cell.contentView addSubview:beagleLabel];
         
-        CGSize size = [beagleLabel suggestedFrameSizeToFitEntireStringConstraintedToWidth:commentTextRect.size.width];
-        CGRect frame = beagleLabel.frame;
-        frame.size.height = size.height;
-        beagleLabel.frame = frame;
+//        CGSize size = [beagleLabel suggestedFrameSizeToFitEntireStringConstraintedToWidth:commentTextRect.size.width];
+//        CGRect frame = beagleLabel.frame;
+//        frame.size.height = size.height;
+//        beagleLabel.frame = frame;
 
         
         [beagleLabel setDetectionBlock:^(BeagleHotWord hotWord, NSString *string, NSString *protocol, NSRange range) {
@@ -1514,15 +1514,34 @@ static NSString * const CellIdentifier = @"cell";
                         
                     }
                     NSArray *chats=[interest objectForKey:@"chats"];
+                    
                     if (chats != nil && [chats class] != [NSNull class] && [chats count]!=0) {
-                        NSMutableArray *chatsArray=[[NSMutableArray alloc]init];
+                        NSMutableArray *postArray=[[NSMutableArray alloc]init];
                         imageDownloadsInProgress=[NSMutableDictionary new];
                         for(id el in chats){
                             InterestChatClass *chatClass=[[InterestChatClass alloc]initWithDictionary:el];
-                            [chatsArray addObject:chatClass];
+                            [postArray addObject:chatClass];
                         }
-                        if([chatsArray count]!=0){
-                            self.chatPostsArray=[NSMutableArray arrayWithArray:chatsArray];
+                    
+                    NSArray *chatArray=[NSArray arrayWithArray:postArray];
+                    if([chatArray count]!=0){
+                        chatArray = [chatArray sortedArrayUsingComparator: ^(InterestChatClass *a, InterestChatClass *b) {
+                            
+                            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+                            
+                            NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+                            [dateFormatter setTimeZone:utcTimeZone];
+                            
+                            NSDate *s1 = [dateFormatter dateFromString:a.timestamp];//add the string
+                            NSDate *s2 = [dateFormatter dateFromString:b.timestamp];
+                            
+                            return [s1 compare:s2];
+                        }];
+
+                    }
+                        if([chatArray count]!=0){
+                            self.chatPostsArray=[NSMutableArray arrayWithArray:chatArray];
                         }
                     }
                     postsLoadComplete=TRUE;

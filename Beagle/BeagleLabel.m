@@ -11,6 +11,7 @@
 
 #define STURLRegex @"(?i)\\b((?:[a-z][\\w-]+:(?:/{1,3}|[a-z0-9%])|www\\d{0,3}[.]|[a-z0-9.\\-]+[.][a-z]{2,4}/)(?:[^\\s()<>]+|\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\))+(?:\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\)|[^\\s`!()\\[\\]{};:'\".,<>?«»“”‘’])|([a-z0-9.\\-]+[.]com)|([a-z0-9.\\-]+[.]buzz)|([a-z0-9.\\-]+[.]org))"
 
+#define STURLRegex1  @"^(http(s)?://)?((www)?.)?[\w]+.[\w]+"
 
 #pragma mark -
 #pragma mark STTweetLabel
@@ -39,15 +40,16 @@
     int _firstCharIndex;
     CGPoint _firstTouchLocation;
 }
-
+@synthesize fontType;
 #pragma mark -
 #pragma mark Lifecycle
 
-- (id)initWithFrame:(CGRect)frame fontType:(NSInteger)fontType{
+- (id)initWithFrame:(CGRect)frame type:(NSInteger)type{
     self = [super initWithFrame:frame];
+    fontType=type;
     
     if (self) {
-        [self setupLabel:fontType];
+        [self setupLabel];
     }
     
     return self;
@@ -73,10 +75,31 @@
     }
 }
 
+-(BOOL)isValidURL:(NSString*)text {
+    NSUInteger length = [text length];
+    // Empty strings should return NO
+    if (length > 0) {
+        NSError *error = nil;
+        NSDataDetector *dataDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink error:&error];
+        if (dataDetector && !error) {
+            NSRange range = NSMakeRange(0, length);
+            NSRange notFoundRange = (NSRange){NSNotFound, 0};
+            NSRange linkRange = [dataDetector rangeOfFirstMatchInString:text options:0 range:range];
+            if (!NSEqualRanges(notFoundRange, linkRange) && NSEqualRanges(range, linkRange)) {
+                return YES;
+            }
+        }
+        else {
+            NSLog(@"Could not create link data detector: %@ %@", [error localizedDescription], [error userInfo]);
+        }
+    }
+    return NO;
+}
+
 #pragma mark -
 #pragma mark Setup
 
-- (void)setupLabel:(NSInteger)TypeFont {
+- (void)setupLabel{
     // Set the basic properties
     [self setBackgroundColor:[UIColor clearColor]];
     [self setClipsToBounds:NO];
@@ -87,7 +110,7 @@
     _textSelectable = YES;
     _selectionColor = [UIColor colorWithWhite:0.9 alpha:1.0];
     
-    switch (TypeFont) {
+    switch (fontType) {
         case 1:
         {
             _attributesText = @{NSForegroundColorAttributeName: self.textColor, NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue" size:17.0f]};
@@ -206,6 +229,8 @@
             [_rangesOfHotWords addObject:@{@"hotWord": @(BeagleLink), @"protocol": protocol, @"range": [NSValue valueWithRange:result.range]}];
         }
     }];
+    
+    //[self isValidURL:_cleanText];
 }
 - (void)updateText
 {
@@ -227,7 +252,9 @@
     if (_textView != nil)
         [_textView removeFromSuperview];
     
-    _textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height) textContainer:_textContainer];
+
+    
+    _textView = [[UITextView alloc] initWithFrame:self.bounds textContainer:_textContainer];
     _textView.delegate = self;
     _textView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     _textView.backgroundColor = [UIColor clearColor];
