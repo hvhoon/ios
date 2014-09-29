@@ -1514,15 +1514,34 @@ static NSString * const CellIdentifier = @"cell";
                         
                     }
                     NSArray *chats=[interest objectForKey:@"chats"];
+                    
                     if (chats != nil && [chats class] != [NSNull class] && [chats count]!=0) {
-                        NSMutableArray *chatsArray=[[NSMutableArray alloc]init];
+                        NSMutableArray *postArray=[[NSMutableArray alloc]init];
                         imageDownloadsInProgress=[NSMutableDictionary new];
                         for(id el in chats){
                             InterestChatClass *chatClass=[[InterestChatClass alloc]initWithDictionary:el];
-                            [chatsArray addObject:chatClass];
+                            [postArray addObject:chatClass];
                         }
-                        if([chatsArray count]!=0){
-                            self.chatPostsArray=[NSMutableArray arrayWithArray:chatsArray];
+                    
+                    NSArray *chatArray=[NSArray arrayWithArray:postArray];
+                    if([chatArray count]!=0){
+                        chatArray = [chatArray sortedArrayUsingComparator: ^(InterestChatClass *a, InterestChatClass *b) {
+                            
+                            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+                            
+                            NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+                            [dateFormatter setTimeZone:utcTimeZone];
+                            
+                            NSDate *s1 = [dateFormatter dateFromString:a.timestamp];//add the string
+                            NSDate *s2 = [dateFormatter dateFromString:b.timestamp];
+                            
+                            return [s1 compare:s2];
+                        }];
+
+                    }
+                        if([chatArray count]!=0){
+                            self.chatPostsArray=[NSMutableArray arrayWithArray:chatArray];
                         }
                     }
                     postsLoadComplete=TRUE;
