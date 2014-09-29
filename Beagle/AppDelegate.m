@@ -335,14 +335,8 @@ void uncaughtExceptionHandler(NSException *exception) {
     
     // app was just brought from background to foreground
     NSLog(@"userInfo=%@",userInfo);
-//    UIAlertView *alert=[[UIAlertView alloc]initWithTitle:@"test" message:[userInfo description] delegate:nil cancelButtonTitle:@"OK"otherButtonTitles:nil];
-//    [alert show];
-//
-    
         if([[[userInfo valueForKey:@"p"] valueForKey:@"nty"]integerValue]==CHAT_TYPE){
             
-//            UIAlertView *alert=[[UIAlertView alloc]initWithTitle:@"test2" message:@"Chat" delegate:nil cancelButtonTitle:@"OK"otherButtonTitles:nil];
-//            [alert show];
 
 //            [_notificationServerManager requestInAppNotificationForPosts:[[[userInfo valueForKey:@"p"] valueForKey:@"cid"]integerValue]notifType:2];
             
@@ -361,19 +355,12 @@ void uncaughtExceptionHandler(NSException *exception) {
            [dictionary setObject:[NSNumber numberWithInteger:[[[userInfo valueForKey:@"p"] valueForKey:@"aid"]integerValue]] forKey:@"activity_id"];
   
             [dictionary setObject:[[userInfo valueForKey:@"p"] valueForKey:@"cid"] forKey:@"chatid"];
-;
-#ifdef __IPHONE_8_0
-          [self performSelector:@selector(AddADelayForIOS8ForOfflinePostNotification:) withObject:dictionary afterDelay:4.0];
-#else
             [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
             
-            [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kNotificationForInterestPost object:nil userInfo:dictionary]]
+            [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kNotificationForInterestPost object:nil userInfo:dictionary]];
             
-#endif
         }else{
             
-//            UIAlertView *alert=[[UIAlertView alloc]initWithTitle:@"test2" message:@"No CHat" delegate:nil cancelButtonTitle:@"OK"otherButtonTitles:nil];
-//            [alert show];
 
 //        else if([[[userInfo valueForKey:@"p"] valueForKey:@"nty"]integerValue]==CANCEL_ACTIVITY_TYPE){
         
@@ -394,13 +381,9 @@ void uncaughtExceptionHandler(NSException *exception) {
             [activity setObject:[NSNumber numberWithInteger:[[[userInfo valueForKey:@"p"] valueForKey:@"aid"]integerValue]] forKey:@"id"];
             [dictionary setObject:activity forKey:@"activity"];
 
-#ifdef __IPHONE_8_0
-            [self performSelector:@selector(AddADelayForIOS8ForOfflineNotification:) withObject:dictionary afterDelay:4.0];
-#else
             [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
             
             [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:nil userInfo:dictionary]];
-#endif
 
         }
 //            else
@@ -410,21 +393,7 @@ void uncaughtExceptionHandler(NSException *exception) {
         
     
 }
-#ifdef __IPHONE_8_0
--(void)AddADelayForIOS8ForOfflinePostNotification:(NSDictionary*)apsDictionary{
-    [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
-    
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kNotificationForInterestPost object:nil userInfo:apsDictionary]];
-    
-}
 
--(void)AddADelayForIOS8ForOfflineNotification:(NSDictionary*)apsDictionary{
-    [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
-    
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:nil userInfo:apsDictionary]];
-
-}
-#endif
 -(void)handleSilentNotifications:(NSDictionary*)userInfo{
         NSLog(@"userInfo=%@",userInfo);
         
@@ -545,9 +514,6 @@ void uncaughtExceptionHandler(NSException *exception) {
             [self handleOnlineNotifications:userInfo];
         }
         else{
-//            NSInteger test=[UIApplication sharedApplication].applicationState;
-//            UIAlertView *testView=[[UIAlertView alloc]initWithTitle:@"test" message:[NSString stringWithFormat:@"%ld",(long)test] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-//            [testView show];
             [self handleOfflineNotifications:userInfo];
         }
     }

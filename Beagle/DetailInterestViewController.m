@@ -941,7 +941,7 @@ static NSString * const CellIdentifier = @"cell";
                                                                                   context:nil];
         
         
-        BeagleLabel *beagleLabel = [[BeagleLabel alloc] initWithFrame:CGRectMake(16, fromTheTop, commentTextRect.size.width,commentTextRect.size.height) fontType:1];
+        BeagleLabel *beagleLabel = [[BeagleLabel alloc] initWithFrame:CGRectMake(16, fromTheTop, commentTextRect.size.width,commentTextRect.size.height) type:1];
         [beagleLabel setText:self.interestActivity.activityDesc];
         beagleLabel.textAlignment = NSTextAlignmentLeft;
         beagleLabel.numberOfLines = 0;
@@ -1314,7 +1314,7 @@ static NSString * const CellIdentifier = @"cell";
         
         
         
-        BeagleLabel *beagleLabel = [[BeagleLabel alloc] initWithFrame:CGRectMake(59, cellTop, commentTextRect.size.width, commentTextRect.size.height) fontType:2];
+        BeagleLabel *beagleLabel = [[BeagleLabel alloc] initWithFrame:CGRectMake(59, cellTop, commentTextRect.size.width, commentTextRect.size.height) type:2];
         [beagleLabel setTextColor:[UIColor blackColor]];
         [beagleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:15.0f]];
         [beagleLabel setAttributes:attrs];
@@ -1325,10 +1325,10 @@ static NSString * const CellIdentifier = @"cell";
         
         [cell.contentView addSubview:beagleLabel];
         
-        CGSize size = [beagleLabel suggestedFrameSizeToFitEntireStringConstraintedToWidth:commentTextRect.size.width];
-        CGRect frame = beagleLabel.frame;
-        frame.size.height = size.height;
-        beagleLabel.frame = frame;
+//        CGSize size = [beagleLabel suggestedFrameSizeToFitEntireStringConstraintedToWidth:commentTextRect.size.width];
+//        CGRect frame = beagleLabel.frame;
+//        frame.size.height = size.height;
+//        beagleLabel.frame = frame;
 
         
         [beagleLabel setDetectionBlock:^(BeagleHotWord hotWord, NSString *string, NSString *protocol, NSRange range) {

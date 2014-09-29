@@ -18,14 +18,14 @@ typedef enum {
 @property (nonatomic, assign) BOOL leftToRight;
 @property (nonatomic, assign) BOOL textSelectable;
 @property (nonatomic, strong) UIColor *selectionColor;
+@property (nonatomic,assign)NSInteger fontType;
 @property (nonatomic, copy) void (^detectionBlock)(BeagleHotWord hotWord, NSString *string, NSString *protocol, NSRange range);
-
 - (void)setAttributes:(NSDictionary *)attributes;
 - (void)setAttributes:(NSDictionary *)attributes hotWord:(BeagleHotWord)hotWord;
-- (void)setupLabel:(NSInteger)TypeFont;
+- (void)setupLabel;
 - (NSDictionary *)attributes;
 - (NSDictionary *)attributesForHotWord:(BeagleHotWord)hotWord;
-- (id)initWithFrame:(CGRect)frame fontType:(NSInteger)fontType;
+- (id)initWithFrame:(CGRect)frame type:(NSInteger)type;
 - (CGSize)suggestedFrameSizeToFitEntireStringConstraintedToWidth:(CGFloat)width;
 
 @end
