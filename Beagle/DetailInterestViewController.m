@@ -440,21 +440,9 @@ static NSString * const CellIdentifier = @"cell";
 }
 
 #pragma mark - Initialization
-- (void)setup
-{
-//    CGRect frame = [UIScreen mainScreen].bounds;
-//    if (OSVersionIsAtLeastiOS7 == YES) {
-//        self.edgesForExtendedLayout = UIRectEdgeNone;
-//    }else{
-//        frame.size.height -= 20 + 44;
-//    }
-//    
-//    self.view.frame = frame;
-//    self.view.bounds = frame;
+- (void)setup{
     
-    CGSize size = self.view.frame.size;
-    
-    CGRect tableFrame = CGRectMake(0.0f, 64.0f, size.width, size.height - INPUT_HEIGHT-64.0f);
+    CGRect tableFrame = CGRectMake(0.0f, 64.0f, self.view.frame.size.width, self.view.frame.size.height - INPUT_HEIGHT-64.0f);
     self.detailedInterestTableView = [[UITableView alloc] initWithFrame:tableFrame style:UITableViewStylePlain];
     self.detailedInterestTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
     self.detailedInterestTableView.separatorInset = UIEdgeInsetsZero;
@@ -466,7 +454,7 @@ static NSString * const CellIdentifier = @"cell";
     self.detailedInterestTableView.delegate = self;
     [self.view addSubview:self.detailedInterestTableView];
     
-    CGRect inputFrame = CGRectMake(0.0f, size.height - INPUT_HEIGHT, size.width, INPUT_HEIGHT);
+    CGRect inputFrame = CGRectMake(0.0f, self.view.frame.size.height - INPUT_HEIGHT, self.view.frame.size.width, INPUT_HEIGHT);
     self.inputToolBarView = [[MessageInputView alloc] initWithFrame:inputFrame delegate:self];
     
     self.inputToolBarView.textView.keyboardDelegate = self;
@@ -482,6 +470,9 @@ static NSString * const CellIdentifier = @"cell";
     [self.inputToolBarView setSendButton:sendButton];
     [self.view addSubview:self.inputToolBarView];
     
+    if(!self.interestActivity.isParticipant){
+        [self.inputToolBarView setHidden:YES];
+    }
 }
 
 -(void)createInterestInitialCard{
@@ -1673,14 +1664,17 @@ static NSString * const CellIdentifier = @"cell";
                     [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button-Unfilled"] withColor:[outlineButtonColor colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
                     [interestedButton setTitleColor:[outlineButtonColor colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
                     [interestedButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Star-Unfilled"] withColor:[outlineButtonColor colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+#if kPostInterface
                     
+                    [self.inputToolBarView setHidden:YES];
+#else
                     self.contentWrapper.interested=NO;
                     [self.contentWrapper _setInitialFrames];
                     
                     [self.contentWrapper.inputView setHidden:YES];
                     [self.contentWrapper.dummyInputView setHidden:YES];
                     
-                    
+#endif
                     NSMutableArray *testArray=[NSMutableArray new];
                     for(BeagleUserClass *data in self.interestActivity.participantsArray){
                         if(data.beagleUserId!=[[[BeagleManager SharedInstance]beaglePlayer]beagleUserId]){
@@ -2095,10 +2089,15 @@ static NSString * const CellIdentifier = @"cell";
         [interestArray addObject:[[BeagleManager SharedInstance]beaglePlayer]];
         self.interestActivity.participantsArray=interestArray;
     }
+#if kPostInterface
+    [self.inputToolBarView setHidden:NO];
+    
+#else
     self.contentWrapper.interested=YES;
     [self.contentWrapper _setInitialFrames];
     [self.contentWrapper.inputView setHidden:NO];
     [self.contentWrapper.dummyInputView setHidden:NO];
+#endif
     [self.detailedInterestTableView reloadData];
     
 
