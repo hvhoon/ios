@@ -95,11 +95,7 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
-//    
-//    UIAlertView *alert=[[UIAlertView alloc]initWithTitle:@"test4" message:@"Home View" delegate:nil cancelButtonTitle:@"OK"otherButtonTitles:nil];
-//    [alert show];
-
-
+    
     [super viewWillAppear:animated];
     _tableViewController.refreshControl.tintColor=[UIColor whiteColor];
 
@@ -144,7 +140,6 @@
     yOffset = 0.0;
     deltaAlpha=0.8;
     isLoading=true;
-    
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (UpdateBadgeCount) name:kBeagleBadgeCount object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationUpdate:) name:kNotificationHomeAutoRefresh object:Nil];
@@ -629,29 +624,6 @@
     }
     if(notifObject.notifType!=2)
         [self updateHomeScreen:notifObject];
-    
-    
-//#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
-//    if(!hideInAppNotification && (notifObject.notificationType==CHAT_TYPE) && notifObject.activity.activityId!=0){
-//        NSLog(@"DetailInterestViewController redirect postInAppNotification");
-//        
-//        UIAlertView *alert=[[UIAlertView alloc]initWithTitle:@"Detailed Interest" message:@"Beale" delegate:nil cancelButtonTitle:@"OK"otherButtonTitles:nil];
-//        [alert show];
-//        
-//        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-//        DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
-//        viewController.interestServerManager=[[ServerManager alloc]init];
-//        viewController.interestServerManager.delegate=viewController;
-//        viewController.isRedirected=TRUE;
-//        viewController.toLastPost=TRUE;
-//        [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
-//        [self.navigationController pushViewController:viewController animated:YES];
-//        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
-//    }
-//#endif
-
-    
-
 }
 -(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
     
@@ -687,35 +659,17 @@
 }
 
 -(void)UpdateBadgeCount{
+    
     BeagleManager *BG=[BeagleManager SharedInstance];
     UIButton *notificationsButton=(UIButton*)[self.view viewWithTag:5346];
     
     if(notificationsButton!=nil){
         [notificationsButton removeFromSuperview];
     }
-//    if(notificationsButton==nil){
-//    for(UIView *views in self.view.subviews){
-//        if([views isKindOfClass:[UIButton class]]){
-//            if(views.tag==5346){
-//                notificationsButton=(UIButton*)views;
-//            }
-//        }
-//    }
-//    }
     UIView*headerView=(UIView*)[self.view viewWithTag:43567];
-//    if(headerView==nil){
-//    for(UIView *views in self.view.subviews){
-//        if([views isKindOfClass:[UIView class]]){
-//            if(views.tag==43567){
-//                headerView=views;
-//            }
-//        }
-//    }
-//  }
-#ifdef __IPHONE_8_0
-    if(notificationsButton==nil||headerView==nil)
-          return;
-#endif
+    
+    if(headerView==nil ||notificationsButton==nil)
+        return;
     if(BG.badgeCount==0){
         
             UIButton *notificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];

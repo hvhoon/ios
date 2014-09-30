@@ -572,6 +572,9 @@ static NSString * const CellIdentifier = @"cell";
 }
 
 -(void)doneButtonClicked:(id)sender{
+    
+    [self.inputToolBarView.textView resignFirstResponder];
+#if 0
     [self.contentWrapper.inputView.textView resignFirstResponder];
     [self.view endEditing:YES];
     [self.contentWrapper textViewDidChange:self.contentWrapper.inputView.textView];
@@ -594,7 +597,7 @@ static NSString * const CellIdentifier = @"cell";
                                                   animated:YES];
     
     [self.detailedInterestTableView endUpdates];
-    
+#endif
     
 }
 -(void)flagButtonClicked:(id)sender{
@@ -2234,11 +2237,13 @@ static NSString * const CellIdentifier = @"cell";
 #pragma mark - Keyboard notifications
 - (void)handleWillShowKeyboard:(NSNotification *)notification
 {
+    [self show];
     [self keyboardWillShowHide:notification];
 }
 
 - (void)handleWillHideKeyboard:(NSNotification *)notification
 {
+     [self hide];
     [self keyboardWillShowHide:notification];
 }
 
@@ -2288,12 +2293,16 @@ static NSString * const CellIdentifier = @"cell";
                                                                   inputViewFrame.size.height);
                          
                          UIEdgeInsets insets = self.originalTableViewContentInset;
-                         insets.bottom = self.view.frame.size.height - self.inputToolBarView.frame.origin.y - inputViewFrame.size.height;
+//                         insets.bottom = self.view.frame.size.height - self.inputToolBarView.frame.origin.y - inputViewFrame.size.height;
+                         
+                         insets.bottom = self.view.frame.size.height - INPUT_HEIGHT-self.inputToolBarView.frame.origin.y;
                          
                          self.detailedInterestTableView.contentInset = insets;
                          self.detailedInterestTableView.scrollIndicatorInsets = insets;
                      }
                      completion:^(BOOL finished) {
+                         
+                         [self scrollToBottomAnimated:NO];
                      }];
 }
 

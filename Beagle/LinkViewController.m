@@ -8,7 +8,7 @@
 
 #import "LinkViewController.h"
 
-@interface LinkViewController ()<UIWebViewDelegate>
+@interface LinkViewController ()<UIWebViewDelegate,UIActionSheetDelegate>
 @property(nonatomic,weak)IBOutlet UIWebView*linkWebView;
 
 @end
@@ -33,23 +33,42 @@
        [self.linkWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:outputString]]];
 
     }
-    else if (([linkString hasSuffix:@"com"]||[linkString hasSuffix:@"buzz"]||[linkString hasSuffix:@"org"])){
+    else{
         NSString *prefixString = @"http://www.";
         NSString *searchString = [NSString stringWithFormat:@"%@%@", prefixString, outputString];
         [self.linkWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:searchString]]];
         
     }
-    else
-    {
-        //Does not have prefix. Do what you want here. I google it.
-        NSString *googleString = @"http://google.com/search?q=";
-        NSString *searchString = [NSString stringWithFormat:@"%@%@", googleString, outputString];
-        [self.linkWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:searchString]]];
-        
-    }
+    
+    
+    UIBarButtonItem *shareButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+                                                                  target:self
+                                                                                 action:@selector(shareButtonPressed:)];
+    
+    self.navigationItem.rightBarButtonItem=shareButton;
     
     // Do any additional setup after loading the view.
 }
+
+- (void)shareButtonPressed:(id)sender {
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:linkString delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Open in Safari", @"Copy Link", nil];
+    
+        if (self.view.superview) {
+            [actionSheet showInView:self.view.superview];
+        } else {
+            [actionSheet showInView:self.view];
+        }
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 0 && ![[[[self.linkWebView request] URL] absoluteString] isEqualToString:@""]) {
+        [[UIApplication sharedApplication] openURL:[[self.linkWebView request] URL]];
+    }else if (buttonIndex==1){
+        UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+        pasteboard.URL = [[self.linkWebView request] URL];
+    }
+}
+
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {

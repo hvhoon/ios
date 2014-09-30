@@ -35,7 +35,7 @@
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authenticationFailed:) name:kFacebookAuthenticationFailed object:Nil];
 
-    [self.slidingViewController setAnchorRightRevealAmount:270.0f];
+    [self.slidingViewController setAnchorRightRevealAmount:[UIScreen mainScreen].bounds.size.width-50.0f];
      self.slidingViewController.underLeftWidthLayout = ECFullWidth;
     
     // Extract App Name

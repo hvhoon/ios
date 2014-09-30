@@ -513,8 +513,8 @@ void uncaughtExceptionHandler(NSException *exception) {
         if ( application.applicationState == UIApplicationStateActive){
             [self handleOnlineNotifications:userInfo];
         }
-        else{
-            [self handleOfflineNotifications:userInfo];
+        else if( application.applicationState != UIApplicationStateBackground){
+              [self handleOfflineNotifications:userInfo];
         }
     }
     completionHandler(UIBackgroundFetchResultNewData);

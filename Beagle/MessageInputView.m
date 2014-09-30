@@ -49,10 +49,10 @@ static id<MessageInputViewDelegate> __delegate;
 #pragma mark - Setup
 - (void)setup
 {
-   self.image = [UIImage imageNamed:@"input-bar-flat"];
+    self.image = [UIImage imageNamed:@"input-bar-flat"];
     self.backgroundColor = [UIColor clearColor];
     self.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin);
-    self.opaque = YES;
+    self.opaque = NO;
     self.userInteractionEnabled = YES;
     [self setupTextView];
 }
@@ -96,6 +96,7 @@ static id<MessageInputViewDelegate> __delegate;
                                      prevFrame.origin.y,
                                      prevFrame.size.width,
                                      prevFrame.size.height + changeInHeight);
+    
     
     self.textView.contentInset = UIEdgeInsetsMake((numLines >= 6 ? 4.0f : 0.0f),
                                                   0.0f,

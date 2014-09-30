@@ -10,9 +10,6 @@
 #import "BeagleTextStorage.h"
 
 #define STURLRegex @"(?i)\\b((?:[a-z][\\w-]+:(?:/{1,3}|[a-z0-9%])|www\\d{0,3}[.]|[a-z0-9.\\-]+[.][a-z]{2,4}/)(?:[^\\s()<>]+|\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\))+(?:\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\)|[^\\s`!()\\[\\]{};:'\".,<>?«»“”‘’])|([a-z0-9.\\-]+[.]com)|([a-z0-9.\\-]+[.]buzz)|([a-z0-9.\\-]+[.]org))"
-
-#define STURLRegex1  @"^(http(s)?://)?((www)?.)?[\w]+.[\w]+"
-
 #pragma mark -
 #pragma mark STTweetLabel
 
@@ -212,6 +209,32 @@
 }
 
 - (void)determineLinks {
+    
+     NSMutableString *tmpText = [[NSMutableString alloc] initWithString:_cleanText];
+    [tmpText enumerateSubstringsInRange:NSMakeRange(0, tmpText.length) options:NSStringEnumerationByWords usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop){
+        {
+            NSUInteger length = [substring length];
+            // Empty strings should return NO
+            if (length > 0) {
+                NSError *error = nil;
+                NSDataDetector *dataDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink error:&error];
+                if (dataDetector && !error) {
+                    NSRange range = NSMakeRange(0, length);
+                    NSRange notFoundRange = (NSRange){NSNotFound, 0};
+                    NSRange linkRange = [dataDetector rangeOfFirstMatchInString:substring options:0 range:range];
+                    if (!NSEqualRanges(notFoundRange, linkRange) && NSEqualRanges(range, linkRange)) {
+                        [_rangesOfHotWords addObject:@{@"hotWord": @(BeagleLink), @"protocol": @"http", @"range": [NSValue valueWithRange:substringRange]}];
+                        
+                    }
+                }
+                else {
+                    NSLog(@"Could not create link data detector: %@ %@", [error localizedDescription], [error userInfo]);
+                }
+            }
+        }
+    }];
+    
+#if 0
     NSMutableString *tmpText = [[NSMutableString alloc] initWithString:_cleanText];
     
     NSError *regexError = nil;
@@ -229,8 +252,7 @@
             [_rangesOfHotWords addObject:@{@"hotWord": @(BeagleLink), @"protocol": protocol, @"range": [NSValue valueWithRange:result.range]}];
         }
     }];
-    
-    //[self isValidURL:_cleanText];
+#endif
 }
 - (void)updateText
 {
