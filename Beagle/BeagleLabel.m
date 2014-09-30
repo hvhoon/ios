@@ -210,6 +210,7 @@
 
 - (void)determineLinks {
     
+#if 0
      NSMutableString *tmpText = [[NSMutableString alloc] initWithString:_cleanText];
     [tmpText enumerateSubstringsInRange:NSMakeRange(0, tmpText.length) options:NSStringEnumerationByWords usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop){
         {
@@ -233,8 +234,7 @@
             }
         }
     }];
-    
-#if 0
+
     NSMutableString *tmpText = [[NSMutableString alloc] initWithString:_cleanText];
     
     NSError *regexError = nil;
@@ -253,6 +253,32 @@
         }
     }];
 #endif
+    
+    NSArray *words=[_cleanText componentsSeparatedByString:@" "];
+    for(NSString *word in words){
+
+        
+            NSUInteger length = [word length];
+            // Empty strings should return NO
+            if (length > 0) {
+                NSError *error = nil;
+                NSDataDetector *dataDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink error:&error];
+                if (dataDetector && !error) {
+                    NSRange range = NSMakeRange(0, length);
+                    NSRange notFoundRange = (NSRange){NSNotFound, 0};
+                    NSRange linkRange = [dataDetector rangeOfFirstMatchInString:word options:0 range:range];
+                    if (!NSEqualRanges(notFoundRange, linkRange) && NSEqualRanges(range, linkRange)) {
+                        NSRange searchRange = [_cleanText rangeOfString:word];
+                        [_rangesOfHotWords addObject:@{@"hotWord": @(BeagleLink), @"protocol": @"http", @"range": [NSValue valueWithRange:searchRange]}];
+                        
+                    }
+                }
+                else {
+                    NSLog(@"Could not create link data detector: %@ %@", [error localizedDescription], [error userInfo]);
+                }
+            }
+
+    }
 }
 - (void)updateText
 {
