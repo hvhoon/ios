@@ -50,7 +50,8 @@ static id<MessageInputViewDelegate> __delegate;
 - (void)setup
 {
     self.image = [UIImage imageNamed:@"input-bar-flat"];
-    self.backgroundColor = [UIColor clearColor];
+//    self.layer.borderColor=[UIColor redColor].CGColor;
+    self.backgroundColor = [UIColor whiteColor];
     self.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin);
     self.opaque = NO;
     self.userInteractionEnabled = YES;
@@ -63,11 +64,13 @@ static id<MessageInputViewDelegate> __delegate;
     CGFloat height = [MessageInputView textViewLineHeight];
     
     self.textView = [[MessageTextView  alloc] initWithFrame:CGRectMake(6.0f, 3.0f, width, height)];
+    self.textView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f);
     self.textView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    
     self.textView.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0f];
     self.textView.textColor=[UIColor blackColor];
     self.textView.backgroundColor=[UIColor clearColor];
+    self.textView.scrollsToTop = NO;
+    self.textView.scrollIndicatorInsets = UIEdgeInsetsMake(10.0f, 0.0f, 10.0f, 0.0f);
     [self addSubview:self.textView];
     
 }

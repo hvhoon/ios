@@ -445,10 +445,68 @@ void uncaughtExceptionHandler(NSException *exception) {
     
     
     // Pass on
-    [self application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:nil];
+//    [self application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:nil];
+    
+    {
+        
+        
+        
+        NSLog(@"didReceiveRemoteNotification");
+        if([userInfo[@"aps"][@"alert"] length]== 0){
+            if(_notificationServerManager!=nil){
+                _notificationServerManager.delegate = nil;
+                [_notificationServerManager releaseServerManager];
+                _notificationServerManager = nil;
+            }
+            _notificationServerManager=[[ServerManager alloc]init];
+            _notificationServerManager.delegate=self;
+            
+            
+            [self handleSilentNotifications:userInfo];
+            
+            // Check if in background
+            if ([UIApplication sharedApplication].applicationState == UIApplicationStateInactive) {
+                NSLog(@"UIApplicationStateInactive");
+                
+                // User opened the push notification
+                
+            } else if(application.applicationState == UIApplicationStateActive){
+                NSLog(@"UIApplicationStateActive");
+                
+                
+            }else{
+                // User hasn't opened it, this was a silent update
+                NSLog(@"User hasn't opened it, this was a silent update");
+                
+                
+            }
+            
+            //         [self presentNotification];
+            
+            
+        }else{
+            
+            if(_notificationServerManager!=nil){
+                _notificationServerManager.delegate = nil;
+                [_notificationServerManager releaseServerManager];
+                _notificationServerManager = nil;
+            }
+            _notificationServerManager=[[ServerManager alloc]init];
+            _notificationServerManager.delegate=self;
+            
+            
+            if ( application.applicationState == UIApplicationStateActive){
+                [self handleOnlineNotifications:userInfo];
+            }
+            else {
+                [self handleOfflineNotifications:userInfo];
+            }
+        }
+        
+    }
     
 }
-
+#if 0
 -(void) application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     
     
@@ -520,7 +578,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     completionHandler(UIBackgroundFetchResultNewData);
 
 }
-
+#endif
 
 -(void)presentNotification{
     UILocalNotification* localNotification = [[UILocalNotification alloc] init];

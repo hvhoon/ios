@@ -28,6 +28,7 @@
     #define OSVersionIsAtLeastiOS7  (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1)
     #define INPUT_HEIGHT 46.0f
 #endif
+
 #define DISABLED_ALPHA 0.5f
 #define kLeaveInterest 12
 
@@ -38,6 +39,7 @@ static NSString * const CellIdentifier = @"cell";
     BOOL postsLoadComplete;
     NSTimer *timer;
     UIImageView *_partcipantScrollArrowImageView;
+    BOOL isKeyboardVisible;
 }
 
 @property(nonatomic,strong)ServerManager*chatPostManager;
@@ -47,10 +49,9 @@ static NSString * const CellIdentifier = @"cell";
 @property(nonatomic,strong)ServerManager*interestUpdateManager;
 @property(nonatomic,strong)NSMutableArray *chatPostsArray;
 @property(nonatomic,strong)UITableView *detailedInterestTableView;
-@property (nonatomic, strong) MessageKeyboardView *contentWrapper;
 @property (nonatomic, strong) UIProgressView* sendMessage;
 @property(nonatomic,strong)CreateAnimationBlurView *animationBlurView;
-#if kPostInterface || 1
+#if kPostInterface
 @property (strong, nonatomic) MessageInputView *inputToolBarView;
 @property (assign, nonatomic) CGFloat previousTextViewContentHeight;
 @property (assign, nonatomic, readonly) UIEdgeInsets originalTableViewContentInset;
@@ -68,6 +69,9 @@ static NSString * const CellIdentifier = @"cell";
 - (void)handleWillShowKeyboard:(NSNotification *)notification;
 - (void)handleWillHideKeyboard:(NSNotification *)notification;
 - (void)keyboardWillShowHide:(NSNotification *)notification;
+#else
+@property (nonatomic, strong) MessageKeyboardView *contentWrapper;
+
 #endif
 @end
 
@@ -80,7 +84,7 @@ static NSString * const CellIdentifier = @"cell";
 @synthesize chatPostManager=_chatPostManager;
 @synthesize chatPostsArray;
 @synthesize isRedirected,toLastPost,inappNotification;
-#if kPostInterface || 1
+#if kPostInterface
 @synthesize inputToolBarView;
 #endif
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -122,9 +126,11 @@ static NSString * const CellIdentifier = @"cell";
     [self.detailedInterestTableView reloadData];
     
     
-    [self scrollToBottomAnimated:NO];
+    
     
 #if kPostInterface
+    
+    [self scrollToBottomAnimated:NO];
     _originalTableViewContentInset = self.detailedInterestTableView.contentInset;
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -142,7 +148,9 @@ static NSString * const CellIdentifier = @"cell";
     
 }
 -(void)viewDidAppear:(BOOL)animated{
+#if !kPostInterface
     [self.contentWrapper _registerForNotifications];
+#endif
 }
 
 -(void)viewDidDisappear:(BOOL)animated{
@@ -410,19 +418,26 @@ static NSString * const CellIdentifier = @"cell";
 }
 
 -(void)backButtonClicked:(id)sender{
+    
+#if !kPostInterface
+
     [self.contentWrapper.inputView.textView resignFirstResponder];
     [self.view endEditing:YES];
     [self.contentWrapper.inputView.textView setText:nil];
     [self.contentWrapper.dummyInputView.textView setText:nil];
     [self.navigationController popViewControllerAnimated:YES];
+#endif
+
 }
 -(void)cancelButtonClicked:(id)sender{
+    
+#if !kPostInterface
     [self.contentWrapper.inputView.textView resignFirstResponder];
     [self.view endEditing:YES];
     [self.contentWrapper.inputView.textView setText:nil];
     [self.contentWrapper.dummyInputView.textView setText:nil];
     [self dismissViewControllerAnimated:YES completion:Nil];
-    
+#endif
 }
 - (void)viewDidLoad
 {
@@ -439,10 +454,28 @@ static NSString * const CellIdentifier = @"cell";
 
 }
 
+-(void)resizeDetailTableView{
+    if(self.interestActivity.isParticipant){
+        self.detailedInterestTableView.frame=CGRectMake(0.0f, 64.0f, self.view.frame.size.width, self.view.frame.size.height - INPUT_HEIGHT-64.0f);
+    }
+    else{
+        self.detailedInterestTableView.frame=CGRectMake(0.0f, 64.0f, self.view.frame.size.width, self.view.frame.size.height-64.0f);
+    }
+    
+    if(isKeyboardVisible){
+        [self doneButtonClicked:nil];
+    }
+
+}
+
 #pragma mark - Initialization
 - (void)setup{
     
-    CGRect tableFrame = CGRectMake(0.0f, 64.0f, self.view.frame.size.width, self.view.frame.size.height - INPUT_HEIGHT-64.0f);
+    CGRect tableFrame=CGRectMake(0.0f, 64.0f, self.view.frame.size.width, self.view.frame.size.height - INPUT_HEIGHT-64.0f);
+    if(!self.interestActivity.isParticipant){
+        tableFrame = CGRectMake(0.0f, 64.0f, self.view.frame.size.width, self.view.frame.size.height -64.0f);
+    }
+    
     self.detailedInterestTableView = [[UITableView alloc] initWithFrame:tableFrame style:UITableViewStylePlain];
     self.detailedInterestTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
     self.detailedInterestTableView.separatorInset = UIEdgeInsetsZero;
@@ -453,6 +486,10 @@ static NSString * const CellIdentifier = @"cell";
     self.detailedInterestTableView.dataSource = self;
     self.detailedInterestTableView.delegate = self;
     [self.view addSubview:self.detailedInterestTableView];
+    
+    UIView *lineView=[[UIView alloc]initWithFrame:CGRectMake(0.0f, 0.0f, self.view.frame.size.width, 1)];
+    lineView.backgroundColor=[UIColor redColor];
+//    [self.detailedInterestTableView setTableFooterView:lineView];
     
     CGRect inputFrame = CGRectMake(0.0f, self.view.frame.size.height - INPUT_HEIGHT, self.view.frame.size.width, INPUT_HEIGHT);
     self.inputToolBarView = [[MessageInputView alloc] initWithFrame:inputFrame delegate:self];
@@ -565,7 +602,7 @@ static NSString * const CellIdentifier = @"cell";
 -(void)doneButtonClicked:(id)sender{
     
     [self.inputToolBarView.textView resignFirstResponder];
-#if 0
+#if !kPostInterface
     [self.contentWrapper.inputView.textView resignFirstResponder];
     [self.view endEditing:YES];
     [self.contentWrapper textViewDidChange:self.contentWrapper.inputView.textView];
@@ -611,7 +648,9 @@ static NSString * const CellIdentifier = @"cell";
 }
 -(void)editButtonClicked:(id)sender{
     
+#if !kPostInterface
     [self.contentWrapper _unregisterForNotifications];
+#endif
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     ActivityViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"activityScreen"];
     viewController.bg_activity=self.interestActivity;
@@ -623,6 +662,8 @@ static NSString * const CellIdentifier = @"cell";
 }
 
 -(void)postClicked:(id)sender{
+
+#if !kPostInterface
     if([BeagleUtilities checkIfTheTextIsBlank:[self.contentWrapper.inputView.textView text]]){
         
         [Appsee addEvent:@"Post Chat"];
@@ -657,6 +698,7 @@ static NSString * const CellIdentifier = @"cell";
             
         }
     }
+#endif
 }
 
 -(void)removeProgressIndicator {
@@ -1203,7 +1245,11 @@ static NSString * const CellIdentifier = @"cell";
                  activityIndicatorView.frame=CGRectMake((self.view.frame.size.width-37)/2,64+fromTheTop-25+(self.view.frame.size.height-(64+fromTheTop))/2, 37, 37);
                  
              }
-        [self.view insertSubview:activityIndicatorView aboveSubview:self.contentWrapper];
+#if kPostInterface
+       [self.view insertSubview:activityIndicatorView aboveSubview:self.detailedInterestTableView];
+#else
+             [self.view insertSubview:activityIndicatorView aboveSubview:self.contentWrapper];
+#endif
         [activityIndicatorView startAnimating];
 
         }else{
@@ -1446,10 +1492,17 @@ static NSString * const CellIdentifier = @"cell";
     LinkViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"webLinkScreen"];
     viewController.linkString=webLink;
     [self.navigationController pushViewController:viewController animated:YES];
+
+#if kPostInterface
+    if(isKeyboardVisible){
+        [self doneButtonClicked:nil];
+    }
+#else
     if([self.contentWrapper iskeyboardVisible]){
         [self doneButtonClicked:nil];
     }
-
+    
+#endif
     
 }
 
@@ -1667,6 +1720,7 @@ static NSString * const CellIdentifier = @"cell";
 #if kPostInterface
                     
                     [self.inputToolBarView setHidden:YES];
+                    [self resizeDetailTableView];
 #else
                     self.contentWrapper.interested=NO;
                     [self.contentWrapper _setInitialFrames];
@@ -1800,8 +1854,10 @@ static NSString * const CellIdentifier = @"cell";
         // Make sure the animation completed
         if(_sendMessage.progress == 1.0f) {
             [NSTimer scheduledTimerWithTimeInterval:.5 target:self selector:@selector(removeProgressIndicator) userInfo:nil repeats:NO];
+ #if !kPostInterface
             self.contentWrapper.inputView.rightButton.enabled = YES;
             self.contentWrapper.inputView.rightButton.tintColor = [BeagleUtilities returnBeagleColor:13];
+ #endif
         }
 
     }
@@ -1854,8 +1910,10 @@ static NSString * const CellIdentifier = @"cell";
         _chatPostManager = nil;
         [_sendMessage setHidden:YES];
         [_sendMessage setProgress:0.0];
+    #if !kPostInterface
         self.contentWrapper.inputView.rightButton.enabled = YES;
         self.contentWrapper.inputView.rightButton.tintColor = [BeagleUtilities returnBeagleColor:13];
+   #endif
     }
     
     NSString *message = NSLocalizedString (@"Well I guess those messages weren't that important. Please try again in a bit.",
@@ -1893,8 +1951,11 @@ static NSString * const CellIdentifier = @"cell";
         _chatPostManager = nil;
         [_sendMessage setHidden:YES];
         [_sendMessage setProgress:0.0];
+        
+    #if !kPostInterface
         self.contentWrapper.inputView.rightButton.enabled = YES;
         self.contentWrapper.inputView.rightButton.tintColor = [BeagleUtilities returnBeagleColor:13];
+    #endif
     }
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
     [alert show];
@@ -2091,6 +2152,7 @@ static NSString * const CellIdentifier = @"cell";
     }
 #if kPostInterface
     [self.inputToolBarView setHidden:NO];
+    [self resizeDetailTableView];
     
 #else
     self.contentWrapper.interested=YES;
@@ -2237,12 +2299,14 @@ static NSString * const CellIdentifier = @"cell";
 - (void)handleWillShowKeyboard:(NSNotification *)notification
 {
     [self show];
+    isKeyboardVisible=true;
     [self keyboardWillShowHide:notification];
 }
 
 - (void)handleWillHideKeyboard:(NSNotification *)notification
 {
-     [self hide];
+    [self hide];
+    isKeyboardVisible=false;
     [self keyboardWillShowHide:notification];
 }
 
