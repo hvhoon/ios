@@ -1083,17 +1083,17 @@
                                                      attributes:attrs context:nil];
     
     if(play.activityType==2){
-        play.heightRow=rowHeight+(int)textRect.size.height+23;
-        return rowHeight+(int)textRect.size.height+23;
+        play.heightRow=rowHeight+(int)textRect.size.height+23+kHeightClip;
+        return rowHeight+(int)textRect.size.height+23+kHeightClip;
     }
     
     // If there are no participants, reduce the size of the card
     if (play.participantsCount==0) {
-        play.heightRow=rowHeight+(int)textRect.size.height;
-        return rowHeight+(int)textRect.size.height;
+        play.heightRow=rowHeight+(int)textRect.size.height+kHeightClip;
+        return rowHeight+(int)textRect.size.height+kHeightClip;
     }
-    play.heightRow=rowHeight+16+20+(int)textRect.size.height;
-    return rowHeight+16+20+(int)textRect.size.height;
+    play.heightRow=rowHeight+16+20+(int)textRect.size.height+kHeightClip;
+    return rowHeight+16+20+(int)textRect.size.height+kHeightClip;
     }else if (indexPath.section==1 && [self.tableData count]==0){
         return ([UIScreen mainScreen].bounds.size.height - roundf([UIScreen mainScreen].bounds.size.width/goldenRatio));
     }

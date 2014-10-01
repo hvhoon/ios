@@ -145,7 +145,7 @@ static UIFont *dateTextFont = nil;
     if([self.bg_activity.activityDesc length]!=0){
 //        [self.bg_activity.activityDesc drawInRect:CGRectMake(16, fromTheTop, commentTextRect.size.width,commentTextRect.size.height) withAttributes:attrs];
         
-        BeagleLabel *beagleLabel = [[BeagleLabel alloc] initWithFrame:CGRectMake(16, fromTheTop, commentTextRect.size.width,commentTextRect.size.height) type:1];
+        BeagleLabel *beagleLabel = [[BeagleLabel alloc] initWithFrame:CGRectMake(16, fromTheTop, commentTextRect.size.width,commentTextRect.size.height+kHeightClip) type:1];
         [beagleLabel setText:self.bg_activity.activityDesc];
         [beagleLabel setAttributes:attrs];
         beagleLabel.textAlignment = NSTextAlignmentLeft;
@@ -163,7 +163,7 @@ static UIFont *dateTextFont = nil;
         }];
 
 
-        fromTheTop = fromTheTop+beagleLabel.frame.size.height;
+        fromTheTop = fromTheTop+commentTextRect.size.height+kHeightClip;
     }
     
     

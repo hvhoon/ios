@@ -24,7 +24,8 @@
 //Async Queue Label
 #define kAsyncQueueLabel "org.tempuri"
 #define kPostInterface 1
-
+#define kHeightClip 3
+#define kPostTextClip 2
 #define errorAlertTitle @"You're off the grid"
 #define errorLimitedConnectivityMessage @"So this is what the 80's felt like.  Please try again when you return to this decade."
 

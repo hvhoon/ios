@@ -489,12 +489,12 @@ static NSString * const CellIdentifier = @"cell";
     
     UIView *lineView=[[UIView alloc]initWithFrame:CGRectMake(0.0f, 0.0f, self.view.frame.size.width, 1)];
     lineView.backgroundColor=[UIColor redColor];
-//    [self.detailedInterestTableView setTableFooterView:lineView];
     
     CGRect inputFrame = CGRectMake(0.0f, self.view.frame.size.height - INPUT_HEIGHT, self.view.frame.size.width, INPUT_HEIGHT);
     self.inputToolBarView = [[MessageInputView alloc] initWithFrame:inputFrame delegate:self];
     
     self.inputToolBarView.textView.keyboardDelegate = self;
+//    [self.inputToolBarView.textView addSubview:lineView];
     
     self.inputToolBarView.textView.placeHolder = @"Join the conversation";
     
@@ -813,9 +813,9 @@ static NSString * const CellIdentifier = @"cell";
         CGRect textRect = [self.interestActivity.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
         
         if(self.interestActivity.participantsCount==0)
-            cardHeight=136+(int)textRect.size.height;
+            cardHeight=136+(int)textRect.size.height+kHeightClip;
         else
-            cardHeight=241+(int)textRect.size.height;
+            cardHeight=241+(int)textRect.size.height+kHeightClip;
         
         return cardHeight;
     }
@@ -838,9 +838,9 @@ static NSString * const CellIdentifier = @"cell";
                                                                                context:nil];
             
             if(indexPath.row==1)
-                return 45.0f+8.0f+textRect.size.height;
+                return 45.0f+8.0f+textRect.size.height+kPostTextClip;
             
-            return 45.0f+textRect.size.height;
+            return 45.0f+textRect.size.height+kPostTextClip;
         }
     }
 }
@@ -977,7 +977,7 @@ static NSString * const CellIdentifier = @"cell";
                                                                                   context:nil];
         
         
-        BeagleLabel *beagleLabel = [[BeagleLabel alloc] initWithFrame:CGRectMake(16, fromTheTop, commentTextRect.size.width,commentTextRect.size.height) type:1];
+        BeagleLabel *beagleLabel = [[BeagleLabel alloc] initWithFrame:CGRectMake(16, fromTheTop, commentTextRect.size.width,commentTextRect.size.height+kHeightClip) type:1];
         [beagleLabel setText:self.interestActivity.activityDesc];
         beagleLabel.textAlignment = NSTextAlignmentLeft;
         beagleLabel.numberOfLines = 0;
@@ -1004,7 +1004,7 @@ static NSString * const CellIdentifier = @"cell";
         activityDescLabel.tag=3569;
         [_backgroundView addSubview:activityDescLabel];
 #endif
-        fromTheTop = fromTheTop+commentTextRect.size.height;
+        fromTheTop = fromTheTop+commentTextRect.size.height+kHeightClip;
         fromTheTop = fromTheTop+16.0f; // buffer after the description
 
         // Adding the counts panel here
@@ -1354,7 +1354,7 @@ static NSString * const CellIdentifier = @"cell";
         
         
         
-        BeagleLabel *beagleLabel = [[BeagleLabel alloc] initWithFrame:CGRectMake(59, cellTop, commentTextRect.size.width, commentTextRect.size.height) type:2];
+        BeagleLabel *beagleLabel = [[BeagleLabel alloc] initWithFrame:CGRectMake(59, cellTop, commentTextRect.size.width, commentTextRect.size.height+kPostTextClip) type:2];
         [beagleLabel setTextColor:[UIColor blackColor]];
         [beagleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:15.0f]];
         [beagleLabel setAttributes:attrs];
@@ -1364,12 +1364,6 @@ static NSString * const CellIdentifier = @"cell";
         beagleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         
         [cell.contentView addSubview:beagleLabel];
-        
-//        CGSize size = [beagleLabel suggestedFrameSizeToFitEntireStringConstraintedToWidth:commentTextRect.size.width];
-//        CGRect frame = beagleLabel.frame;
-//        frame.size.height = size.height;
-//        beagleLabel.frame = frame;
-
         
         [beagleLabel setDetectionBlock:^(BeagleHotWord hotWord, NSString *string, NSString *protocol, NSRange range) {
             [self redirectToWebPage:string];
@@ -1386,7 +1380,7 @@ static NSString * const CellIdentifier = @"cell";
         [cell.contentView addSubview:chatDescLabel];
 #endif
         
-        cellTop = cellTop + commentTextRect.size.height;
+        cellTop = cellTop + commentTextRect.size.height+kPostTextClip;
         cellTop = cellTop + 16.0f;
         
         return cell;
