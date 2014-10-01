@@ -30,6 +30,12 @@
     
     if ([linkString hasPrefix:@"http://"]||[linkString hasPrefix:@"www"]) {
         //Has Prefix
+        if([linkString hasPrefix:@"www"]){
+            NSString *prefixString = @"http://";
+            NSString *searchString = [NSString stringWithFormat:@"%@%@", prefixString, linkString];
+            [self.linkWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:searchString]]];
+            
+    }else
        [self.linkWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:outputString]]];
 
     }
