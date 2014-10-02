@@ -411,7 +411,7 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
     self.dummyInputView.textView.delegate = self;
     self.dummyInputView.textView.text=@"Join the conversation";
     self.dummyInputView.textView.textColor = [BeagleUtilities returnBeagleColor:3];
-   [self addSubview:self.dummyInputView];
+    [self addSubview:self.dummyInputView];
     
 //    UIWindow* window = [UIApplication sharedApplication].keyWindow;
 //    if (!window)

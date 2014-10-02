@@ -49,8 +49,7 @@ static id<MessageInputViewDelegate> __delegate;
 #pragma mark - Setup
 - (void)setup
 {
-    self.image = [UIImage imageNamed:@"input-bar-flat"];
-//    self.layer.borderColor=[UIColor redColor].CGColor;
+//    self.image = [UIImage imageNamed:@"input-bar-flat"];
     self.backgroundColor = [UIColor whiteColor];
     self.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin);
     self.opaque = NO;
@@ -66,7 +65,7 @@ static id<MessageInputViewDelegate> __delegate;
     self.textView = [[MessageTextView  alloc] initWithFrame:CGRectMake(6.0f, 3.0f, width, height)];
     self.textView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f);
     self.textView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    self.textView.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0f];
+    self.textView.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:17.0f];
     self.textView.textColor=[UIColor blackColor];
     self.textView.backgroundColor=[UIColor clearColor];
     self.textView.scrollsToTop = NO;
@@ -116,7 +115,7 @@ static id<MessageInputViewDelegate> __delegate;
 
 + (CGFloat)textViewLineHeight
 {
-    return 36.0f; // for fontSize 16.0f
+    return 38.0f; // for fontSize 17.0f
 }
 
 + (CGFloat)maxLines

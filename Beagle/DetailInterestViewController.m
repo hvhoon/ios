@@ -499,7 +499,7 @@ static NSString * const CellIdentifier = @"cell";
     self.inputToolBarView.textView.placeHolder = @"Join the conversation";
     
     UIButton *sendButton = [UIButton defaultPostButton];
-    sendButton.enabled = NO;
+//    sendButton.enabled = NO;
     sendButton.frame = CGRectMake(self.inputToolBarView.frame.size.width - 65.0f, 8.0f, 59.0f, 26.0f);
     [sendButton addTarget:self
                    action:@selector(sendPressed:)
@@ -2052,6 +2052,7 @@ static NSString * const CellIdentifier = @"cell";
 #pragma mark - Actions
 - (void)sendPressed:(UIButton *)sender
 {
+        if(isKeyboardVisible)
     [self sendPressed:sender
                       withText:[self.inputToolBarView.textView.text trimWhitespace]];
 }
@@ -2286,7 +2287,7 @@ static NSString * const CellIdentifier = @"cell";
         self.previousTextViewContentHeight = MIN(textViewContentHeight, maxHeight);
     }
     
-    self.inputToolBarView.sendButton.enabled = ([textView.text trimWhitespace].length > 0);
+//    self.inputToolBarView.sendButton.enabled = ([textView.text trimWhitespace].length > 0);
 }
 
 #pragma mark - Keyboard notifications
