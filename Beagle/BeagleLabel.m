@@ -71,7 +71,6 @@
     } @catch (NSException *exception) {
     }
 }
-
 -(BOOL)isValidURL:(NSString*)text {
     NSUInteger length = [text length];
     // Empty strings should return NO
@@ -461,10 +460,10 @@
     
     _isTouchesMoved = NO;
     
-    @try {
-        [_textStorage removeAttribute:NSBackgroundColorAttributeName range:_selectableRange];
-    } @catch (NSException *exception) {
-    }
+//    @try {
+//        [_textStorage removeAttribute:NSBackgroundColorAttributeName range:_selectableRange];
+//    } @catch (NSException *exception) {
+//    }
     
     _selectableRange = NSMakeRange(0, 0);
     _firstTouchLocation = [[touches anyObject] locationInView:_textView];
