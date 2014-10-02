@@ -25,7 +25,6 @@
                                                object:self];
     
     _placeHolderTextColor = [UIColor grayColor];
-    
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     self.scrollIndicatorInsets = UIEdgeInsetsMake(10.0f, 0.0f, 10.0f, 8.0f);
     self.contentInset = UIEdgeInsetsZero;

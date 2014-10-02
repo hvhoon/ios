@@ -40,6 +40,7 @@ static NSString * const CellIdentifier = @"cell";
     NSTimer *timer;
     UIImageView *_partcipantScrollArrowImageView;
     BOOL isKeyboardVisible;
+    UILabel *placeholderLabel;
 }
 
 @property(nonatomic,strong)ServerManager*chatPostManager;
@@ -487,16 +488,21 @@ static NSString * const CellIdentifier = @"cell";
     self.detailedInterestTableView.delegate = self;
     [self.view addSubview:self.detailedInterestTableView];
     
-    UIView *lineView=[[UIView alloc]initWithFrame:CGRectMake(0.0f, 0.0f, self.view.frame.size.width, 1)];
-    lineView.backgroundColor=[UIColor redColor];
-    
     CGRect inputFrame = CGRectMake(0.0f, self.view.frame.size.height - INPUT_HEIGHT, self.view.frame.size.width, INPUT_HEIGHT);
     self.inputToolBarView = [[MessageInputView alloc] initWithFrame:inputFrame delegate:self];
     
     self.inputToolBarView.textView.keyboardDelegate = self;
-//    [self.inputToolBarView.textView addSubview:lineView];
     
-    self.inputToolBarView.textView.placeHolder = @"Join the conversation";
+    placeholderLabel = [[UILabel alloc] initWithFrame:CGRectMake(3, 0, self.inputToolBarView.textView.frame.size.width - 20.0, 34.0)];
+    [placeholderLabel setText:@"Join the conversation"];
+    // placeholderLabel is instance variable retained by view controller
+    [placeholderLabel setBackgroundColor:[UIColor clearColor]];
+    placeholderLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:17.0f];
+    placeholderLabel.textColor=[UIColor lightGrayColor];
+    
+    // textView is UITextView object you want add placeholder text to
+    [self.inputToolBarView.textView addSubview:placeholderLabel];
+
     
     UIButton *sendButton = [UIButton defaultPostButton];
 //    sendButton.enabled = NO;
@@ -581,11 +587,28 @@ static NSString * const CellIdentifier = @"cell";
 #pragma mark Show/Hide Delegate Method
 
 - (void)show{
+    
+    if([self.inputToolBarView.textView hasText]||isKeyboardVisible) {
+        placeholderLabel.hidden = YES;
+    }
+    else{
+        placeholderLabel.hidden = NO;
+    }
+
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStylePlain target:self action:@selector(doneButtonClicked:)];
     
     self.navigationItem.hidesBackButton = YES;
 }
 -(void)hide{
+    
+    if([self.inputToolBarView.textView hasText]||isKeyboardVisible) {
+        placeholderLabel.hidden = YES;
+    }
+    else{
+        placeholderLabel.hidden = NO;
+    }
+    
+
     
     if(self.interestActivity.dosRelation==0){
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(editButtonClicked:)];
@@ -2234,6 +2257,14 @@ static NSString * const CellIdentifier = @"cell";
 
 - (void)textViewDidChange:(UITextView *)textView
 {
+    
+    if([textView hasText]||isKeyboardVisible) {
+        placeholderLabel.hidden = YES;
+    }
+    else{
+        placeholderLabel.hidden = NO;
+    }
+
     CGFloat maxHeight = [MessageInputView maxHeight];
     CGSize size = [textView sizeThatFits:CGSizeMake(textView.frame.size.width, maxHeight)];
     CGFloat textViewContentHeight = size.height;
@@ -2293,15 +2324,15 @@ static NSString * const CellIdentifier = @"cell";
 #pragma mark - Keyboard notifications
 - (void)handleWillShowKeyboard:(NSNotification *)notification
 {
-    [self show];
     isKeyboardVisible=true;
+    [self show];
     [self keyboardWillShowHide:notification];
 }
 
 - (void)handleWillHideKeyboard:(NSNotification *)notification
 {
-    [self hide];
     isKeyboardVisible=false;
+    [self hide];
     [self keyboardWillShowHide:notification];
 }
 
