@@ -131,7 +131,7 @@ static NSString * const CellIdentifier = @"cell";
     
 #if kPostInterface
     
-    [self scrollToBottomAnimated:NO];
+//    [self scrollToBottomAnimated:NO];
     _originalTableViewContentInset = self.detailedInterestTableView.contentInset;
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -522,7 +522,8 @@ static NSString * const CellIdentifier = @"cell";
     
     self.interestActivity.participantsArray=[[NSMutableArray alloc]init];
     if(self.interestActivity.dosRelation==0){
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(editButtonClicked:)];
+        UIBarButtonItem *editBarItem= [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(editButtonClicked:)];
+        [self.navigationItem setRightBarButtonItem:editBarItem animated:NO];
         
     }else{
         
@@ -531,7 +532,9 @@ static NSString * const CellIdentifier = @"cell";
         self.animationBlurView.frame=CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
         [self.animationBlurView loadDetailedInterestAnimationView:self.interestActivity.organizerName];
         
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Flag" style:UIBarButtonItemStylePlain target:self action:@selector(flagButtonClicked:)];
+        UIBarButtonItem *flagBarItem = [[UIBarButtonItem alloc] initWithTitle:@"Flag" style:UIBarButtonItemStylePlain target:self action:@selector(flagButtonClicked:)];
+        
+        [self.navigationItem setRightBarButtonItem:flagBarItem animated:NO];
         
     }
     
@@ -594,13 +597,18 @@ static NSString * const CellIdentifier = @"cell";
     else{
         placeholderLabel.hidden = NO;
     }
+    self.navigationItem.rightBarButtonItem.title=@"Done";
+    self.navigationItem.rightBarButtonItem.target=self;
+    self.navigationItem.rightBarButtonItem.action=@selector(doneButtonClicked:);
+//    UIBarButtonItem *doneBarItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStylePlain target:self action:@selector(doneButtonClicked:)];
+//    
+//    [self.navigationItem setRightBarButtonItem:doneBarItem animated:NO];
 
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStylePlain target:self action:@selector(doneButtonClicked:)];
     
     self.navigationItem.hidesBackButton = YES;
 }
 -(void)hide{
-    
+#if 1
     if([self.inputToolBarView.textView hasText]||isKeyboardVisible) {
         placeholderLabel.hidden = YES;
     }
@@ -611,20 +619,38 @@ static NSString * const CellIdentifier = @"cell";
 
     
     if(self.interestActivity.dosRelation==0){
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(editButtonClicked:)];
+        
+//        UIBarButtonItem *editBarItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(editButtonClicked:)];
+//        
+//        [self.navigationItem setRightBarButtonItem:editBarItem animated:NO];
+        
+        self.navigationItem.rightBarButtonItem.title=@"Edit";
+        self.navigationItem.rightBarButtonItem.target=self;
+        self.navigationItem.rightBarButtonItem.action=@selector(editButtonClicked:);
+
+        
         
     }else{
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Flag" style:UIBarButtonItemStylePlain target:self action:@selector(flagButtonClicked:)];
+//        UIBarButtonItem *flagBarItem = [[UIBarButtonItem alloc] initWithTitle:@"Flag" style:UIBarButtonItemStylePlain target:self action:@selector(flagButtonClicked:)];
+//        
+//        [self.navigationItem setRightBarButtonItem:flagBarItem animated:NO];
+        
+        self.navigationItem.rightBarButtonItem.title=@"Flag";
+        self.navigationItem.rightBarButtonItem.target=self;
+        self.navigationItem.rightBarButtonItem.action=@selector(flagButtonClicked:);
+
         
     }
 
     self.navigationItem.hidesBackButton = NO;
-
+#endif
 }
 
 -(void)doneButtonClicked:(id)sender{
     
     [self.inputToolBarView.textView resignFirstResponder];
+    [self.detailedInterestTableView reloadData];
+    //[self.view endEditing:YES];
 #if !kPostInterface
     [self.contentWrapper.inputView.textView resignFirstResponder];
     [self.view endEditing:YES];
@@ -653,6 +679,10 @@ static NSString * const CellIdentifier = @"cell";
 }
 -(void)flagButtonClicked:(id)sender{
     
+    if([self.navigationItem.rightBarButtonItem.title isEqualToString:@"Done"]){
+        [self doneButtonClicked:nil];
+    }
+    else{
     NSString* flagMessage = [NSString stringWithFormat:@"Please tell us why you find this activity objectionable? (Enter below):\n\n\n\n--\nFlag Report:\nActivity: %@ (%ld)\nOrganizer: %@ (%ld)", self.interestActivity.activityDesc, (long)self.interestActivity.activityId, self.interestActivity.organizerName, (long)self.interestActivity.ownerid];
 
     
@@ -667,11 +697,15 @@ static NSString * const CellIdentifier = @"cell";
         [alert show];
         
     }
-
+    }
 }
 -(void)editButtonClicked:(id)sender{
     
-#if !kPostInterface
+#if kPostInterface
+    if(isKeyboardVisible){
+        [self.inputToolBarView.textView resignFirstResponder];
+    }
+#else
     [self.contentWrapper _unregisterForNotifications];
 #endif
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -2391,7 +2425,7 @@ static NSString * const CellIdentifier = @"cell";
                      }
                      completion:^(BOOL finished) {
                          
-                         [self scrollToBottomAnimated:NO];
+                         //[self scrollToBottomAnimated:NO];
                      }];
 }
 
