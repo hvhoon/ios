@@ -117,7 +117,7 @@ static id<MessageInputViewDelegate> __delegate;
 
 + (CGFloat)textViewLineHeight
 {
-    return 38.0f; // for fontSize 17.0f
+    return 36.0f; // for fontSize 17.0f
 }
 
 + (CGFloat)maxLines

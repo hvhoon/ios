@@ -2109,7 +2109,7 @@ static NSString * const CellIdentifier = @"cell";
 #pragma mark - Actions
 - (void)sendPressed:(UIButton *)sender
 {
-        if(isKeyboardVisible)
+    if(isKeyboardVisible||[self.inputToolBarView.textView hasText])
     [self sendPressed:sender
                       withText:[self.inputToolBarView.textView.text trimWhitespace]];
 }
@@ -2346,6 +2346,7 @@ static NSString * const CellIdentifier = @"cell";
                              }
                          }
                          completion:^(BOOL finished) {
+                             //[self scrollToBottomAnimated:NO];
                          }];
         
         
@@ -2406,9 +2407,9 @@ static NSString * const CellIdentifier = @"cell";
                          CGFloat inputViewFrameY = keyboardY - inputViewFrame.size.height;
                          
                          // for ipad modal form presentations
-                         CGFloat messageViewFrameBottom = self.view.frame.size.height - INPUT_HEIGHT;
-                         if(inputViewFrameY > messageViewFrameBottom)
-                             inputViewFrameY = messageViewFrameBottom;
+//                         CGFloat messageViewFrameBottom = self.view.frame.size.height - INPUT_HEIGHT;
+//                         if(inputViewFrameY > messageViewFrameBottom)
+//                             inputViewFrameY = messageViewFrameBottom;
                          
                          self.inputToolBarView.frame = CGRectMake(inputViewFrame.origin.x,
                                                                   inputViewFrameY,
@@ -2425,7 +2426,7 @@ static NSString * const CellIdentifier = @"cell";
                      }
                      completion:^(BOOL finished) {
                          
-                         //[self scrollToBottomAnimated:NO];
+                         [self scrollToBottomAnimated:NO];
                      }];
 }
 

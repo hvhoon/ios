@@ -31,7 +31,7 @@
     self.scrollEnabled = YES;
     self.scrollsToTop = NO;
     self.userInteractionEnabled = YES;
-    self.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:17.0f];
+    self.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0f];
     self.textColor = [UIColor blackColor];
     self.backgroundColor = [UIColor clearColor];
     self.keyboardAppearance = UIKeyboardAppearanceDefault;
