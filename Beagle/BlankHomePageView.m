@@ -24,7 +24,6 @@
     [_delegate filterOptionClicked:0];
 }
 -(IBAction)changeYourFilterClicked:(id)sender{
-    [Appsee addEvent:@"Filter Clicked (Blank Screen)"];
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(filterOptionClicked:)])
             [_delegate filterOptionClicked:1];

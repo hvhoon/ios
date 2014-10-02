@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <Appsee/Appsee.h>
 #import <CoreLocation/CoreLocation.h>
 #import <FacebookSDK/FacebookSDK.h>
 

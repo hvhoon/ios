@@ -619,10 +619,8 @@ enum Weeks {
 
     if(editState) {
         [self.activityServerManager updateActivityOnBeagle:bg_activity];
-        [Appsee addEvent:@"Edit Activity"];
     }
     else{
-        [Appsee addEvent:@"Create Activity"];
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
         [self.animationBlurView blurWithColor];
         [self.animationBlurView crossDissolveShow];
@@ -677,7 +675,6 @@ enum Weeks {
                                                    delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No",nil];
     alert.tag=kDeleteActivity;
     [alert show];
-    [Appsee addEvent:@"Delete Activity"];
 
 }
 
@@ -744,7 +741,7 @@ enum Weeks {
 }
 
 -(void)textViewDidBeginEditing:(UITextView *)textView{
-    [Appsee pause];
+
 }
 
 
@@ -773,7 +770,6 @@ enum Weeks {
 	}
 	else if([[textView text] length] == 140)
 	{
-		[Appsee addEvent:@"140 Character Limit Reached"];
         return NO;
 	}
 	if(flag == NO)
@@ -792,9 +788,6 @@ enum Weeks {
     if (![textView hasText]) {
         placeholderLabel.hidden = NO;
     }
-    [Appsee resume];
-    
-    
 }
 
 

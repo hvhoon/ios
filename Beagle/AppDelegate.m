@@ -6,7 +6,6 @@
 //  Copyright (c) 2014 soclivity. All rights reserved.
 //
 
-#import "AppDelegate.h"
 #import <Crashlytics/Crashlytics.h>
 #import <Instabug/Instabug.h>
 #import "HomeViewController.h"
@@ -48,9 +47,6 @@ void uncaughtExceptionHandler(NSException *exception) {
     NSString *storyboardId = [[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"] ? @"initialNavBeagle" : @"loginNavScreen";
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     UIViewController *initViewController = [storyboard instantiateViewControllerWithIdentifier:storyboardId];
-    
-    // Start AppSee analytics
-    [Appsee start:@"d4f6b6daba7e4c3ca8b7ad040c2edaa3"];
     
     // Facebook SDK settings
     [FBSettings enablePlatformCompatibility:YES];

@@ -485,7 +485,6 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
 
 - (void)_keyboardWillShow:(NSNotification *)notification
 {
-    [Appsee pause];
     _visible=TRUE;
     if (self.delegate && [self.delegate respondsToSelector:@selector(show)])
         [self.delegate show];
@@ -547,7 +546,6 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
 
 - (void)_keyboardWillHide:(NSNotification *)notification
 {
-    [Appsee resume];
     
         _visible=FALSE;
         if (self.delegate && [self.delegate respondsToSelector:@selector(hide)])

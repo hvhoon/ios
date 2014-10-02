@@ -173,13 +173,6 @@
         [[NSUserDefaults standardUserDefaults]synchronize];
 
     }
-    
-    
-    // Setting the user name for AppSee
-    NSString *firstName = [[[BeagleManager SharedInstance]beaglePlayer]first_name];
-    NSString *lastName = [[[BeagleManager SharedInstance]beaglePlayer]last_name];
-    NSString *userFullName = [NSString stringWithFormat:@"%@ %@",firstName, lastName];
-    [Appsee setUserID:userFullName];
 
     if (![self.slidingViewController.underLeftViewController isKindOfClass:[SettingsViewController class]]) {
         self.slidingViewController.underLeftViewController  = [self.storyboard instantiateViewControllerWithIdentifier:@"settingsScreen"];
@@ -288,7 +281,6 @@
 }
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
     
-    [Appsee addEvent:@"Notification Received"];
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
     
     if(!hideInAppNotification && notifObject.notifType==1){
@@ -1028,7 +1020,6 @@
     [self.filterBlurView blurWithColor];
     [self.filterBlurView crossDissolveShow];
     [self.view addSubview:self.filterBlurView];
-    [Appsee addEvent:@"Filter Clicked (Home Screen)"];
 
 }
 
@@ -1306,7 +1297,6 @@
             headerText.frame = CGRectMake(0, 0, 16+textRect.size.width+8+15, 44.0);
             [headerText setTitle:filterText forState:UIControlStateNormal];
             headerText.imageEdgeInsets = UIEdgeInsetsMake(2.0f, textRect.size.width+16+8, 0.0f, 0.0f);
-            [Appsee addEvent:@"Filter changed: Happening Around You"];
         }
             break;
         case 2:
@@ -1321,7 +1311,6 @@
             headerText.frame = CGRectMake(0, 0, 16+textRect.size.width+8+15, 44.0);
             [headerText setTitle:filterText forState:UIControlStateNormal];
             headerText.imageEdgeInsets = UIEdgeInsetsMake(2.0f, textRect.size.width+16+8, 0.0f, 0.0f);
-            [Appsee addEvent:@"Filter changed: Created by Friends"];
         }
             break;
         case 3:
@@ -1336,7 +1325,6 @@
             headerText.frame = CGRectMake(0, 0, 16+textRect.size.width+8+15, 44.0);
             [headerText setTitle:filterText forState:UIControlStateNormal];
             headerText.imageEdgeInsets = UIEdgeInsetsMake(2.0f, textRect.size.width+16+8, 0.0f, 0.0f);
-            [Appsee addEvent:@"Filter changed: Your Interests"];
         }
             break;
         case 4:
@@ -1351,7 +1339,6 @@
             headerText.frame = CGRectMake(0, 0, 16+textRect.size.width+8+15, 44.0);
             [headerText setTitle:filterText forState:UIControlStateNormal];
             headerText.imageEdgeInsets = UIEdgeInsetsMake(2.0f, textRect.size.width+16+8, 0.0f, 0.0f);
-            [Appsee addEvent:@"Filter changed: Created by You"];
         }
             break;
     }
@@ -1591,7 +1578,6 @@
                                                        delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No",nil];
         alert.tag=kLeaveInterest;
         [alert show];
-        [Appsee addEvent:@"Cancel Interest"];
 
 
 //        [_interestUpdateManager removeMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
@@ -1601,7 +1587,6 @@
         HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:1]];
         UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)index]integerValue]];
         [button setEnabled:NO];
-        [Appsee addEvent:@"Express Interest"];
         [_interestUpdateManager participateMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
     }
 }
@@ -1783,7 +1768,6 @@
                 [self.animationBlurView crossDissolveShow];
                 [self.view addSubview:self.animationBlurView];
                 
-                [Appsee addEvent:@"Activate Suggested Post"];
                 if(_interestUpdateManager!=nil){
                     _interestUpdateManager.delegate = nil;
                     [_interestUpdateManager releaseServerManager];

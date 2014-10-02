@@ -134,9 +134,6 @@ static UIFont *secondTextFont = nil;
 -(void)inviteButtonClicked:(id)sender{
     if (self.delegate && [self.delegate respondsToSelector:@selector(inviteFacebookFriendOnBeagle:)])
         [self.delegate inviteFacebookFriendOnBeagle:cellIndexPath];
-    [Appsee addEvent:@"Invite Facebook Friend"];
-
-
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{

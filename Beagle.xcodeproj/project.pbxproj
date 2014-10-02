@@ -139,7 +139,6 @@
 		18FDA352192BDDE000D13667 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18FDA351192BDDE000D13667 /* CoreText.framework */; };
 		682455C3196DD6A800182F50 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 682455C2196DD6A800182F50 /* CoreMotion.framework */; };
 		6891059519632C1E00BE23B7 /* AboutUsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6891059419632C1E00BE23B7 /* AboutUsViewController.m */; };
-		6892276C19CC6A1500D98F50 /* Appsee.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6892276B19CC6A1500D98F50 /* Appsee.framework */; };
 		68E5B2D519A656E9001682F1 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68E5B2D419A656E9001682F1 /* FacebookSDK.framework */; };
 		68E9CF56197D5F35009477B2 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68E9CF55197D5F35009477B2 /* CoreMedia.framework */; };
 		68EDF86C192AC760008ED9C1 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68EDF86B192AC760008ED9C1 /* CoreFoundation.framework */; };
@@ -398,7 +397,6 @@
 		682455C2196DD6A800182F50 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		6891059319632C1E00BE23B7 /* AboutUsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutUsViewController.h; sourceTree = "<group>"; };
 		6891059419632C1E00BE23B7 /* AboutUsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutUsViewController.m; sourceTree = "<group>"; };
-		6892276B19CC6A1500D98F50 /* Appsee.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Appsee.framework; sourceTree = "<group>"; };
 		68E5B2D419A656E9001682F1 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		68E9CF55197D5F35009477B2 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		68E9CF59197D710B009477B2 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
@@ -440,7 +438,6 @@
 				68E5B2D519A656E9001682F1 /* FacebookSDK.framework in Frameworks */,
 				18EC22A318B5A0B400316B6E /* CoreGraphics.framework in Frameworks */,
 				18EC22A518B5A0B400316B6E /* UIKit.framework in Frameworks */,
-				6892276C19CC6A1500D98F50 /* Appsee.framework in Frameworks */,
 				18EC22A118B5A0B400316B6E /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -756,7 +753,6 @@
 		18EC229F18B5A0B400316B6E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				6892276B19CC6A1500D98F50 /* Appsee.framework */,
 				1891F62D19C1EEAC00C83ECE /* libc++.dylib */,
 				18B5DD5519C1EE07000DEF0E /* Instabug.framework */,
 				18B5DD5619C1EE07000DEF0E /* Instabug.bundle */,
