@@ -1140,13 +1140,12 @@ static NSString * const CellIdentifier = @"cell";
 
             [_backgroundView addSubview:_partcipantScrollArrowImageView];
             
-            if([self.interestActivity.participantsArray count]>4){
+            // When to show the next arrow and when not to!
+            if([self.interestActivity.participantsArray count]*66 > [UIScreen mainScreen].bounds.size.width-41){
                 _partcipantScrollArrowImageView.hidden=NO;
             }else{
                 _partcipantScrollArrowImageView.hidden=YES;
             }
-
-
             
             fromTheTop += 55;
             fromTheTop += 16;
@@ -2421,7 +2420,7 @@ static NSString * const CellIdentifier = @"cell";
                      }
                      completion:^(BOOL finished) {
                          
-                         [self scrollToBottomAnimated:NO];
+                         [self scrollToBottomAnimated:YES];
                      }];
 }
 
