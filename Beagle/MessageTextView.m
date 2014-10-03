@@ -33,7 +33,7 @@
     self.userInteractionEnabled = YES;
     self.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0f];
     self.textColor = [UIColor blackColor];
-    self.backgroundColor = [UIColor clearColor];
+    self.backgroundColor = [UIColor whiteColor];
     self.keyboardAppearance = UIKeyboardAppearanceDefault;
     self.keyboardType = UIKeyboardTypeDefault;
     self.returnKeyType = UIReturnKeyDefault;

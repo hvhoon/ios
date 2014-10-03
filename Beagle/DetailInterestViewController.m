@@ -26,7 +26,7 @@
     #import "NSString+MessagesView.h"
     #import "UIButton+MessagesView.h"
     #define OSVersionIsAtLeastiOS7  (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1)
-    #define INPUT_HEIGHT 46.0f
+    #define INPUT_HEIGHT 44.0f
 #endif
 
 #define DISABLED_ALPHA 0.5f
@@ -495,7 +495,7 @@ static NSString * const CellIdentifier = @"cell";
     placeholderLabel = [[UILabel alloc] initWithFrame:CGRectMake(3, 0, self.inputToolBarView.textView.frame.size.width - 20.0, 34.0)];
     [placeholderLabel setText:@"Join the conversation"];
     // placeholderLabel is instance variable retained by view controller
-    [placeholderLabel setBackgroundColor:[UIColor clearColor]];
+    [placeholderLabel setBackgroundColor:[UIColor whiteColor]];
     placeholderLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:17.0f];
     placeholderLabel.textColor=[UIColor lightGrayColor];
     
