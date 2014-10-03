@@ -21,6 +21,7 @@
 #import "ExpressInterestPreview.h"
 #import "JSON.h"
 #import "CreateAnimationBlurView.h"
+#import "LinkViewController.h"
 #define kTimerIntervalInSeconds 10
 #define rowHeight 164
 #define kLeaveInterest 23
@@ -94,6 +95,7 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    
     [super viewWillAppear:animated];
     _tableViewController.refreshControl.tintColor=[UIColor whiteColor];
 
@@ -138,7 +140,6 @@
     yOffset = 0.0;
     deltaAlpha=0.8;
     isLoading=true;
-    
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (UpdateBadgeCount) name:kBeagleBadgeCount object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationUpdate:) name:kNotificationHomeAutoRefresh object:Nil];
@@ -172,13 +173,6 @@
         [[NSUserDefaults standardUserDefaults]synchronize];
 
     }
-    
-    
-    // Setting the user name for AppSee
-    NSString *firstName = [[[BeagleManager SharedInstance]beaglePlayer]first_name];
-    NSString *lastName = [[[BeagleManager SharedInstance]beaglePlayer]last_name];
-    NSString *userFullName = [NSString stringWithFormat:@"%@ %@",firstName, lastName];
-    [Appsee setUserID:userFullName];
 
     if (![self.slidingViewController.underLeftViewController isKindOfClass:[SettingsViewController class]]) {
         self.slidingViewController.underLeftViewController  = [self.storyboard instantiateViewControllerWithIdentifier:@"settingsScreen"];
@@ -287,9 +281,8 @@
 }
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
     
-    [Appsee addEvent:@"Offline Notification Received"];
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
-
+    
     if(!hideInAppNotification && notifObject.notifType==1){
         
         InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
@@ -595,7 +588,10 @@
 }
 
 -(void)postInAppNotification:(NSNotification*)note{
+    
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
+    
+    
     if(!hideInAppNotification && notifObject.notifType==1){
         InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
         notifView.delegate=self;
@@ -604,6 +600,8 @@
         }
     else if(!hideInAppNotification && notifObject.notifType==2 && (notifObject.notificationType==CHAT_TYPE) && notifObject.activity.activityId!=0){
         NSLog(@"DetailInterestViewController redirect postInAppNotification");
+        
+
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
         viewController.interestServerManager=[[ServerManager alloc]init];
@@ -618,7 +616,6 @@
     }
     if(notifObject.notifType!=2)
         [self updateHomeScreen:notifObject];
-
 }
 -(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
     
@@ -654,14 +651,17 @@
 }
 
 -(void)UpdateBadgeCount{
+    
     BeagleManager *BG=[BeagleManager SharedInstance];
     UIButton *notificationsButton=(UIButton*)[self.view viewWithTag:5346];
+    
     if(notificationsButton!=nil){
         [notificationsButton removeFromSuperview];
     }
-
     UIView*headerView=(UIView*)[self.view viewWithTag:43567];
-
+    
+    if(headerView==nil ||notificationsButton==nil)
+        return;
     if(BG.badgeCount==0){
         
             UIButton *notificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -1020,7 +1020,6 @@
     [self.filterBlurView blurWithColor];
     [self.filterBlurView crossDissolveShow];
     [self.view addSubview:self.filterBlurView];
-    [Appsee addEvent:@"Filter Clicked (Home Screen)"];
 
 }
 
@@ -1075,17 +1074,17 @@
                                                      attributes:attrs context:nil];
     
     if(play.activityType==2){
-        play.heightRow=rowHeight+(int)textRect.size.height+23;
-        return rowHeight+(int)textRect.size.height+23;
+        play.heightRow=rowHeight+(int)textRect.size.height+23+kHeightClip;
+        return rowHeight+(int)textRect.size.height+23+kHeightClip;
     }
     
     // If there are no participants, reduce the size of the card
     if (play.participantsCount==0) {
-        play.heightRow=rowHeight+(int)textRect.size.height;
-        return rowHeight+(int)textRect.size.height;
+        play.heightRow=rowHeight+(int)textRect.size.height+kHeightClip;
+        return rowHeight+(int)textRect.size.height+kHeightClip;
     }
-    play.heightRow=rowHeight+16+20+(int)textRect.size.height;
-    return rowHeight+16+20+(int)textRect.size.height;
+    play.heightRow=rowHeight+16+20+(int)textRect.size.height+kHeightClip;
+    return rowHeight+16+20+(int)textRect.size.height+kHeightClip;
     }else if (indexPath.section==1 && [self.tableData count]==0){
         return ([UIScreen mainScreen].bounds.size.height - roundf([UIScreen mainScreen].bounds.size.width/goldenRatio));
     }
@@ -1298,7 +1297,6 @@
             headerText.frame = CGRectMake(0, 0, 16+textRect.size.width+8+15, 44.0);
             [headerText setTitle:filterText forState:UIControlStateNormal];
             headerText.imageEdgeInsets = UIEdgeInsetsMake(2.0f, textRect.size.width+16+8, 0.0f, 0.0f);
-            [Appsee addEvent:@"Filter changed: Happening Around You"];
         }
             break;
         case 2:
@@ -1313,7 +1311,6 @@
             headerText.frame = CGRectMake(0, 0, 16+textRect.size.width+8+15, 44.0);
             [headerText setTitle:filterText forState:UIControlStateNormal];
             headerText.imageEdgeInsets = UIEdgeInsetsMake(2.0f, textRect.size.width+16+8, 0.0f, 0.0f);
-            [Appsee addEvent:@"Filter changed: Created by Friends"];
         }
             break;
         case 3:
@@ -1328,7 +1325,6 @@
             headerText.frame = CGRectMake(0, 0, 16+textRect.size.width+8+15, 44.0);
             [headerText setTitle:filterText forState:UIControlStateNormal];
             headerText.imageEdgeInsets = UIEdgeInsetsMake(2.0f, textRect.size.width+16+8, 0.0f, 0.0f);
-            [Appsee addEvent:@"Filter changed: Your Interests"];
         }
             break;
         case 4:
@@ -1343,7 +1339,6 @@
             headerText.frame = CGRectMake(0, 0, 16+textRect.size.width+8+15, 44.0);
             [headerText setTitle:filterText forState:UIControlStateNormal];
             headerText.imageEdgeInsets = UIEdgeInsetsMake(2.0f, textRect.size.width+16+8, 0.0f, 0.0f);
-            [Appsee addEvent:@"Filter changed: Created by You"];
         }
             break;
     }
@@ -1583,7 +1578,6 @@
                                                        delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No",nil];
         alert.tag=kLeaveInterest;
         [alert show];
-        [Appsee addEvent:@"Cancel Interest"];
 
 
 //        [_interestUpdateManager removeMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
@@ -1593,7 +1587,6 @@
         HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:1]];
         UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)index]integerValue]];
         [button setEnabled:NO];
-        [Appsee addEvent:@"Express Interest"];
         [_interestUpdateManager participateMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
     }
 }
@@ -1700,6 +1693,18 @@
 }
 
 #pragma mark -
+#pragma mark redirectToWebPage method
+
+-(void)redirectToWebPage:(NSString*)webLink{
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    LinkViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"webLinkScreen"];
+    viewController.linkString=webLink;
+    [self.navigationController pushViewController:viewController animated:YES];
+
+}
+
+#pragma mark -
 #pragma mark UIAlertView methods
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
     
@@ -1763,7 +1768,6 @@
                 [self.animationBlurView crossDissolveShow];
                 [self.view addSubview:self.animationBlurView];
                 
-                [Appsee addEvent:@"Activate Suggested Post"];
                 if(_interestUpdateManager!=nil){
                     _interestUpdateManager.delegate = nil;
                     [_interestUpdateManager releaseServerManager];

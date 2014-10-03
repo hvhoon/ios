@@ -41,7 +41,6 @@ UIWindowLevel windowLevel;
         CGRect viewBounds = [[[window subviews] lastObject] bounds];
         self = [super initWithFrame:CGRectMake(0, 0, viewBounds.size.width, 64)];
 
-        [Appsee addEvent:@"Notification Appears"];
         UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
         // make your gesture recognizer priority
         singleTap.numberOfTapsRequired = 1;
@@ -136,8 +135,6 @@ UIWindowLevel windowLevel;
 -(void)handleSingleTap:(UITapGestureRecognizer*)sender{
     
     [self dismissWithAnimation:YES];
-    
-    [Appsee addEvent:@"Notification Tapped"];
 
     if (self.notification.backgroundTap && self.notification.notificationType!=CANCEL_ACTIVITY_TYPE) {
          if (self.delegate && [self.delegate respondsToSelector:@selector(backgroundTapToPush:)])
@@ -203,7 +200,6 @@ UIWindowLevel windowLevel;
 - (void)buttonTapped:(id)sender
 {
     [self dismissWithAnimation:YES];
-    [Appsee addEvent:@"Notification Dismiss"];
 
 }
 

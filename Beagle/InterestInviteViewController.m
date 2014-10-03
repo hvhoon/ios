@@ -69,7 +69,7 @@
     
     self.animationBlurView=[CreateAnimationBlurView loadCreateAnimationView:self.view];
     self.animationBlurView.delegate=self;
-
+    self.animationBlurView.frame=CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
     [self.animationBlurView loadCustomAnimationView:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
 
     if([self.interestDetail.participantsArray count]==0)
@@ -140,7 +140,6 @@
 }
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
     
-    [Appsee addEvent:@"Offline Notification Received"];
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
     
     if(notifObject.notifType==1){
@@ -269,7 +268,6 @@
     [keyboard addSubview:self.animationBlurView];
 
     [self.inviteManager createActivityOnBeagle:interestDetail];
-    [Appsee addEvent:@"Create Activity"];
 
 }
 

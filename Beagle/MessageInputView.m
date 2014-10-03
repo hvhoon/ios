@@ -49,10 +49,10 @@ static id<MessageInputViewDelegate> __delegate;
 #pragma mark - Setup
 - (void)setup
 {
-//    self.image = [UIImage imageNamed:@"input-bar-flat"];
-    self.backgroundColor = [UIColor clearColor];
+    self.image = [[UIImage imageNamed:@"input-bar-flat"] resizableImageWithCapInsets:UIEdgeInsetsMake(10.0f, 0.0f, 10.0f, 0.0f)];
+    self.backgroundColor = [UIColor whiteColor];
     self.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin);
-    self.opaque = YES;
+    self.opaque = NO;
     self.userInteractionEnabled = YES;
     [self setupTextView];
 }
@@ -63,12 +63,15 @@ static id<MessageInputViewDelegate> __delegate;
     CGFloat height = [MessageInputView textViewLineHeight];
     
     self.textView = [[MessageTextView  alloc] initWithFrame:CGRectMake(6.0f, 3.0f, width, height)];
+    self.textView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f);
     self.textView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    
-    self.textView.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0f];
+    self.textView.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:17.0f];
     self.textView.textColor=[UIColor blackColor];
-    self.textView.backgroundColor=[UIColor clearColor];
+    self.textView.backgroundColor=[UIColor whiteColor];
+    self.textView.scrollsToTop = NO;
+    self.textView.scrollIndicatorInsets = UIEdgeInsetsMake(10.0f, 0.0f, 10.0f, 0.0f);
     [self addSubview:self.textView];
+
     
 }
 
@@ -97,6 +100,9 @@ static id<MessageInputViewDelegate> __delegate;
                                      prevFrame.size.width,
                                      prevFrame.size.height + changeInHeight);
     
+    self.textView.backgroundColor = [UIColor whiteColor];
+    
+    
     self.textView.contentInset = UIEdgeInsetsMake((numLines >= 6 ? 4.0f : 0.0f),
                                                   0.0f,
                                                   (numLines >= 6 ? 4.0f : 0.0f),
@@ -112,7 +118,7 @@ static id<MessageInputViewDelegate> __delegate;
 
 + (CGFloat)textViewLineHeight
 {
-    return 36.0f; // for fontSize 16.0f
+    return 36.0f; // for fontSize 17.0f
 }
 
 + (CGFloat)maxLines

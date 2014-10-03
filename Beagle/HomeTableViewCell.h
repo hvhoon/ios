@@ -15,6 +15,7 @@
 -(void)updateInterestedStatus:(NSInteger)index;
 -(void)profileScreenRedirect:(NSInteger)index;
 -(void)askNearbyFriendsToPartOfSuggestedPost:(NSInteger)index;
+-(void)redirectToWebPage:(NSString*)webLink;
 @end
 
 @interface HomeTableViewCell : ABTableViewCell{

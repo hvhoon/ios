@@ -47,4 +47,5 @@
 - (void)_registerForNotifications;
 - (void)_unregisterForNotifications;
 -(void)resize;
+-(BOOL)iskeyboardVisible;
 @end

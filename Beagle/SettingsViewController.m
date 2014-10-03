@@ -35,17 +35,18 @@
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authenticationFailed:) name:kFacebookAuthenticationFailed object:Nil];
 
-    [self.slidingViewController setAnchorRightRevealAmount:270.0f];
+    [self.slidingViewController setAnchorRightRevealAmount:[UIScreen mainScreen].bounds.size.width-50.0f];
      self.slidingViewController.underLeftWidthLayout = ECFullWidth;
     
     // Extract App Name
     NSDictionary *appMetaData = [[NSBundle mainBundle] infoDictionary];
     NSString* bundleName = [appMetaData objectForKey:@"CFBundleShortVersionString"];
+    NSString* buildNumber = [appMetaData objectForKey:@"CFBundleVersion"];
     
     [_version setTextColor:[BeagleUtilities returnBeagleColor:3]];
     
     // Build text
-    _version.text = [NSString stringWithFormat:@"Beagle v%@", bundleName];
+    _version.text = [NSString stringWithFormat:@"Beagle v%@ (%@)", bundleName, buildNumber];
     
     if([[[BeagleManager SharedInstance]beaglePlayer]profileData]==nil){
         

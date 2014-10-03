@@ -104,7 +104,6 @@
 }
 
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
-    [Appsee addEvent:@"Offline Notification Received"];
     [self getUserNotifications];
 }
 
@@ -476,8 +475,6 @@
     _interestUpdateManager=[[ServerManager alloc]init];
     _interestUpdateManager.delegate=self;
     [_interestUpdateManager participateMembership:play.activity.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
-
-    [Appsee addEvent:@"Express Interest from Notification Screen"];
 
 
 }

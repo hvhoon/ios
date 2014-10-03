@@ -183,7 +183,6 @@
 
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
 
-    [Appsee addEvent:@"Offline Notification Received"];
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
     
     if(notifObject.notifType==1){

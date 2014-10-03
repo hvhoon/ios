@@ -8,6 +8,7 @@
 
 
 #import "HomeTableViewCell.h"
+#import "BeagleLabel.h"
 @implementation HomeTableViewCell
 @synthesize delegate,cellIndex;
 @synthesize bg_activity,photoImage;
@@ -30,8 +31,8 @@ static UIFont *dateTextFont = nil;
     }
 }
 
-- (void)drawContentView:(CGRect)r
-{
+- (void)drawContentView:(CGRect)r{
+    
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     UIColor *background;
@@ -126,11 +127,14 @@ static UIFont *dateTextFont = nil;
     // Adding buffer below the top section with the profile picture
     fromTheTop = fromTheTop+8;
     
+    
     // Drawing the activity description
+
     attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                             firstTextFont, NSFontAttributeName,
-                             [UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
-                             style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
+             [UIFont fontWithName:@"HelveticaNeue" size:17.0f], NSFontAttributeName,
+             [UIColor blackColor],NSForegroundColorAttributeName,
+             style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
+    
     
     CGSize maximumLabelSize = CGSizeMake([UIScreen mainScreen].bounds.size.width-32,999);
     
@@ -139,9 +143,30 @@ static UIFont *dateTextFont = nil;
                                                                   context:nil];
     
     if([self.bg_activity.activityDesc length]!=0){
-        [self.bg_activity.activityDesc drawInRect:CGRectMake(16, fromTheTop, commentTextRect.size.width,commentTextRect.size.height) withAttributes:attrs];
-        fromTheTop = fromTheTop+commentTextRect.size.height;
+//        [self.bg_activity.activityDesc drawInRect:CGRectMake(16, fromTheTop, commentTextRect.size.width,commentTextRect.size.height) withAttributes:attrs];
+        
+        BeagleLabel *beagleLabel = [[BeagleLabel alloc] initWithFrame:CGRectMake(16, fromTheTop, commentTextRect.size.width,commentTextRect.size.height+kHeightClip) type:1];
+        [beagleLabel setText:self.bg_activity.activityDesc];
+        [beagleLabel setAttributes:attrs];
+        beagleLabel.textAlignment = NSTextAlignmentLeft;
+        beagleLabel.numberOfLines = 0;
+        beagleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+
+        [self addSubview:beagleLabel];
+        
+        [beagleLabel setDetectionBlock:^(BeagleHotWord hotWord, NSString *string, NSString *protocol, NSRange range) {
+            if (self.delegate && [self.delegate respondsToSelector:@selector(redirectToWebPage:)]&& hotWord==BeagleLink)
+                [self.delegate redirectToWebPage:string];
+
+            
+            
+        }];
+
+
+        fromTheTop = fromTheTop+commentTextRect.size.height+kHeightClip;
     }
+    
+    
     
     // Drawing the location
     [style setAlignment:NSTextAlignmentLeft];
@@ -427,4 +452,5 @@ static UIFont *dateTextFont = nil;
 
     [super touchesEnded:touches withEvent:event];
 }
+
 @end
