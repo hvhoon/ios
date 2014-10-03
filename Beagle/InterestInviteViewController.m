@@ -80,7 +80,6 @@
     _nearbyFriendsArray=[NSMutableArray new];
     _worldwideFriendsArray=[NSMutableArray new];
     self.inviteTableView.frame=CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
-
     CGRect newBounds = self.inviteTableView.bounds;
     newBounds.origin.y = newBounds.origin.y + self.nameSearchBar.bounds.size.height;
     self.inviteTableView.bounds = newBounds;
