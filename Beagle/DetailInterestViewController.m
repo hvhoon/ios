@@ -1340,7 +1340,7 @@ static NSString * const CellIdentifier = @"cell";
         [cell.contentView addSubview:organizerNameLabel];
         
         // Time stamp
-        color=[BeagleUtilities returnBeagleColor:3];
+        color=[[BeagleManager SharedInstance] mediumDominantColor];
         attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                  [UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f], NSFontAttributeName,
                  color,NSForegroundColorAttributeName,
