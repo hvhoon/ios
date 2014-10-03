@@ -131,7 +131,7 @@ static NSString * const CellIdentifier = @"cell";
     
 #if kPostInterface
     
-//    [self scrollToBottomAnimated:NO];
+    [self scrollToBottomAnimated:NO];
     _originalTableViewContentInset = self.detailedInterestTableView.contentInset;
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -521,20 +521,14 @@ static NSString * const CellIdentifier = @"cell";
     
     self.interestActivity.participantsArray=[[NSMutableArray alloc]init];
     if(self.interestActivity.dosRelation==0){
-        UIBarButtonItem *editBarItem= [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(editButtonClicked:)];
-        [self.navigationItem setRightBarButtonItem:editBarItem animated:NO];
-        
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(editButtonClicked:)];
     }else{
         
         self.animationBlurView=[CreateAnimationBlurView loadCreateAnimationView:self.view];
         self.animationBlurView.delegate=self;
         self.animationBlurView.frame=CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
         [self.animationBlurView loadDetailedInterestAnimationView:self.interestActivity.organizerName];
-        
-        UIBarButtonItem *flagBarItem = [[UIBarButtonItem alloc] initWithTitle:@"Flag" style:UIBarButtonItemStylePlain target:self action:@selector(flagButtonClicked:)];
-        
-        [self.navigationItem setRightBarButtonItem:flagBarItem animated:NO];
-        
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Flag" style:UIBarButtonItemStylePlain target:self action:@selector(flagButtonClicked:)];
     }
     
     if(inappNotification){
@@ -596,14 +590,7 @@ static NSString * const CellIdentifier = @"cell";
     else{
         placeholderLabel.hidden = NO;
     }
-    self.navigationItem.rightBarButtonItem.title=@"Done";
-    self.navigationItem.rightBarButtonItem.target=self;
-    self.navigationItem.rightBarButtonItem.action=@selector(doneButtonClicked:);
-//    UIBarButtonItem *doneBarItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStylePlain target:self action:@selector(doneButtonClicked:)];
-//    
-//    [self.navigationItem setRightBarButtonItem:doneBarItem animated:NO];
-
-    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStylePlain target:self action:@selector(doneButtonClicked:)];
     self.navigationItem.hidesBackButton = YES;
 }
 -(void)hide{
@@ -614,31 +601,10 @@ static NSString * const CellIdentifier = @"cell";
     else{
         placeholderLabel.hidden = NO;
     }
-    
-
-    
     if(self.interestActivity.dosRelation==0){
-        
-//        UIBarButtonItem *editBarItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(editButtonClicked:)];
-//        
-//        [self.navigationItem setRightBarButtonItem:editBarItem animated:NO];
-        
-        self.navigationItem.rightBarButtonItem.title=@"Edit";
-        self.navigationItem.rightBarButtonItem.target=self;
-        self.navigationItem.rightBarButtonItem.action=@selector(editButtonClicked:);
-
-        
-        
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(editButtonClicked:)];
     }else{
-//        UIBarButtonItem *flagBarItem = [[UIBarButtonItem alloc] initWithTitle:@"Flag" style:UIBarButtonItemStylePlain target:self action:@selector(flagButtonClicked:)];
-//        
-//        [self.navigationItem setRightBarButtonItem:flagBarItem animated:NO];
-        
-        self.navigationItem.rightBarButtonItem.title=@"Flag";
-        self.navigationItem.rightBarButtonItem.target=self;
-        self.navigationItem.rightBarButtonItem.action=@selector(flagButtonClicked:);
-
-        
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Flag" style:UIBarButtonItemStylePlain target:self action:@selector(flagButtonClicked:)];
     }
 
     self.navigationItem.hidesBackButton = NO;
@@ -649,7 +615,7 @@ static NSString * const CellIdentifier = @"cell";
     
     [self.inputToolBarView.textView resignFirstResponder];
     [self.detailedInterestTableView reloadData];
-    //[self.view endEditing:YES];
+    [self.view endEditing:YES];
 #if !kPostInterface
     [self.contentWrapper.inputView.textView resignFirstResponder];
     [self.view endEditing:YES];
