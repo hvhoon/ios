@@ -826,15 +826,13 @@ static NSString * const CellIdentifier = @"cell";
                            [UIColor blackColor],NSForegroundColorAttributeName,
                            style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
     
-        CGSize maximumLabelSize = CGSizeMake([UIScreen mainScreen].bounds.size.width-32,999);
-    
-        CGRect textRect = [self.interestActivity.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
-        
-        
+        NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString : self.interestActivity.activityDesc  attributes : attrs];
+        CGFloat height=[BeagleUtilities heightForAttributedStringWithEmojis:attributedString forWidth:[UIScreen mainScreen].bounds.size.width-32];
+
         if(self.interestActivity.participantsCount==0)
-            cardHeight=136+(int)textRect.size.height+kHeightClip;
+            cardHeight=136+(int)height+kHeightClip;
         else
-            cardHeight=241+(int)textRect.size.height+kHeightClip;
+            cardHeight=241+(int)height+kHeightClip;
         
         return cardHeight;
     }
@@ -992,12 +990,16 @@ static NSString * const CellIdentifier = @"cell";
         
         CGSize maximumLabelSize = CGSizeMake([UIScreen mainScreen].bounds.size.width-32,999);
         
+        
+        NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString : self.interestActivity.activityDesc  attributes : attrs];
+        CGFloat height=[BeagleUtilities heightForAttributedStringWithEmojis:attributedString forWidth:[UIScreen mainScreen].bounds.size.width-32];
+
         CGRect commentTextRect = [self.interestActivity.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
                                                                                attributes:attrs
                                                                                   context:nil];
         
         
-        BeagleLabel *beagleLabel = [[BeagleLabel alloc] initWithFrame:CGRectMake(16, fromTheTop, commentTextRect.size.width,commentTextRect.size.height+kHeightClip) type:1];
+        BeagleLabel *beagleLabel = [[BeagleLabel alloc] initWithFrame:CGRectMake(16, fromTheTop, commentTextRect.size.width,height+kHeightClip) type:1];
         [beagleLabel setText:self.interestActivity.activityDesc];
         beagleLabel.textAlignment = NSTextAlignmentLeft;
         beagleLabel.numberOfLines = 0;
@@ -1025,7 +1027,7 @@ static NSString * const CellIdentifier = @"cell";
         activityDescLabel.tag=3569;
         [_backgroundView addSubview:activityDescLabel];
 #endif
-        fromTheTop = fromTheTop+commentTextRect.size.height+kHeightClip;
+        fromTheTop = fromTheTop+height+kHeightClip;
         fromTheTop = fromTheTop+16.0f; // buffer after the description
 
         // Adding the counts panel here

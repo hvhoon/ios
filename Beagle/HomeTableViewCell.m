@@ -145,7 +145,12 @@ static UIFont *dateTextFont = nil;
     if([self.bg_activity.activityDesc length]!=0){
 //        [self.bg_activity.activityDesc drawInRect:CGRectMake(16, fromTheTop, commentTextRect.size.width,commentTextRect.size.height) withAttributes:attrs];
         
-        BeagleLabel *beagleLabel = [[BeagleLabel alloc] initWithFrame:CGRectMake(16, fromTheTop, commentTextRect.size.width,commentTextRect.size.height+kHeightClip) type:1];
+        NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString :self.bg_activity.activityDesc attributes : attrs];
+
+        CGFloat height=[BeagleUtilities heightForAttributedStringWithEmojis:attributedString forWidth:[UIScreen mainScreen].bounds.size.width-32];
+
+        
+        BeagleLabel *beagleLabel = [[BeagleLabel alloc] initWithFrame:CGRectMake(16, fromTheTop, commentTextRect.size.width,height+kHeightClip) type:1];
         [beagleLabel setText:self.bg_activity.activityDesc];
         [beagleLabel setAttributes:attrs];
         beagleLabel.textAlignment = NSTextAlignmentLeft;
@@ -163,7 +168,7 @@ static UIFont *dateTextFont = nil;
         }];
 
 
-        fromTheTop = fromTheTop+commentTextRect.size.height+kHeightClip;
+        fromTheTop = fromTheTop+height+kHeightClip;
     }
     
     

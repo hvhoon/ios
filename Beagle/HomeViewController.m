@@ -1068,23 +1068,23 @@
     
     BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexPath.row];
     
-    CGSize maximumLabelSize = CGSizeMake([UIScreen mainScreen].bounds.size.width-32,999);
-    
-    CGRect textRect = [play.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
-                                                     attributes:attrs context:nil];
+        NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString :play.activityDesc  attributes : attrs];
+        
+        CGFloat height=[BeagleUtilities heightForAttributedStringWithEmojis:attributedString forWidth:[UIScreen mainScreen].bounds.size.width-32];
+
     
     if(play.activityType==2){
-        play.heightRow=rowHeight+(int)textRect.size.height+23+kHeightClip;
-        return rowHeight+(int)textRect.size.height+23+kHeightClip;
+        play.heightRow=rowHeight+(int)height+23+kHeightClip;
+        return rowHeight+(int)height+23+kHeightClip;
     }
     
     // If there are no participants, reduce the size of the card
     if (play.participantsCount==0) {
-        play.heightRow=rowHeight+(int)textRect.size.height+kHeightClip;
-        return rowHeight+(int)textRect.size.height+kHeightClip;
+        play.heightRow=rowHeight+(int)height+kHeightClip;
+        return rowHeight+(int)height+kHeightClip;
     }
-    play.heightRow=rowHeight+16+20+(int)textRect.size.height+kHeightClip;
-    return rowHeight+16+20+(int)textRect.size.height+kHeightClip;
+    play.heightRow=rowHeight+16+20+(int)height+kHeightClip;
+    return rowHeight+16+20+(int)height+kHeightClip;
     }else if (indexPath.section==1 && [self.tableData count]==0){
         return ([UIScreen mainScreen].bounds.size.height - roundf([UIScreen mainScreen].bounds.size.width/goldenRatio));
     }
