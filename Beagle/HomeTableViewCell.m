@@ -155,7 +155,7 @@ static UIFont *dateTextFont = nil;
         [self addSubview:beagleLabel];
         
         [beagleLabel setDetectionBlock:^(BeagleHotWord hotWord, NSString *string, NSString *protocol, NSRange range) {
-            if (self.delegate && [self.delegate respondsToSelector:@selector(redirectToWebPage:)])
+            if (self.delegate && [self.delegate respondsToSelector:@selector(redirectToWebPage:)]&& hotWord==BeagleLink)
                 [self.delegate redirectToWebPage:string];
 
             
