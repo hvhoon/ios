@@ -1006,7 +1006,8 @@ static NSString * const CellIdentifier = @"cell";
         [_backgroundView addSubview:beagleLabel];
         
         [beagleLabel setDetectionBlock:^(BeagleHotWord hotWord, NSString *string, NSString *protocol, NSRange range) {
-                [self redirectToWebPage:string];
+                if(hotWord==BeagleLink)
+                  [self redirectToWebPage:string];
             
             
             
@@ -1385,7 +1386,8 @@ static NSString * const CellIdentifier = @"cell";
         [cell.contentView addSubview:beagleLabel];
         
         [beagleLabel setDetectionBlock:^(BeagleHotWord hotWord, NSString *string, NSString *protocol, NSRange range) {
-            [self redirectToWebPage:string];
+                    if(hotWord==BeagleLink)
+                        [self redirectToWebPage:string];
             
             
             
