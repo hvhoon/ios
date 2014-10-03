@@ -2308,7 +2308,7 @@ static NSString * const CellIdentifier = @"cell";
                              }
                          }
                          completion:^(BOOL finished) {
-                             //[self scrollToBottomAnimated:NO];
+                             [self scrollToBottomAnimated:YES];
                          }];
         
         
@@ -2387,7 +2387,6 @@ static NSString * const CellIdentifier = @"cell";
                          self.detailedInterestTableView.scrollIndicatorInsets = insets;
                      }
                      completion:^(BOOL finished) {
-                         
                          [self scrollToBottomAnimated:YES];
                      }];
 }
