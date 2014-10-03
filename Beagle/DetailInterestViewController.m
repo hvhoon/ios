@@ -128,8 +128,8 @@ static NSString * const CellIdentifier = @"cell";
     
     
     
-    
 #if kPostInterface
+    isKeyboardVisible=false;
     
     [self scrollToBottomAnimated:NO];
     _originalTableViewContentInset = self.detailedInterestTableView.contentInset;
@@ -164,8 +164,8 @@ static NSString * const CellIdentifier = @"cell";
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kUpdatePostsOnInterest object:nil];
     
 #if kPostInterface
-    [self.inputToolBarView resignFirstResponder];
-    [self setEditing:NO animated:YES];
+    [self.inputToolBarView.textView resignFirstResponder];
+//    [self setEditing:NO animated:YES];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
@@ -667,6 +667,7 @@ static NSString * const CellIdentifier = @"cell";
 -(void)editButtonClicked:(id)sender{
     
 #if kPostInterface
+    
     if(isKeyboardVisible){
         [self.inputToolBarView.textView resignFirstResponder];
     }
@@ -853,9 +854,14 @@ static NSString * const CellIdentifier = @"cell";
             
             CGSize maximumLabelSize = CGSizeMake([UIScreen mainScreen].bounds.size.width-75,999);
             
-            CGRect textRect = [chatCell.text boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
+            CGRect textRect1 = [chatCell.text boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
                                                                             attributes:attrs
                                                                                context:nil];
+            
+            NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString : chatCell.text
+                                                                                   attributes :attrs];
+            CGRect textRect = [attributedString boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin context:nil];
+
             
             if(indexPath.row==1)
                 return 45.0f+8.0f+textRect.size.height+kPostTextClip;
@@ -1370,7 +1376,13 @@ static NSString * const CellIdentifier = @"cell";
         
         CGSize maximumLabelSize = CGSizeMake([UIScreen mainScreen].bounds.size.width-75,999);
         
-        CGRect commentTextRect = [chatCell.text boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
+        CGRect commentTextRect1 = [chatCell.text boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
+        
+        
+        NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString : chatCell.text
+                                                                        attributes : attrs];
+        CGRect commentTextRect = [attributedString boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin context:nil];
+
         
         
         
@@ -1382,7 +1394,7 @@ static NSString * const CellIdentifier = @"cell";
         beagleLabel.textAlignment = NSTextAlignmentLeft;
         beagleLabel.numberOfLines = 0;
         beagleLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        
+        [beagleLabel sizeThatFits:commentTextRect.size];
         [cell.contentView addSubview:beagleLabel];
         
         [beagleLabel setDetectionBlock:^(BeagleHotWord hotWord, NSString *string, NSString *protocol, NSRange range) {
@@ -2208,6 +2220,12 @@ static NSString * const CellIdentifier = @"cell";
 
     contentOffset.y = contentOffsetY;
     self.detailedInterestTableView.contentOffset = contentOffset;
+    
+    if(!isKeyboardVisible){
+        [self.detailedInterestTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow: 0 inSection:0]
+                                              atScrollPosition:UITableViewScrollPositionTop
+                                                      animated:animated];
+    }
 
 #if 0
     if([self.chatPostsArray count]>0){
@@ -2388,7 +2406,7 @@ static NSString * const CellIdentifier = @"cell";
                      }
                      completion:^(BOOL finished) {
                          
-                         [self scrollToBottomAnimated:YES];
+                         //[self scrollToBottomAnimated:YES];
                      }];
 }
 
