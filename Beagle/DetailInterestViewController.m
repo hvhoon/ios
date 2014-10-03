@@ -497,7 +497,7 @@ static NSString * const CellIdentifier = @"cell";
     // placeholderLabel is instance variable retained by view controller
     [placeholderLabel setBackgroundColor:[UIColor whiteColor]];
     placeholderLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:17.0f];
-    placeholderLabel.textColor=[UIColor lightGrayColor];
+    placeholderLabel.textColor=[BeagleUtilities returnBeagleColor:3];
     
     // textView is UITextView object you want add placeholder text to
     [self.inputToolBarView.textView addSubview:placeholderLabel];
