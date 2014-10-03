@@ -830,6 +830,7 @@ static NSString * const CellIdentifier = @"cell";
     
         CGRect textRect = [self.interestActivity.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
         
+        
         if(self.interestActivity.participantsCount==0)
             cardHeight=136+(int)textRect.size.height+kHeightClip;
         else
@@ -849,21 +850,17 @@ static NSString * const CellIdentifier = @"cell";
                                    [UIColor blackColor],NSForegroundColorAttributeName,
                                    style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
             
-            CGSize maximumLabelSize = CGSizeMake([UIScreen mainScreen].bounds.size.width-75,999);
-            
-            CGRect textRect1 = [chatCell.text boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
-                                                                            attributes:attrs
-                                                                               context:nil];
-            
             NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString : chatCell.text
                                                                                    attributes :attrs];
-            CGRect textRect = [attributedString boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin context:nil];
+            
+            CGFloat height=[BeagleUtilities heightForAttributedStringWithEmojis:attributedString forWidth:[UIScreen mainScreen].bounds.size.width-75];
+
 
             
             if(indexPath.row==1)
-                return 45.0f+8.0f+textRect.size.height+kPostTextClip;
+                return 45.0f+8.0f+height+kPostTextClip;
             
-            return 45.0f+textRect.size.height+kPostTextClip;
+            return 45.0f+height+kPostTextClip;
         }
     }
 }
@@ -1373,17 +1370,13 @@ static NSString * const CellIdentifier = @"cell";
         
         CGSize maximumLabelSize = CGSizeMake([UIScreen mainScreen].bounds.size.width-75,999);
         
-        CGRect commentTextRect1 = [chatCell.text boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
-        
-        
-        NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString : chatCell.text
-                                                                        attributes : attrs];
+        NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString : chatCell.text attributes : attrs];
         CGRect commentTextRect = [attributedString boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin context:nil];
 
         
         
-        
-        BeagleLabel *beagleLabel = [[BeagleLabel alloc] initWithFrame:CGRectMake(59, cellTop, commentTextRect.size.width, commentTextRect.size.height+kPostTextClip) type:2];
+        CGFloat height=[BeagleUtilities heightForAttributedStringWithEmojis:attributedString forWidth:[UIScreen mainScreen].bounds.size.width-75];
+        BeagleLabel *beagleLabel = [[BeagleLabel alloc] initWithFrame:CGRectMake(59, cellTop, commentTextRect.size.width, height+kPostTextClip) type:2];
         [beagleLabel setTextColor:[UIColor blackColor]];
         [beagleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:15.0f]];
         [beagleLabel setAttributes:attrs];
@@ -1391,7 +1384,6 @@ static NSString * const CellIdentifier = @"cell";
         beagleLabel.textAlignment = NSTextAlignmentLeft;
         beagleLabel.numberOfLines = 0;
         beagleLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        [beagleLabel sizeThatFits:commentTextRect.size];
         [cell.contentView addSubview:beagleLabel];
         
         [beagleLabel setDetectionBlock:^(BeagleHotWord hotWord, NSString *string, NSString *protocol, NSRange range) {
@@ -1410,7 +1402,7 @@ static NSString * const CellIdentifier = @"cell";
         [cell.contentView addSubview:chatDescLabel];
 #endif
         
-        cellTop = cellTop + commentTextRect.size.height+kPostTextClip;
+        cellTop = cellTop + height+kPostTextClip;
         cellTop = cellTop + 16.0f;
         
         return cell;
@@ -1428,6 +1420,8 @@ static NSString * const CellIdentifier = @"cell";
         [iconDownloader startDownload:kInterestChat];
     }
 }
+
+
 
 -(void)showArrowIndicator{
     _partcipantScrollArrowImageView.hidden=NO;
