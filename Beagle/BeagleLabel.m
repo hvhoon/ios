@@ -112,7 +112,7 @@
             _attributesText = @{NSForegroundColorAttributeName: self.textColor, NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue" size:17.0f]};
             _attributesHandle = @{NSForegroundColorAttributeName: [UIColor redColor], NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue" size:17.0f]};
             _attributesHashtag = @{NSForegroundColorAttributeName: [[UIColor alloc] initWithWhite:170.0/255.0 alpha:1.0], NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue" size:17.0f]};
-            _attributesLink = @{NSForegroundColorAttributeName:[[BeagleManager SharedInstance] darkDominantColor], NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue" size:17.0f], NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)};
+            _attributesLink = @{NSForegroundColorAttributeName:[[BeagleManager SharedInstance] mediumDominantColor], NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue" size:17.0f]};
             
         }
             break;
@@ -122,7 +122,7 @@
             _attributesText = @{NSForegroundColorAttributeName: self.textColor, NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0f]};
             _attributesHandle = @{NSForegroundColorAttributeName: [UIColor redColor], NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0f]};
             _attributesHashtag = @{NSForegroundColorAttributeName: [[UIColor alloc] initWithWhite:170.0/255.0 alpha:1.0], NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0f]};
-            _attributesLink = @{NSForegroundColorAttributeName:[[BeagleManager SharedInstance] darkDominantColor], NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0f], NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)};
+            _attributesLink = @{NSForegroundColorAttributeName:[[BeagleManager SharedInstance] mediumDominantColor], NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0f]};
             
         }
             break;
