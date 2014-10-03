@@ -41,6 +41,7 @@ static NSString * const CellIdentifier = @"cell";
     UIImageView *_partcipantScrollArrowImageView;
     BOOL isKeyboardVisible;
     UILabel *placeholderLabel;
+    BOOL isEditState;
 }
 
 @property(nonatomic,strong)ServerManager*chatPostManager;
@@ -129,10 +130,9 @@ static NSString * const CellIdentifier = @"cell";
     
     
 #if kPostInterface
-    isKeyboardVisible=false;
     
-    [self scrollToBottomAnimated:NO];
-    _originalTableViewContentInset = self.detailedInterestTableView.contentInset;
+   // [self scrollToBottomAnimated:NO];
+	    _originalTableViewContentInset = self.detailedInterestTableView.contentInset;
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleWillShowKeyboard:)
@@ -164,9 +164,6 @@ static NSString * const CellIdentifier = @"cell";
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kUpdatePostsOnInterest object:nil];
     
 #if kPostInterface
-    [self.inputToolBarView.textView resignFirstResponder];
-//    [self setEditing:NO animated:YES];
-    
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
 #else
@@ -667,10 +664,10 @@ static NSString * const CellIdentifier = @"cell";
 -(void)editButtonClicked:(id)sender{
     
 #if kPostInterface
-    
-    if(isKeyboardVisible){
-        [self.inputToolBarView.textView resignFirstResponder];
-    }
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+
+    isEditState=true;
 #else
     [self.contentWrapper _unregisterForNotifications];
 #endif
@@ -2221,10 +2218,11 @@ static NSString * const CellIdentifier = @"cell";
     contentOffset.y = contentOffsetY;
     self.detailedInterestTableView.contentOffset = contentOffset;
     
-    if(!isKeyboardVisible){
+    if(isEditState){
+        isEditState=false;
         [self.detailedInterestTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow: 0 inSection:0]
                                               atScrollPosition:UITableViewScrollPositionTop
-                                                      animated:animated];
+                                                      animated:NO];
     }
 
 #if 0
@@ -2406,7 +2404,7 @@ static NSString * const CellIdentifier = @"cell";
                      }
                      completion:^(BOOL finished) {
                          
-                         //[self scrollToBottomAnimated:YES];
+                         [self scrollToBottomAnimated:YES];
                      }];
 }
 
