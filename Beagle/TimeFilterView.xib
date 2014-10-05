@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="13D65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6245" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -11,8 +11,7 @@
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
                 <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kmK-66-m5j">
-                    <rect key="frame" x="60" y="58" width="62" height="62"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <rect key="frame" x="60" y="56" width="62" height="62"/>
                     <state key="normal" backgroundImage="Later-Today">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
@@ -21,32 +20,19 @@
                     </connections>
                 </button>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Later Today" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KmQ-mi-ofh">
-                    <rect key="frame" x="44" y="131" width="95" height="21"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <rect key="frame" x="44" y="126" width="95" height="21"/>
                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="18"/>
                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tqU-Jt-R0R">
-                    <rect key="frame" x="60" y="183" width="62" height="62"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <state key="normal" backgroundImage="This-Week">
-                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                    </state>
-                    <connections>
-                        <action selector="timeFilterSelected:" destination="2Pi-5a-v68" eventType="touchUpInside" id="qib-dv-ync"/>
-                    </connections>
-                </button>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="This Week" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uxO-vu-ewN">
-                    <rect key="frame" x="50" y="256" width="83" height="21"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <rect key="frame" x="50" y="247" width="83" height="21"/>
                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="18"/>
                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="G5v-k4-kJc">
-                    <rect key="frame" x="198" y="58" width="62" height="62"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <rect key="frame" x="198" y="55" width="62" height="62"/>
                     <state key="normal" backgroundImage="Tomorrow">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
@@ -55,15 +41,13 @@
                     </connections>
                 </button>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tomorrow" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0YM-Jd-9Xc">
-                    <rect key="frame" x="189" y="131" width="80" height="21"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <rect key="frame" x="189" y="125" width="80" height="21"/>
                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="18"/>
                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" tag="6" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AT3-Ni-JYh">
-                    <rect key="frame" x="198" y="183" width="62" height="62"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <rect key="frame" x="198" y="178" width="62" height="62"/>
                     <state key="normal" backgroundImage="This-Weekend">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
@@ -72,15 +56,13 @@
                     </connections>
                 </button>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="This Weekend" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T32-kd-hT1">
-                    <rect key="frame" x="172" y="256" width="114" height="21"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <rect key="frame" x="172" y="248" width="114" height="21"/>
                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="18"/>
                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Hy5-Nq-ugi">
-                    <rect key="frame" x="60" y="308" width="62" height="62"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <rect key="frame" x="60" y="300" width="62" height="62"/>
                     <state key="normal" backgroundImage="Next-Week">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
@@ -89,15 +71,13 @@
                     </connections>
                 </button>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Next Week" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hiq-XQ-bHC">
-                    <rect key="frame" x="48" y="381" width="87" height="21"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <rect key="frame" x="48" y="370" width="87" height="21"/>
                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="18"/>
                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" tag="7" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oj1-Z4-Jwe">
-                    <rect key="frame" x="198" y="308" width="62" height="62"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <rect key="frame" x="198" y="300" width="62" height="62"/>
                     <state key="normal" backgroundImage="Next-Weekend">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
@@ -106,15 +86,13 @@
                     </connections>
                 </button>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Next Weekend" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zus-Af-Bg4">
-                    <rect key="frame" x="170" y="381" width="118" height="21"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <rect key="frame" x="170" y="370" width="118" height="21"/>
                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="18"/>
                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eBa-AV-8A3">
-                    <rect key="frame" x="60" y="433" width="62" height="62"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <rect key="frame" x="60" y="422" width="62" height="62"/>
                     <state key="normal" backgroundImage="This-Month">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
@@ -123,15 +101,13 @@
                     </connections>
                 </button>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="This Month" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Aqg-Ml-mCw">
-                    <rect key="frame" x="46" y="506" width="91" height="21"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <rect key="frame" x="46" y="492" width="91" height="21"/>
                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="18"/>
                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" tag="8" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6YG-Ra-TJN">
-                    <rect key="frame" x="198" y="433" width="62" height="62"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <rect key="frame" x="198" y="422" width="62" height="62"/>
                     <state key="normal" backgroundImage="Pick-a-Date">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
@@ -140,59 +116,66 @@
                     </connections>
                 </button>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Pick a Date" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bIS-M9-Um6">
-                    <rect key="frame" x="183" y="506" width="93" height="21"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <rect key="frame" x="183" y="492" width="93" height="21"/>
                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="18"/>
                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <view hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Rbo-sF-ODc" userLabel="Center Buffer">
+                    <rect key="frame" x="152" y="276" width="16" height="16"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="16" id="098-H6-9vT"/>
+                        <constraint firstAttribute="width" constant="16" id="ajD-3r-edg"/>
+                    </constraints>
+                </view>
+                <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tqU-Jt-R0R">
+                    <rect key="frame" x="60" y="177" width="62" height="62"/>
+                    <state key="normal" backgroundImage="This-Week">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="timeFilterSelected:" destination="2Pi-5a-v68" eventType="touchUpInside" id="qib-dv-ync"/>
+                    </connections>
+                </button>
             </subviews>
-            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             <constraints>
-                <constraint firstItem="oj1-Z4-Jwe" firstAttribute="centerX" secondItem="zus-Af-Bg4" secondAttribute="centerX" id="0y5-yF-CTL"/>
-                <constraint firstItem="tqU-Jt-R0R" firstAttribute="leading" secondItem="2Pi-5a-v68" secondAttribute="leading" constant="60" id="27T-vE-NuX"/>
-                <constraint firstItem="uxO-vu-ewN" firstAttribute="centerX" secondItem="tqU-Jt-R0R" secondAttribute="centerX" constant="0.5" id="2Tq-pR-NID"/>
-                <constraint firstItem="kmK-66-m5j" firstAttribute="leading" secondItem="2Pi-5a-v68" secondAttribute="leading" constant="60" id="4Lg-Kq-Tvw"/>
-                <constraint firstItem="kmK-66-m5j" firstAttribute="top" secondItem="2Pi-5a-v68" secondAttribute="top" constant="58" id="5UB-Xg-8e4"/>
-                <constraint firstItem="Hiq-XQ-bHC" firstAttribute="top" secondItem="Hy5-Nq-ugi" secondAttribute="bottom" constant="11" id="7kN-dy-zZq"/>
-                <constraint firstItem="bIS-M9-Um6" firstAttribute="centerX" secondItem="6YG-Ra-TJN" secondAttribute="centerX" constant="0.5" id="7zS-lO-aav"/>
-                <constraint firstItem="G5v-k4-kJc" firstAttribute="top" secondItem="2Pi-5a-v68" secondAttribute="top" constant="58" id="BCO-XB-62f"/>
-                <constraint firstItem="KmQ-mi-ofh" firstAttribute="top" secondItem="kmK-66-m5j" secondAttribute="bottom" constant="11" id="Deo-OZ-VYN"/>
-                <constraint firstItem="eBa-AV-8A3" firstAttribute="leading" secondItem="2Pi-5a-v68" secondAttribute="leading" constant="60" id="DtE-Ip-ZMl"/>
-                <constraint firstItem="eBa-AV-8A3" firstAttribute="centerX" secondItem="Aqg-Ml-mCw" secondAttribute="centerX" constant="-0.5" id="KYe-RM-yUq"/>
-                <constraint firstAttribute="trailing" secondItem="G5v-k4-kJc" secondAttribute="trailing" constant="60" id="L1y-Nk-4Rx"/>
-                <constraint firstItem="Aqg-Ml-mCw" firstAttribute="top" secondItem="eBa-AV-8A3" secondAttribute="bottom" constant="11" id="MXa-FS-Vfc"/>
-                <constraint firstItem="zus-Af-Bg4" firstAttribute="top" secondItem="oj1-Z4-Jwe" secondAttribute="bottom" constant="11" id="NpG-aS-y92"/>
-                <constraint firstItem="oj1-Z4-Jwe" firstAttribute="top" secondItem="T32-kd-hT1" secondAttribute="bottom" constant="31" id="OA1-VO-n2b"/>
-                <constraint firstItem="bIS-M9-Um6" firstAttribute="top" secondItem="6YG-Ra-TJN" secondAttribute="bottom" constant="11" id="PKt-Qt-XEI"/>
-                <constraint firstItem="uxO-vu-ewN" firstAttribute="top" secondItem="tqU-Jt-R0R" secondAttribute="bottom" constant="11" id="PVw-vg-VJe"/>
-                <constraint firstItem="G5v-k4-kJc" firstAttribute="centerX" secondItem="0YM-Jd-9Xc" secondAttribute="centerX" id="QB4-e5-TWY"/>
-                <constraint firstItem="eBa-AV-8A3" firstAttribute="top" secondItem="Hiq-XQ-bHC" secondAttribute="bottom" constant="31" id="Rhc-n0-eOE"/>
-                <constraint firstItem="6YG-Ra-TJN" firstAttribute="top" secondItem="zus-Af-Bg4" secondAttribute="bottom" constant="31" id="Ucw-dl-qxX"/>
-                <constraint firstItem="AT3-Ni-JYh" firstAttribute="top" secondItem="0YM-Jd-9Xc" secondAttribute="bottom" constant="31" id="V6i-Eu-7DK"/>
-                <constraint firstItem="T32-kd-hT1" firstAttribute="top" secondItem="AT3-Ni-JYh" secondAttribute="bottom" constant="11" id="VM7-HO-DAW"/>
-                <constraint firstAttribute="trailing" secondItem="AT3-Ni-JYh" secondAttribute="trailing" constant="60" id="ZSD-le-057"/>
-                <constraint firstAttribute="trailing" secondItem="oj1-Z4-Jwe" secondAttribute="trailing" constant="60" id="btO-j3-yCf"/>
-                <constraint firstItem="AT3-Ni-JYh" firstAttribute="centerX" secondItem="T32-kd-hT1" secondAttribute="centerX" id="dlq-2U-9g8"/>
-                <constraint firstAttribute="trailing" secondItem="6YG-Ra-TJN" secondAttribute="trailing" constant="60" id="gjG-jm-FIJ"/>
-                <constraint firstItem="Hy5-Nq-ugi" firstAttribute="top" secondItem="uxO-vu-ewN" secondAttribute="bottom" constant="31" id="k9u-0a-7So"/>
-                <constraint firstItem="tqU-Jt-R0R" firstAttribute="top" secondItem="KmQ-mi-ofh" secondAttribute="bottom" constant="31" id="nPT-Ab-Fr8"/>
-                <constraint firstItem="Hiq-XQ-bHC" firstAttribute="centerX" secondItem="Hy5-Nq-ugi" secondAttribute="centerX" constant="0.5" id="oYz-11-zMB"/>
-                <constraint firstItem="0YM-Jd-9Xc" firstAttribute="top" secondItem="G5v-k4-kJc" secondAttribute="bottom" constant="11" id="qB0-2s-BOn"/>
-                <constraint firstItem="Hy5-Nq-ugi" firstAttribute="leading" secondItem="2Pi-5a-v68" secondAttribute="leading" constant="60" id="x5f-lx-MN7"/>
-                <constraint firstItem="kmK-66-m5j" firstAttribute="centerX" secondItem="KmQ-mi-ofh" secondAttribute="centerX" constant="-0.5" id="zld-AQ-QTg"/>
+                <constraint firstItem="bIS-M9-Um6" firstAttribute="centerX" secondItem="6YG-Ra-TJN" secondAttribute="centerX" constant="0.5" id="33j-ff-PsR"/>
+                <constraint firstItem="0YM-Jd-9Xc" firstAttribute="centerX" secondItem="AT3-Ni-JYh" secondAttribute="centerX" id="6Vg-th-rOL"/>
+                <constraint firstItem="Hy5-Nq-ugi" firstAttribute="top" secondItem="uxO-vu-ewN" secondAttribute="bottom" constant="32" id="8Z8-1L-3Qg"/>
+                <constraint firstItem="Aqg-Ml-mCw" firstAttribute="top" secondItem="eBa-AV-8A3" secondAttribute="bottom" constant="8" id="Aq8-CG-vAO"/>
+                <constraint firstItem="uxO-vu-ewN" firstAttribute="top" secondItem="tqU-Jt-R0R" secondAttribute="bottom" constant="8" id="Ar7-if-1eg"/>
+                <constraint firstItem="G5v-k4-kJc" firstAttribute="centerX" secondItem="0YM-Jd-9Xc" secondAttribute="centerX" id="F5O-s9-1fJ"/>
+                <constraint firstItem="Aqg-Ml-mCw" firstAttribute="centerX" secondItem="eBa-AV-8A3" secondAttribute="centerX" constant="0.5" id="FLv-m8-V5h"/>
+                <constraint firstItem="AT3-Ni-JYh" firstAttribute="top" secondItem="0YM-Jd-9Xc" secondAttribute="bottom" constant="32" id="FSu-Ew-U0W"/>
+                <constraint firstItem="zus-Af-Bg4" firstAttribute="centerX" secondItem="oj1-Z4-Jwe" secondAttribute="centerX" id="Fgn-Gb-ShK"/>
+                <constraint firstItem="eBa-AV-8A3" firstAttribute="top" secondItem="Hiq-XQ-bHC" secondAttribute="bottom" constant="31" id="ILq-Oz-va9"/>
+                <constraint firstItem="T32-kd-hT1" firstAttribute="centerX" secondItem="oj1-Z4-Jwe" secondAttribute="centerX" id="K1i-2L-1w6"/>
+                <constraint firstAttribute="centerX" secondItem="Rbo-sF-ODc" secondAttribute="centerX" id="Knz-x7-Bjh"/>
+                <constraint firstItem="6YG-Ra-TJN" firstAttribute="top" secondItem="zus-Af-Bg4" secondAttribute="bottom" constant="31" id="LEa-ey-Zsy"/>
+                <constraint firstItem="oj1-Z4-Jwe" firstAttribute="top" secondItem="Rbo-sF-ODc" secondAttribute="bottom" constant="8" id="MHw-6b-5HE"/>
+                <constraint firstItem="oj1-Z4-Jwe" firstAttribute="top" secondItem="T32-kd-hT1" secondAttribute="bottom" constant="31" id="Of9-o6-aGx"/>
+                <constraint firstItem="Hiq-XQ-bHC" firstAttribute="centerX" secondItem="Hy5-Nq-ugi" secondAttribute="centerX" constant="0.5" id="Ogd-gy-9vc"/>
+                <constraint firstAttribute="centerY" secondItem="Rbo-sF-ODc" secondAttribute="centerY" id="TeZ-Lq-gT9"/>
+                <constraint firstItem="Hy5-Nq-ugi" firstAttribute="top" secondItem="Rbo-sF-ODc" secondAttribute="bottom" constant="8" id="ayB-Oo-eFg"/>
+                <constraint firstItem="0YM-Jd-9Xc" firstAttribute="top" secondItem="G5v-k4-kJc" secondAttribute="bottom" constant="8" id="bLO-To-WML"/>
+                <constraint firstItem="bIS-M9-Um6" firstAttribute="top" secondItem="6YG-Ra-TJN" secondAttribute="bottom" constant="8" id="cmP-Ii-ZCV"/>
+                <constraint firstItem="KmQ-mi-ofh" firstAttribute="top" secondItem="kmK-66-m5j" secondAttribute="bottom" constant="8" id="h6y-xB-B3Q"/>
+                <constraint firstItem="zus-Af-Bg4" firstAttribute="top" secondItem="oj1-Z4-Jwe" secondAttribute="bottom" constant="8" id="iHw-XD-OiC"/>
+                <constraint firstItem="uxO-vu-ewN" firstAttribute="centerX" secondItem="tqU-Jt-R0R" secondAttribute="centerX" constant="0.5" id="imE-RZ-B4P"/>
+                <constraint firstItem="Hy5-Nq-ugi" firstAttribute="centerX" secondItem="uxO-vu-ewN" secondAttribute="centerX" constant="-0.5" id="o3g-FR-itD"/>
+                <constraint firstItem="kmK-66-m5j" firstAttribute="centerX" secondItem="KmQ-mi-ofh" secondAttribute="centerX" constant="-0.5" id="oqU-Dw-0Zr"/>
+                <constraint firstItem="Hiq-XQ-bHC" firstAttribute="centerX" secondItem="eBa-AV-8A3" secondAttribute="centerX" constant="0.5" id="p7i-yv-Ycq"/>
+                <constraint firstItem="oj1-Z4-Jwe" firstAttribute="leading" secondItem="Rbo-sF-ODc" secondAttribute="trailing" constant="30" id="pEN-av-3PP"/>
+                <constraint firstItem="Hiq-XQ-bHC" firstAttribute="top" secondItem="Hy5-Nq-ugi" secondAttribute="bottom" constant="8" id="pNj-Uj-8s3"/>
+                <constraint firstItem="Rbo-sF-ODc" firstAttribute="leading" secondItem="Hy5-Nq-ugi" secondAttribute="trailing" constant="30" id="pPj-LK-F6q"/>
+                <constraint firstItem="tqU-Jt-R0R" firstAttribute="centerX" secondItem="KmQ-mi-ofh" secondAttribute="centerX" constant="-0.5" id="pf8-et-b1Q"/>
+                <constraint firstItem="6YG-Ra-TJN" firstAttribute="centerX" secondItem="zus-Af-Bg4" secondAttribute="centerX" id="sCS-ai-hqW"/>
+                <constraint firstItem="T32-kd-hT1" firstAttribute="top" secondItem="AT3-Ni-JYh" secondAttribute="bottom" constant="8" id="vP2-EH-ol0"/>
+                <constraint firstItem="AT3-Ni-JYh" firstAttribute="centerX" secondItem="T32-kd-hT1" secondAttribute="centerX" id="y1D-lf-Vi3"/>
+                <constraint firstItem="tqU-Jt-R0R" firstAttribute="top" secondItem="KmQ-mi-ofh" secondAttribute="bottom" constant="30" id="yX8-rg-BlV"/>
             </constraints>
-            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <connections>
-                <outlet property="spacingBetweenFiltersLeftFirst" destination="nPT-Ab-Fr8" id="sTj-Ey-8PN"/>
-                <outlet property="spacingBetweenFiltersLeftSecond" destination="k9u-0a-7So" id="gb0-7U-82g"/>
-                <outlet property="spacingBetweenFiltersLeftThird" destination="Rhc-n0-eOE" id="0GR-yc-C1s"/>
-                <outlet property="spacingBetweenFiltersRightFirst" destination="V6i-Eu-7DK" id="3YG-qQ-hbf"/>
-                <outlet property="spacingBetweenFiltersRightSecond" destination="OA1-VO-n2b" id="x5n-tK-ptl"/>
-                <outlet property="spacingBetweenFiltersRightThird" destination="Ucw-dl-qxX" id="qAt-Co-H1n"/>
-                <outlet property="topSpacingFromStatusBarLeft" destination="5UB-Xg-8e4" id="xaB-rZ-bLm"/>
-                <outlet property="topSpacingFromStatusBarRight" destination="BCO-XB-62f" id="dEt-3n-e4i"/>
-            </connections>
+            <nil key="simulatedStatusBarMetrics"/>
         </view>
     </objects>
     <resources>
@@ -205,4 +188,9 @@
         <image name="This-Weekend" width="62" height="62"/>
         <image name="Tomorrow" width="62" height="62"/>
     </resources>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4"/>
+    </simulatedMetricsContainer>
 </document>

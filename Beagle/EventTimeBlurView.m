@@ -99,7 +99,7 @@
             _scrollView.bounces=NO;
             _scrollView.userInteractionEnabled=YES;
             _scrollView.clipsToBounds=YES;
-            _scrollView.contentSize = CGSizeMake(320,2*frame.size.height);
+            _scrollView.contentSize = CGSizeMake([UIScreen mainScreen].bounds.size.width,2*frame.size.height);
             
             [self addSubview:_scrollView];
             
@@ -180,7 +180,7 @@
             _scrollView.bounces=NO;
             _scrollView.userInteractionEnabled=YES;
             _scrollView.clipsToBounds=YES;
-            _scrollView.contentSize = CGSizeMake(320,2*self.frame.size.height);
+            _scrollView.contentSize = CGSizeMake([UIScreen mainScreen].bounds.size.width,2*self.frame.size.height);
         
             [self addSubview:_scrollView];
             

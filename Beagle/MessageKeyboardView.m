@@ -412,6 +412,12 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
     self.dummyInputView.textView.text=@"Join the conversation";
     self.dummyInputView.textView.textColor = [BeagleUtilities returnBeagleColor:3];
     [self addSubview:self.dummyInputView];
+    
+//    UIWindow* window = [UIApplication sharedApplication].keyWindow;
+//    if (!window)
+//        window = [[UIApplication sharedApplication].windows lastObject];
+//    [window addSubview:self.dummyInputView];
+
 }
 
 - (void)_setInitialFrames
@@ -479,7 +485,6 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
 
 - (void)_keyboardWillShow:(NSNotification *)notification
 {
-    [Appsee pause];
     _visible=TRUE;
     if (self.delegate && [self.delegate respondsToSelector:@selector(show)])
         [self.delegate show];
@@ -528,6 +533,10 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
                                    completionBlock:nil];
 }
 
+-(BOOL)iskeyboardVisible{
+    return _visible;
+}
+
 - (void)_keyboardWillChangeFrame:(NSNotification *)notification
 {
     [self _keyboardWillHide:notification];
@@ -537,7 +546,6 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
 
 - (void)_keyboardWillHide:(NSNotification *)notification
 {
-    [Appsee resume];
     
         _visible=FALSE;
         if (self.delegate && [self.delegate respondsToSelector:@selector(hide)])
@@ -660,7 +668,7 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
                                    forceReload:(BOOL)reload
 {
     
-#if 0
+#if 1
 #ifdef DEBUG
     NSCAssert(!(CGRectEqualToRect(keyboardFrame, CGRectZero) &&
                 self.inputView.superview == nil), nil);
@@ -716,6 +724,24 @@ static NSInteger const RDRInterfaceOrientationUnknown   = -1;
     inputViewFrame.size.height = newInputViewHeight;
     self.inputView.frame = inputViewFrame;
     [self.dummyInputView.textView becomeFirstResponder];
+    
+    for (NSLayoutConstraint *constraint in self.dummyInputView.constraints) {
+        if (constraint.firstAttribute == NSLayoutAttributeHeight) {
+            [constraint setConstant:newInputViewHeight];
+            break;
+        }
+    }
+    
+    
+    for (NSLayoutConstraint *constraint in self.inputView.constraints) {
+        if (constraint.firstAttribute == NSLayoutAttributeHeight) {
+            [constraint setConstant:newInputViewHeight];
+            break;
+        }
+    }
+
+    
+    
     if (reload) {
         [self.dummyInputView.textView becomeFirstResponder];
         [self.dummyInputView.textView reloadInputViews];

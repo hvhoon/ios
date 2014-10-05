@@ -35,4 +35,5 @@
 +(UIColor*)returnLightColor:(UIColor*)inputColor withWhiteness:(CGFloat)white;
 +(BOOL)checkIfTheTextIsBlank:(NSString*)text;
 +(BOOL)checkIfTheDateHasBeenSetUsingAPicker:(NSString*)startDate endDate:(NSString*)endDate;
++ (CGFloat)heightForAttributedStringWithEmojis:(NSAttributedString *)attributedString forWidth:(CGFloat)width;
 @end

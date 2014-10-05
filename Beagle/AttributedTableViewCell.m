@@ -100,7 +100,7 @@ static inline NSRegularExpression * NameRegularExpression() {
     CGFloat height = 0.0f;
     
     // What's the height of the notification text
-    height += ceilf([text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f] constrainedToSize:CGSizeMake(195, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height);
+    height += ceilf([text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f] constrainedToSize:CGSizeMake([UIScreen mainScreen].bounds.size.width-125, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height);
     
     // Limit Summary to 2 lines only
     if(height > 35.0f)
@@ -112,7 +112,7 @@ static inline NSRegularExpression * NameRegularExpression() {
     CGFloat height = 0.0f; // Everything else on the screen that takes up height other than the notification text and new interest text
     
     // What's the height of the new interest text
-    height += ceilf([what sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:15.0f] constrainedToSize:CGSizeMake(238.0f, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height);
+    height += ceilf([what sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:15.0f] constrainedToSize:CGSizeMake([UIScreen mainScreen].bounds.size.width-82, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height);
     
     return height;
 }
@@ -120,7 +120,7 @@ static inline NSRegularExpression * NameRegularExpression() {
     CGFloat height = 0.0f;
     
     // What's the height of the time stamp text
-    height += ceilf([when sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f] constrainedToSize:CGSizeMake(195, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height);
+    height += ceilf([when sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f] constrainedToSize:CGSizeMake([UIScreen mainScreen].bounds.size.width-125, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height);
     
     return height;
 }
@@ -133,9 +133,9 @@ static inline NSRegularExpression * NameRegularExpression() {
     self.textLabel.hidden = YES;
     self.detailTextLabel.hidden = YES;
     
-    self.summaryLabel.frame=CGRectMake(58, 12, ceilf([self.summaryText sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f] constrainedToSize:CGSizeMake(195, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].width),[AttributedTableViewCell heightForNotificationText:self.summaryText]);
+    self.summaryLabel.frame=CGRectMake(58, 12, ceilf([self.summaryText sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f] constrainedToSize:CGSizeMake([UIScreen mainScreen].bounds.size.width-125, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].width),[AttributedTableViewCell heightForNotificationText:self.summaryText]);
         
-    self.lbltime.frame=CGRectMake(58, 12+self.summaryLabel.frame.size.height+2, ceilf([self.lbltime.text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f] constrainedToSize:CGSizeMake(195, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].width), 15);
+    self.lbltime.frame=CGRectMake(58, 12+self.summaryLabel.frame.size.height+2, ceilf([self.lbltime.text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f] constrainedToSize:CGSizeMake([UIScreen mainScreen].bounds.size.width-125, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].width), 15);
     
     // show the lil red dot if this is a new notification!
     if(self.isANewNotification){

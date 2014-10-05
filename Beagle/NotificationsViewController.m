@@ -104,7 +104,6 @@
 }
 
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
-    [Appsee addEvent:@"Offline Notification Received"];
     [self getUserNotifications];
 }
 
@@ -117,7 +116,7 @@
 {
     [super viewDidLoad];
     self.peekLeftAmount = 50.0f;
-    _notificationTableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 64, 270, self.view.frame.size.height-64)];
+    _notificationTableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 64, [UIScreen mainScreen].bounds.size.width-self.peekLeftAmount, self.view.frame.size.height-64)];
     _notificationTableView.delegate=self;
     _notificationTableView.dataSource=self;
     [self.view addSubview:_notificationTableView];
@@ -125,9 +124,8 @@
     self.slidingViewController.underRightWidthLayout = ECVariableRevealWidth;
     _notificationTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
     _notificationTableView.backgroundColor=[UIColor clearColor];
-    _topSpacingForBlankImage.constant =
-    [UIScreen mainScreen].bounds.size.height > 480.0f ? 242 : 198;
-    UIView *seperatorLineView=[[UIView alloc]initWithFrame:CGRectMake(0, 64, 270, 0.5)];
+    _topSpacingForBlankImage.constant = ([UIScreen mainScreen].bounds.size.height/2)-42;
+    UIView *seperatorLineView=[[UIView alloc]initWithFrame:CGRectMake(0, 64, [UIScreen mainScreen].bounds.size.width-self.peekLeftAmount, 0.5)];
     [seperatorLineView setBackgroundColor:[BeagleUtilities returnBeagleColor:10]];
     [self.view addSubview:seperatorLineView];
     _unreadUpdateView.layer.cornerRadius = 2.0f;
@@ -275,7 +273,7 @@
                  [BeagleUtilities returnBeagleColor:2],NSForegroundColorAttributeName,
                  style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
         
-        CGSize maximumLabelSize = CGSizeMake(238,999);
+        CGSize maximumLabelSize = CGSizeMake([UIScreen mainScreen].bounds.size.width-self.peekLeftAmount-32,999);
         
         CGRect whatTextRect = [play.activity.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
         
@@ -304,7 +302,7 @@
     // Add line seperator
     if(indexPath.row!=[self.listArray count]) {
         
-        UIView *seperatorLineView=[[UIView alloc]initWithFrame:CGRectMake(0, fromTheTop, 270, 0.5)];
+        UIView *seperatorLineView=[[UIView alloc]initWithFrame:CGRectMake(0, fromTheTop, [UIScreen mainScreen].bounds.size.width-self.peekLeftAmount, 0.5)];
         seperatorLineView.alpha=1.0;
         [seperatorLineView setBackgroundColor:[BeagleUtilities returnBeagleColor:10]];
         [cell.contentView addSubview:seperatorLineView];
@@ -336,7 +334,7 @@
                            [BeagleUtilities returnBeagleColor:2],NSForegroundColorAttributeName,
                            style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
     
-    CGSize maximumLabelSize = CGSizeMake(238,999);
+    CGSize maximumLabelSize = CGSizeMake([UIScreen mainScreen].bounds.size.width-self.peekLeftAmount-32,999);
     
     CGRect whatTextRect = [play.activity.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
 
@@ -374,7 +372,7 @@
         // Add line seperator
         if(indexPath.row!=[self.listArray count]) {
             
-            UIView *seperatorLineView=[[UIView alloc]initWithFrame:CGRectMake(0, fromTheTop, 270, 0.5)];
+            UIView *seperatorLineView=[[UIView alloc]initWithFrame:CGRectMake(0, fromTheTop, [UIScreen mainScreen].bounds.size.width-self.peekLeftAmount, 0.5)];
             seperatorLineView.alpha=1.0;
             seperatorLineView.tag=[[NSString stringWithFormat:@"333%ld",(long)indexPath.row]integerValue];
             [seperatorLineView setBackgroundColor:[BeagleUtilities returnBeagleColor:10]];
@@ -477,8 +475,6 @@
     _interestUpdateManager=[[ServerManager alloc]init];
     _interestUpdateManager.delegate=self;
     [_interestUpdateManager participateMembership:play.activity.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
-
-    [Appsee addEvent:@"Express Interest from Notification Screen"];
 
 
 }

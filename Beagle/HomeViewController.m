@@ -21,11 +21,13 @@
 #import "ExpressInterestPreview.h"
 #import "JSON.h"
 #import "CreateAnimationBlurView.h"
+#import "LinkViewController.h"
 #define kTimerIntervalInSeconds 10
 #define rowHeight 164
 #define kLeaveInterest 23
 #define kSuggestedPost 24
 #define waitBeforeLoadingDefaultImage 20.0f
+#define goldenRatio 1.6f
 
 @interface HomeViewController ()<UITableViewDataSource,UITableViewDelegate,HomeTableViewCellDelegate,ServerManagerDelegate,IconDownloaderDelegate,BlankHomePageViewDelegate,EventInterestFilterBlurViewDelegate,InAppNotificationViewDelegate,CreateAnimationBlurViewDelegate>{
     UIView *topNavigationView;
@@ -93,6 +95,7 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    
     [super viewWillAppear:animated];
     _tableViewController.refreshControl.tintColor=[UIColor whiteColor];
 
@@ -137,7 +140,6 @@
     yOffset = 0.0;
     deltaAlpha=0.8;
     isLoading=true;
-    
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (UpdateBadgeCount) name:kBeagleBadgeCount object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationUpdate:) name:kNotificationHomeAutoRefresh object:Nil];
@@ -145,27 +147,13 @@
     categoryFilterType=1;
     self.filterBlurView = [EventInterestFilterBlurView loadEventInterestFilter:self.view];
     self.filterBlurView.delegate=self;
-    
-    // If it's a 3.5" screen use the bounds below
-    self.filterBlurView.frame=CGRectMake(0, 0, 320, 480);
-    
-    // Else use these bounds for the 4" screen
-    if([UIScreen mainScreen].bounds.size.height > 480.0f)
-        self.filterBlurView.frame=CGRectMake(0, 0, 320, 568);
-
+    self.filterBlurView.frame=CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
     
     self.animationBlurView=[CreateAnimationBlurView loadCreateAnimationView:self.view];
     self.animationBlurView.delegate=self;
-    
-    // If it's a 3.5" screen use the bounds below
-    self.animationBlurView.frame=CGRectMake(0, 0, 320, 480);
-    
-    // Else use these bounds for the 4" screen
-    if([UIScreen mainScreen].bounds.size.height > 480.0f)
-        self.animationBlurView.frame=CGRectMake(0, 0, 320, 568);
+    self.animationBlurView.frame=CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
     
     if([[[BeagleManager SharedInstance]beaglePlayer]profileData]==nil){
-        
         
         NSOperationQueue *queue = [NSOperationQueue new];
         NSInvocationOperation *operation = [[NSInvocationOperation alloc]
@@ -185,13 +173,6 @@
         [[NSUserDefaults standardUserDefaults]synchronize];
 
     }
-    
-    
-    // Setting the user name for AppSee
-    NSString *firstName = [[[BeagleManager SharedInstance]beaglePlayer]first_name];
-    NSString *lastName = [[[BeagleManager SharedInstance]beaglePlayer]last_name];
-    NSString *userFullName = [NSString stringWithFormat:@"%@ %@",firstName, lastName];
-    [Appsee setUserID:userFullName];
 
     if (![self.slidingViewController.underLeftViewController isKindOfClass:[SettingsViewController class]]) {
         self.slidingViewController.underLeftViewController  = [self.storyboard instantiateViewControllerWithIdentifier:@"settingsScreen"];
@@ -202,17 +183,22 @@
     }
       [self.view addGestureRecognizer:self.slidingViewController.panGesture];
     
-    _topSection = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)];
+    _topSection = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, roundf([UIScreen mainScreen].bounds.size.width/goldenRatio))];
     _topSection.backgroundColor = [UIColor grayColor];
     [self.view addSubview:_topSection];
     
-    UIImageView *stockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)];
+    UIImageView *stockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, roundf([UIScreen mainScreen].bounds.size.width/goldenRatio))];
     stockImageView.backgroundColor = [UIColor grayColor];
     stockImageView.tag=3456;
     [_topSection addSubview:stockImageView];
+    
+    // Dynamic cover image height calculations!
+    NSLog(@"The Header height is %f", roundf([UIScreen mainScreen].bounds.size.width/goldenRatio));
+    NSLog(@"The List height is %f", [UIScreen mainScreen].bounds.size.height - roundf([UIScreen mainScreen].bounds.size.width/goldenRatio));
+    NSLog(@"The Screen height is %f", roundf([UIScreen mainScreen].bounds.size.width/goldenRatio)+ ([UIScreen mainScreen].bounds.size.height - roundf([UIScreen mainScreen].bounds.size.width/goldenRatio)));
      
     UIImageView *topGradient=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"gradient"]];
-    topGradient.frame = CGRectMake(0, 0, 320, 64);
+    topGradient.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 64);
     [_topSection addSubview:topGradient];
     
 
@@ -225,12 +211,12 @@
     UIButton *eventButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [eventButton setBackgroundImage:[UIImage imageNamed:@"add"] forState:UIControlStateNormal];
     [eventButton addTarget:self action:@selector(createANewActivity:)forControlEvents:UIControlEventTouchUpInside];
-    eventButton.frame = CGRectMake(263.0, 0.0, 57.0, 57.0);
+    eventButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-57.0, 0.0, 57.0, 57.0);
     
     [_topSection addSubview:eventButton];
     
     // Setting up the filter pane
-    _filterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    _filterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 44)];
     [_filterView addSubview:[self renderFilterHeaderView]];
     _filterView.backgroundColor=[UIColor grayColor];
     
@@ -295,9 +281,8 @@
 }
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
     
-    [Appsee addEvent:@"Offline Notification Received"];
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
-
+    
     if(!hideInAppNotification && notifObject.notifType==1){
         
         InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
@@ -603,7 +588,10 @@
 }
 
 -(void)postInAppNotification:(NSNotification*)note{
+    
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
+    
+    
     if(!hideInAppNotification && notifObject.notifType==1){
         InAppNotificationView *notifView=[[InAppNotificationView alloc]initWithNotificationClass:notifObject];
         notifView.delegate=self;
@@ -612,6 +600,8 @@
         }
     else if(!hideInAppNotification && notifObject.notifType==2 && (notifObject.notificationType==CHAT_TYPE) && notifObject.activity.activityId!=0){
         NSLog(@"DetailInterestViewController redirect postInAppNotification");
+        
+
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
         viewController.interestServerManager=[[ServerManager alloc]init];
@@ -626,7 +616,6 @@
     }
     if(notifObject.notifType!=2)
         [self updateHomeScreen:notifObject];
-
 }
 -(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
     
@@ -662,20 +651,23 @@
 }
 
 -(void)UpdateBadgeCount{
+    
     BeagleManager *BG=[BeagleManager SharedInstance];
     UIButton *notificationsButton=(UIButton*)[self.view viewWithTag:5346];
+    
     if(notificationsButton!=nil){
         [notificationsButton removeFromSuperview];
     }
-
     UIView*headerView=(UIView*)[self.view viewWithTag:43567];
-
+    
+    if(headerView==nil ||notificationsButton==nil)
+        return;
     if(BG.badgeCount==0){
         
             UIButton *notificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];
             [notificationsButton addTarget:self action:@selector(revealUnderRight:)forControlEvents:UIControlEventTouchUpInside];
             [notificationsButton setBackgroundImage:[UIImage imageNamed:@"Bell-(No-Notications)"] forState:UIControlStateNormal];
-            notificationsButton.frame = CGRectMake(272, 0, 44, 44);
+            notificationsButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-48, 0, 44, 44);
             notificationsButton.alpha = 0.6;
             notificationsButton.tag=5346;
             [headerView addSubview:notificationsButton];
@@ -687,7 +679,7 @@
             
         UIButton *updateNotificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [updateNotificationsButton addTarget:self action:@selector(revealUnderRight:)forControlEvents:UIControlEventTouchUpInside];
-        updateNotificationsButton.frame = CGRectMake(276, 11, 33, 22);
+        updateNotificationsButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-44, 11, 33, 22);
         [updateNotificationsButton setTitle:[NSString stringWithFormat:@"%ld",(long)BG.badgeCount] forState:UIControlStateNormal];
         [updateNotificationsButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         updateNotificationsButton.titleLabel.font = [UIFont boldSystemFontOfSize:14.0f];
@@ -928,7 +920,7 @@
 
 -(UIView*)renderFilterHeaderView {
 
-    UIView *headerView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 44)];
+    UIView *headerView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 44)];
     CGSize size = CGSizeMake(220,999);
     NSString* filterText = @"Happening Around You";
     
@@ -965,7 +957,7 @@
         UIButton *notificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [notificationsButton addTarget:self action:@selector(revealUnderRight:)forControlEvents:UIControlEventTouchUpInside];
         [notificationsButton setBackgroundImage:[UIImage imageNamed:@"Bell-(No-Notications)"] forState:UIControlStateNormal];
-        notificationsButton.frame = CGRectMake(272, 0, 44, 44);
+        notificationsButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-48, 0, 44, 44);
         notificationsButton.alpha = 0.6;
         notificationsButton.tag=5346;
         [headerView addSubview:notificationsButton];
@@ -990,11 +982,11 @@
         UIButton *updateNotificationsButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [updateNotificationsButton addTarget:self action:@selector(revealUnderRight:)forControlEvents:UIControlEventTouchUpInside];
         if(badgeCountSize.width>32.0f){
-            updateNotificationsButton.frame = CGRectMake(272, 0, 44, 44);
+            updateNotificationsButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-48, 0, 44, 44);
             
         }
         else{
-            updateNotificationsButton.frame = CGRectMake(272, 0, 44, 44);
+            updateNotificationsButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-48, 0, 44, 44);
             
         }
         
@@ -1028,7 +1020,6 @@
     [self.filterBlurView blurWithColor];
     [self.filterBlurView crossDissolveShow];
     [self.view addSubview:self.filterBlurView];
-    [Appsee addEvent:@"Filter Clicked (Home Screen)"];
 
 }
 
@@ -1055,7 +1046,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     if(section==0)
-        return 92.0f;
+        return roundf([UIScreen mainScreen].bounds.size.width/goldenRatio)-44-64;
     else{
         return 44.0f;
         
@@ -1077,31 +1068,25 @@
     
     BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexPath.row];
     
-    CGSize maximumLabelSize = CGSizeMake(288,999);
-    
-    CGRect textRect = [play.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
-                                                     attributes:attrs context:nil];
+        NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString :play.activityDesc  attributes : attrs];
+        
+        CGFloat height=[BeagleUtilities heightForAttributedStringWithEmojis:attributedString forWidth:[UIScreen mainScreen].bounds.size.width-32];
+
     
     if(play.activityType==2){
-        play.heightRow=rowHeight+(int)textRect.size.height+23;
-        return rowHeight+(int)textRect.size.height+23;
+        play.heightRow=rowHeight+(int)height+23+kHeightClip;
+        return rowHeight+(int)height+23+kHeightClip;
     }
     
     // If there are no participants, reduce the size of the card
     if (play.participantsCount==0) {
-        play.heightRow=rowHeight+(int)textRect.size.height;
-        return rowHeight+(int)textRect.size.height;
+        play.heightRow=rowHeight+(int)height+kHeightClip;
+        return rowHeight+(int)height+kHeightClip;
     }
-    play.heightRow=rowHeight+16+20+(int)textRect.size.height;
-    return rowHeight+16+20+(int)textRect.size.height;
+    play.heightRow=rowHeight+16+20+(int)height+kHeightClip;
+    return rowHeight+16+20+(int)height+kHeightClip;
     }else if (indexPath.section==1 && [self.tableData count]==0){
-        if([UIScreen mainScreen].bounds.size.height > 480.0f)
-            return 368.0f;
-        else{
-            return 280.0f;
-        }
-
-        
+        return ([UIScreen mainScreen].bounds.size.height - roundf([UIScreen mainScreen].bounds.size.width/goldenRatio));
     }
      return 0.0f;
 }
@@ -1110,10 +1095,10 @@
 {
     
         if(section==0){
-            UIView *translucentView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 44)];
+            UIView *translucentView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 44)];
             translucentView.backgroundColor=[UIColor clearColor];
 
-            translucentView.frame=CGRectMake(0, 0, 320, 92);
+            translucentView.frame=CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, roundf([UIScreen mainScreen].bounds.size.width/goldenRatio)-44-64);
             return translucentView;
 
         }else{
@@ -1170,13 +1155,7 @@
         NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"BlankHomePageView" owner:self options:nil];
         BlankHomePageView *blankHomePageView=[nib objectAtIndex:0];
         
-        // If it's a 3.5" screen use the bounds below
-        blankHomePageView.frame=CGRectMake(0, 0, 320, 280);
-        
-        // Else use these bounds for the 4" screen
-        if([UIScreen mainScreen].bounds.size.height > 480.0f)
-            blankHomePageView.frame=CGRectMake(0, 0, 320, 368);
-        
+        blankHomePageView.frame=CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height-roundf([UIScreen mainScreen].bounds.size.width/goldenRatio));
         blankHomePageView.delegate=self;
         blankHomePageView.userInteractionEnabled=YES;
         blankHomePageView.tag=1245;
@@ -1263,12 +1242,12 @@
     // Let the scrolling begin, keep track of where you are
     // If the user scrolls up, increase the opacity of the filter bar
     if (scrollView.contentOffset.y >= 0.0) {
-        if (scrollView.contentOffset.y >=92.0)
-            yOffset = 92.0;
+        if (scrollView.contentOffset.y >=(roundf([UIScreen mainScreen].bounds.size.width/goldenRatio)-44-64))
+            yOffset = roundf([UIScreen mainScreen].bounds.size.width/goldenRatio)-44-64;
         else
             yOffset = scrollView.contentOffset.y;
         
-        deltaAlpha = 0.8 + (0.18 * (yOffset/92.0));
+        deltaAlpha = 0.8 + (0.18 * (yOffset/(roundf([UIScreen mainScreen].bounds.size.width/goldenRatio)-44-64)));
     }
     // If the user scrolls down, descrease the opacity of the filter bar
     else {
@@ -1280,7 +1259,7 @@
             yOffset = scrollView.contentOffset.y;
         
         // Always keep the height of the top section in sync with how far down the user is pulling
-        topFrame.size.height = 200.0 - (scrollView.contentOffset.y);
+        topFrame.size.height = roundf([UIScreen mainScreen].bounds.size.width/goldenRatio) - (scrollView.contentOffset.y);
         _topSection.frame = topFrame;
         deltaAlpha = 0.8 + (0.2 * (yOffset/-22.0));
     }
@@ -1318,7 +1297,6 @@
             headerText.frame = CGRectMake(0, 0, 16+textRect.size.width+8+15, 44.0);
             [headerText setTitle:filterText forState:UIControlStateNormal];
             headerText.imageEdgeInsets = UIEdgeInsetsMake(2.0f, textRect.size.width+16+8, 0.0f, 0.0f);
-            [Appsee addEvent:@"Filter changed: Happening Around You"];
         }
             break;
         case 2:
@@ -1333,7 +1311,6 @@
             headerText.frame = CGRectMake(0, 0, 16+textRect.size.width+8+15, 44.0);
             [headerText setTitle:filterText forState:UIControlStateNormal];
             headerText.imageEdgeInsets = UIEdgeInsetsMake(2.0f, textRect.size.width+16+8, 0.0f, 0.0f);
-            [Appsee addEvent:@"Filter changed: Created by Friends"];
         }
             break;
         case 3:
@@ -1348,7 +1325,6 @@
             headerText.frame = CGRectMake(0, 0, 16+textRect.size.width+8+15, 44.0);
             [headerText setTitle:filterText forState:UIControlStateNormal];
             headerText.imageEdgeInsets = UIEdgeInsetsMake(2.0f, textRect.size.width+16+8, 0.0f, 0.0f);
-            [Appsee addEvent:@"Filter changed: Your Interests"];
         }
             break;
         case 4:
@@ -1363,7 +1339,6 @@
             headerText.frame = CGRectMake(0, 0, 16+textRect.size.width+8+15, 44.0);
             [headerText setTitle:filterText forState:UIControlStateNormal];
             headerText.imageEdgeInsets = UIEdgeInsetsMake(2.0f, textRect.size.width+16+8, 0.0f, 0.0f);
-            [Appsee addEvent:@"Filter changed: Created by You"];
         }
             break;
     }
@@ -1603,7 +1578,6 @@
                                                        delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No",nil];
         alert.tag=kLeaveInterest;
         [alert show];
-        [Appsee addEvent:@"Cancel Interest"];
 
 
 //        [_interestUpdateManager removeMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
@@ -1613,7 +1587,6 @@
         HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:1]];
         UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)index]integerValue]];
         [button setEnabled:NO];
-        [Appsee addEvent:@"Express Interest"];
         [_interestUpdateManager participateMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
     }
 }
@@ -1633,7 +1606,7 @@
 -(void)createAnOverlayOnAUITableViewCell:(NSIndexPath*)indexpath {
     BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexpath.row];
     HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:indexpath];
-    ExpressInterestPreview *preview=[[ExpressInterestPreview alloc]initWithFrame:CGRectMake(0, 0, 320, play.heightRow) orgn:play.organizerName];
+    ExpressInterestPreview *preview=[[ExpressInterestPreview alloc]initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, play.heightRow) orgn:play.organizerName];
     preview.tag=1374;
     
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
@@ -1720,6 +1693,18 @@
 }
 
 #pragma mark -
+#pragma mark redirectToWebPage method
+
+-(void)redirectToWebPage:(NSString*)webLink{
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    LinkViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"webLinkScreen"];
+    viewController.linkString=webLink;
+    [self.navigationController pushViewController:viewController animated:YES];
+
+}
+
+#pragma mark -
 #pragma mark UIAlertView methods
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
     
@@ -1783,7 +1768,6 @@
                 [self.animationBlurView crossDissolveShow];
                 [self.view addSubview:self.animationBlurView];
                 
-                [Appsee addEvent:@"Activate Suggested Post"];
                 if(_interestUpdateManager!=nil){
                     _interestUpdateManager.delegate = nil;
                     [_interestUpdateManager releaseServerManager];

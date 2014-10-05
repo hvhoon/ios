@@ -18,14 +18,17 @@
 #import "FriendsViewController.h"
 #import "FeedbackReporting.h"
 #import "CreateAnimationBlurView.h"
+#import "BeagleLabel.h"
+#import "LinkViewController.h"
 #if kPostInterface || 1
     #import "MessageInputView.h"
     #import "DismissiveTextView.h"
     #import "NSString+MessagesView.h"
     #import "UIButton+MessagesView.h"
     #define OSVersionIsAtLeastiOS7  (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1)
-    #define INPUT_HEIGHT 46.0f
+    #define INPUT_HEIGHT 44.0f
 #endif
+
 #define DISABLED_ALPHA 0.5f
 #define kLeaveInterest 12
 
@@ -36,6 +39,9 @@ static NSString * const CellIdentifier = @"cell";
     BOOL postsLoadComplete;
     NSTimer *timer;
     UIImageView *_partcipantScrollArrowImageView;
+    BOOL isKeyboardVisible;
+    UILabel *placeholderLabel;
+    BOOL isEditState;
 }
 
 @property(nonatomic,strong)ServerManager*chatPostManager;
@@ -45,10 +51,9 @@ static NSString * const CellIdentifier = @"cell";
 @property(nonatomic,strong)ServerManager*interestUpdateManager;
 @property(nonatomic,strong)NSMutableArray *chatPostsArray;
 @property(nonatomic,strong)UITableView *detailedInterestTableView;
-@property (nonatomic, strong) MessageKeyboardView *contentWrapper;
 @property (nonatomic, strong) UIProgressView* sendMessage;
 @property(nonatomic,strong)CreateAnimationBlurView *animationBlurView;
-#if kPostInterface || 1
+#if kPostInterface
 @property (strong, nonatomic) MessageInputView *inputToolBarView;
 @property (assign, nonatomic) CGFloat previousTextViewContentHeight;
 @property (assign, nonatomic, readonly) UIEdgeInsets originalTableViewContentInset;
@@ -66,6 +71,9 @@ static NSString * const CellIdentifier = @"cell";
 - (void)handleWillShowKeyboard:(NSNotification *)notification;
 - (void)handleWillHideKeyboard:(NSNotification *)notification;
 - (void)keyboardWillShowHide:(NSNotification *)notification;
+#else
+@property (nonatomic, strong) MessageKeyboardView *contentWrapper;
+
 #endif
 @end
 
@@ -78,7 +86,7 @@ static NSString * const CellIdentifier = @"cell";
 @synthesize chatPostManager=_chatPostManager;
 @synthesize chatPostsArray;
 @synthesize isRedirected,toLastPost,inappNotification;
-#if kPostInterface || 1
+#if kPostInterface
 @synthesize inputToolBarView;
 #endif
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -109,7 +117,7 @@ static NSString * const CellIdentifier = @"cell";
     }
     
     // Setup the progress indicator
-    _sendMessage = [[UIProgressView alloc] initWithFrame:CGRectMake(0, 64, 320, 1)];
+    _sendMessage = [[UIProgressView alloc] initWithFrame:CGRectMake(0, 64, [UIScreen mainScreen].bounds.size.width, 1)];
     [_sendMessage setProgressTintColor:[BeagleUtilities returnBeagleColor:13]];
     [self.view addSubview:_sendMessage];
     [_sendMessage setHidden:YES];
@@ -120,10 +128,11 @@ static NSString * const CellIdentifier = @"cell";
     [self.detailedInterestTableView reloadData];
     
     
-    [self scrollToBottomAnimated:NO];
     
 #if kPostInterface
-    _originalTableViewContentInset = self.detailedInterestTableView.contentInset;
+    
+   // [self scrollToBottomAnimated:NO];
+	    _originalTableViewContentInset = self.detailedInterestTableView.contentInset;
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleWillShowKeyboard:)
@@ -140,7 +149,9 @@ static NSString * const CellIdentifier = @"cell";
     
 }
 -(void)viewDidAppear:(BOOL)animated{
+#if !kPostInterface
     [self.contentWrapper _registerForNotifications];
+#endif
 }
 
 -(void)viewDidDisappear:(BOOL)animated{
@@ -153,9 +164,6 @@ static NSString * const CellIdentifier = @"cell";
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kUpdatePostsOnInterest object:nil];
     
 #if kPostInterface
-    [self.inputToolBarView resignFirstResponder];
-    [self setEditing:NO animated:YES];
-    
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
 #else
@@ -189,7 +197,6 @@ static NSString * const CellIdentifier = @"cell";
 
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
     
-    [Appsee addEvent:@"Offline Notification Received"];
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
     
     if(notifObject.notifType!=2){
@@ -408,19 +415,26 @@ static NSString * const CellIdentifier = @"cell";
 }
 
 -(void)backButtonClicked:(id)sender{
+    
+#if !kPostInterface
+
     [self.contentWrapper.inputView.textView resignFirstResponder];
     [self.view endEditing:YES];
     [self.contentWrapper.inputView.textView setText:nil];
     [self.contentWrapper.dummyInputView.textView setText:nil];
     [self.navigationController popViewControllerAnimated:YES];
+#endif
+
 }
 -(void)cancelButtonClicked:(id)sender{
+    
+#if !kPostInterface
     [self.contentWrapper.inputView.textView resignFirstResponder];
     [self.view endEditing:YES];
     [self.contentWrapper.inputView.textView setText:nil];
     [self.contentWrapper.dummyInputView.textView setText:nil];
     [self dismissViewControllerAnimated:YES completion:Nil];
-    
+#endif
 }
 - (void)viewDidLoad
 {
@@ -437,22 +451,28 @@ static NSString * const CellIdentifier = @"cell";
 
 }
 
-#pragma mark - Initialization
-- (void)setup
-{
-    CGRect frame = [UIScreen mainScreen].bounds;
-    if (OSVersionIsAtLeastiOS7 == YES) {
-        self.edgesForExtendedLayout = UIRectEdgeNone;
-    }else{
-        frame.size.height -= 20 + 44;
+-(void)resizeDetailTableView{
+    if(self.interestActivity.isParticipant){
+        self.detailedInterestTableView.frame=CGRectMake(0.0f, 64.0f, self.view.frame.size.width, self.view.frame.size.height - INPUT_HEIGHT-64.0f);
+    }
+    else{
+        self.detailedInterestTableView.frame=CGRectMake(0.0f, 64.0f, self.view.frame.size.width, self.view.frame.size.height-64.0f);
     }
     
-    self.view.frame = frame;
-    self.view.bounds = frame;
+    if(isKeyboardVisible){
+        [self doneButtonClicked:nil];
+    }
+
+}
+
+#pragma mark - Initialization
+- (void)setup{
     
-    CGSize size = self.view.frame.size;
+    CGRect tableFrame=CGRectMake(0.0f, 64.0f, self.view.frame.size.width, self.view.frame.size.height - INPUT_HEIGHT-64.0f);
+    if(!self.interestActivity.isParticipant){
+        tableFrame = CGRectMake(0.0f, 64.0f, self.view.frame.size.width, self.view.frame.size.height -64.0f);
+    }
     
-    CGRect tableFrame = CGRectMake(0.0f, 0.0f, size.width, size.height - INPUT_HEIGHT);
     self.detailedInterestTableView = [[UITableView alloc] initWithFrame:tableFrame style:UITableViewStylePlain];
     self.detailedInterestTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
     self.detailedInterestTableView.separatorInset = UIEdgeInsetsZero;
@@ -464,15 +484,24 @@ static NSString * const CellIdentifier = @"cell";
     self.detailedInterestTableView.delegate = self;
     [self.view addSubview:self.detailedInterestTableView];
     
-    CGRect inputFrame = CGRectMake(0.0f, size.height - INPUT_HEIGHT, size.width, INPUT_HEIGHT);
+    CGRect inputFrame = CGRectMake(0.0f, self.view.frame.size.height - INPUT_HEIGHT, self.view.frame.size.width, INPUT_HEIGHT);
     self.inputToolBarView = [[MessageInputView alloc] initWithFrame:inputFrame delegate:self];
     
     self.inputToolBarView.textView.keyboardDelegate = self;
     
-    self.inputToolBarView.textView.placeHolder = @"Join the conversation";
+    placeholderLabel = [[UILabel alloc] initWithFrame:CGRectMake(3, 0, self.inputToolBarView.textView.frame.size.width - 20.0, 34.0)];
+    [placeholderLabel setText:@"Join the conversation"];
+    // placeholderLabel is instance variable retained by view controller
+    [placeholderLabel setBackgroundColor:[UIColor whiteColor]];
+    placeholderLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:17.0f];
+    placeholderLabel.textColor=[BeagleUtilities returnBeagleColor:3];
+    
+    // textView is UITextView object you want add placeholder text to
+    [self.inputToolBarView.textView addSubview:placeholderLabel];
+
     
     UIButton *sendButton = [UIButton defaultPostButton];
-    sendButton.enabled = NO;
+//    sendButton.enabled = NO;
     sendButton.frame = CGRectMake(self.inputToolBarView.frame.size.width - 65.0f, 8.0f, 59.0f, 26.0f);
     [sendButton addTarget:self
                    action:@selector(sendPressed:)
@@ -480,6 +509,9 @@ static NSString * const CellIdentifier = @"cell";
     [self.inputToolBarView setSendButton:sendButton];
     [self.view addSubview:self.inputToolBarView];
     
+    if(!self.interestActivity.isParticipant){
+        [self.inputToolBarView setHidden:YES];
+    }
 }
 
 -(void)createInterestInitialCard{
@@ -487,23 +519,13 @@ static NSString * const CellIdentifier = @"cell";
     self.interestActivity.participantsArray=[[NSMutableArray alloc]init];
     if(self.interestActivity.dosRelation==0){
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(editButtonClicked:)];
-        
     }else{
         
         self.animationBlurView=[CreateAnimationBlurView loadCreateAnimationView:self.view];
         self.animationBlurView.delegate=self;
-        
-        // If it's a 3.5" screen use the bounds below
-        self.animationBlurView.frame=CGRectMake(0, 0, 320, 480);
-        
-        // Else use these bounds for the 4" screen
-        if([UIScreen mainScreen].bounds.size.height > 480.0f)
-            self.animationBlurView.frame=CGRectMake(0, 0, 320, 568);
-        
+        self.animationBlurView.frame=CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
         [self.animationBlurView loadDetailedInterestAnimationView:self.interestActivity.organizerName];
-        
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Flag" style:UIBarButtonItemStylePlain target:self action:@selector(flagButtonClicked:)];
-        
     }
     
     if(inappNotification){
@@ -558,25 +580,40 @@ static NSString * const CellIdentifier = @"cell";
 #pragma mark Show/Hide Delegate Method
 
 - (void)show{
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStylePlain target:self action:@selector(doneButtonClicked:)];
     
+    if([self.inputToolBarView.textView hasText]||isKeyboardVisible) {
+        placeholderLabel.hidden = YES;
+    }
+    else{
+        placeholderLabel.hidden = NO;
+    }
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStylePlain target:self action:@selector(doneButtonClicked:)];
     self.navigationItem.hidesBackButton = YES;
 }
 -(void)hide{
-    
+#if 1
+    if([self.inputToolBarView.textView hasText]||isKeyboardVisible) {
+        placeholderLabel.hidden = YES;
+    }
+    else{
+        placeholderLabel.hidden = NO;
+    }
     if(self.interestActivity.dosRelation==0){
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(editButtonClicked:)];
-        
     }else{
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Flag" style:UIBarButtonItemStylePlain target:self action:@selector(flagButtonClicked:)];
-        
     }
 
     self.navigationItem.hidesBackButton = NO;
-
+#endif
 }
 
 -(void)doneButtonClicked:(id)sender{
+    
+    [self.inputToolBarView.textView resignFirstResponder];
+    [self.detailedInterestTableView reloadData];
+    [self.view endEditing:YES];
+#if !kPostInterface
     [self.contentWrapper.inputView.textView resignFirstResponder];
     [self.view endEditing:YES];
     [self.contentWrapper textViewDidChange:self.contentWrapper.inputView.textView];
@@ -599,11 +636,15 @@ static NSString * const CellIdentifier = @"cell";
                                                   animated:YES];
     
     [self.detailedInterestTableView endUpdates];
-    
+#endif
     
 }
 -(void)flagButtonClicked:(id)sender{
     
+    if([self.navigationItem.rightBarButtonItem.title isEqualToString:@"Done"]){
+        [self doneButtonClicked:nil];
+    }
+    else{
     NSString* flagMessage = [NSString stringWithFormat:@"Please tell us why you find this activity objectionable? (Enter below):\n\n\n\n--\nFlag Report:\nActivity: %@ (%ld)\nOrganizer: %@ (%ld)", self.interestActivity.activityDesc, (long)self.interestActivity.activityId, self.interestActivity.organizerName, (long)self.interestActivity.ownerid];
 
     
@@ -618,11 +659,18 @@ static NSString * const CellIdentifier = @"cell";
         [alert show];
         
     }
-
+    }
 }
 -(void)editButtonClicked:(id)sender{
     
+#if kPostInterface
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+
+    isEditState=true;
+#else
     [self.contentWrapper _unregisterForNotifications];
+#endif
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     ActivityViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"activityScreen"];
     viewController.bg_activity=self.interestActivity;
@@ -634,6 +682,8 @@ static NSString * const CellIdentifier = @"cell";
 }
 
 -(void)postClicked:(id)sender{
+
+#if !kPostInterface
     if([BeagleUtilities checkIfTheTextIsBlank:[self.contentWrapper.inputView.textView text]]){
         
         [Appsee addEvent:@"Post Chat"];
@@ -668,6 +718,7 @@ static NSString * const CellIdentifier = @"cell";
             
         }
     }
+#endif
 }
 
 -(void)removeProgressIndicator {
@@ -694,7 +745,6 @@ static NSString * const CellIdentifier = @"cell";
                                                            delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No",nil];
             alert.tag=kLeaveInterest;
             [alert show];
-            [Appsee addEvent:@"Cancel Interest"];
 
 //            [_interestUpdateManager removeMembership:self.interestActivity.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
         }
@@ -708,7 +758,6 @@ static NSString * const CellIdentifier = @"cell";
             
             UIButton *interestedButton=(UIButton*)[self.view viewWithTag:345];
             [interestedButton setEnabled:NO];
-            [Appsee addEvent:@"Express Interest"];
             [_interestUpdateManager participateMembership:self.interestActivity.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
         }
         
@@ -777,14 +826,13 @@ static NSString * const CellIdentifier = @"cell";
                            [UIColor blackColor],NSForegroundColorAttributeName,
                            style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
     
-        CGSize maximumLabelSize = CGSizeMake(288,999);
-    
-        CGRect textRect = [self.interestActivity.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
-        
+        NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString : self.interestActivity.activityDesc  attributes : attrs];
+        CGFloat height=[BeagleUtilities heightForAttributedStringWithEmojis:attributedString forWidth:[UIScreen mainScreen].bounds.size.width-32];
+
         if(self.interestActivity.participantsCount==0)
-            cardHeight=136+(int)textRect.size.height;
+            cardHeight=136+(int)height+kHeightClip;
         else
-            cardHeight=241+(int)textRect.size.height;
+            cardHeight=241+(int)height+kHeightClip;
         
         return cardHeight;
     }
@@ -800,16 +848,17 @@ static NSString * const CellIdentifier = @"cell";
                                    [UIColor blackColor],NSForegroundColorAttributeName,
                                    style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
             
-            CGSize maximumLabelSize = CGSizeMake(245,999);
+            NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString : chatCell.text
+                                                                                   attributes :attrs];
             
-            CGRect textRect = [chatCell.text boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
-                                                                            attributes:attrs
-                                                                               context:nil];
+            CGFloat height=[BeagleUtilities heightForAttributedStringWithEmojis:attributedString forWidth:[UIScreen mainScreen].bounds.size.width-75];
+
+
             
             if(indexPath.row==1)
-                return 45.0f+8.0f+textRect.size.height;
+                return 45.0f+8.0f+height+kPostTextClip;
             
-            return 45.0f+textRect.size.height;
+            return 45.0f+height+kPostTextClip;
         }
     }
 }
@@ -838,7 +887,7 @@ static NSString * const CellIdentifier = @"cell";
                                style, NSParagraphStyleAttributeName, nil];
         
         // Setting up the card (background)
-        UIView *_backgroundView=[[UIView alloc]initWithFrame:CGRectMake(0, fromTheTop, 320, 400)];
+        UIView *_backgroundView=[[UIView alloc]initWithFrame:CGRectMake(0, fromTheTop, [UIScreen mainScreen].bounds.size.width, 400)];
         _backgroundView.backgroundColor=[UIColor whiteColor];
         
         // Profile picture
@@ -874,12 +923,12 @@ static NSString * const CellIdentifier = @"cell";
                  color,NSForegroundColorAttributeName,
                  style, NSParagraphStyleAttributeName, nil];
         
-        CGSize locationTextSize = [interestActivity.locationName boundingRectWithSize:CGSizeMake(300, 999)
+        CGSize locationTextSize = [interestActivity.locationName boundingRectWithSize:CGSizeMake([UIScreen mainScreen].bounds.size.width-20, 999)
                                                                               options:NSStringDrawingUsesLineFragmentOrigin
                                                                            attributes:attrs
                                                                               context:nil].size;
         
-        UILabel *locationLabel = [[UILabel alloc] initWithFrame:CGRectMake(304-locationTextSize.width, fromTheTop, locationTextSize.width, locationTextSize.height)];
+        UILabel *locationLabel = [[UILabel alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width-locationTextSize.width-16, fromTheTop, locationTextSize.width, locationTextSize.height)];
         locationLabel.backgroundColor = [UIColor clearColor];
         locationLabel.text = interestActivity.locationName;
         locationLabel.textColor = color;
@@ -894,7 +943,7 @@ static NSString * const CellIdentifier = @"cell";
                [BeagleUtilities returnBeagleColor:4],NSForegroundColorAttributeName,
                style, NSParagraphStyleAttributeName, nil];
         
-        CGSize organizerNameSize=[interestActivity.organizerName boundingRectWithSize:CGSizeMake(300, 999)
+        CGSize organizerNameSize=[interestActivity.organizerName boundingRectWithSize:CGSizeMake([UIScreen mainScreen].bounds.size.width-20, 999)
                                                                               options:NSStringDrawingUsesLineFragmentOrigin
                                                                            attributes:attrs
                                                                               context:nil].size;
@@ -939,12 +988,34 @@ static NSString * const CellIdentifier = @"cell";
                  [UIColor blackColor],NSForegroundColorAttributeName,
                  style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
         
-        CGSize maximumLabelSize = CGSizeMake(288,999);
+        CGSize maximumLabelSize = CGSizeMake([UIScreen mainScreen].bounds.size.width-32,999);
         
+        
+        NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString : self.interestActivity.activityDesc  attributes : attrs];
+        CGFloat height=[BeagleUtilities heightForAttributedStringWithEmojis:attributedString forWidth:[UIScreen mainScreen].bounds.size.width-32];
+
         CGRect commentTextRect = [self.interestActivity.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
                                                                                attributes:attrs
                                                                                   context:nil];
         
+        
+        BeagleLabel *beagleLabel = [[BeagleLabel alloc] initWithFrame:CGRectMake(16, fromTheTop, commentTextRect.size.width,height+kHeightClip) type:1];
+        [beagleLabel setText:self.interestActivity.activityDesc];
+        beagleLabel.textAlignment = NSTextAlignmentLeft;
+        beagleLabel.numberOfLines = 0;
+        beagleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        
+        [_backgroundView addSubview:beagleLabel];
+        
+        [beagleLabel setDetectionBlock:^(BeagleHotWord hotWord, NSString *string, NSString *protocol, NSRange range) {
+                if(hotWord==BeagleLink)
+                  [self redirectToWebPage:string];
+            
+            
+            
+        }];
+
+#if 0
         UILabel *activityDescLabel = [[UILabel alloc] initWithFrame:CGRectMake(16,fromTheTop,commentTextRect.size.width,commentTextRect.size.height)];
         activityDescLabel.numberOfLines=0;
         activityDescLabel.lineBreakMode=NSLineBreakByWordWrapping;
@@ -955,8 +1026,8 @@ static NSString * const CellIdentifier = @"cell";
         activityDescLabel.textAlignment = NSTextAlignmentLeft;
         activityDescLabel.tag=3569;
         [_backgroundView addSubview:activityDescLabel];
-        
-        fromTheTop = fromTheTop+commentTextRect.size.height;
+#endif
+        fromTheTop = fromTheTop+height+kHeightClip;
         fromTheTop = fromTheTop+16.0f; // buffer after the description
 
         // Adding the counts panel here
@@ -1028,23 +1099,22 @@ static NSString * const CellIdentifier = @"cell";
                  [BeagleUtilities returnBeagleColor:4],NSForegroundColorAttributeName,
                  style, NSParagraphStyleAttributeName, nil];
         
-                _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, fromTheTop, 264, 53)];
+                _scrollMenu=[[BeaglePlayerScrollMenu alloc]initWithFrame:CGRectMake(16, fromTheTop, [UIScreen mainScreen].bounds.size.width-56, 53)];
                 scrollViewResize=FALSE;
                 _scrollMenu.tag=786;
-                _partcipantScrollArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(264+16+7, fromTheTop+13.5, 16, 21)];
+                _partcipantScrollArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width-56)+16+7, fromTheTop+13.5, 16, 21)];
                 _partcipantScrollArrowImageView.image = [UIImage imageNamed:@"Right-Scroll"];
                [_backgroundView addSubview:_scrollMenu];
                [self setUpPlayerScroll:self.interestActivity.participantsArray];
 
             [_backgroundView addSubview:_partcipantScrollArrowImageView];
             
-            if([self.interestActivity.participantsArray count]>4){
+            // When to show the next arrow and when not to!
+            if([self.interestActivity.participantsArray count]*66 > [UIScreen mainScreen].bounds.size.width-41){
                 _partcipantScrollArrowImageView.hidden=NO;
             }else{
                 _partcipantScrollArrowImageView.hidden=YES;
             }
-
-
             
             fromTheTop += 55;
             fromTheTop += 16;
@@ -1148,14 +1218,14 @@ static NSString * const CellIdentifier = @"cell";
             
             // Adding the lock image
             UIImageView *inviteOnlyIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Invite-only-icon"]];
-            inviteOnlyIcon.frame = CGRectMake(292, fromTheTop+10, 12, 15);
+            inviteOnlyIcon.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-12-16, fromTheTop+10, 12, 15);
             [_backgroundView addSubview:inviteOnlyIcon];
             
             // Adding the # of Friends
             NSString* inviteText = @"Invite Only";
             CGSize inviteOnlyTextSize = [inviteText boundingRectWithSize:CGSizeMake(288, 999) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
             
-            UILabel* inviteOnlyText = [[UILabel alloc] initWithFrame:CGRectMake((320-(35+inviteOnlyTextSize.width)), fromTheTop+10, inviteOnlyTextSize.width, inviteOnlyTextSize.height)];
+            UILabel* inviteOnlyText = [[UILabel alloc] initWithFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width-(35+inviteOnlyTextSize.width)), fromTheTop+10, inviteOnlyTextSize.width, inviteOnlyTextSize.height)];
             inviteOnlyText.attributedText = [[NSAttributedString alloc] initWithString:inviteText attributes:attrs];
             [_backgroundView addSubview:inviteOnlyText];
         }
@@ -1163,14 +1233,14 @@ static NSString * const CellIdentifier = @"cell";
             
             // Adding the globe icon
             UIImageView *publicIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Public"]];
-            publicIcon.frame = CGRectMake(289, fromTheTop+10, 15, 15);
+            publicIcon.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-15-16, fromTheTop+10, 15, 15);
             [_backgroundView addSubview:publicIcon];
             
             // Adding the public text
             NSString* publicText = @"Public";
             CGSize publicTextSize = [publicText boundingRectWithSize:CGSizeMake(288, 999) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
             
-            UILabel* publicTextLabel = [[UILabel alloc] initWithFrame:CGRectMake((320-(37+publicTextSize.width)), fromTheTop+9, publicTextSize.width, publicTextSize.height)];
+            UILabel* publicTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width-(37+publicTextSize.width)), fromTheTop+9, publicTextSize.width, publicTextSize.height)];
             publicTextLabel.attributedText = [[NSAttributedString alloc] initWithString:publicText attributes:attrs];
             [_backgroundView addSubview:publicTextLabel];
         }
@@ -1183,7 +1253,7 @@ static NSString * const CellIdentifier = @"cell";
         fromTheTop += 33+20;
 
         // Add the view to the cell
-        _backgroundView.frame=CGRectMake(0, 0, 320, fromTheTop);
+        _backgroundView.frame=CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, fromTheTop);
         [cell.contentView addSubview:_backgroundView];
         
         if(!postsLoadComplete){
@@ -1192,12 +1262,16 @@ static NSString * const CellIdentifier = @"cell";
         [activityIndicatorView setColor:[BeagleUtilities returnBeagleColor:12]];
         activityIndicatorView.hidesWhenStopped=YES;
              if(self.interestActivity.isParticipant)
-                 activityIndicatorView.frame=CGRectMake(141.5,64+fromTheTop-25+(self.view.frame.size.height-(64+47+fromTheTop))/2, 37, 37);
+                 activityIndicatorView.frame=CGRectMake((self.view.frame.size.width-37)/2,64+fromTheTop-25+(self.view.frame.size.height-(64+47+fromTheTop))/2, 37, 37);
              else{
-                 activityIndicatorView.frame=CGRectMake(141.5,64+fromTheTop-25+(self.view.frame.size.height-(64+fromTheTop))/2, 37, 37);
+                 activityIndicatorView.frame=CGRectMake((self.view.frame.size.width-37)/2,64+fromTheTop-25+(self.view.frame.size.height-(64+fromTheTop))/2, 37, 37);
                  
              }
-        [self.view insertSubview:activityIndicatorView aboveSubview:self.contentWrapper];
+#if kPostInterface
+       [self.view insertSubview:activityIndicatorView aboveSubview:self.detailedInterestTableView];
+#else
+             [self.view insertSubview:activityIndicatorView aboveSubview:self.contentWrapper];
+#endif
         [activityIndicatorView startAnimating];
 
         }else{
@@ -1269,7 +1343,7 @@ static NSString * const CellIdentifier = @"cell";
         [cell.contentView addSubview:organizerNameLabel];
         
         // Time stamp
-        color=[BeagleUtilities returnBeagleColor:3];
+        color=[[BeagleManager SharedInstance] mediumDominantColor];
         attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                  [UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f], NSFontAttributeName,
                  color,NSForegroundColorAttributeName,
@@ -1296,16 +1370,41 @@ static NSString * const CellIdentifier = @"cell";
                  [UIColor blackColor],NSForegroundColorAttributeName,
                  style, NSParagraphStyleAttributeName, NSLineBreakByWordWrapping, nil];
         
-        CGSize maximumLabelSize = CGSizeMake(245,999);
+        CGSize maximumLabelSize = CGSizeMake([UIScreen mainScreen].bounds.size.width-75,999);
         
-        CGRect commentTextRect = [chatCell.text boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil];
+        NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString : chatCell.text attributes : attrs];
+        CGRect commentTextRect = [attributedString boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin context:nil];
+
         
+        
+        CGFloat height=[BeagleUtilities heightForAttributedStringWithEmojis:attributedString forWidth:[UIScreen mainScreen].bounds.size.width-75];
+        BeagleLabel *beagleLabel = [[BeagleLabel alloc] initWithFrame:CGRectMake(59, cellTop, commentTextRect.size.width, height+kPostTextClip) type:2];
+        [beagleLabel setTextColor:[UIColor blackColor]];
+        [beagleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:15.0f]];
+        [beagleLabel setAttributes:attrs];
+        [beagleLabel setText:chatCell.text];
+        beagleLabel.textAlignment = NSTextAlignmentLeft;
+        beagleLabel.numberOfLines = 0;
+        beagleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        [cell.contentView addSubview:beagleLabel];
+        
+        [beagleLabel setDetectionBlock:^(BeagleHotWord hotWord, NSString *string, NSString *protocol, NSRange range) {
+                    if(hotWord==BeagleLink)
+                        [self redirectToWebPage:string];
+            
+            
+            
+        }];
+
+        
+#if 0
         UILabel *chatDescLabel = [[UILabel alloc] initWithFrame:CGRectMake(59, cellTop, commentTextRect.size.width, commentTextRect.size.height)];
         chatDescLabel.attributedText = [[NSAttributedString alloc] initWithString:chatCell.text attributes:attrs];
         chatDescLabel.numberOfLines = 0;
         [cell.contentView addSubview:chatDescLabel];
+#endif
         
-        cellTop = cellTop + commentTextRect.size.height;
+        cellTop = cellTop + height+kPostTextClip;
         cellTop = cellTop + 16.0f;
         
         return cell;
@@ -1323,6 +1422,8 @@ static NSString * const CellIdentifier = @"cell";
         [iconDownloader startDownload:kInterestChat];
     }
 }
+
+
 
 -(void)showArrowIndicator{
     _partcipantScrollArrowImageView.hidden=NO;
@@ -1400,6 +1501,31 @@ static NSString * const CellIdentifier = @"cell";
     [self.navigationController pushViewController:viewController animated:YES];
 
 }
+
+#pragma mark -
+#pragma mark redirectToWebPage method
+
+-(void)redirectToWebPage:(NSString*)webLink{
+    
+    NSLog(@"webLink=%@",webLink);
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    LinkViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"webLinkScreen"];
+    viewController.linkString=webLink;
+    [self.navigationController pushViewController:viewController animated:YES];
+
+#if kPostInterface
+    if(isKeyboardVisible){
+        [self doneButtonClicked:nil];
+    }
+#else
+    if([self.contentWrapper iskeyboardVisible]){
+        [self doneButtonClicked:nil];
+    }
+    
+#endif
+    
+}
+
 #pragma mark - server calls
 
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
@@ -1455,15 +1581,34 @@ static NSString * const CellIdentifier = @"cell";
                         
                     }
                     NSArray *chats=[interest objectForKey:@"chats"];
+                    
                     if (chats != nil && [chats class] != [NSNull class] && [chats count]!=0) {
-                        NSMutableArray *chatsArray=[[NSMutableArray alloc]init];
+                        NSMutableArray *postArray=[[NSMutableArray alloc]init];
                         imageDownloadsInProgress=[NSMutableDictionary new];
                         for(id el in chats){
                             InterestChatClass *chatClass=[[InterestChatClass alloc]initWithDictionary:el];
-                            [chatsArray addObject:chatClass];
+                            [postArray addObject:chatClass];
                         }
-                        if([chatsArray count]!=0){
-                            self.chatPostsArray=[NSMutableArray arrayWithArray:chatsArray];
+                    
+                    NSArray *chatArray=[NSArray arrayWithArray:postArray];
+                    if([chatArray count]!=0){
+                        chatArray = [chatArray sortedArrayUsingComparator: ^(InterestChatClass *a, InterestChatClass *b) {
+                            
+                            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+                            
+                            NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+                            [dateFormatter setTimeZone:utcTimeZone];
+                            
+                            NSDate *s1 = [dateFormatter dateFromString:a.timestamp];//add the string
+                            NSDate *s2 = [dateFormatter dateFromString:b.timestamp];
+                            
+                            return [s1 compare:s2];
+                        }];
+
+                    }
+                        if([chatArray count]!=0){
+                            self.chatPostsArray=[NSMutableArray arrayWithArray:chatArray];
                         }
                     }
                     postsLoadComplete=TRUE;
@@ -1592,14 +1737,18 @@ static NSString * const CellIdentifier = @"cell";
                     [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button-Unfilled"] withColor:[outlineButtonColor colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
                     [interestedButton setTitleColor:[outlineButtonColor colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
                     [interestedButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Star-Unfilled"] withColor:[outlineButtonColor colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+#if kPostInterface
                     
+                    [self.inputToolBarView setHidden:YES];
+                    [self resizeDetailTableView];
+#else
                     self.contentWrapper.interested=NO;
                     [self.contentWrapper _setInitialFrames];
                     
                     [self.contentWrapper.inputView setHidden:YES];
                     [self.contentWrapper.dummyInputView setHidden:YES];
                     
-                    
+#endif
                     NSMutableArray *testArray=[NSMutableArray new];
                     for(BeagleUserClass *data in self.interestActivity.participantsArray){
                         if(data.beagleUserId!=[[[BeagleManager SharedInstance]beaglePlayer]beagleUserId]){
@@ -1725,8 +1874,10 @@ static NSString * const CellIdentifier = @"cell";
         // Make sure the animation completed
         if(_sendMessage.progress == 1.0f) {
             [NSTimer scheduledTimerWithTimeInterval:.5 target:self selector:@selector(removeProgressIndicator) userInfo:nil repeats:NO];
+ #if !kPostInterface
             self.contentWrapper.inputView.rightButton.enabled = YES;
             self.contentWrapper.inputView.rightButton.tintColor = [BeagleUtilities returnBeagleColor:13];
+ #endif
         }
 
     }
@@ -1779,8 +1930,10 @@ static NSString * const CellIdentifier = @"cell";
         _chatPostManager = nil;
         [_sendMessage setHidden:YES];
         [_sendMessage setProgress:0.0];
+    #if !kPostInterface
         self.contentWrapper.inputView.rightButton.enabled = YES;
         self.contentWrapper.inputView.rightButton.tintColor = [BeagleUtilities returnBeagleColor:13];
+   #endif
     }
     
     NSString *message = NSLocalizedString (@"Well I guess those messages weren't that important. Please try again in a bit.",
@@ -1818,8 +1971,11 @@ static NSString * const CellIdentifier = @"cell";
         _chatPostManager = nil;
         [_sendMessage setHidden:YES];
         [_sendMessage setProgress:0.0];
+        
+    #if !kPostInterface
         self.contentWrapper.inputView.rightButton.enabled = YES;
         self.contentWrapper.inputView.rightButton.tintColor = [BeagleUtilities returnBeagleColor:13];
+    #endif
     }
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
     [alert show];
@@ -1922,6 +2078,7 @@ static NSString * const CellIdentifier = @"cell";
 #pragma mark - Actions
 - (void)sendPressed:(UIButton *)sender
 {
+    if(isKeyboardVisible||[self.inputToolBarView.textView hasText])
     [self sendPressed:sender
                       withText:[self.inputToolBarView.textView.text trimWhitespace]];
 }
@@ -1930,8 +2087,6 @@ static NSString * const CellIdentifier = @"cell";
 {
     
         if([BeagleUtilities checkIfTheTextIsBlank:text]){
-            
-            [Appsee addEvent:@"Post Chat"];
             
             // Gray out 'Post' button
 
@@ -2014,10 +2169,16 @@ static NSString * const CellIdentifier = @"cell";
         [interestArray addObject:[[BeagleManager SharedInstance]beaglePlayer]];
         self.interestActivity.participantsArray=interestArray;
     }
+#if kPostInterface
+    [self.inputToolBarView setHidden:NO];
+    [self resizeDetailTableView];
+    
+#else
     self.contentWrapper.interested=YES;
     [self.contentWrapper _setInitialFrames];
     [self.contentWrapper.inputView setHidden:NO];
     [self.contentWrapper.dummyInputView setHidden:NO];
+#endif
     [self.detailedInterestTableView reloadData];
     
 
@@ -2035,11 +2196,44 @@ static NSString * const CellIdentifier = @"cell";
 
 - (void)scrollToBottomAnimated:(BOOL)animated
 {
+    
+    
+    CGPoint contentOffset = self.detailedInterestTableView.contentOffset;
+    
+    CGFloat contentHeight = self.detailedInterestTableView.contentSize.height;
+    CGFloat scrollViewHeight = self.detailedInterestTableView.bounds.size.height;
+    
+    UIEdgeInsets contentInset = self.detailedInterestTableView.contentInset;
+    CGFloat bottomInset = contentInset.bottom;
+    CGFloat topInset = contentInset.top;
+    
+    CGFloat contentOffsetY;
+    contentOffsetY = contentHeight - (scrollViewHeight - bottomInset);
+    contentOffsetY = MAX(contentOffsetY, -topInset);
+
+    contentOffset.y = contentOffsetY;
+    self.detailedInterestTableView.contentOffset = contentOffset;
+    
+    if(isEditState){
+        isEditState=false;
+        [self.detailedInterestTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow: 0 inSection:0]
+                                              atScrollPosition:UITableViewScrollPositionTop
+                                                      animated:NO];
+    }
+
+#if 0
     if([self.chatPostsArray count]>0){
         [self.detailedInterestTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow: [self.chatPostsArray count] inSection:0]
                                               atScrollPosition:UITableViewScrollPositionTop
                                                       animated:YES];
     }
+    else{
+        [self.detailedInterestTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow: 0 inSection:0]
+                                              atScrollPosition:UITableViewScrollPositionTop
+                                                      animated:YES];
+        
+    }
+#endif
 }
 
 
@@ -2071,6 +2265,14 @@ static NSString * const CellIdentifier = @"cell";
 
 - (void)textViewDidChange:(UITextView *)textView
 {
+    
+    if([textView hasText]||isKeyboardVisible) {
+        placeholderLabel.hidden = YES;
+    }
+    else{
+        placeholderLabel.hidden = NO;
+    }
+
     CGFloat maxHeight = [MessageInputView maxHeight];
     CGSize size = [textView sizeThatFits:CGSizeMake(textView.frame.size.width, maxHeight)];
     CGFloat textViewContentHeight = size.height;
@@ -2118,23 +2320,28 @@ static NSString * const CellIdentifier = @"cell";
                              }
                          }
                          completion:^(BOOL finished) {
+                             [self scrollToBottomAnimated:YES];
                          }];
         
         
         self.previousTextViewContentHeight = MIN(textViewContentHeight, maxHeight);
     }
     
-    self.inputToolBarView.sendButton.enabled = ([textView.text trimWhitespace].length > 0);
+//    self.inputToolBarView.sendButton.enabled = ([textView.text trimWhitespace].length > 0);
 }
 
 #pragma mark - Keyboard notifications
 - (void)handleWillShowKeyboard:(NSNotification *)notification
 {
+    isKeyboardVisible=true;
+    [self show];
     [self keyboardWillShowHide:notification];
 }
 
 - (void)handleWillHideKeyboard:(NSNotification *)notification
 {
+    isKeyboardVisible=false;
+    [self hide];
     [self keyboardWillShowHide:notification];
 }
 
@@ -2174,9 +2381,9 @@ static NSString * const CellIdentifier = @"cell";
                          CGFloat inputViewFrameY = keyboardY - inputViewFrame.size.height;
                          
                          // for ipad modal form presentations
-                         CGFloat messageViewFrameBottom = self.view.frame.size.height - INPUT_HEIGHT;
-                         if(inputViewFrameY > messageViewFrameBottom)
-                             inputViewFrameY = messageViewFrameBottom;
+//                         CGFloat messageViewFrameBottom = self.view.frame.size.height - INPUT_HEIGHT;
+//                         if(inputViewFrameY > messageViewFrameBottom)
+//                             inputViewFrameY = messageViewFrameBottom;
                          
                          self.inputToolBarView.frame = CGRectMake(inputViewFrame.origin.x,
                                                                   inputViewFrameY,
@@ -2184,12 +2391,16 @@ static NSString * const CellIdentifier = @"cell";
                                                                   inputViewFrame.size.height);
                          
                          UIEdgeInsets insets = self.originalTableViewContentInset;
-                         insets.bottom = self.view.frame.size.height - self.inputToolBarView.frame.origin.y - inputViewFrame.size.height;
+//                         insets.bottom = self.view.frame.size.height - self.inputToolBarView.frame.origin.y - inputViewFrame.size.height;
+                         
+                         insets.bottom = self.view.frame.size.height - INPUT_HEIGHT-self.inputToolBarView.frame.origin.y;
                          
                          self.detailedInterestTableView.contentInset = insets;
                          self.detailedInterestTableView.scrollIndicatorInsets = insets;
                      }
                      completion:^(BOOL finished) {
+                         
+                         [self scrollToBottomAnimated:YES];
                      }];
 }
 

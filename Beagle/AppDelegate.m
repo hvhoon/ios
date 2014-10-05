@@ -6,7 +6,6 @@
 //  Copyright (c) 2014 soclivity. All rights reserved.
 //
 
-#import "AppDelegate.h"
 #import <Crashlytics/Crashlytics.h>
 #import <Instabug/Instabug.h>
 #import "HomeViewController.h"
@@ -48,9 +47,6 @@ void uncaughtExceptionHandler(NSException *exception) {
     NSString *storyboardId = [[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"] ? @"initialNavBeagle" : @"loginNavScreen";
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     UIViewController *initViewController = [storyboard instantiateViewControllerWithIdentifier:storyboardId];
-    
-    // Start AppSee analytics
-    [Appsee start:@"d4f6b6daba7e4c3ca8b7ad040c2edaa3"];
     
     // Facebook SDK settings
     [FBSettings enablePlatformCompatibility:YES];
@@ -126,7 +122,7 @@ void uncaughtExceptionHandler(NSException *exception) {
         
     }
   }
-//    [self handlePush:launchOptions];
+    //[self handlePush:launchOptions];
     return YES;
 }
 
@@ -335,8 +331,9 @@ void uncaughtExceptionHandler(NSException *exception) {
     
     // app was just brought from background to foreground
     NSLog(@"userInfo=%@",userInfo);
-    
         if([[[userInfo valueForKey:@"p"] valueForKey:@"nty"]integerValue]==CHAT_TYPE){
+            
+
 //            [_notificationServerManager requestInAppNotificationForPosts:[[[userInfo valueForKey:@"p"] valueForKey:@"cid"]integerValue]notifType:2];
             
             NSMutableDictionary *dictionary=[NSMutableDictionary new];
@@ -354,15 +351,13 @@ void uncaughtExceptionHandler(NSException *exception) {
            [dictionary setObject:[NSNumber numberWithInteger:[[[userInfo valueForKey:@"p"] valueForKey:@"aid"]integerValue]] forKey:@"activity_id"];
   
             [dictionary setObject:[[userInfo valueForKey:@"p"] valueForKey:@"cid"] forKey:@"chatid"];
-            
-            NSNotification* notification = [NSNotification notificationWithName:kNotificationForInterestPost object:nil userInfo:dictionary];
-            [[NSNotificationCenter defaultCenter] postNotification:notification];
-
             [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
-
             
+            [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kNotificationForInterestPost object:nil userInfo:dictionary]];
             
         }else{
+            
+
 //        else if([[[userInfo valueForKey:@"p"] valueForKey:@"nty"]integerValue]==CANCEL_ACTIVITY_TYPE){
         
             NSMutableDictionary *dictionary=[NSMutableDictionary new];
@@ -381,11 +376,10 @@ void uncaughtExceptionHandler(NSException *exception) {
             NSMutableDictionary *activity=[NSMutableDictionary new];
             [activity setObject:[NSNumber numberWithInteger:[[[userInfo valueForKey:@"p"] valueForKey:@"aid"]integerValue]] forKey:@"id"];
             [dictionary setObject:activity forKey:@"activity"];
-            
-            NSNotification* notification = [NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:nil userInfo:dictionary];
-            [[NSNotificationCenter defaultCenter] postNotification:notification];
-            
+
             [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
+            
+            [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:nil userInfo:dictionary]];
 
         }
 //            else
@@ -395,7 +389,6 @@ void uncaughtExceptionHandler(NSException *exception) {
         
     
 }
-
 
 -(void)handleSilentNotifications:(NSDictionary*)userInfo{
         NSLog(@"userInfo=%@",userInfo);
@@ -421,9 +414,10 @@ void uncaughtExceptionHandler(NSException *exception) {
     [self performSelectorOnMainThread:@selector(sendAppNotification:) withObject:notificationDictionary waitUntilDone:NO];
 }
 -(void)sendAppNotification:(NSMutableDictionary*)appNotifDictionary{
-    NSNotification* notification = [NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:self userInfo:appNotifDictionary];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kBeagleBadgeCount object:self userInfo:nil]];
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:self userInfo:appNotifDictionary]];
+    
+
 }
 - (void)loadProfileImageDataForAPost:(NSMutableDictionary*)notificationDictionary {
     NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[notificationDictionary objectForKey:@"player_photo_url"]]];
@@ -433,15 +427,13 @@ void uncaughtExceptionHandler(NSException *exception) {
     [self performSelectorOnMainThread:@selector(sendAppNotificationForPost:) withObject:notificationDictionary waitUntilDone:NO];
 }
 -(void)sendAppNotificationForPost:(NSMutableDictionary*)appNotifDictionary{
-    NSNotification* notification = [NSNotification notificationWithName:kNotificationForInterestPost object:self userInfo:appNotifDictionary];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
     [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
+  [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kNotificationForInterestPost object:self userInfo:appNotifDictionary]];
     
     
 }
 -(void)sendSilentNotification:(NSMutableDictionary*)appNotifDictionary{
-    NSNotification* notification = [NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:self userInfo:appNotifDictionary];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:self userInfo:appNotifDictionary]];
 }
 
 
@@ -449,10 +441,68 @@ void uncaughtExceptionHandler(NSException *exception) {
     
     
     // Pass on
-    [self application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:nil];
+//    [self application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:nil];
+    
+    {
+        
+        
+        
+        NSLog(@"didReceiveRemoteNotification");
+        if([userInfo[@"aps"][@"alert"] length]== 0){
+            if(_notificationServerManager!=nil){
+                _notificationServerManager.delegate = nil;
+                [_notificationServerManager releaseServerManager];
+                _notificationServerManager = nil;
+            }
+            _notificationServerManager=[[ServerManager alloc]init];
+            _notificationServerManager.delegate=self;
+            
+            
+            [self handleSilentNotifications:userInfo];
+            
+            // Check if in background
+            if ([UIApplication sharedApplication].applicationState == UIApplicationStateInactive) {
+                NSLog(@"UIApplicationStateInactive");
+                
+                // User opened the push notification
+                
+            } else if(application.applicationState == UIApplicationStateActive){
+                NSLog(@"UIApplicationStateActive");
+                
+                
+            }else{
+                // User hasn't opened it, this was a silent update
+                NSLog(@"User hasn't opened it, this was a silent update");
+                
+                
+            }
+            
+            //         [self presentNotification];
+            
+            
+        }else{
+            
+            if(_notificationServerManager!=nil){
+                _notificationServerManager.delegate = nil;
+                [_notificationServerManager releaseServerManager];
+                _notificationServerManager = nil;
+            }
+            _notificationServerManager=[[ServerManager alloc]init];
+            _notificationServerManager.delegate=self;
+            
+            
+            if ( application.applicationState == UIApplicationStateActive){
+                [self handleOnlineNotifications:userInfo];
+            }
+            else {
+                [self handleOfflineNotifications:userInfo];
+            }
+        }
+        
+    }
     
 }
-
+#if 0
 -(void) application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     
     
@@ -517,14 +567,14 @@ void uncaughtExceptionHandler(NSException *exception) {
         if ( application.applicationState == UIApplicationStateActive){
             [self handleOnlineNotifications:userInfo];
         }
-        else{
-            [self handleOfflineNotifications:userInfo];
+        else if( application.applicationState != UIApplicationStateBackground){
+              [self handleOfflineNotifications:userInfo];
         }
     }
     completionHandler(UIBackgroundFetchResultNewData);
 
 }
-
+#endif
 
 -(void)presentNotification{
     UILocalNotification* localNotification = [[UILocalNotification alloc] init];
@@ -559,7 +609,6 @@ void uncaughtExceptionHandler(NSException *exception) {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     
     NSLog(@"applicationWillEnterForeground");
-    
         if([[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"]){
     [[BeagleManager SharedInstance]setBadgeCount:[[UIApplication sharedApplication]applicationIconBadgeNumber]];
 
@@ -988,10 +1037,9 @@ void uncaughtExceptionHandler(NSException *exception) {
                 if (offlinePost != nil && [offlinePost class] != [NSNull class]) {
                     
                     [offlinePost setObject:[NSNumber numberWithInteger:2] forKey:@"notifType"];
-                    
-                    NSNotification* notification = [NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:nil userInfo:offlinePost];
-                    [[NSNotificationCenter defaultCenter] postNotification:notification];
                     [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
+                    
+                    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:nil userInfo:offlinePost]];
                     
                     
                 }
@@ -1011,10 +1059,9 @@ void uncaughtExceptionHandler(NSException *exception) {
                     
                     
                     [interestPost setObject:[NSNumber numberWithInteger:2] forKey:@"notifType"];
-                    
-                    NSNotification* notification = [NSNotification notificationWithName:kNotificationForInterestPost object:nil userInfo:interestPost];
-                    [[NSNotificationCenter defaultCenter] postNotification:notification];
                     [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
+                    
+                    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kNotificationForInterestPost object:nil userInfo:interestPost]];
                     
                     
                     

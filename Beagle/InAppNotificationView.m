@@ -41,7 +41,6 @@ UIWindowLevel windowLevel;
         CGRect viewBounds = [[[window subviews] lastObject] bounds];
         self = [super initWithFrame:CGRectMake(0, 0, viewBounds.size.width, 64)];
 
-        [Appsee addEvent:@"Notification Appears"];
         UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
         // make your gesture recognizer priority
         singleTap.numberOfTapsRequired = 1;
@@ -56,7 +55,7 @@ UIWindowLevel windowLevel;
         UIImageView *profileImageView=[[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 30, 29)];
         
         self.summaryLabel = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
-        self.summaryLabel.frame=CGRectMake(63, 14.5, 214, 35);
+        self.summaryLabel.frame=CGRectMake(63, 14.5, viewBounds.size.width-63-35-8, 35);
         self.summaryLabel.textColor=[UIColor whiteColor];
         self.summaryLabel.font =[UIFont fontWithName:@"HelveticaNeue" size:14.0f];
         self.summaryLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -136,8 +135,6 @@ UIWindowLevel windowLevel;
 -(void)handleSingleTap:(UITapGestureRecognizer*)sender{
     
     [self dismissWithAnimation:YES];
-    
-    [Appsee addEvent:@"Notification Tapped"];
 
     if (self.notification.backgroundTap && self.notification.notificationType!=CANCEL_ACTIVITY_TYPE) {
          if (self.delegate && [self.delegate respondsToSelector:@selector(backgroundTapToPush:)])
@@ -203,7 +200,6 @@ UIWindowLevel windowLevel;
 - (void)buttonTapped:(id)sender
 {
     [self dismissWithAnimation:YES];
-    [Appsee addEvent:@"Notification Dismiss"];
 
 }
 

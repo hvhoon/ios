@@ -100,32 +100,17 @@ enum Weeks {
     
     
     // All the variables we need to present this screen correctly
-    self.blrTimeView=[[EventTimeBlurView alloc]initWithFrame:self.view.frame parentView:self.view];
+    self.blrTimeView=[[EventTimeBlurView alloc]initWithFrame:[UIScreen mainScreen].bounds parentView:self.view];
     self.blrVisbilityView=[EventVisibilityBlurView loadVisibilityFilter:self.view];
-    
-    // If it's a 3.5" screen use the bounds below
-    self.blrVisbilityView.frame=CGRectMake(0, 0, 320, 480);
-    
-    // Else use these bounds for the 4" screen
-    if([UIScreen mainScreen].bounds.size.height > 480.0f)
-        self.blrVisbilityView.frame=CGRectMake(0, 0, 320, 568);
-    
+    self.blrVisbilityView.frame=CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
     self.blrVisbilityView.delegate=self;
     self.blrTimeView.delegate=self;
     NSString *visibilityText = nil;
     [self.blrVisbilityView updateConstraints];
     UIColor* clickable = [[BeagleManager SharedInstance] darkDominantColor];
-    
     self.animationBlurView=[CreateAnimationBlurView loadCreateAnimationView:self.view];
+    self.animationBlurView.frame=CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
     self.animationBlurView.delegate=self;
-    
-    // If it's a 3.5" screen use the bounds below
-    self.animationBlurView.frame=CGRectMake(0, 0, 320, 480);
-    
-    // Else use these bounds for the 4" screen
-    if([UIScreen mainScreen].bounds.size.height > 480.0f)
-        self.animationBlurView.frame=CGRectMake(0, 0, 320, 568);
-    
     self.blrLocationView=[LocationBlurView loadLocationFilter:self.view];
     self.blrLocationView.delegate=self;
     
@@ -634,10 +619,8 @@ enum Weeks {
 
     if(editState) {
         [self.activityServerManager updateActivityOnBeagle:bg_activity];
-        [Appsee addEvent:@"Edit Activity"];
     }
     else{
-        [Appsee addEvent:@"Create Activity"];
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
         [self.animationBlurView blurWithColor];
         [self.animationBlurView crossDissolveShow];
@@ -692,7 +675,6 @@ enum Weeks {
                                                    delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No",nil];
     alert.tag=kDeleteActivity;
     [alert show];
-    [Appsee addEvent:@"Delete Activity"];
 
 }
 
@@ -759,7 +741,7 @@ enum Weeks {
 }
 
 -(void)textViewDidBeginEditing:(UITextView *)textView{
-    [Appsee pause];
+
 }
 
 
@@ -788,7 +770,6 @@ enum Weeks {
 	}
 	else if([[textView text] length] == 140)
 	{
-		[Appsee addEvent:@"140 Character Limit Reached"];
         return NO;
 	}
 	if(flag == NO)
@@ -807,9 +788,6 @@ enum Weeks {
     if (![textView hasText]) {
         placeholderLabel.hidden = NO;
     }
-    [Appsee resume];
-    
-    
 }
 
 

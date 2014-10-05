@@ -11,6 +11,7 @@
 @interface MessageTextView : DismissiveTextView
 @property (copy, nonatomic) NSString *placeHolder;
 @property (strong, nonatomic) UIColor *placeHolderTextColor;
+
 - (NSUInteger)numberOfLinesOfText;
 + (NSUInteger)maxCharactersPerLine;
 + (NSUInteger)numberOfLinesForMessage:(NSString *)text;

@@ -8,6 +8,8 @@
 
 #import "BeagleUtilities.h"
 #import "JSON.h"
+#import <CoreText/CoreText.h>
+
 @implementation BeagleUtilities
 + (int) getRandomIntBetweenLow:(int) low andHigh:(int) high {
 	return ((arc4random() % (high - low + 1)) + low);
@@ -836,5 +838,14 @@
     }
     return NO;
 
+}
++ (CGFloat)heightForAttributedStringWithEmojis:(NSAttributedString *)attributedString forWidth:(CGFloat)width {
+    CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString((CFAttributedStringRef)attributedString);
+    CFRange fitRange;
+    CGSize frameSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, CFRangeMake(0, 0), NULL, CGSizeMake(width, CGFLOAT_MAX), &fitRange);
+    
+    CFRelease(framesetter);
+    
+    return frameSize.height;
 }
 @end

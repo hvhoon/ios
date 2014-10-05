@@ -38,9 +38,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationUsageDescription</key>
-	<string>Beagle uses your location to figure out what&apos;s happening around you.</string>
+	<string>Beagle uses your location to figure out what's happening around you.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Beagle uses your location to figure out what&apos;s happening around you.</string>
+	<string>Beagle uses your location to figure out what's happening around you.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>

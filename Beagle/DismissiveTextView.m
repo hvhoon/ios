@@ -24,7 +24,7 @@
     self = [super initWithFrame:frame];
     if(self) {
         self.editable = YES;
-        
+        self.backgroundColor=[UIColor clearColor];
         self.inputAccessoryView = [[UIView alloc] init];
         
         [[NSNotificationCenter defaultCenter] addObserver:self

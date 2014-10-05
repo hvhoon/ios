@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6245" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+        <deployment defaultVersion="1808" identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -12,7 +13,6 @@
             <subviews>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jId-vI-ctu">
                     <rect key="frame" x="40" y="20" width="224" height="62"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="62" id="4Y1-Pj-PtN"/>
                         <constraint firstAttribute="width" constant="224" id="FgJ-bc-Dpa"/>
@@ -32,7 +32,6 @@
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OoF-ek-A5i">
                     <rect key="frame" x="40" y="90" width="224" height="62"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="224" id="UGD-eG-HFs"/>
                         <constraint firstAttribute="height" constant="62" id="jev-7q-SAy"/>
@@ -52,7 +51,6 @@
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1IT-k4-dRh">
                     <rect key="frame" x="40" y="160" width="224" height="62"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="224" id="7pZ-3w-6XM"/>
                         <constraint firstAttribute="height" constant="62" id="Rkd-En-fhd"/>
@@ -72,9 +70,7 @@
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="e9X-gY-Wz0">
                     <rect key="frame" x="0.0" y="241" width="320" height="39"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="320" id="Cbu-4S-ekh"/>
                         <constraint firstAttribute="height" constant="39" id="Wqw-4e-eeP"/>
                     </constraints>
                     <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="15"/>
@@ -96,16 +92,18 @@
             <constraints>
                 <constraint firstItem="jId-vI-ctu" firstAttribute="top" secondItem="7w6-D3-PcJ" secondAttribute="top" constant="20" id="6ti-c9-l0G"/>
                 <constraint firstItem="OoF-ek-A5i" firstAttribute="top" relation="greaterThanOrEqual" secondItem="jId-vI-ctu" secondAttribute="bottom" constant="8" id="7jM-I1-BnL"/>
-                <constraint firstItem="jId-vI-ctu" firstAttribute="leading" secondItem="7w6-D3-PcJ" secondAttribute="leading" constant="40" id="8uH-F7-KoY"/>
                 <constraint firstItem="e9X-gY-Wz0" firstAttribute="top" relation="greaterThanOrEqual" secondItem="1IT-k4-dRh" secondAttribute="bottom" constant="19" id="9KR-ia-lEU"/>
+                <constraint firstAttribute="centerX" secondItem="1IT-k4-dRh" secondAttribute="centerX" constant="8" id="KbL-yU-DE6"/>
                 <constraint firstAttribute="bottom" secondItem="e9X-gY-Wz0" secondAttribute="bottom" id="Kc7-O0-FWa"/>
-                <constraint firstItem="1IT-k4-dRh" firstAttribute="leading" secondItem="7w6-D3-PcJ" secondAttribute="leading" constant="40" id="PhN-lr-EPk"/>
+                <constraint firstAttribute="centerX" secondItem="jId-vI-ctu" secondAttribute="centerX" constant="8" id="NEa-Uk-fR0"/>
                 <constraint firstItem="1IT-k4-dRh" firstAttribute="top" relation="lessThanOrEqual" secondItem="OoF-ek-A5i" secondAttribute="bottom" constant="16" id="RmM-MY-slX"/>
-                <constraint firstItem="OoF-ek-A5i" firstAttribute="leading" secondItem="7w6-D3-PcJ" secondAttribute="leading" constant="40" id="dlo-Ax-W7m"/>
+                <constraint firstAttribute="trailing" secondItem="e9X-gY-Wz0" secondAttribute="trailing" id="a8A-Wh-PZZ"/>
+                <constraint firstAttribute="centerX" secondItem="OoF-ek-A5i" secondAttribute="centerX" constant="8" id="qeQ-l5-KhS"/>
                 <constraint firstItem="e9X-gY-Wz0" firstAttribute="leading" secondItem="7w6-D3-PcJ" secondAttribute="leading" id="rPM-OV-pUp"/>
                 <constraint firstItem="OoF-ek-A5i" firstAttribute="top" relation="lessThanOrEqual" secondItem="jId-vI-ctu" secondAttribute="bottom" constant="16" id="scg-KS-yTk"/>
                 <constraint firstItem="1IT-k4-dRh" firstAttribute="top" relation="greaterThanOrEqual" secondItem="OoF-ek-A5i" secondAttribute="bottom" constant="8" id="zQw-7L-P0K"/>
             </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
         </view>
     </objects>
@@ -114,4 +112,9 @@
         <image name="Invite-your-friends" width="62" height="62"/>
         <image name="Post-an-Interest" width="62" height="62"/>
     </resources>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4"/>
+    </simulatedMetricsContainer>
 </document>

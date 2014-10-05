@@ -61,7 +61,6 @@
 - (IBAction)loginButtonPressed:(id)sender {
     [_loginButton setTitle:@"Logging you in..." forState:UIControlStateNormal];
     [_loginActivity startAnimating];
-    [Appsee addEvent:@"Login Attempt"];
     [(AppDelegate *)[[UIApplication sharedApplication] delegate] facebookSignIn];
 }
 
