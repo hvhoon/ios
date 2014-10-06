@@ -479,10 +479,13 @@ static NSString * const CellIdentifier = @"cell";
     self.detailedInterestTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth
     |UIViewAutoresizingFlexibleHeight;
     [self.detailedInterestTableView setBackgroundColor:[BeagleUtilities returnBeagleColor:2]];
+    self.detailedInterestTableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
 
     self.detailedInterestTableView.dataSource = self;
     self.detailedInterestTableView.delegate = self;
     [self.view addSubview:self.detailedInterestTableView];
+    
+
     
     CGRect inputFrame = CGRectMake(0.0f, self.view.frame.size.height - INPUT_HEIGHT, self.view.frame.size.width, INPUT_HEIGHT);
     self.inputToolBarView = [[MessageInputView alloc] initWithFrame:inputFrame delegate:self];
@@ -513,6 +516,14 @@ static NSString * const CellIdentifier = @"cell";
         [self.inputToolBarView setHidden:YES];
     }
 }
+
+-(void)handleSingleTap:(UITapGestureRecognizer*)sender{
+    
+    if(isKeyboardVisible){
+        [self.inputToolBarView.textView resignFirstResponder];
+    }
+}
+
 
 -(void)createInterestInitialCard{
     
@@ -581,23 +592,11 @@ static NSString * const CellIdentifier = @"cell";
 
 - (void)show{
     
-    if([self.inputToolBarView.textView hasText]||isKeyboardVisible) {
-        placeholderLabel.hidden = YES;
-    }
-    else{
-        placeholderLabel.hidden = NO;
-    }
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStylePlain target:self action:@selector(doneButtonClicked:)];
     self.navigationItem.hidesBackButton = YES;
 }
 -(void)hide{
 #if 1
-    if([self.inputToolBarView.textView hasText]||isKeyboardVisible) {
-        placeholderLabel.hidden = YES;
-    }
-    else{
-        placeholderLabel.hidden = NO;
-    }
     if(self.interestActivity.dosRelation==0){
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(editButtonClicked:)];
     }else{
@@ -641,10 +640,9 @@ static NSString * const CellIdentifier = @"cell";
 }
 -(void)flagButtonClicked:(id)sender{
     
-    if([self.navigationItem.rightBarButtonItem.title isEqualToString:@"Done"]){
-        [self doneButtonClicked:nil];
+    if(isKeyboardVisible){
+        [self.inputToolBarView.textView resignFirstResponder];
     }
-    else{
     NSString* flagMessage = [NSString stringWithFormat:@"Please tell us why you find this activity objectionable? (Enter below):\n\n\n\n--\nFlag Report:\nActivity: %@ (%ld)\nOrganizer: %@ (%ld)", self.interestActivity.activityDesc, (long)self.interestActivity.activityId, self.interestActivity.organizerName, (long)self.interestActivity.ownerid];
 
     
@@ -659,11 +657,13 @@ static NSString * const CellIdentifier = @"cell";
         [alert show];
         
     }
-    }
 }
 -(void)editButtonClicked:(id)sender{
     
 #if kPostInterface
+    if(isKeyboardVisible){
+        [self.inputToolBarView.textView resignFirstResponder];
+    }
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
 
@@ -2320,7 +2320,7 @@ static NSString * const CellIdentifier = @"cell";
                              }
                          }
                          completion:^(BOOL finished) {
-                             [self scrollToBottomAnimated:YES];
+                             //[self scrollToBottomAnimated:YES];
                          }];
         
         
@@ -2334,14 +2334,42 @@ static NSString * const CellIdentifier = @"cell";
 - (void)handleWillShowKeyboard:(NSNotification *)notification
 {
     isKeyboardVisible=true;
-    [self show];
+    if([self.inputToolBarView.textView hasText]||isKeyboardVisible) {
+        placeholderLabel.hidden = YES;
+    }
+    else{
+        placeholderLabel.hidden = NO;
+    }
+
+//    [self show];
+    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
+    // make your gesture recognizer priority
+    singleTap.numberOfTapsRequired = 1;
+    [self.detailedInterestTableView addGestureRecognizer:singleTap];
+
+        self.navigationItem.hidesBackButton = YES;
     [self keyboardWillShowHide:notification];
 }
 
 - (void)handleWillHideKeyboard:(NSNotification *)notification
 {
     isKeyboardVisible=false;
-    [self hide];
+    if([self.inputToolBarView.textView hasText]||isKeyboardVisible) {
+        placeholderLabel.hidden = YES;
+    }
+    else{
+        placeholderLabel.hidden = NO;
+    }
+
+//    [self hide];
+    
+    for (UIGestureRecognizer *recognizer in self.detailedInterestTableView.gestureRecognizers) {
+        
+        if([recognizer isKindOfClass:[UITapGestureRecognizer class]]) {
+            [self.detailedInterestTableView removeGestureRecognizer:recognizer];
+        }
+    }
+        self.navigationItem.hidesBackButton = NO;
     [self keyboardWillShowHide:notification];
 }
 
@@ -2397,10 +2425,11 @@ static NSString * const CellIdentifier = @"cell";
                          
                          self.detailedInterestTableView.contentInset = insets;
                          self.detailedInterestTableView.scrollIndicatorInsets = insets;
+                          [self scrollToBottomAnimated:YES];
                      }
                      completion:^(BOOL finished) {
                          
-                         [self scrollToBottomAnimated:YES];
+                         //[self scrollToBottomAnimated:YES];
                      }];
 }
 
