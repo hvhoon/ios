@@ -145,7 +145,7 @@ void uncaughtExceptionHandler(NSException *exception) {
                 viewController.toLastPost=TRUE;
             [viewController.interestServerManager getDetailedInterest:[[[[launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey] valueForKey:@"p"] valueForKey:@"aid"]integerValue]];
 //            [NSThread sleepForTimeInterval:3.0];
-            [initViewController pushViewController:viewController animated:YES];
+            [initViewController pushViewController:viewController animated:NO];
             
             //            [BeagleUtilities updateBadgeInfoOnTheServer:[[[remoteNotificationPayload valueForKey:@"p"] valueForKey:@"nid"]integerValue]];
         }
