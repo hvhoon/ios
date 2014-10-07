@@ -489,7 +489,7 @@ static NSString * const CellIdentifier = @"cell";
     
     CGRect inputFrame = CGRectMake(0.0f, self.view.frame.size.height - INPUT_HEIGHT, self.view.frame.size.width, INPUT_HEIGHT);
     self.inputToolBarView = [[MessageInputView alloc] initWithFrame:inputFrame delegate:self];
-    self.inputToolBarView.textView.dismissivePanGestureRecognizer = self.detailedInterestTableView.panGestureRecognizer;
+    //self.inputToolBarView.textView.dismissivePanGestureRecognizer = self.detailedInterestTableView.panGestureRecognizer;
     self.inputToolBarView.textView.keyboardDelegate = self;
     
     placeholderLabel = [[UILabel alloc] initWithFrame:CGRectMake(3, 0, self.inputToolBarView.textView.frame.size.width - 20.0, 34.0)];
