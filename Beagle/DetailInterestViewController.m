@@ -1849,7 +1849,7 @@ static NSString * const CellIdentifier = @"cell";
                     [self.contentWrapper resize];
             #endif
                     }
-                    
+#if 1
                     NSInteger rows=[self.detailedInterestTableView numberOfRowsInSection:0];
 
                         if(rows>0){
@@ -1863,6 +1863,7 @@ static NSString * const CellIdentifier = @"cell";
                     [self.detailedInterestTableView endUpdates];
 
                     }
+#endif
                     self.interestActivity.postCount=[self.chatPostsArray count];
                     
                     
@@ -2201,7 +2202,7 @@ static NSString * const CellIdentifier = @"cell";
 
 - (void)scrollToBottomAnimated:(BOOL)animated
 {
-    
+#if 1
     if(isKeyboardVisible){
     CGPoint contentOffset = self.detailedInterestTableView.contentOffset;
     
@@ -2238,6 +2239,7 @@ static NSString * const CellIdentifier = @"cell";
                                                       animated:YES];
         
     }
+#endif
 #endif
 }
 
@@ -2294,7 +2296,7 @@ static NSString * const CellIdentifier = @"cell";
         changeInHeight = MIN(changeInHeight, maxHeight - self.previousTextViewContentHeight);
     }
     
-    if(changeInHeight != 0.0f) {
+    //if(changeInHeight != 0.0f) {
         //        if(!isShrinking)
         //            [self.inputToolBarView adjustTextViewHeightBy:changeInHeight];
         
@@ -2330,7 +2332,7 @@ static NSString * const CellIdentifier = @"cell";
         
         
         self.previousTextViewContentHeight = MIN(textViewContentHeight, maxHeight);
-    }
+    //}
     
 //    self.inputToolBarView.sendButton.enabled = ([textView.text trimWhitespace].length > 0);
 }
