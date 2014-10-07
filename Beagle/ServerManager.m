@@ -117,8 +117,6 @@
         }else{
             bodyData=[activityEvent JSONRepresentation];
         }
-        NSLog(@"bodyData=%@",bodyData);
-        
         NSData *postData = [bodyData dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
         
         

@@ -479,7 +479,7 @@ static NSString * const CellIdentifier = @"cell";
     self.detailedInterestTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth
     |UIViewAutoresizingFlexibleHeight;
     [self.detailedInterestTableView setBackgroundColor:[BeagleUtilities returnBeagleColor:2]];
-    self.detailedInterestTableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
+//    self.detailedInterestTableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
 
     self.detailedInterestTableView.dataSource = self;
     self.detailedInterestTableView.delegate = self;
@@ -489,7 +489,7 @@ static NSString * const CellIdentifier = @"cell";
     
     CGRect inputFrame = CGRectMake(0.0f, self.view.frame.size.height - INPUT_HEIGHT, self.view.frame.size.width, INPUT_HEIGHT);
     self.inputToolBarView = [[MessageInputView alloc] initWithFrame:inputFrame delegate:self];
-    
+    self.inputToolBarView.textView.dismissivePanGestureRecognizer = self.detailedInterestTableView.panGestureRecognizer;
     self.inputToolBarView.textView.keyboardDelegate = self;
     
     placeholderLabel = [[UILabel alloc] initWithFrame:CGRectMake(3, 0, self.inputToolBarView.textView.frame.size.width - 20.0, 34.0)];
@@ -1494,6 +1494,11 @@ static NSString * const CellIdentifier = @"cell";
 }
 
 -(void)profileImageTapped:(UITapGestureRecognizer*)sender{
+    
+    if(isKeyboardVisible){
+        [self.inputToolBarView.textView resignFirstResponder];
+        return;
+    }
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     FriendsViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"profileScreen"];
     BeagleUserClass *player=[[BeagleUserClass alloc]initWithActivityObject:self.interestActivity];
@@ -2197,7 +2202,7 @@ static NSString * const CellIdentifier = @"cell";
 - (void)scrollToBottomAnimated:(BOOL)animated
 {
     
-    
+    if(isKeyboardVisible){
     CGPoint contentOffset = self.detailedInterestTableView.contentOffset;
     
     CGFloat contentHeight = self.detailedInterestTableView.contentSize.height;
@@ -2213,7 +2218,7 @@ static NSString * const CellIdentifier = @"cell";
 
     contentOffset.y = contentOffsetY;
     self.detailedInterestTableView.contentOffset = contentOffset;
-    
+    }
     if(isEditState){
         isEditState=false;
         [self.detailedInterestTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow: 0 inSection:0]
@@ -2347,7 +2352,7 @@ static NSString * const CellIdentifier = @"cell";
     singleTap.numberOfTapsRequired = 1;
     [self.detailedInterestTableView addGestureRecognizer:singleTap];
 
-        self.navigationItem.hidesBackButton = YES;
+        //self.navigationItem.hidesBackButton = YES;
     [self keyboardWillShowHide:notification];
 }
 
@@ -2369,7 +2374,7 @@ static NSString * const CellIdentifier = @"cell";
             [self.detailedInterestTableView removeGestureRecognizer:recognizer];
         }
     }
-        self.navigationItem.hidesBackButton = NO;
+        //self.navigationItem.hidesBackButton = NO;
     [self keyboardWillShowHide:notification];
 }
 

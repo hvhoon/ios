@@ -9,11 +9,10 @@
 #import <Crashlytics/Crashlytics.h>
 #import <Instabug/Instabug.h>
 #import "HomeViewController.h"
+#import "DetailInterestViewController.h"
 @interface AppDelegate ()<ServerManagerDelegate>{
     ServerManager *notificationServerManager;
     NSInteger attempts;
-    
-
 }
 @property(nonatomic,strong)ServerManager *loginServerManager;
 @property(nonatomic,strong)ServerManager *notificationServerManager;
@@ -46,7 +45,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     [Crashlytics startWithAPIKey:@"e8e7ac59367e936ecae821876cc411ec67427e47"];
     NSString *storyboardId = [[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"] ? @"initialNavBeagle" : @"loginNavScreen";
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    UIViewController *initViewController = [storyboard instantiateViewControllerWithIdentifier:storyboardId];
+    UINavigationController*initViewController = [storyboard instantiateViewControllerWithIdentifier:storyboardId];
     
     // Facebook SDK settings
     [FBSettings enablePlatformCompatibility:YES];
@@ -122,7 +121,39 @@ void uncaughtExceptionHandler(NSException *exception) {
         
     }
   }
-    //[self handlePush:launchOptions];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
+//    [self handlePush:launchOptions];
+    
+    
+//    if (launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey]) {
+//        [self application:application didReceiveRemoteNotification:launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey]];
+//    }
+
+    
+    NSDictionary *remoteNotificationPayload = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+    if (remoteNotificationPayload) {
+        
+        if([[[remoteNotificationPayload valueForKey:@"p"] valueForKey:@"nty"]integerValue]!=CANCEL_ACTIVITY_TYPE){
+            //        UIAlertView*alert=[[UIAlertView alloc]initWithTitle:[homeNavigationController description] message:@"test" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            //        [alert show];
+            
+            DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
+            viewController.interestServerManager=[[ServerManager alloc]init];
+            viewController.interestServerManager.delegate=viewController;
+            viewController.isRedirected=TRUE;
+            if([[[[launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey] valueForKey:@"p"] valueForKey:@"nty"]integerValue]==CHAT_TYPE)
+                viewController.toLastPost=TRUE;
+            [viewController.interestServerManager getDetailedInterest:[[[[launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey] valueForKey:@"p"] valueForKey:@"aid"]integerValue]];
+//            [NSThread sleepForTimeInterval:3.0];
+            [initViewController pushViewController:viewController animated:YES];
+            
+            //            [BeagleUtilities updateBadgeInfoOnTheServer:[[[remoteNotificationPayload valueForKey:@"p"] valueForKey:@"nid"]integerValue]];
+        }
+        
+    }
+    
+#endif
+
     return YES;
 }
 
@@ -248,16 +279,39 @@ void uncaughtExceptionHandler(NSException *exception) {
     NSDictionary *remoteNotificationPayload = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
     if (remoteNotificationPayload) {
 
-        if(_notificationServerManager!=nil){
-            _notificationServerManager.delegate = nil;
-            [_notificationServerManager releaseServerManager];
-            _notificationServerManager = nil;
-        }
-        _notificationServerManager=[[ServerManager alloc]init];
-        _notificationServerManager.delegate=self;
+//        if(_notificationServerManager!=nil){
+//            _notificationServerManager.delegate = nil;
+//            [_notificationServerManager releaseServerManager];
+//            _notificationServerManager = nil;
+//        }
+//        _notificationServerManager=[[ServerManager alloc]init];
+//        _notificationServerManager.delegate=self;
 
-        [self handleOfflineNotifications:remoteNotificationPayload];
+//        [self handleOfflineNotifications:remoteNotificationPayload];
+        
+        if([[[remoteNotificationPayload valueForKey:@"p"] valueForKey:@"nty"]integerValue]!=CANCEL_ACTIVITY_TYPE){
+        UINavigationController *rootNavigationController=(UINavigationController*)self.window.rootViewController;
+        UIViewController *homeViewController = [rootNavigationController visibleViewController];
+//        UIAlertView*alert=[[UIAlertView alloc]initWithTitle:[homeNavigationController description] message:@"test" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+//        [alert show];
+        
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
+        viewController.interestServerManager=[[ServerManager alloc]init];
+        viewController.interestServerManager.delegate=viewController;
+        viewController.isRedirected=TRUE;
+        if([[[remoteNotificationPayload valueForKey:@"p"] valueForKey:@"nty"]integerValue]==CHAT_TYPE)
+               viewController.toLastPost=TRUE;
+        [viewController.interestServerManager getDetailedInterest:[[[remoteNotificationPayload valueForKey:@"p"] valueForKey:@"aid"]integerValue]];
+        [homeViewController.navigationController pushViewController:viewController animated:NO];
+            
+//            [BeagleUtilities updateBadgeInfoOnTheServer:[[[remoteNotificationPayload valueForKey:@"p"] valueForKey:@"nid"]integerValue]];
+        }
+        
     }
+    
+    
+    
 }
 
 //Device Token failed
@@ -328,7 +382,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     
 }
 -(void)handleOfflineNotifications:(NSDictionary*)userInfo{
-    
+#if 1
     // app was just brought from background to foreground
     NSLog(@"userInfo=%@",userInfo);
         if([[[userInfo valueForKey:@"p"] valueForKey:@"nty"]integerValue]==CHAT_TYPE){
@@ -387,7 +441,7 @@ void uncaughtExceptionHandler(NSException *exception) {
         
         // create a service which will return data and update the view badge count automatically
         
-    
+#endif
 }
 
 -(void)handleSilentNotifications:(NSDictionary*)userInfo{
