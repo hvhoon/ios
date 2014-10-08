@@ -124,7 +124,7 @@
         id obj1=[note valueForKey:@"userInfo"];
     if(obj1!=nil && obj1!=[NSNull class] && [[obj1 allKeys]count]!=0){
         BeagleNotificationClass *notification=[[note valueForKey:@"userInfo"]objectForKey:@"notify"];
-            [self updateHomeScreen:notification];
+        [self updateHomeScreen:notification];
     }
 }
 -(void)disableInAppNotification{
@@ -326,6 +326,12 @@
             for(BeagleActivityClass *data in beagle_happenarndu){
                 if(data.activityId==notification.activity.activityId){
                     if(notification.notificationType==GOING_TYPE||notification.notificationType==LEAVED_ACTIVITY_TYPE){
+                        
+                        if(notification.notificationType==GOING_TYPE){
+                            data.isParticipant=YES;
+                        }else{
+                            data.isParticipant=NO;
+                        }
                     data.participantsCount=notification.activity.participantsCount;
                     data.dos1count=notification.activity.dos1count;
                     }
