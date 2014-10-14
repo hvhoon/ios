@@ -448,6 +448,8 @@ static NSString * const CellIdentifier = @"cell";
     self.automaticallyAdjustsScrollViewInsets = NO;
     if(!isRedirected)
       [self createInterestInitialCard];
+    
+    self.navigationItem.backBarButtonItem.title=@"";
 
 }
 
