@@ -272,25 +272,13 @@
 
     NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     [style setAlignment:NSTextAlignmentCenter];
-    NSDictionary *attrs=[NSDictionary dictionaryWithObjectsAndKeys:
-           [UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0f], NSFontAttributeName,
-           [BeagleUtilities returnBeagleColor:3],NSForegroundColorAttributeName,
-           style, NSParagraphStyleAttributeName, nil];
-    
-    CGSize organizerNameSize=[[NSString stringWithFormat:@"Cover Image by %@",userName] boundingRectWithSize:CGSizeMake([UIScreen mainScreen].bounds.size.width, 999)
-                                                                          options:NSStringDrawingUsesLineFragmentOrigin
-                                                                       attributes:attrs
-                                                                          context:nil].size;
-    
-    UILabel *photoCreditNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,16, self.view.bounds.size.width, organizerNameSize.height)];
+    UILabel *photoCreditNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,0, self.view.bounds.size.width, 44.0f)];
     photoCreditNameLabel.backgroundColor = [UIColor clearColor];
     photoCreditNameLabel.text = [NSString stringWithFormat:@"Cover Image by %@",userName];
     photoCreditNameLabel.textColor = [BeagleUtilities returnBeagleColor:3];
     photoCreditNameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
     photoCreditNameLabel.textAlignment = NSTextAlignmentCenter;
     [contributorView addSubview:photoCreditNameLabel];
-    
-    
     
     NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"Cover Image by %@",userName]];
     [attributedString beginEditing];
