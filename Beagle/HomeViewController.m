@@ -269,7 +269,7 @@
     NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     [style setAlignment:NSTextAlignmentCenter];
     NSDictionary *attrs=[NSDictionary dictionaryWithObjectsAndKeys:
-           [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0f], NSFontAttributeName,
+           [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f], NSFontAttributeName,
            [BeagleUtilities returnBeagleColor:3],NSForegroundColorAttributeName,
            style, NSParagraphStyleAttributeName, nil];
     
@@ -282,7 +282,7 @@
     photoCreditNameLabel.backgroundColor = [UIColor clearColor];
     photoCreditNameLabel.text = [NSString stringWithFormat:@"Cover Image by %@",userName];
     photoCreditNameLabel.textColor = [BeagleUtilities returnBeagleColor:3];
-    photoCreditNameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0f];
+    photoCreditNameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
     photoCreditNameLabel.textAlignment = NSTextAlignmentCenter;
     [contributorView addSubview:photoCreditNameLabel];
     
