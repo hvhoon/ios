@@ -266,6 +266,10 @@
 //    self.tableView.frame=inputViewFrame;
     CGFloat inputViewFrameY = self.tableView.frame.origin.y +self.tableView.frame.size.height;
     UIView *contributorView=[[UIView alloc]initWithFrame:CGRectMake(0, inputViewFrameY, self.view.bounds.size.width, 44.0f)];
+    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleStockImageTap:)];
+    singleTap.numberOfTapsRequired = 1;
+    [contributorView addGestureRecognizer:singleTap];
+
     NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     [style setAlignment:NSTextAlignmentCenter];
     NSDictionary *attrs=[NSDictionary dictionaryWithObjectsAndKeys:
