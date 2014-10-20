@@ -269,7 +269,7 @@
     NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     [style setAlignment:NSTextAlignmentCenter];
     NSDictionary *attrs=[NSDictionary dictionaryWithObjectsAndKeys:
-           [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f], NSFontAttributeName,
+           [UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0f], NSFontAttributeName,
            [BeagleUtilities returnBeagleColor:3],NSForegroundColorAttributeName,
            style, NSParagraphStyleAttributeName, nil];
     
@@ -291,7 +291,7 @@
     NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"Cover Image by %@",userName]];
     [attributedString beginEditing];
     [attributedString addAttribute:NSFontAttributeName
-                         value:[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0f]
+                         value:[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0f]
                              range:NSMakeRange(15,[userName length])];
     [attributedString endEditing];
     photoCreditNameLabel.attributedText = attributedString;
