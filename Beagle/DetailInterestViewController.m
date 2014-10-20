@@ -454,13 +454,13 @@ static NSString * const CellIdentifier = @"cell";
 }
 
 -(void)resizeDetailTableView{
-    if(self.interestActivity.isParticipant){
-        self.detailedInterestTableView.frame=CGRectMake(0.0f, 64.0f, self.view.frame.size.width, self.view.frame.size.height - INPUT_HEIGHT-64.0f);
-    }
-    else{
-        self.detailedInterestTableView.frame=CGRectMake(0.0f, 64.0f, self.view.frame.size.width, self.view.frame.size.height-64.0f);
-    }
     
+    if(self.interestActivity.isParticipant)
+        [placeholderLabel setText:@"Join the conversation"];
+    else{
+        [placeholderLabel setText:[NSString stringWithFormat:@"Leave %@ a message",[[self.interestActivity.organizerName componentsSeparatedByString:@" "] objectAtIndex:0]]];
+    }
+
     if(isKeyboardVisible){
         [self doneButtonClicked:nil];
     }
@@ -471,18 +471,12 @@ static NSString * const CellIdentifier = @"cell";
 - (void)setup{
     
     CGRect tableFrame=CGRectMake(0.0f, 64.0f, self.view.frame.size.width, self.view.frame.size.height - INPUT_HEIGHT-64.0f);
-    if(!self.interestActivity.isParticipant){
-        tableFrame = CGRectMake(0.0f, 64.0f, self.view.frame.size.width, self.view.frame.size.height -64.0f);
-    }
-    
     self.detailedInterestTableView = [[UITableView alloc] initWithFrame:tableFrame style:UITableViewStylePlain];
     self.detailedInterestTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
     self.detailedInterestTableView.separatorInset = UIEdgeInsetsZero;
     self.detailedInterestTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth
     |UIViewAutoresizingFlexibleHeight;
     [self.detailedInterestTableView setBackgroundColor:[BeagleUtilities returnBeagleColor:2]];
-//    self.detailedInterestTableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
-
     self.detailedInterestTableView.dataSource = self;
     self.detailedInterestTableView.delegate = self;
     [self.view addSubview:self.detailedInterestTableView];
@@ -495,7 +489,11 @@ static NSString * const CellIdentifier = @"cell";
     self.inputToolBarView.textView.keyboardDelegate = self;
     
     placeholderLabel = [[UILabel alloc] initWithFrame:CGRectMake(3, 0, self.inputToolBarView.textView.frame.size.width - 20.0, 34.0)];
+      if(self.interestActivity.isParticipant)
     [placeholderLabel setText:@"Join the conversation"];
+      else{
+          [placeholderLabel setText:[NSString stringWithFormat:@"Leave %@ a message",[[self.interestActivity.organizerName componentsSeparatedByString:@" "] objectAtIndex:0]]];
+      }
     // placeholderLabel is instance variable retained by view controller
     [placeholderLabel setBackgroundColor:[UIColor whiteColor]];
     placeholderLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:17.0f];
@@ -514,9 +512,6 @@ static NSString * const CellIdentifier = @"cell";
     [self.inputToolBarView setSendButton:sendButton];
     [self.view addSubview:self.inputToolBarView];
     
-    if(!self.interestActivity.isParticipant){
-        [self.inputToolBarView setHidden:YES];
-    }
 }
 
 -(void)handleSingleTap:(UITapGestureRecognizer*)sender{
@@ -1746,7 +1741,6 @@ static NSString * const CellIdentifier = @"cell";
                     [interestedButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Star-Unfilled"] withColor:[outlineButtonColor colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
 #if kPostInterface
                     
-                    [self.inputToolBarView setHidden:YES];
                     [self resizeDetailTableView];
 #else
                     self.contentWrapper.interested=NO;
@@ -2178,7 +2172,6 @@ static NSString * const CellIdentifier = @"cell";
         self.interestActivity.participantsArray=interestArray;
     }
 #if kPostInterface
-    [self.inputToolBarView setHidden:NO];
     [self resizeDetailTableView];
     
 #else

@@ -46,6 +46,9 @@
     CGFloat deltaAlpha;
     BOOL firstTime;
     BOOL isLoading;
+    NSString *flickrCreditInfo;
+    BOOL isPhotoCredit;
+    NSString *photoCreditUserName;
 }
 @property (nonatomic, strong) UIView* middleSectionView;
 @property (nonatomic, assign) CGFloat lastContentOffset;
@@ -254,6 +257,46 @@
     BeagleManager *BG=[BeagleManager SharedInstance];
     NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:url]];
     BG.beaglePlayer.profileData=imageData;
+}
+-(UIView*)addPhotoCreditForFlickr:(NSString*)userName{
+    
+    isPhotoCredit=true;
+//    CGRect inputViewFrame = self.tableView.frame;
+//    inputViewFrame.size.height-=44;
+//    self.tableView.frame=inputViewFrame;
+    CGFloat inputViewFrameY = self.tableView.frame.origin.y +self.tableView.frame.size.height;
+    UIView *contributorView=[[UIView alloc]initWithFrame:CGRectMake(0, inputViewFrameY, self.view.bounds.size.width, 44.0f)];
+    NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+    [style setAlignment:NSTextAlignmentCenter];
+    NSDictionary *attrs=[NSDictionary dictionaryWithObjectsAndKeys:
+           [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0f], NSFontAttributeName,
+           [BeagleUtilities returnBeagleColor:3],NSForegroundColorAttributeName,
+           style, NSParagraphStyleAttributeName, nil];
+    
+    CGSize organizerNameSize=[[NSString stringWithFormat:@"Cover Image by %@",userName] boundingRectWithSize:CGSizeMake([UIScreen mainScreen].bounds.size.width, 999)
+                                                                          options:NSStringDrawingUsesLineFragmentOrigin
+                                                                       attributes:attrs
+                                                                          context:nil].size;
+    
+    UILabel *photoCreditNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,16, self.view.bounds.size.width, organizerNameSize.height)];
+    photoCreditNameLabel.backgroundColor = [UIColor clearColor];
+    photoCreditNameLabel.text = [NSString stringWithFormat:@"Cover Image by %@",userName];
+    photoCreditNameLabel.textColor = [BeagleUtilities returnBeagleColor:3];
+    photoCreditNameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0f];
+    photoCreditNameLabel.textAlignment = NSTextAlignmentCenter;
+    [contributorView addSubview:photoCreditNameLabel];
+    
+    
+    
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"Cover Image by %@",userName]];
+    [attributedString beginEditing];
+    [attributedString addAttribute:NSFontAttributeName
+                         value:[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0f]
+                             range:NSMakeRange(15,[userName length])];
+    [attributedString endEditing];
+    photoCreditNameLabel.attributedText = attributedString;
+    return contributorView;
+
 }
 
 -(void)viewDidDisappear:(BOOL)animated{
@@ -809,7 +852,7 @@
 }
 -(void)defaultLocalImage{
     
-    [self performSelector:@selector(crossDissolvePhotos:withTitle:) withObject:[UIImage imageNamed:@"defaultLocation"] withObject:nil];
+    [self crossDissolvePhotos:[UIImage imageNamed:@"defaultLocation"] withUrl:nil userInfo:nil];
     
 }
 -(void)createANewActivity:(id)sender{
@@ -822,7 +865,8 @@
 - (void) retrieveLocationAndUpdateBackgroundPhoto {
     
     BeagleManager *BG=[BeagleManager SharedInstance];
-    
+    flickrCreditInfo = @"";
+    isPhotoCredit=false;
     NSLog(@"Getting ready to update the cover image");
     
     // Setup string to get weather conditions
@@ -882,12 +926,12 @@
         [[BGFlickrManager sharedManager] randomPhotoRequest:^(FlickrRequestInfo * flickrRequestInfo, NSError * error) {
             
             if(!error) {
-                [self crossDissolvePhotos:flickrRequestInfo.photo withTitle:flickrRequestInfo.userInfo];
+                [self crossDissolvePhotos:flickrRequestInfo.photo withUrl:[flickrRequestInfo.userPhotoWebPageURL absoluteString] userInfo:flickrRequestInfo.userInfo];
             }
             else {
                 
                 [[BGFlickrManager sharedManager] defaultStockPhoto:^(UIImage * photo) {
-                    [self crossDissolvePhotos:photo withTitle:@"Hello"];
+                    [self crossDissolvePhotos:photo withUrl:[flickrRequestInfo.userPhotoWebPageURL absoluteString] userInfo:flickrRequestInfo.userInfo];
                 }];
                 
             }
@@ -900,9 +944,12 @@
         
 }
 
-- (void) crossDissolvePhotos:(UIImage *) photo withTitle:(NSString *) title {
+- (void) crossDissolvePhotos:(UIImage *) photo withUrl:(NSString *)title userInfo:(NSString*)userInfo{
     
     [self.timer invalidate];
+    flickrCreditInfo=title;
+    NSLog(@"userInfo=%@",userInfo);
+
     UIColor *dominantColor = [BeagleUtilities getDominantColor:photo];
     BeagleManager *BG=[BeagleManager SharedInstance];
     BG.lightDominantColor=[BeagleUtilities returnLightColor:[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.9] withWhiteness:0.7];
@@ -919,10 +966,20 @@
         UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
         stockImageView.image=photo;
         [stockImageView setContentMode:UIViewContentModeScaleAspectFill];
-        stockImageView.image = photo;
-            } completion:NULL];
-}
+            
+            if([userInfo length]!=0){
+                photoCreditUserName=userInfo;
+                self.tableView.tableFooterView=[self addPhotoCreditForFlickr:userInfo];
+            }else{
+                self.tableView.tableFooterView=nil;
+            }
 
+      } completion:NULL];
+}
+-(void)handleStockImageTap:(UITapGestureRecognizer*)sender{
+    if([flickrCreditInfo length]!=0)
+     [self redirectToWebPage:flickrCreditInfo];
+}
 -(UIView*)renderFilterHeaderView {
 
     UIView *headerView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 44)];
@@ -1102,8 +1159,12 @@
         if(section==0){
             UIView *translucentView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 44)];
             translucentView.backgroundColor=[UIColor clearColor];
-
+            translucentView.tag=9765;
             translucentView.frame=CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, roundf([UIScreen mainScreen].bounds.size.width/goldenRatio)-44-64);
+            UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleStockImageTap:)];
+            singleTap.numberOfTapsRequired = 1;
+            [translucentView addGestureRecognizer:singleTap];
+
             return translucentView;
 
         }else{
@@ -1494,6 +1555,11 @@
         self.tableView.scrollEnabled=NO;
         
     }
+    if([photoCreditUserName length]!=0 && [self.tableData count]!=0){
+        self.tableView.tableFooterView=[self addPhotoCreditForFlickr:photoCreditUserName];
+    }else{
+        self.tableView.tableFooterView=nil;
+    }
 
     [self.tableView reloadData];
 
@@ -1507,7 +1573,6 @@
             firstTime=YES;
             [self.tableView reloadData];
             isPushAuto = true;
-
             if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
                 [self LocationAcquired];
             }
@@ -1614,12 +1679,11 @@
     ExpressInterestPreview *preview=[[ExpressInterestPreview alloc]initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, play.heightRow) orgn:play.organizerName];
     preview.tag=1374;
     
-#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
-    [cell insertSubview:preview aboveSubview:cell];
-#else
-    [cell insertSubview:preview aboveSubview:cell.contentView];
+    if([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0f)
+       [cell insertSubview:preview aboveSubview:cell];
+     else
+      [cell insertSubview:preview aboveSubview:cell.contentView];
     
-#endif
     
 //    self.tableView.scrollEnabled=NO;
     

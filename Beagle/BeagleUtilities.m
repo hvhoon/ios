@@ -478,11 +478,19 @@
     [components setDay:([components day] - ((dayofweek) - 2))];// for beginning of the week.
     NSDate *beginningOfWeek = [gregorian dateFromComponents:components];
     
+    if(dayofweek==1){
+        beginningOfWeek=[beginningOfWeek dateByAddingTimeInterval:-7*60*60*24];
+    }
+    
     //Set the start of the weekend
     NSDate *startOfWeekend = [beginningOfWeek dateByAddingTimeInterval:60*60*24*5];
     
     //Set the end of the weekend
-    [components setDay:([components day] + 6)]; // Advancing by 6 days
+    if(dayofweek==1){
+        [components setDay:([components day] - 1)];
+    }else{
+        [components setDay:([components day] + 6)];// Advancing by 6 days
+    }
     [components setHour:23];
     [components setMinute:59];
     [components setSecond:59];

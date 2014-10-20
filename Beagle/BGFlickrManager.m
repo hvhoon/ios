@@ -163,6 +163,31 @@ static BGFlickrManager *sharedManager = nil;
         
         [self photoSearch];
     }
+    else if(((FlickrAPIRequestSessionInfo *)inRequest.sessionInfo).flickrAPIRequestType == FlickrAPIRequestPhotoOwner) {
+        
+        NSDictionary *person = [inResponseDictionary valueForKeyPath:@"person"];
+        NSString *username =  [person valueForKeyPath:@"username._text"];
+        
+        NSString *userInfo = @"";
+        
+        if([username length]) {
+            userInfo = [NSString stringWithFormat:@"%@", username];
+        }
+        
+        self.flickrRequestInfo.userInfo = userInfo;
+        
+        dispatch_queue_t queue = dispatch_queue_create(kAsyncQueueLabel, NULL);
+        dispatch_queue_t main = dispatch_get_main_queue();
+        
+        dispatch_async(queue, ^{
+            
+            dispatch_async(main, ^{
+                self.completionBlock(self.flickrRequestInfo, nil);
+                
+                [self cleanUpFlickrManager];
+            });
+        });
+    }
 }
 
 -(void)searchForRequiredSpecRandomly:(NSInteger)index{
@@ -192,7 +217,7 @@ static BGFlickrManager *sharedManager = nil;
                     self.found = true;
                     UIImage *locationImage=[BeagleUtilities imageByCropping:self.flickrRequestInfo.photo toRect:CGRectMake(0, height/2, 400, 250) withOrientation:UIImageOrientationDownMirrored];
                     self.flickrRequestInfo.photo=locationImage;
-                    
+                    self.flickrRequestInfo.userPhotoWebPageURL = [self.flickrContext photoWebPageURLFromDictionary:photoDict];
                     
                 }else{
                     self.found = false;
@@ -210,8 +235,19 @@ static BGFlickrManager *sharedManager = nil;
                 }else if(!self.found && self.attempts==[self.photos count]){
                     [self customSearchWithFlickrApi];
                 }else if (self.found){
-                    self.completionBlock(self.flickrRequestInfo, nil);
-                    [self cleanUpFlickrManager];
+                    
+
+                        NSString *owner = (NSString *)[photoDict objectForKey:@"owner"];
+                        self.flickrRequestInfo.userId = owner;
+                        
+                        if (![self.flickrRequest isRunning]) {
+                            ((FlickrAPIRequestSessionInfo *)self.flickrRequest.sessionInfo).flickrAPIRequestType = FlickrAPIRequestPhotoOwner;
+                            
+                            [self.flickrRequest callAPIMethodWithGET:@"flickr.people.getInfo" arguments:[NSDictionary dictionaryWithObjectsAndKeys:self.flickrRequestInfo.userId, @"user_id", nil] tag:0];
+                        }
+                    
+//                    self.completionBlock(self.flickrRequestInfo, nil);
+//                    [self cleanUpFlickrManager];
                     
                 }
                 

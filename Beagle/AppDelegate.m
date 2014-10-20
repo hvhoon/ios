@@ -54,21 +54,23 @@ void uncaughtExceptionHandler(NSException *exception) {
     self.window.rootViewController = initViewController;
     [self.window makeKeyAndVisible];
     
-#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
+    if([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0f){
+    
     if ([application respondsToSelector:@selector(registerUserNotificationSettings:)]) {
         // use registerUserNotificationSettings
         [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
         [[UIApplication sharedApplication] registerForRemoteNotifications];
     }
-#else
+    }
+else
+{
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
      (
       UIRemoteNotificationTypeBadge |
       UIRemoteNotificationTypeSound |
       UIRemoteNotificationTypeAlert)];
-    
-#endif
-    
+}
+
     
     // Instabug integration
     [Instabug startWithToken:@"0fe55a803d01c2d223d89b450dcae674" captureSource:IBGCaptureSourceUIKit invocationEvent:IBGInvocationEventShake];
@@ -121,21 +123,17 @@ void uncaughtExceptionHandler(NSException *exception) {
         
     }
   }
-#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
+    
+    
+    if([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0f){
 //    [self handlePush:launchOptions];
     
     
-//    if (launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey]) {
-//        [self application:application didReceiveRemoteNotification:launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey]];
-//    }
-
-    
     NSDictionary *remoteNotificationPayload = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
-    if (remoteNotificationPayload) {
+    if (remoteNotificationPayload && ([[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"])) {
         
         if([[[remoteNotificationPayload valueForKey:@"p"] valueForKey:@"nty"]integerValue]!=CANCEL_ACTIVITY_TYPE){
-            //        UIAlertView*alert=[[UIAlertView alloc]initWithTitle:[homeNavigationController description] message:@"test" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-            //        [alert show];
+            [[BeagleManager SharedInstance]getUserObjectInAutoSignInMode];
             
             DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
             viewController.interestServerManager=[[ServerManager alloc]init];
@@ -144,7 +142,6 @@ void uncaughtExceptionHandler(NSException *exception) {
             if([[[[launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey] valueForKey:@"p"] valueForKey:@"nty"]integerValue]==CHAT_TYPE)
                 viewController.toLastPost=TRUE;
             [viewController.interestServerManager getDetailedInterest:[[[[launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey] valueForKey:@"p"] valueForKey:@"aid"]integerValue]];
-//            [NSThread sleepForTimeInterval:3.0];
             initViewController.navigationItem.backBarButtonItem.title=@"";
             initViewController.navigationBar.topItem.title=@"";
 
@@ -154,8 +151,7 @@ void uncaughtExceptionHandler(NSException *exception) {
         }
         
     }
-    
-#endif
+ }
 
     return YES;
 }
@@ -175,11 +171,12 @@ void uncaughtExceptionHandler(NSException *exception) {
 	locationManager.distanceFilter = kCLLocationAccuracyThreeKilometers;
     
     // IOS 8 Support
-#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
+    if([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0f){
+    
     if([locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
         [locationManager requestWhenInUseAuthorization];
     }
-#endif
+    }
 	[locationManager startUpdatingLocation];
     
 	CLLocation *currentLoc = locationManager.location;
@@ -282,40 +279,18 @@ void uncaughtExceptionHandler(NSException *exception) {
     NSDictionary *remoteNotificationPayload = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
     if (remoteNotificationPayload) {
 
-//        if(_notificationServerManager!=nil){
-//            _notificationServerManager.delegate = nil;
-//            [_notificationServerManager releaseServerManager];
-//            _notificationServerManager = nil;
-//        }
-//        _notificationServerManager=[[ServerManager alloc]init];
-//        _notificationServerManager.delegate=self;
-
-//        [self handleOfflineNotifications:remoteNotificationPayload];
-        
-        if([[[remoteNotificationPayload valueForKey:@"p"] valueForKey:@"nty"]integerValue]!=CANCEL_ACTIVITY_TYPE){
-        UINavigationController *rootNavigationController=(UINavigationController*)self.window.rootViewController;
-        UIViewController *homeViewController = [rootNavigationController visibleViewController];
-//        UIAlertView*alert=[[UIAlertView alloc]initWithTitle:[homeNavigationController description] message:@"test" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-//        [alert show];
-        
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-        DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
-        viewController.interestServerManager=[[ServerManager alloc]init];
-        viewController.interestServerManager.delegate=viewController;
-        viewController.isRedirected=TRUE;
-        if([[[remoteNotificationPayload valueForKey:@"p"] valueForKey:@"nty"]integerValue]==CHAT_TYPE)
-               viewController.toLastPost=TRUE;
-        [viewController.interestServerManager getDetailedInterest:[[[remoteNotificationPayload valueForKey:@"p"] valueForKey:@"aid"]integerValue]];
-        [homeViewController.navigationController pushViewController:viewController animated:NO];
-            
-//            [BeagleUtilities updateBadgeInfoOnTheServer:[[[remoteNotificationPayload valueForKey:@"p"] valueForKey:@"nid"]integerValue]];
+        if(_notificationServerManager!=nil){
+            _notificationServerManager.delegate = nil;
+            [_notificationServerManager releaseServerManager];
+            _notificationServerManager = nil;
         }
+        _notificationServerManager=[[ServerManager alloc]init];
+        _notificationServerManager.delegate=self;
+
+        [self handleOfflineNotifications:remoteNotificationPayload];
         
+        }
     }
-    
-    
-    
-}
 
 //Device Token failed
 - (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error{

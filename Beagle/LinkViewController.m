@@ -34,7 +34,7 @@
     
     NSString *outputString = [linkString stringByReplacingOccurrencesOfString:@" " withString:@"+"];
     
-    if ([linkString hasPrefix:@"http://"]||[linkString hasPrefix:@"www"]) {
+    if ([linkString hasPrefix:@"https://"]||[linkString hasPrefix:@"http://"]||[linkString hasPrefix:@"www"]) {
         //Has Prefix
         if([linkString hasPrefix:@"www"]){
             NSString *prefixString = @"http://";
