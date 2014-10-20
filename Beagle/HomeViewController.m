@@ -272,7 +272,7 @@
 
     NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     [style setAlignment:NSTextAlignmentCenter];
-    UILabel *photoCreditNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,0, self.view.bounds.size.width, 44.0f)];
+    UILabel *photoCreditNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(16,0, self.view.bounds.size.width-32, 44.0f)];
     photoCreditNameLabel.backgroundColor = [UIColor clearColor];
     photoCreditNameLabel.text = [NSString stringWithFormat:@"Cover Image by %@",userName];
     photoCreditNameLabel.textColor = [BeagleUtilities returnBeagleColor:3];
