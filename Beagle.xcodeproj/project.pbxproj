@@ -1403,11 +1403,7 @@
 				BUNDLE_IDENTIFIER_SUFFIX = com.beagle.dev;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Harish Hoon (B99DQ79SBX)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Harish Hoon (B99DQ79SBX)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SRCROOT)",
-					"$(inherited)",
-					"$(PROJECT_DIR)",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Beagle/Beagle-Prefix.pch";
 				HEADER_SEARCH_PATHS = "$(inherited)";
@@ -1434,11 +1430,7 @@
 				BUNDLE_IDENTIFIER_SUFFIX = com.app.beagle;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Soclivity, LLC (RLC9X36TPX)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Soclivity, LLC (RLC9X36TPX)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SRCROOT)",
-					"$(inherited)",
-					"$(PROJECT_DIR)",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Beagle/Beagle-Prefix.pch";
 				HEADER_SEARCH_PATHS = "$(inherited)";
