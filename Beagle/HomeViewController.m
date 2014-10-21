@@ -49,6 +49,7 @@
     NSString *flickrCreditInfo;
     BOOL isPhotoCredit;
     NSString *photoCreditUserName;
+    BOOL eventsLoadingComplete;
 }
 @property (nonatomic, strong) UIView* middleSectionView;
 @property (nonatomic, assign) CGFloat lastContentOffset;
@@ -814,6 +815,7 @@
 - (void)refresh {
     
     NSLog(@"Starting up query");
+    eventsLoadingComplete=false;
     if(isPushAuto) {
         
     [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^(void){
@@ -970,14 +972,18 @@
         UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
         stockImageView.image=photo;
         [stockImageView setContentMode:UIViewContentModeScaleAspectFill];
-            
+
             if([userInfo length]!=0){
                 photoCreditUserName=userInfo;
+            }
+            
+            if(eventsLoadingComplete){
+              if([userInfo length]!=0){
                 self.tableView.tableFooterView=[self addPhotoCreditForFlickr:userInfo];
             }else{
                 self.tableView.tableFooterView=nil;
             }
-
+           }
       } completion:NULL];
 }
 -(void)handleStockImageTap:(UITapGestureRecognizer*)sender{
@@ -1575,6 +1581,7 @@
         {
             
             firstTime=YES;
+            self.tableView.tableFooterView=nil;
             [self.tableView reloadData];
             isPushAuto = true;
             if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
@@ -1995,6 +2002,10 @@
         }
         if(isPushAuto){
             isPushAuto=FALSE;
+        }
+        eventsLoadingComplete=true;
+        if([photoCreditUserName length]!=0){
+            self.tableView.tableFooterView=[self addPhotoCreditForFlickr:photoCreditUserName];
         }
     }
     else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
