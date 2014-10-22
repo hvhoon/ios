@@ -48,6 +48,7 @@
 #define GOING_TYPE 13
 #define ACTIVITY_UPDATE_TYPE 32
 #define SUGGESTED_ACTIVITY_CREATION_TYPE 33
+#define SELF_ACTIVITY_CREATION_TYPE 34
 #define kBeagleBadgeCount @"BeagleBadgeCount"
 #define kUpdatePostsOnInterest @"PostUpdateOnDetailedInterest"
 #define kUpdateNotificationStack @"UpdateNotificationStack"

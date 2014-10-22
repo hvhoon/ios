@@ -84,7 +84,7 @@ enum Weeks {
         [self dismissViewControllerAnimated:NO completion:nil];
         return;
     }
-
+    
     
 }
 - (void)viewWillLayoutSubviews {
@@ -158,14 +158,14 @@ enum Weeks {
     if([[[BeagleManager SharedInstance]beaglePlayer]profileData]==nil){
         
         [self imageCircular:[UIImage imageNamed:@"picbox"]];
-
+        
         NSOperationQueue *queue = [NSOperationQueue new];
         NSInvocationOperation *operation = [[NSInvocationOperation alloc]
                                             initWithTarget:self
                                             selector:@selector(loadProfileImage:)
                                             object:[[[BeagleManager SharedInstance]beaglePlayer]profileImageUrl]];
         [queue addOperation:operation];
-
+        
     }
     else{
         [self imageCircular:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
@@ -176,7 +176,7 @@ enum Weeks {
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:248.0/255.0 green:248.0/255.0 blue:248.0/255.0 alpha:1.0]];
     [self.navigationController.navigationBar setTintColor:clickable];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(cancelButtonClicked:)];
-        
+    
     // Either way update the count given the text in the description field
     countTextLabel.text= [[NSString alloc] initWithFormat:@"%lu",(unsigned long)140-[descriptionTextView.text length]];
     [countTextLabel setTextAlignment:NSTextAlignmentRight];
@@ -248,14 +248,14 @@ enum Weeks {
         //reverse geocode
         [self reverseGeocode];
     }
-
-//    descriptionTextView.keyboardType=UIKeyboardTypeDefault;
-//    descriptionTextView.autocorrectionType=UITextAutocorrectionTypeYes;
     
-//    [descriptionTextView becomeFirstResponder];
-
+    //    descriptionTextView.keyboardType=UIKeyboardTypeDefault;
+    //    descriptionTextView.autocorrectionType=UITextAutocorrectionTypeYes;
+    
+    //    [descriptionTextView becomeFirstResponder];
+    
 }
-	// Do any additional setup after loading the view.
+// Do any additional setup after loading the view.
 
 
 -(void)viewDidDisappear:(BOOL)animated{
@@ -267,10 +267,10 @@ enum Weeks {
 }
 
 - (void)didReceiveBackgroundInNotification:(NSNotification*) note{
-
+    
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationObject:note];
     
-  if(notifObject.notifType==2 && notifObject.activity.activityId!=0 && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE|| notifObject.notificationType==ACTIVITY_CREATION_TYPE || notifObject.notificationType==JOINED_ACTIVITY_TYPE)){
+    if(notifObject.notifType==2 && notifObject.activity.activityId!=0 && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE|| notifObject.notificationType==ACTIVITY_CREATION_TYPE || notifObject.notificationType==JOINED_ACTIVITY_TYPE)){
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
         viewController.interestServerManager=[[ServerManager alloc]init];
@@ -284,14 +284,14 @@ enum Weeks {
             [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
             
         }];
-      [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
-
-      
+        [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
+        
+        
     }
     else if (notifObject.notifType==2 && notifObject.notificationType==CANCEL_ACTIVITY_TYPE){
         [self dismissViewControllerAnimated:YES completion:Nil];
         [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
-
+        
     }
     
     
@@ -301,12 +301,12 @@ enum Weeks {
         NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
         [[NSNotificationCenter defaultCenter] postNotification:notification];
     }
-
-
+    
+    
 }
 
 -(void)postInAppNotification:(NSNotification*)note{
-
+    
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
     
     if(notifObject.notifType==2 && notifObject.activity.activityId!=0 && notifObject.notificationType==CHAT_TYPE){
@@ -321,10 +321,10 @@ enum Weeks {
         UINavigationController *activityNavigationController=[[UINavigationController alloc]initWithRootViewController:viewController];
         [self presentViewController:activityNavigationController animated:YES completion:^{
             [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
-
+            
         }];
         [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
-
+        
         
     }
     if(notifObject.notifType!=2){
@@ -333,7 +333,7 @@ enum Weeks {
         NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
         [[NSNotificationCenter defaultCenter] postNotification:notification];
     }
-
+    
     
 }
 -(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
@@ -353,7 +353,7 @@ enum Weeks {
         
     }];
     [BeagleUtilities updateBadgeInfoOnTheServer:notification.notificationId];
-
+    
 }
 
 
@@ -361,7 +361,7 @@ enum Weeks {
 - (void)notificationView:(InAppNotificationView *)inAppNotification didDismissWithButtonIndex:(NSInteger)buttonIndex{
     
     NSLog(@"Button Index = %ld", (long)buttonIndex);
-//    [BeagleUtilities updateBadgeInfoOnTheServer:inAppNotification.notification.notificationId];
+    //    [BeagleUtilities updateBadgeInfoOnTheServer:inAppNotification.notification.notificationId];
 }
 
 - (void)loadProfileImage:(NSString*)url {
@@ -369,7 +369,7 @@ enum Weeks {
     NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:url]];
     BG.beaglePlayer.profileData=imageData;
     [self.animationBlurView loadAnimationView:[UIImage imageWithData:[[[BeagleManager SharedInstance]beaglePlayer]profileData]]];
-
+    
     UIImage* image =[[UIImage alloc] initWithData:imageData];
     if (image)
         [self performSelectorOnMainThread:@selector(imageCircular:) withObject:image waitUntilDone:NO];
@@ -381,13 +381,13 @@ enum Weeks {
 }
 
 -(void)cancelButtonClicked:(id)sender{
-if([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0f){
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
-    [self.navigationController dismissViewControllerAnimated:NO completion:nil];
-}
-else
-    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
-
+    if([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0f){
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
+        [self.navigationController dismissViewControllerAnimated:NO completion:nil];
+    }
+    else
+        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+    
 }
 -(void)updateCreateEventParameters{
     bg_activity.activityDesc=descriptionTextView.text;
@@ -556,7 +556,7 @@ else
     }
     
     bg_activity.ownerid=[[BeagleManager SharedInstance]beaglePlayer].beagleUserId;
-
+    
 }
 -(void)createButtonClicked:(id)sender{
     
@@ -566,9 +566,9 @@ else
             //reverse geocode
             [self reverseGeocode];
         }
-
+        
         return;
-
+        
     }
     
     if([descriptionTextView.text length]==0){
@@ -578,7 +578,7 @@ else
         [alert show];
         return;
     }
-
+    
     
     [self updateCreateEventParameters];
     
@@ -591,7 +591,7 @@ else
         return;
         
     }
-
+    
     
     
     if(self.activityServerManager!=nil){
@@ -599,7 +599,7 @@ else
         [self.activityServerManager releaseServerManager];
         self.activityServerManager = nil;
     }
-
+    
     self.activityServerManager=[[ServerManager alloc]init];
     self.activityServerManager.delegate=self;
     
@@ -609,14 +609,14 @@ else
     }
     
     if([self.bg_activity.city length]==0 && [self.bg_activity.state length]==0){
-
+        
         //reverse geocode
         
         [self reverseGeocode];
         return;
     }
-
-
+    
+    
     if(editState) {
         [self.activityServerManager updateActivityOnBeagle:bg_activity];
     }
@@ -626,8 +626,8 @@ else
         [self.animationBlurView crossDissolveShow];
         UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
         [keyboard addSubview:self.animationBlurView];
-
-       [self.activityServerManager createActivityOnBeagle:bg_activity];
+        
+        [self.activityServerManager createActivityOnBeagle:bg_activity];
     }
     
 }
@@ -657,7 +657,7 @@ else
                         visibilityText = [NSString stringWithFormat:@"We'll tell your friends in %@", self.bg_activity.city];
                         break;
                 }
-            [locationFilterButton setTitle:visibilityText forState:UIControlStateNormal];
+                [locationFilterButton setTitle:visibilityText forState:UIControlStateNormal];
             }
             
         }
@@ -666,7 +666,7 @@ else
             [self showLocationError];
         }
     }];
-
+    
 }
 #define kDeleteActivity 2
 -(IBAction)deleteButtonClicked:(id)sender{
@@ -675,7 +675,7 @@ else
                                                    delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No",nil];
     alert.tag=kDeleteActivity;
     [alert show];
-
+    
 }
 
 #pragma mark -
@@ -684,29 +684,29 @@ else
     
     [alertView resignFirstResponder];
     
-        if (buttonIndex == 0) {
-            
-            switch (alertView.tag) {
-                case kDeleteActivity:
-                {
-                    if(_deleteActivityManager!=nil){
-                        _deleteActivityManager.delegate = nil;
-                        [_deleteActivityManager releaseServerManager];
-                        _deleteActivityManager = nil;
-                    }
-                    
-                    _deleteActivityManager=[[ServerManager alloc]init];
-                    _deleteActivityManager.delegate=self;
-                    [_deleteActivityManager deleteAnInterest:bg_activity.activityId];
-                }
-                    break;
-                    
-            }
-        }
+    if (buttonIndex == 0) {
         
-        else{
-            NSLog(@"Clicked Cancel Button");
+        switch (alertView.tag) {
+            case kDeleteActivity:
+            {
+                if(_deleteActivityManager!=nil){
+                    _deleteActivityManager.delegate = nil;
+                    [_deleteActivityManager releaseServerManager];
+                    _deleteActivityManager = nil;
+                }
+                
+                _deleteActivityManager=[[ServerManager alloc]init];
+                _deleteActivityManager.delegate=self;
+                [_deleteActivityManager deleteAnInterest:bg_activity.activityId];
+            }
+                break;
+                
         }
+    }
+    
+    else{
+        NSLog(@"Clicked Cancel Button");
+    }
 }
 - (void)didReceiveMemoryWarning
 {
@@ -722,67 +722,67 @@ else
     
     [self.navigationItem.rightBarButtonItem setTintColor:[[[BeagleManager SharedInstance] darkDominantColor] colorWithAlphaComponent:DISABLED_ALPHA]];
     self.navigationItem.rightBarButtonItem.enabled=NO;
-
+    
     if([BeagleUtilities checkIfTheTextIsBlank:[textView text]]){
         
-      if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
-          
-        if([self.bg_activity.city length]!=0 && [self.bg_activity.state length]!=0){
+        if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude!=0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude!=0.0f){
             
-            [self.navigationItem.rightBarButtonItem setTintColor:[BeagleUtilities returnBeagleColor:13]];
-            self.navigationItem.rightBarButtonItem.enabled=YES;
-            locationType=2;
-
+            if([self.bg_activity.city length]!=0 && [self.bg_activity.state length]!=0){
+                
+                [self.navigationItem.rightBarButtonItem setTintColor:[BeagleUtilities returnBeagleColor:13]];
+                self.navigationItem.rightBarButtonItem.enabled=YES;
+                locationType=2;
+                
+            }
         }
-      }
-
+        
     }
-
+    
 }
 
 -(void)textViewDidBeginEditing:(UITextView *)textView{
-
+    
 }
 
 
 -(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
-	BOOL flag = NO;
-	
-	
-	if([text length] == 0)
-	{
-		if([textView.text length] != 0)
-		{
-			flag = YES;
-			NSString *Temp = countTextLabel.text;
-			int j = [Temp intValue];
+    BOOL flag = NO;
+    
+    
+    if([text length] == 0)
+    {
+        if([textView.text length] != 0)
+        {
+            flag = YES;
+            NSString *Temp = countTextLabel.text;
+            int j = [Temp intValue];
             
-			j = j-1 ;
-			countTextLabel.text= [[NSString alloc] initWithFormat:@"%ld",(long)(141-[textView.text length])];
+            j = j-1 ;
+            countTextLabel.text= [[NSString alloc] initWithFormat:@"%ld",(long)(141-[textView.text length])];
             
-			return YES;
-		}
-		else {
-			return NO;
-		}
-		
-		
-	}
-	else if([[textView text] length] == 140)
-	{
+            return YES;
+        }
+        else {
+            return NO;
+        }
+        
+        
+    }
+    else if([[textView text] length] == 140)
+    {
         return NO;
-	}
-	if(flag == NO)
-	{
-		countTextLabel.text= [[NSString alloc] initWithFormat:@"%ld",(long)(140-[descriptionTextView.text length]-1)];
-		
-		
-	}
-	
-	
-	return YES;
-	
-	
+    }
+    if(flag == NO)
+    {
+        countTextLabel.text= [[NSString alloc] initWithFormat:@"%ld",(long)(140-[descriptionTextView.text length]-1)];
+        
+        
+    }
+    
+    
+    return YES;
+    
+    
 }
 -(void)textViewDidEndEditing:(UITextView *)textView{
     if (![textView hasText]) {
@@ -801,7 +801,7 @@ else
     UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
     
     [keyboard addSubview:self.blrVisbilityView];
-
+    
 }
 
 - (IBAction)locationFilter:(id)sender{
@@ -813,19 +813,19 @@ else
     [self.blrLocationView blurWithColor];
     [self.blrLocationView crossDissolveShow];
     [self.view addSubview:self.blrLocationView];
-
+    
     
 }
 
 
 - (IBAction)timeFilter:(id)sender{
-
+    
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
     [self.blrTimeView blurWithColor:[BlurColorComponents darkEffect]];
     [self.blrTimeView crossDissolveShow];
     [self.blrTimeView updatePickerDateForEditState];
-
+    
     if(editState){
         if([BeagleUtilities checkIfTheDateHasBeenSetUsingAPicker:self.bg_activity.startActivityDate endDate:self.bg_activity.endActivityDate]){
             [self.blrTimeView updatePickerTime:self.bg_activity.startActivityDate];
@@ -834,7 +834,7 @@ else
     UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
     
     [keyboard addSubview:self.blrTimeView];
-        
+    
 }
 
 -(void)interestLocationSelected:(CLPlacemark*)placemark{
@@ -849,7 +849,7 @@ else
     NSString *locationFilter=[NSString stringWithFormat:@"%@, %@",[placemark.addressDictionary objectForKey:@"City"],placemark.administrativeArea];
     [locationFilterButton setTitle:locationFilter forState:UIControlStateNormal];
     
-
+    
 }
 
 #pragma mark -
@@ -862,13 +862,13 @@ else
         case 1:
         {
             
-          [timeFilterButton setTitle:@"Later Today" forState:UIControlStateNormal];
+            [timeFilterButton setTitle:@"Later Today" forState:UIControlStateNormal];
         }
             break;
             
         case 2:
         {
-                [timeFilterButton setTitle:@"This Week" forState:UIControlStateNormal];
+            [timeFilterButton setTitle:@"This Week" forState:UIControlStateNormal];
         }
             break;
             
@@ -889,7 +889,7 @@ else
             
         case 5:
         {
-
+            
             [timeFilterButton setTitle:@"Tomorrow" forState:UIControlStateNormal];
         }
             break;
@@ -923,7 +923,7 @@ else
     [descriptionTextView becomeFirstResponder];
     self.navigationController.navigationBar.alpha=1.0;
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
-
+    
 }
 -(void)pickDate:(NSDate*)eventDate{
     timeIndex=8;
@@ -936,12 +936,12 @@ else
     NSCalendar* calendar = [NSCalendar currentCalendar];
     
     NSString *eventDateString = [dateFormatter stringFromDate:eventDate];
-
+    
     
     NSDate *dateSelected = [dateFormatter dateFromString:eventDateString];//add the string
     NSString *todayDate = [dateFormatter stringFromDate:[NSDate date]];
     NSDate *currentDate=[dateFormatter dateFromString:todayDate];
-
+    
     
     NSTimeZone* destinationTimeZone = [NSTimeZone systemTimeZone];
     NSInteger destinationGMTOffset1 = [destinationTimeZone secondsFromGMTForDate:dateSelected];
@@ -952,22 +952,22 @@ else
     
     NSDate* destinationDate =[[NSDate alloc] initWithTimeInterval:interval2 sinceDate:dateSelected];
     NSDate* currentDateTime =[[NSDate alloc] initWithTimeInterval:interval3 sinceDate:currentDate];
-
+    
     NSInteger differenceInDays =
     [calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSEraCalendarUnit forDate:destinationDate]-
     [calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSEraCalendarUnit forDate:currentDateTime];
-
+    
     NSDateComponents*components = [calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit|NSHourCalendarUnit|NSSecondCalendarUnit|NSMinuteCalendarUnit
-                                                fromDate:eventDate];
-
+                                              fromDate:eventDate];
+    
     if(differenceInDays==0){
         NSDateFormatter *localDateFormatter = [[NSDateFormatter alloc] init];
         localDateFormatter.dateFormat=@"h:mma";
         [localDateFormatter setPMSymbol:@"pm"];
         [localDateFormatter setAMSymbol:@"am"];
-
+        
         [timeFilterButton setTitle:[NSString stringWithFormat:@"Today, %@",[localDateFormatter stringFromDate:eventDate]] forState:UIControlStateNormal];
-
+        
         //user has picked today
     }else if(differenceInDays==1){
         NSDateFormatter *localDateFormatter = [[NSDateFormatter alloc] init];
@@ -1000,7 +1000,7 @@ else
     self.bg_activity.endActivityDate=[dateFormatter stringFromDate:[calendar dateFromComponents:components]];
     
     
-
+    
 }
 
 -(void)changeVisibilityFilter:(NSInteger)index{
@@ -1024,7 +1024,7 @@ else
         {
             [visibilityFilterButton setTitle:@"Friends" forState:UIControlStateNormal];
             [locationFilterButton setTitle:[NSString stringWithFormat:@"We'll tell your friends in %@", location] forState:UIControlStateNormal];
-
+            
         }
             break;
         case 3:
@@ -1037,8 +1037,8 @@ else
             [self updateCreateEventParameters];
             viewController.interestDetail=bg_activity;
             [self.navigationController pushViewController:viewController animated:YES];
-
-
+            
+            
         }
             break;
     }
@@ -1050,7 +1050,7 @@ else
                                           cancelButtonTitle:nil
                                           otherButtonTitles:@"Ok", nil];
     [alert show];
-
+    
 }
 -(void)dealloc{
     
@@ -1068,13 +1068,13 @@ else
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
     
     
-
+    
     if(serverRequest==kServerCallCreateActivity||serverRequest==kServerCallEditActivity){
         
         self.activityServerManager.delegate = nil;
         [self.activityServerManager releaseServerManager];
         self.activityServerManager = nil;
-
+        
         
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
@@ -1088,7 +1088,7 @@ else
                         self.bg_activity.activityId=[[player objectForKey:@"id"]integerValue];
                         self.bg_activity.organizerName =[NSString stringWithFormat:@"%@ %@",[[[BeagleManager SharedInstance]beaglePlayer]first_name],[[[BeagleManager SharedInstance]beaglePlayer]last_name]];
                         self.bg_activity.locationName=[NSString stringWithFormat:@"%@, %@",self.bg_activity.city,self.bg_activity.state];
-
+                        
                         self.bg_activity.dosRelation = 0;
                         self.bg_activity.dos1count = 0;
                         self.bg_activity.participantsCount = 0;
@@ -1103,18 +1103,18 @@ else
                                                              target: self
                                                            selector:@selector(hideCreateOverlay)
                                                            userInfo: nil repeats:NO];
-
+                    
                 }else if (serverRequest==kServerCallEditActivity){
                     if([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0f){
-                    [self.navigationController dismissViewControllerAnimated:NO completion:^{
-                        [descriptionTextView becomeFirstResponder];
-                        [descriptionTextView resignFirstResponder];
-                        
-                    }];
+                        [self.navigationController dismissViewControllerAnimated:NO completion:^{
+                            [descriptionTextView becomeFirstResponder];
+                            [descriptionTextView resignFirstResponder];
+                            
+                        }];
                     }else
-                    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+                        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
                 }
-
+                
             }
         }
         
@@ -1124,7 +1124,7 @@ else
         _deleteActivityManager.delegate = nil;
         [_deleteActivityManager releaseServerManager];
         _deleteActivityManager = nil;
-
+        
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
             id status=[response objectForKey:@"status"];
@@ -1132,19 +1132,19 @@ else
                 BeagleManager *BG=[BeagleManager SharedInstance];
                 BG.activityDeleted=TRUE;
                 if([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0f){
-                [self.navigationController dismissViewControllerAnimated:NO completion:^{
-                    [descriptionTextView becomeFirstResponder];
-                    [descriptionTextView resignFirstResponder];
-                    
-                }];
+                    [self.navigationController dismissViewControllerAnimated:NO completion:^{
+                        [descriptionTextView becomeFirstResponder];
+                        [descriptionTextView resignFirstResponder];
+                        
+                    }];
                 }else
-                [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+                    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
                 
                 
                 
             }
         }
-
+        
     }
     
     BeagleNotificationClass *notifObject=[[BeagleNotificationClass alloc]init];
@@ -1154,20 +1154,20 @@ else
     else if (serverRequest==kServerCallDeleteActivity)
         notifObject.notificationType=CANCEL_ACTIVITY_TYPE;
     else if(serverRequest==kServerCallCreateActivity){
-        notifObject.notificationType=ACTIVITY_CREATION_TYPE;
+        notifObject.notificationType=SELF_ACTIVITY_CREATION_TYPE;
     }
     
     NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];
     [notificationDictionary setObject:notifObject forKey:@"notify"];
     NSNotification* notification = [NSNotification notificationWithName:kNotificationHomeAutoRefresh object:self userInfo:notificationDictionary];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
-
-
+    
+    
 }
 
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {
-
+    
     if(serverRequest==kServerCallCreateActivity||serverRequest==kServerCallEditActivity)
     {
         self.activityServerManager.delegate = nil;
@@ -1176,7 +1176,7 @@ else
         if(serverRequest==kServerCallCreateActivity){
             [self.animationBlurView hide];
         }
-
+        
     }
     else if (serverRequest==kServerCallDeleteActivity){
         
@@ -1192,14 +1192,14 @@ else
 
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
 {
-
+    
     if(serverRequest==kServerCallCreateActivity||serverRequest==kServerCallEditActivity)
     {
         self.activityServerManager.delegate = nil;
         [self.activityServerManager releaseServerManager];
         self.activityServerManager = nil;
         if(serverRequest==kServerCallCreateActivity){
-                [self.animationBlurView hide];
+            [self.animationBlurView hide];
         }
     }
     else if (serverRequest==kServerCallDeleteActivity){
@@ -1215,31 +1215,31 @@ else
     [timer invalidate];
     [self.animationBlurView hide];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
-
+    
     if([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0f){
-    [self.navigationController dismissViewControllerAnimated:NO completion:^{
-        [descriptionTextView becomeFirstResponder];
-        [descriptionTextView resignFirstResponder];
-        
-    }];
+        [self.navigationController dismissViewControllerAnimated:NO completion:^{
+            [descriptionTextView becomeFirstResponder];
+            [descriptionTextView resignFirstResponder];
+            
+        }];
     }
     else
-     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
-
+        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+    
 }
 -(void)dismissCreateAnimationBlurView{
     [timer invalidate];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
     if([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0f){
-    [self.navigationController dismissViewControllerAnimated:NO completion:^{
-        [descriptionTextView becomeFirstResponder];
-        [descriptionTextView resignFirstResponder];
-        
-    }];
+        [self.navigationController dismissViewControllerAnimated:NO completion:^{
+            [descriptionTextView becomeFirstResponder];
+            [descriptionTextView resignFirstResponder];
+            
+        }];
     }
     else
-      [self.navigationController dismissViewControllerAnimated:YES completion:nil];
-
+        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+    
     
 }
 @end
