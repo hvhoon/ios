@@ -1932,7 +1932,9 @@ static NSString * const CellIdentifier = @"cell";
         _chatPostManager = nil;
         [_sendMessage setHidden:YES];
         [_sendMessage setProgress:0.0];
-    #if !kPostInterface
+    #if kPostInterface
+        self.inputToolBarView.sendButton.enabled=YES;
+    #else
         self.contentWrapper.inputView.rightButton.enabled = YES;
         self.contentWrapper.inputView.rightButton.tintColor = [BeagleUtilities returnBeagleColor:13];
    #endif
@@ -1974,7 +1976,9 @@ static NSString * const CellIdentifier = @"cell";
         [_sendMessage setHidden:YES];
         [_sendMessage setProgress:0.0];
         
-    #if !kPostInterface
+    #if kPostInterface
+        self.inputToolBarView.sendButton.enabled=YES;
+    #else
         self.contentWrapper.inputView.rightButton.enabled = YES;
         self.contentWrapper.inputView.rightButton.tintColor = [BeagleUtilities returnBeagleColor:13];
     #endif
@@ -2092,6 +2096,7 @@ static NSString * const CellIdentifier = @"cell";
             
             // Gray out 'Post' button
 
+            self.inputToolBarView.sendButton.enabled=NO;
             // Show progress indicator
             [_sendMessage setProgress:0.0f];
             [_sendMessage setHidden:NO];
@@ -2128,6 +2133,7 @@ static NSString * const CellIdentifier = @"cell";
     [self textViewDidChange:self.inputToolBarView.textView];
     [self.detailedInterestTableView reloadData];
     [self scrollToBottomAnimated:YES];
+    self.inputToolBarView.sendButton.enabled=YES;
 }
 
 

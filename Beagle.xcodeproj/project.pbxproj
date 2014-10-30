@@ -663,7 +663,6 @@
 				1893D03219D5C7BF00812443 /* LinkViewController.m */,
 			);
 			name = "Web View Link";
-			path = Beagle;
 			sourceTree = "<group>";
 		};
 		1893D41B19C9E7A600128A94 /* Keyboard Message View */ = {
@@ -706,7 +705,6 @@
 		18EC229418B5A0B400316B6E = {
 			isa = PBXGroup;
 			children = (
-				1893D03019D5C78F00812443 /* Web View Link */,
 				18EC22A618B5A0B400316B6E /* Beagle */,
 				18EC229F18B5A0B400316B6E /* Frameworks */,
 				18EC229E18B5A0B400316B6E /* Products */,
@@ -762,6 +760,7 @@
 			children = (
 				18EC22AF18B5A0B400316B6E /* AppDelegate.h */,
 				18EC22B018B5A0B400316B6E /* AppDelegate.m */,
+				1893D03019D5C78F00812443 /* Web View Link */,
 				18EC234018B5A71000316B6E /* Storyboard */,
 				6891059619632C3000BE23B7 /* About */,
 				182F0B8B19630059001771AD /* Feedback */,
