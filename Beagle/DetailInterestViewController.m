@@ -450,9 +450,19 @@ static NSString * const CellIdentifier = @"cell";
       [self createInterestInitialCard];
     
     self.navigationItem.backBarButtonItem.title=@"";
+    
+    
 
 }
-
+-(void) viewWillDisappear:(BOOL)animated {
+    if ([self.navigationController.viewControllers indexOfObject:self]==NSNotFound) {
+        // Navigation back button was pressed
+        if(isKeyboardVisible){
+            [self.inputToolBarView.textView resignFirstResponder];
+        }
+   }
+    [super viewWillDisappear:animated];
+}
 -(void)resizeDetailTableView{
     
     if(self.interestActivity.isParticipant)
