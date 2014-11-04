@@ -10,6 +10,7 @@
 #import <Instabug/Instabug.h>
 #import "HomeViewController.h"
 #import "DetailInterestViewController.h"
+#import "JSON.h"
 @interface AppDelegate ()<ServerManagerDelegate>{
     ServerManager *notificationServerManager;
     NSInteger attempts;
@@ -53,6 +54,15 @@ void uncaughtExceptionHandler(NSException *exception) {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = initViewController;
     [self.window makeKeyAndVisible];
+    
+    if(![BeagleUtilities checkIfTheInviteHTMLisAtTheDocuementFolderLocation]){
+    NSString *inviteHtmlPath = [[NSBundle mainBundle] pathForResource:@"Invite" ofType:@"html"];
+    NSData *htmlData = [NSData dataWithContentsOfFile:inviteHtmlPath];
+    [BeagleUtilities saveHTMLFileInDocumentDirectory:htmlData];
+    }else{
+        // create a block and download the file from Amazon Ec2
+        [self getupdatedInviteHTMLFromTheServer];
+    }
     
     if([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0f){
     
@@ -156,6 +166,31 @@ else
     return YES;
 }
 
+
+-(void)getupdatedInviteHTMLFromTheServer{
+    NSURL *url=[NSURL URLWithString:[NSString stringWithFormat:@"%@",@"http://files.parsetfss.com/d3381117-b014-42cb-ab06-50aaf273b202/tfss-7b9640c7-1d32-408a-96d5-c0cff971ba18-Invite.html"]];
+    
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL: url];
+    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+    [NSURLConnection sendAsynchronousRequest:request queue:queue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error)
+     {
+         if ([data length] > 0 && error == nil){
+             
+             [self performSelectorOnMainThread:@selector(receivedData:) withObject:data waitUntilDone:NO];
+         }else if ([data length] == 0 && error == nil){
+         }else if (error != nil && error.code == NSURLErrorTimedOut){ //used this NSURLErrorTimedOut from foundation error responses
+         }else if (error != nil){
+             NSLog(@"Error=%@",[error description]);
+         }
+     }];
+}
+
+-(void)receivedData:(NSData*)returnData{
+    
+  [BeagleUtilities saveHTMLFileInDocumentDirectory:returnData];
+    
+    
+}
 #pragma mark - location Manager calls
 
 - (void)startStandardUpdates {

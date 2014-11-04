@@ -58,6 +58,41 @@ static FeedbackReporting *sharedInstance = nil;
     return picker;
 }
 
+-(MFMailComposeViewController*)testInviteUserController{
+    MFMailComposeViewController *picker = [[MFMailComposeViewController alloc] init];
+    picker.mailComposeDelegate = self;
+    [picker.navigationBar setTintColor:[BeagleUtilities returnBeagleColor:13]];
+    
+    NSArray *toRecipients = [NSArray arrayWithObject:@"kanavkartik@gmail.com"];
+    
+    [picker setSubject:@"Invite Interest"];
+    [picker setToRecipients:toRecipients];
+    NSString *inviteHtmlPath = [[NSBundle mainBundle] pathForResource:@"Invite" ofType:@"html"];
+    NSData *htmlData = [NSData dataWithContentsOfFile:inviteHtmlPath];
+    [picker addAttachmentData:htmlData mimeType:@"text/html" fileName:@"Invite"];
+
+    
+    [picker setMessageBody:@"hey how is it going" isHTML:NO];
+    
+    return picker;
+}
+
+- (MFMailComposeViewController*)inviteAUserController:(NSArray*)listArray{
+    
+        MFMailComposeViewController *picker = [[MFMailComposeViewController alloc] init];
+        picker.mailComposeDelegate = self;
+        [picker.navigationBar setTintColor:[BeagleUtilities returnBeagleColor:13]];
+        
+        NSMutableString *emailBody =[[NSMutableString alloc] initWithString:@"<br><br><br><br><br>"];
+        [emailBody appendString:[BeagleUtilities readHTMLFromDocumentDirectory]];
+
+        [picker setSubject:@"Invite Interest"];
+        [picker setToRecipients:listArray];
+        [picker setMessageBody:emailBody isHTML:YES];
+        
+        return picker;
+}
+
 -(NSString *)messageBody:(NSString*)activityName orgName:(NSString*)orgName
 {
     
@@ -98,8 +133,8 @@ static FeedbackReporting *sharedInstance = nil;
 
 - (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error
 {
-    if(staturBarShow){
-        staturBarShow=FALSE;
+    if(statusBarShow){
+        statusBarShow=FALSE;
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
         [[UIApplication sharedApplication] setStatusBarHidden:YES];
 

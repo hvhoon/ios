@@ -856,4 +856,60 @@
     
     return frameSize.height;
 }
+
++(void)saveHTMLFileInDocumentDirectory:(NSData*)htmlData{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *filePath = [NSString stringWithFormat:@"%@/%@", documentsDirectory, @"Invite.html"];
+    NSLog(@"filePath=%@", filePath);
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) { // if file is not exist, create it.
+        
+    }
+    NSError *error;
+    [htmlData writeToFile:filePath options:NSDataWritingAtomic error:&error];
+    if ([[NSFileManager defaultManager] isWritableFileAtPath:filePath]) {
+        NSLog(@"Writable");
+    }else {
+        NSLog(@"Not Writable");
+    }
+}
+
++(NSString*)readHTMLFromDocumentDirectory{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    
+    NSArray *fileNamesArray = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:documentsDirectory error:nil];
+    
+    for(NSString *fileName in fileNamesArray)
+    {
+        if([[fileName pathExtension] isEqualToString:@"html"])
+        {
+            NSError *err = nil;
+            NSString *fileNamePath = [documentsDirectory stringByAppendingPathComponent:fileName];
+            NSString *htmlContent = [NSString stringWithContentsOfFile:fileNamePath
+                                                              encoding:NSUTF8StringEncoding
+
+                                                                 error:&err];
+            return htmlContent;
+        }
+    }
+    return nil;
+}
+
++(BOOL)checkIfTheInviteHTMLisAtTheDocuementFolderLocation{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    
+    NSArray *fileNamesArray = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:documentsDirectory error:nil];
+    
+    for(NSString *fileName in fileNamesArray)
+    {
+        if([[fileName pathExtension] isEqualToString:@"html"])
+        {
+            return YES;
+        }
+    }
+    return NO;
+}
 @end

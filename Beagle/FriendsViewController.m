@@ -12,7 +12,9 @@
 #import "DetailInterestViewController.h"
 #import "HomeViewController.h"
 #import "InitialSlidingViewController.h"
-@interface FriendsViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,FriendsTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate>{
+#import "FeedbackReporting.h"
+#import <AddressBook/AddressBook.h>
+@interface FriendsViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,FriendsTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate,UIActionSheetDelegate>{
     NSIndexPath* inviteIndexPath;
 }
 @property(nonatomic,strong)ServerManager*friendsManager;
@@ -602,6 +604,91 @@
 -(void)inviteFacebookFriendOnBeagle:(NSIndexPath*)indexPath{
     
     inviteIndexPath=indexPath;
+    
+
+    UIActionSheet *actionSheetView = [[UIActionSheet alloc] initWithTitle:@"Select invite option" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:
+                            @"Invite via Facebook",
+                            @"Invite via E-mail",
+                            nil];
+    [actionSheetView showInView:[UIApplication sharedApplication].keyWindow];
+    
+    
+}
+
+- (void)actionSheet:(UIActionSheet *)popup clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+            switch (buttonIndex) {
+                case 0:
+                    [self inviteViaFacebook];
+                    break;
+                case 1:
+                {
+                        ABAddressBookRef addressBookRef = ABAddressBookCreateWithOptions(NULL, NULL);
+                    if (ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusNotDetermined) {
+                        ABAddressBookRequestAccessWithCompletion(addressBookRef, ^(bool granted, CFErrorRef error) {
+                                 if(granted)
+                                     [self inviteViaEmail];
+                                 else{
+                                     //ask harish for the usecase when user does not grant access
+                                 }
+                        });
+                    }else if(ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusAuthorized){
+                              [self inviteViaEmail];
+                    }else{
+                        
+                        // user in the settings have turned the option off
+                        
+                        NSString *message = NSLocalizedString (@"Please go to the Settings > Privacy >Contacts and allow beagle to access your contacts and then try inviting in again.",
+                                                               @"Settings toggle off for contacts");
+                        BeagleAlertWithMessage(message);
+
+                    }
+
+                 }
+                    break;
+                default:
+                    break;
+            }
+     }
+
+-(void)inviteViaEmail{
+    NSMutableArray *emailArray=[NSMutableArray new];
+        CFErrorRef *error = NULL;
+        ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, error);
+        BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
+        
+        
+        
+        CFArrayRef people = ABAddressBookCopyPeopleWithName(addressBook,
+                                                            (__bridge CFStringRef)player.fullName);
+        
+
+        
+        for(int i = 0; i < CFArrayGetCount(people); i++) {
+            
+            ABRecordRef person = CFArrayGetValueAtIndex(people, i);
+            
+            ABMutableMultiValueRef multi = ABRecordCopyValue(person, kABPersonEmailProperty);
+            if (ABMultiValueGetCount(multi) > 0) {
+                CFStringRef emailRefIndex = ABMultiValueCopyValueAtIndex(multi, 0);
+                [emailArray addObject:(__bridge_transfer NSString *)emailRefIndex];
+            }
+        }
+         
+         if ([[FeedbackReporting sharedInstance] canSendFeedback]) {
+             MFMailComposeViewController* inviteuserController = [[FeedbackReporting sharedInstance] inviteAUserController:emailArray];
+             [self presentViewController:inviteuserController animated:YES completion:Nil];
+         }
+         else{
+             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Please setup your email account" message:nil
+                                                            delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+             
+             [alert show];
+             
+    }
+    
+}
+-(void)inviteViaFacebook{
     FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.friendsTableView cellForRowAtIndexPath:inviteIndexPath];
     UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"222%ld",(long)inviteIndexPath.row]integerValue]];
     UIActivityIndicatorView *spinner=(UIActivityIndicatorView*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)inviteIndexPath.row]integerValue]];
@@ -609,7 +696,7 @@
     [button setHidden:YES];
     [spinner setHidden:NO];
     [spinner startAnimating];
-
+    
     // check if the user has  a valid facebook session
     
     if([(AppDelegate *)[[UIApplication sharedApplication] delegate] checkForFacebookSesssion]){
@@ -626,6 +713,7 @@
         //have to check if this scenarios comes up
     }
     
+
 }
 -(void)userProfileSelected:(NSIndexPath*)indexPath{
     BeagleUserClass *player=[self.beagleFriendsArray objectAtIndex:indexPath.row];

@@ -9,10 +9,11 @@
 #import <Foundation/Foundation.h>
 #import <MessageUI/MessageUI.h>
 @interface FeedbackReporting : NSObject<MFMailComposeViewControllerDelegate>{
-    BOOL staturBarShow;
+    BOOL statusBarShow;
 }
 + (FeedbackReporting *)sharedInstance;
 - (BOOL)canSendFeedback;
 - (MFMailComposeViewController *)flagAnActivityController:(NSString*)flagMessage;
 - (MFMailComposeViewController *)shareFeedbackController;
+- (MFMailComposeViewController*)inviteAUserController:(NSArray*)listArray;
 @end

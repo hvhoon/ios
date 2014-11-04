@@ -36,4 +36,7 @@
 +(BOOL)checkIfTheTextIsBlank:(NSString*)text;
 +(BOOL)checkIfTheDateHasBeenSetUsingAPicker:(NSString*)startDate endDate:(NSString*)endDate;
 + (CGFloat)heightForAttributedStringWithEmojis:(NSAttributedString *)attributedString forWidth:(CGFloat)width;
++(void)saveHTMLFileInDocumentDirectory:(NSData*)htmlData;
++(NSString*)readHTMLFromDocumentDirectory;
++(BOOL)checkIfTheInviteHTMLisAtTheDocuementFolderLocation;
 @end
