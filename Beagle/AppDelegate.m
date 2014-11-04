@@ -168,7 +168,7 @@ else
 
 
 -(void)getupdatedInviteHTMLFromTheServer{
-    NSURL *url=[NSURL URLWithString:[NSString stringWithFormat:@"%@",@"http://files.parsetfss.com/d3381117-b014-42cb-ab06-50aaf273b202/tfss-7b9640c7-1d32-408a-96d5-c0cff971ba18-Invite.html"]];
+    NSURL *url=[NSURL URLWithString:[NSString stringWithFormat:@"%@",@"https://s3.amazonaws.com/invitemailers/Invite.html"]];
     
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL: url];
     NSOperationQueue *queue = [[NSOperationQueue alloc] init];
