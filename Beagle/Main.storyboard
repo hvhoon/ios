@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="Tvt-5e-zCq">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="Tvt-5e-zCq">
     <dependencies>
-        <deployment defaultVersion="1792" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
     </dependencies>
     <scenes>
         <!--Initial Sliding View Controller-->
@@ -154,7 +154,7 @@
                         <viewControllerLayoutGuide type="bottom" id="kyU-kH-Slj"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="PeB-fg-zhq">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="picbox" translatesAutoresizingMaskIntoConstraints="NO" id="S6h-4g-xhL">
@@ -175,7 +175,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8Ie-f1-ZUL" userLabel="Home Button">
-                                <rect key="frame" x="0.0" y="212" width="270" height="44"/>
+                                <rect key="frame" x="0.0" y="168" width="270" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="270" id="GeB-DM-7e7"/>
                                     <constraint firstAttribute="height" constant="44" id="eqF-qG-oAk"/>
@@ -194,7 +194,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iO2-Mz-GFm" userLabel="Invite Friends Button">
-                                <rect key="frame" x="0.0" y="257" width="270" height="44"/>
+                                <rect key="frame" x="0.0" y="213" width="270" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="aKA-wU-DfN"/>
                                     <constraint firstAttribute="width" constant="270" id="mRr-lY-e75"/>
@@ -212,7 +212,26 @@
                                     <action selector="sliderButtonClicked:" destination="uYK-CY-Sol" eventType="touchUpInside" id="yXN-zY-BOo"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="J4t-Pv-vP8" userLabel="Feedback Button">
+                            <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4rW-9g-6zJ" userLabel="Invite Friends Button">
+                                <rect key="frame" x="0.0" y="256" width="270" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="hq5-IE-nrK"/>
+                                    <constraint firstAttribute="width" constant="270" id="iu8-KP-vrf"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="15"/>
+                                <inset key="contentEdgeInsets" minX="16" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                <inset key="titleEdgeInsets" minX="24" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                <state key="normal" title="Invite" image="Invite-Friends">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="highlighted">
+                                    <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="sliderButtonClicked:" destination="uYK-CY-Sol" eventType="touchUpInside" id="EZr-2a-n7g"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="J4t-Pv-vP8" userLabel="Feedback Button">
                                 <rect key="frame" x="0.0" y="300" width="270" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="270" id="8SS-52-buH"/>
@@ -231,7 +250,7 @@
                                     <action selector="sliderButtonClicked:" destination="uYK-CY-Sol" eventType="touchUpInside" id="8ag-lO-VFj"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dJT-BZ-2dL" userLabel="About Us Button">
+                            <button opaque="NO" tag="6" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dJT-BZ-2dL" userLabel="About Us Button">
                                 <rect key="frame" x="0.0" y="344" width="270" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="270" id="FKO-sR-mtK"/>
@@ -250,7 +269,7 @@
                                     <action selector="sliderButtonClicked:" destination="uYK-CY-Sol" eventType="touchUpInside" id="Gw3-5u-hYH"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" tag="8" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lt6-CB-5f1" userLabel="Signout Button">
+                            <button opaque="NO" tag="7" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lt6-CB-5f1" userLabel="Signout Button">
                                 <rect key="frame" x="0.0" y="388" width="270" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="HfK-zD-CNx"/>
@@ -270,28 +289,28 @@
                                 </connections>
                             </button>
                             <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Facebook Sharing" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DWN-BO-M9m">
-                                <rect key="frame" x="68" y="493" width="110" height="17"/>
+                                <rect key="frame" x="68" y="405" width="110" height="17"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="14"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Facebook" translatesAutoresizingMaskIntoConstraints="NO" id="8Fx-wv-yU7">
-                                <rect key="frame" x="16" y="493" width="28" height="28"/>
+                                <rect key="frame" x="16" y="405" width="28" height="28"/>
                             </imageView>
                             <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Share created activities on your news ticker" lineBreakMode="characterWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="123" translatesAutoresizingMaskIntoConstraints="NO" id="4SE-Rr-0qy">
-                                <rect key="frame" x="68" y="514" width="123" height="29"/>
+                                <rect key="frame" x="68" y="426" width="123" height="29"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="12"/>
                                 <color key="textColor" red="0.69803921568627447" green="0.69803921568627447" blue="0.69803921568627447" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <switch hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="FIn-5f-J2w">
-                                <rect key="frame" x="205" y="502" width="51" height="31"/>
+                                <rect key="frame" x="205" y="414" width="51" height="31"/>
                                 <connections>
                                     <action selector="switchChanged:" destination="uYK-CY-Sol" eventType="valueChanged" id="qgO-aP-p1W"/>
                                 </connections>
                             </switch>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gQj-EC-JSM">
-                                <rect key="frame" x="21" y="527" width="229" height="21"/>
+                                <rect key="frame" x="21" y="439" width="229" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="Dfw-KS-uRY"/>
                                     <constraint firstAttribute="width" constant="229" id="GLh-1s-jhM"/>
@@ -304,6 +323,7 @@
                         <color key="backgroundColor" red="0.23921568627450979" green="0.23921568627450979" blue="0.23921568627450979" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="S6h-4g-xhL" firstAttribute="top" secondItem="gur-Gh-S2N" secondAttribute="bottom" constant="32" id="3Uu-Sn-wtD"/>
+                            <constraint firstAttribute="centerY" secondItem="4rW-9g-6zJ" secondAttribute="centerY" constant="-38" id="4vP-da-dYr"/>
                             <constraint firstAttribute="trailing" secondItem="FIn-5f-J2w" secondAttribute="trailing" constant="66" id="996-l1-LeV"/>
                             <constraint firstItem="Lt6-CB-5f1" firstAttribute="leading" secondItem="PeB-fg-zhq" secondAttribute="leading" id="E1H-Rr-Vhc"/>
                             <constraint firstItem="iO2-Mz-GFm" firstAttribute="leading" secondItem="PeB-fg-zhq" secondAttribute="leading" id="Evc-vq-8Q9"/>
@@ -315,21 +335,23 @@
                             <constraint firstItem="n0w-kW-vyK" firstAttribute="top" secondItem="S6h-4g-xhL" secondAttribute="bottom" constant="15" id="NwR-lb-GEf"/>
                             <constraint firstAttribute="bottom" secondItem="DWN-BO-M9m" secondAttribute="bottom" constant="58" id="RCU-hT-fmJ"/>
                             <constraint firstItem="DWN-BO-M9m" firstAttribute="top" secondItem="8Fx-wv-yU7" secondAttribute="top" id="TvN-Pn-tKU"/>
+                            <constraint firstItem="J4t-Pv-vP8" firstAttribute="top" secondItem="4rW-9g-6zJ" secondAttribute="bottom" id="Uys-cf-34E"/>
                             <constraint firstAttribute="bottom" secondItem="FIn-5f-J2w" secondAttribute="bottom" constant="35" id="Vm6-km-J0R"/>
+                            <constraint firstItem="4rW-9g-6zJ" firstAttribute="top" secondItem="iO2-Mz-GFm" secondAttribute="bottom" constant="-1" id="X6x-CK-u6Q"/>
                             <constraint firstItem="8Fx-wv-yU7" firstAttribute="leading" secondItem="PeB-fg-zhq" secondAttribute="leading" constant="16" id="Xwg-kZ-pPg"/>
                             <constraint firstItem="DWN-BO-M9m" firstAttribute="leading" secondItem="PeB-fg-zhq" secondAttribute="leading" constant="68" id="a90-Iz-eVX"/>
-                            <constraint firstAttribute="centerY" secondItem="J4t-Pv-vP8" secondAttribute="centerY" constant="-38" id="bf5-ys-90H"/>
                             <constraint firstAttribute="centerX" secondItem="gQj-EC-JSM" secondAttribute="centerX" constant="24.5" id="evP-hf-ew7"/>
                             <constraint firstItem="J4t-Pv-vP8" firstAttribute="leading" secondItem="PeB-fg-zhq" secondAttribute="leading" id="ffh-qk-Qjs"/>
                             <constraint firstAttribute="centerX" secondItem="n0w-kW-vyK" secondAttribute="centerX" constant="25" id="fvk-jx-MNh"/>
                             <constraint firstItem="iO2-Mz-GFm" firstAttribute="top" secondItem="8Ie-f1-ZUL" secondAttribute="bottom" constant="1" id="nxI-gE-hyH"/>
                             <constraint firstAttribute="bottom" secondItem="4SE-Rr-0qy" secondAttribute="bottom" constant="25" id="wG6-B5-COX"/>
                             <constraint firstItem="dJT-BZ-2dL" firstAttribute="top" secondItem="J4t-Pv-vP8" secondAttribute="bottom" id="wQp-FR-miu"/>
-                            <constraint firstItem="J4t-Pv-vP8" firstAttribute="top" secondItem="iO2-Mz-GFm" secondAttribute="bottom" constant="-1" id="whM-sN-gHH"/>
                             <constraint firstItem="4SE-Rr-0qy" firstAttribute="leading" secondItem="PeB-fg-zhq" secondAttribute="leading" constant="68" id="xhv-La-Vy7"/>
+                            <constraint firstItem="4rW-9g-6zJ" firstAttribute="leading" secondItem="PeB-fg-zhq" secondAttribute="leading" id="xrZ-HT-mkM"/>
                             <constraint firstAttribute="bottom" secondItem="8Fx-wv-yU7" secondAttribute="bottom" constant="47" id="ywU-xP-TWU"/>
                         </constraints>
                     </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
                     <connections>
                         <outlet property="fbTickerSwitch" destination="FIn-5f-J2w" id="yZE-jF-kNc"/>
                         <outlet property="profileImageView" destination="S6h-4g-xhL" id="L5d-DJ-sJC"/>

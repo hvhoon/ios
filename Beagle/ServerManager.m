@@ -546,6 +546,21 @@
     }
 
 }
+
+-(void)sendingAnEmailInvite:(NSNumber*)fbuid{
+    _serverCallType=kServerPostAnEmailInvite;
+    if([self isInternetAvailable])
+    {
+        [self callServerWithUrl:[NSString stringWithFormat:@"%@players/send_email_invite.json?id=%@&fbuid=%@",_serverUrl,[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"],fbuid]
+                         method:@"POST"
+                         params:[NSDictionary dictionaryWithObjectsAndKeys:nil] data:nil];
+    }
+    else
+    {
+        [self internetNotAvailable];
+    }
+    
+}
 -(void)populateErrorCodes
 {
     _errorCodes = [[NSMutableDictionary alloc]init];

@@ -77,16 +77,16 @@ static FeedbackReporting *sharedInstance = nil;
     return picker;
 }
 
-- (MFMailComposeViewController*)inviteAUserController:(NSArray*)listArray{
+- (MFMailComposeViewController*)inviteAUserController:(NSArray*)listArray firstName:(NSString*)firstName{
     
         MFMailComposeViewController *picker = [[MFMailComposeViewController alloc] init];
         picker.mailComposeDelegate = self;
         [picker.navigationBar setTintColor:[BeagleUtilities returnBeagleColor:13]];
-        
-        NSMutableString *emailBody =[[NSMutableString alloc] initWithString:@"<br><br><br><br><br>"];
-        [emailBody appendString:[BeagleUtilities readHTMLFromDocumentDirectory]];
+       picker.view.tag=473;
+        NSMutableString *emailBody =[[NSMutableString alloc] initWithString:[NSString stringWithFormat:@"<br /> <br /> <p><b>%@ has invited you to check out Beagle, learn more below.</b></p><br />",firstName]];
+       [emailBody appendString:[BeagleUtilities readHTMLFromDocumentDirectory]];
 
-        [picker setSubject:@"Invite Interest"];
+        [picker setSubject:@"Introducing Beagle!"];
         [picker setToRecipients:listArray];
         [picker setMessageBody:emailBody isHTML:YES];
         
@@ -140,7 +140,72 @@ static FeedbackReporting *sharedInstance = nil;
 
      
     }
+    
+    
+    switch (result) {
+        case MFMailComposeResultCancelled:
+            NSLog(@"Result: Mail sending canceled");
+            break;
+        case MFMailComposeResultFailed:
+            NSLog(@"Result: Mail sending failed");
+            break;
+        case MFMailComposeResultSent:
+            NSLog(@"Result: Mail sent");
+            break;
+        case MFMailComposeResultSaved:
+            NSLog(@"Result: Mail saved");
+            break;
+            
+        default:
+            NSLog(@"Result: Mail not sent");
+            break;
+    }
+    
+    if(controller.view.tag==473){
+      if (result == MFMailComposeResultSent){
+          
+          
+          if (self.delegate && [self.delegate respondsToSelector:@selector(sendEmailInvite)])
+          [self.delegate sendEmailInvite];
+//        NSString *email = [self findEmailAddresses:controller.view depth:0];
+//        NSLog(@"%@", email);
+      }
+    }
     [controller dismissViewControllerAnimated:YES completion:Nil];
+}
+
+- (NSString *)findEmailAddresses:(UIView *)view depth:(NSInteger)depth
+{
+    NSString *eAddress = nil;
+    if (!view)
+        return eAddress;
+    
+    NSMutableString *tabString = [NSMutableString stringWithCapacity:depth];
+    for (int i = 0; i < depth; i++)
+        [tabString appendString:@"-- "];
+    NSLog(@"%@%@", tabString, view);
+    
+    if ([view isKindOfClass:[UITextField class]])
+    {
+        // MAGIC: debugger shows email address(es) in first textField
+        // but only if it's about max 35 characters
+        if (((UITextField *)view).text)
+        {
+            eAddress = [NSString stringWithString:((UITextField *)view).text];
+            NSLog(@"FOUND UITextField: %@", eAddress ? eAddress : @"");
+        }
+    }
+    
+    NSArray *subviews = [view subviews];
+    if (subviews) {
+        for (UIView *view in subviews)
+        {
+            NSString *s = [self findEmailAddresses:view depth:depth+1];
+            if (s) eAddress = s;
+        }
+    }
+    
+    return eAddress;
 }
 
 @end
