@@ -797,8 +797,8 @@
 		18EC22A718B5A0B400316B6E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				1885C5DF1A09312300B07D55 /* Invite.html */,
 				18714B341940F1D2008F59DE /* Sounds */,
+				1885C5DF1A09312300B07D55 /* Invite.html */,
 				180AF0BF18DC809E00EE87D6 /* User.plist */,
 				18EC22A918B5A0B400316B6E /* InfoPlist.strings */,
 				18EC22AC18B5A0B400316B6E /* main.m */,

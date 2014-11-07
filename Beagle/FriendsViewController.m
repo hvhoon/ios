@@ -14,6 +14,7 @@
 #import "InitialSlidingViewController.h"
 #import "FeedbackReporting.h"
 #import <AddressBook/AddressBook.h>
+#define  kInviteViaEmail 1
 @interface FriendsViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,FriendsTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate,UIActionSheetDelegate,FeedbackReportingDelegate>{
     NSIndexPath* inviteIndexPath;
 }
@@ -605,14 +606,49 @@
     
     inviteIndexPath=indexPath;
     
+    
+    
+#if kInviteViaEmail
 
+    [self getAuthorizationForAddressBook];
+    
+#else
+    
     UIActionSheet *actionSheetView = [[UIActionSheet alloc] initWithTitle:@"Select invite option" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:
-                            @"Invite via Facebook",
-                            @"Invite via E-mail",
-                            nil];
+                                      @"Invite via Facebook",
+                                      @"Invite via E-mail",
+                                      nil];
     [actionSheetView showInView:[UIApplication sharedApplication].keyWindow];
     
     
+
+#endif
+    
+    
+}
+
+-(void)getAuthorizationForAddressBook{
+        ABAddressBookRef addressBookRef = ABAddressBookCreateWithOptions(NULL, NULL);
+        if (ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusNotDetermined) {
+            ABAddressBookRequestAccessWithCompletion(addressBookRef, ^(bool granted, CFErrorRef error) {
+                if(granted)
+                    [self inviteViaEmail];
+                else{
+                    //ask harish for the message copy  when user does not grant access for the first time
+                }
+            });
+        }else if(ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusAuthorized){
+            [self inviteViaEmail];
+        }else{
+            
+            // user in the settings have turned the option off
+            
+            NSString *message = NSLocalizedString (@"Please go to the Settings > Privacy >Contacts and allow beagle to access your contacts and then try inviting in again.",
+                                                   @"Settings toggle off for contacts");
+            BeagleAlertWithMessage(message);
+            
+        }
+        
 }
 
 - (void)actionSheet:(UIActionSheet *)popup clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -623,28 +659,8 @@
                     break;
                 case 1:
                 {
-                        ABAddressBookRef addressBookRef = ABAddressBookCreateWithOptions(NULL, NULL);
-                    if (ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusNotDetermined) {
-                        ABAddressBookRequestAccessWithCompletion(addressBookRef, ^(bool granted, CFErrorRef error) {
-                                 if(granted)
-                                     [self inviteViaEmail];
-                                 else{
-                                     //ask harish for the usecase when user does not grant access
-                                 }
-                        });
-                    }else if(ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusAuthorized){
-                              [self inviteViaEmail];
-                    }else{
-                        
-                        // user in the settings have turned the option off
-                        
-                        NSString *message = NSLocalizedString (@"Please go to the Settings > Privacy >Contacts and allow beagle to access your contacts and then try inviting in again.",
-                                                               @"Settings toggle off for contacts");
-                        BeagleAlertWithMessage(message);
-
-                    }
-
-                 }
+                    [self getAuthorizationForAddressBook];
+                }
                     break;
                 default:
                     break;
