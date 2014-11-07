@@ -634,7 +634,10 @@
                 if(granted)
                     [self inviteViaEmail];
                 else{
-                    //ask harish for the message copy  when user does not grant access for the first time
+                    NSString *message = NSLocalizedString (@"To invite your friends to Beagle we need to take a quick look at your address book. We promise to only use it to invite the friends you pick. When you are ready, please try again!",
+                                                           @"Access Not Granted");
+                    BeagleAlertWithMessage(message);
+
                 }
             });
         }else if(ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusAuthorized){

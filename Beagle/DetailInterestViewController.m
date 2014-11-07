@@ -616,10 +616,12 @@ static NSString * const CellIdentifier = @"cell";
 
 -(void)doneButtonClicked:(id)sender{
     
+#if kPostInterface
     [self.inputToolBarView.textView resignFirstResponder];
     [self.detailedInterestTableView reloadData];
     [self.view endEditing:YES];
-#if !kPostInterface
+
+#else
     [self.contentWrapper.inputView.textView resignFirstResponder];
     [self.view endEditing:YES];
     [self.contentWrapper textViewDidChange:self.contentWrapper.inputView.textView];
@@ -642,6 +644,8 @@ static NSString * const CellIdentifier = @"cell";
                                                   animated:YES];
     
     [self.detailedInterestTableView endUpdates];
+    
+    
 #endif
     
 }
@@ -847,6 +851,7 @@ static NSString * const CellIdentifier = @"cell";
     else{
         {
             InterestChatClass *chatCell=[self.chatPostsArray objectAtIndex:indexPath.row-1];
+            if([chatCell.text length]!=0 && [chatCell.text isKindOfClass:[NSString class]]){
             NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
             [style setAlignment:NSTextAlignmentLeft];
             
@@ -866,8 +871,10 @@ static NSString * const CellIdentifier = @"cell";
                 return 45.0f+8.0f+height+kPostTextClip;
             
             return 45.0f+height+kPostTextClip;
+           }
         }
     }
+    return 0.0f;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
