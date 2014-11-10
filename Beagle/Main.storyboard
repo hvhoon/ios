@@ -165,7 +165,7 @@
                                 </constraints>
                             </imageView>
                             <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8Ie-f1-ZUL" userLabel="Home Button">
-                                <rect key="frame" x="0.0" y="162" width="270" height="44"/>
+                                <rect key="frame" x="0.0" y="154" width="270" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="270" id="GeB-DM-7e7"/>
                                     <constraint firstAttribute="height" constant="44" id="eqF-qG-oAk"/>
@@ -184,7 +184,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iO2-Mz-GFm" userLabel="Invite Friends Button">
-                                <rect key="frame" x="0.0" y="206" width="270" height="44"/>
+                                <rect key="frame" x="0.0" y="198" width="270" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="aKA-wU-DfN"/>
                                     <constraint firstAttribute="width" constant="270" id="mRr-lY-e75"/>
@@ -203,7 +203,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4rW-9g-6zJ" userLabel="Invite Friends Button">
-                                <rect key="frame" x="0.0" y="249" width="270" height="44"/>
+                                <rect key="frame" x="0.0" y="241" width="270" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="hq5-IE-nrK"/>
                                     <constraint firstAttribute="width" constant="270" id="iu8-KP-vrf"/>
@@ -222,7 +222,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="J4t-Pv-vP8" userLabel="Feedback Button">
-                                <rect key="frame" x="0.0" y="293" width="270" height="44"/>
+                                <rect key="frame" x="0.0" y="285" width="270" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="270" id="8SS-52-buH"/>
                                     <constraint firstAttribute="height" constant="44" id="Bpp-ix-ata"/>
@@ -241,7 +241,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" tag="6" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dJT-BZ-2dL" userLabel="About Us Button">
-                                <rect key="frame" x="0.0" y="337" width="270" height="44"/>
+                                <rect key="frame" x="0.0" y="329" width="270" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="270" id="FKO-sR-mtK"/>
                                     <constraint firstAttribute="height" constant="44" id="pLA-7E-4eO"/>
@@ -260,7 +260,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" tag="7" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lt6-CB-5f1" userLabel="Signout Button">
-                                <rect key="frame" x="0.0" y="381" width="270" height="44"/>
+                                <rect key="frame" x="0.0" y="373" width="270" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="HfK-zD-CNx"/>
                                     <constraint firstAttribute="width" constant="270" id="fT8-4q-kK7"/>
@@ -310,7 +310,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n0w-kW-vyK">
-                                <rect key="frame" x="24" y="155" width="222" height="21"/>
+                                <rect key="frame" x="24" y="150" width="222" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="evE-ch-UtP"/>
                                     <constraint firstAttribute="width" constant="222" id="yFX-XX-a6C"/>
@@ -338,11 +338,11 @@
                             <constraint firstItem="4rW-9g-6zJ" firstAttribute="top" secondItem="iO2-Mz-GFm" secondAttribute="bottom" constant="-1" id="X6x-CK-u6Q"/>
                             <constraint firstItem="8Fx-wv-yU7" firstAttribute="leading" secondItem="PeB-fg-zhq" secondAttribute="leading" constant="16" id="Xwg-kZ-pPg"/>
                             <constraint firstItem="DWN-BO-M9m" firstAttribute="leading" secondItem="PeB-fg-zhq" secondAttribute="leading" constant="68" id="a90-Iz-eVX"/>
-                            <constraint firstAttribute="centerY" secondItem="J4t-Pv-vP8" secondAttribute="centerY" constant="-75" id="chh-yq-Xxv"/>
+                            <constraint firstAttribute="centerY" secondItem="J4t-Pv-vP8" secondAttribute="centerY" constant="-67" id="chh-yq-Xxv"/>
                             <constraint firstAttribute="centerX" secondItem="gQj-EC-JSM" secondAttribute="centerX" constant="24.5" id="evP-hf-ew7"/>
                             <constraint firstItem="J4t-Pv-vP8" firstAttribute="leading" secondItem="PeB-fg-zhq" secondAttribute="leading" id="ffh-qk-Qjs"/>
                             <constraint firstAttribute="centerX" secondItem="n0w-kW-vyK" secondAttribute="centerX" constant="25" id="fvk-jx-MNh"/>
-                            <constraint firstItem="n0w-kW-vyK" firstAttribute="top" secondItem="S6h-4g-xhL" secondAttribute="bottom" constant="15" id="lDg-BY-Fa9"/>
+                            <constraint firstItem="n0w-kW-vyK" firstAttribute="top" secondItem="S6h-4g-xhL" secondAttribute="bottom" constant="10" id="lDg-BY-Fa9"/>
                             <constraint firstItem="iO2-Mz-GFm" firstAttribute="top" secondItem="8Ie-f1-ZUL" secondAttribute="bottom" id="nxI-gE-hyH"/>
                             <constraint firstAttribute="bottom" secondItem="4SE-Rr-0qy" secondAttribute="bottom" constant="25" id="wG6-B5-COX"/>
                             <constraint firstItem="dJT-BZ-2dL" firstAttribute="top" secondItem="J4t-Pv-vP8" secondAttribute="bottom" id="wQp-FR-miu"/>
