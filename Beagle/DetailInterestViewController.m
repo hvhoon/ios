@@ -448,17 +448,29 @@ static NSString * const CellIdentifier = @"cell";
     self.automaticallyAdjustsScrollViewInsets = NO;
     if(!isRedirected)
       [self createInterestInitialCard];
+    
+    self.navigationItem.backBarButtonItem.title=@"";
+    
+    
 
 }
-
+-(void) viewWillDisappear:(BOOL)animated {
+    if ([self.navigationController.viewControllers indexOfObject:self]==NSNotFound) {
+        // Navigation back button was pressed
+        if(isKeyboardVisible){
+            [self.inputToolBarView.textView resignFirstResponder];
+        }
+   }
+    [super viewWillDisappear:animated];
+}
 -(void)resizeDetailTableView{
-    if(self.interestActivity.isParticipant){
-        self.detailedInterestTableView.frame=CGRectMake(0.0f, 64.0f, self.view.frame.size.width, self.view.frame.size.height - INPUT_HEIGHT-64.0f);
-    }
-    else{
-        self.detailedInterestTableView.frame=CGRectMake(0.0f, 64.0f, self.view.frame.size.width, self.view.frame.size.height-64.0f);
-    }
     
+    if(self.interestActivity.isParticipant)
+        [placeholderLabel setText:@"Join the conversation"];
+    else{
+        [placeholderLabel setText:[NSString stringWithFormat:@"Leave %@ a message",[[self.interestActivity.organizerName componentsSeparatedByString:@" "] objectAtIndex:0]]];
+    }
+
     if(isKeyboardVisible){
         [self doneButtonClicked:nil];
     }
@@ -469,28 +481,29 @@ static NSString * const CellIdentifier = @"cell";
 - (void)setup{
     
     CGRect tableFrame=CGRectMake(0.0f, 64.0f, self.view.frame.size.width, self.view.frame.size.height - INPUT_HEIGHT-64.0f);
-    if(!self.interestActivity.isParticipant){
-        tableFrame = CGRectMake(0.0f, 64.0f, self.view.frame.size.width, self.view.frame.size.height -64.0f);
-    }
-    
     self.detailedInterestTableView = [[UITableView alloc] initWithFrame:tableFrame style:UITableViewStylePlain];
     self.detailedInterestTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
     self.detailedInterestTableView.separatorInset = UIEdgeInsetsZero;
     self.detailedInterestTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth
     |UIViewAutoresizingFlexibleHeight;
     [self.detailedInterestTableView setBackgroundColor:[BeagleUtilities returnBeagleColor:2]];
-
     self.detailedInterestTableView.dataSource = self;
     self.detailedInterestTableView.delegate = self;
     [self.view addSubview:self.detailedInterestTableView];
     
+
+    
     CGRect inputFrame = CGRectMake(0.0f, self.view.frame.size.height - INPUT_HEIGHT, self.view.frame.size.width, INPUT_HEIGHT);
     self.inputToolBarView = [[MessageInputView alloc] initWithFrame:inputFrame delegate:self];
-    
+    //self.inputToolBarView.textView.dismissivePanGestureRecognizer = self.detailedInterestTableView.panGestureRecognizer;
     self.inputToolBarView.textView.keyboardDelegate = self;
     
     placeholderLabel = [[UILabel alloc] initWithFrame:CGRectMake(3, 0, self.inputToolBarView.textView.frame.size.width - 20.0, 34.0)];
+      if(self.interestActivity.isParticipant)
     [placeholderLabel setText:@"Join the conversation"];
+      else{
+          [placeholderLabel setText:[NSString stringWithFormat:@"Leave %@ a message",[[self.interestActivity.organizerName componentsSeparatedByString:@" "] objectAtIndex:0]]];
+      }
     // placeholderLabel is instance variable retained by view controller
     [placeholderLabel setBackgroundColor:[UIColor whiteColor]];
     placeholderLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:17.0f];
@@ -509,10 +522,15 @@ static NSString * const CellIdentifier = @"cell";
     [self.inputToolBarView setSendButton:sendButton];
     [self.view addSubview:self.inputToolBarView];
     
-    if(!self.interestActivity.isParticipant){
-        [self.inputToolBarView setHidden:YES];
+}
+
+-(void)handleSingleTap:(UITapGestureRecognizer*)sender{
+    
+    if(isKeyboardVisible){
+        [self.inputToolBarView.textView resignFirstResponder];
     }
 }
+
 
 -(void)createInterestInitialCard{
     
@@ -581,23 +599,11 @@ static NSString * const CellIdentifier = @"cell";
 
 - (void)show{
     
-    if([self.inputToolBarView.textView hasText]||isKeyboardVisible) {
-        placeholderLabel.hidden = YES;
-    }
-    else{
-        placeholderLabel.hidden = NO;
-    }
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStylePlain target:self action:@selector(doneButtonClicked:)];
     self.navigationItem.hidesBackButton = YES;
 }
 -(void)hide{
 #if 1
-    if([self.inputToolBarView.textView hasText]||isKeyboardVisible) {
-        placeholderLabel.hidden = YES;
-    }
-    else{
-        placeholderLabel.hidden = NO;
-    }
     if(self.interestActivity.dosRelation==0){
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(editButtonClicked:)];
     }else{
@@ -610,10 +616,12 @@ static NSString * const CellIdentifier = @"cell";
 
 -(void)doneButtonClicked:(id)sender{
     
+#if kPostInterface
     [self.inputToolBarView.textView resignFirstResponder];
     [self.detailedInterestTableView reloadData];
     [self.view endEditing:YES];
-#if !kPostInterface
+
+#else
     [self.contentWrapper.inputView.textView resignFirstResponder];
     [self.view endEditing:YES];
     [self.contentWrapper textViewDidChange:self.contentWrapper.inputView.textView];
@@ -636,15 +644,16 @@ static NSString * const CellIdentifier = @"cell";
                                                   animated:YES];
     
     [self.detailedInterestTableView endUpdates];
+    
+    
 #endif
     
 }
 -(void)flagButtonClicked:(id)sender{
     
-    if([self.navigationItem.rightBarButtonItem.title isEqualToString:@"Done"]){
-        [self doneButtonClicked:nil];
+    if(isKeyboardVisible){
+        [self.inputToolBarView.textView resignFirstResponder];
     }
-    else{
     NSString* flagMessage = [NSString stringWithFormat:@"Please tell us why you find this activity objectionable? (Enter below):\n\n\n\n--\nFlag Report:\nActivity: %@ (%ld)\nOrganizer: %@ (%ld)", self.interestActivity.activityDesc, (long)self.interestActivity.activityId, self.interestActivity.organizerName, (long)self.interestActivity.ownerid];
 
     
@@ -659,11 +668,13 @@ static NSString * const CellIdentifier = @"cell";
         [alert show];
         
     }
-    }
 }
 -(void)editButtonClicked:(id)sender{
     
 #if kPostInterface
+    if(isKeyboardVisible){
+        [self.inputToolBarView.textView resignFirstResponder];
+    }
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
 
@@ -840,6 +851,7 @@ static NSString * const CellIdentifier = @"cell";
     else{
         {
             InterestChatClass *chatCell=[self.chatPostsArray objectAtIndex:indexPath.row-1];
+            if([chatCell.text length]!=0 && [chatCell.text isKindOfClass:[NSString class]]){
             NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
             [style setAlignment:NSTextAlignmentLeft];
             
@@ -859,8 +871,10 @@ static NSString * const CellIdentifier = @"cell";
                 return 45.0f+8.0f+height+kPostTextClip;
             
             return 45.0f+height+kPostTextClip;
+           }
         }
     }
+    return 0.0f;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
@@ -1494,6 +1508,11 @@ static NSString * const CellIdentifier = @"cell";
 }
 
 -(void)profileImageTapped:(UITapGestureRecognizer*)sender{
+    
+    if(isKeyboardVisible){
+        [self.inputToolBarView.textView resignFirstResponder];
+        return;
+    }
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     FriendsViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"profileScreen"];
     BeagleUserClass *player=[[BeagleUserClass alloc]initWithActivityObject:self.interestActivity];
@@ -1739,7 +1758,6 @@ static NSString * const CellIdentifier = @"cell";
                     [interestedButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Star-Unfilled"] withColor:[outlineButtonColor colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
 #if kPostInterface
                     
-                    [self.inputToolBarView setHidden:YES];
                     [self resizeDetailTableView];
 #else
                     self.contentWrapper.interested=NO;
@@ -1844,7 +1862,7 @@ static NSString * const CellIdentifier = @"cell";
                     [self.contentWrapper resize];
             #endif
                     }
-                    
+#if 1
                     NSInteger rows=[self.detailedInterestTableView numberOfRowsInSection:0];
 
                         if(rows>0){
@@ -1858,6 +1876,7 @@ static NSString * const CellIdentifier = @"cell";
                     [self.detailedInterestTableView endUpdates];
 
                     }
+#endif
                     self.interestActivity.postCount=[self.chatPostsArray count];
                     
                     
@@ -1930,7 +1949,9 @@ static NSString * const CellIdentifier = @"cell";
         _chatPostManager = nil;
         [_sendMessage setHidden:YES];
         [_sendMessage setProgress:0.0];
-    #if !kPostInterface
+    #if kPostInterface
+        self.inputToolBarView.sendButton.enabled=YES;
+    #else
         self.contentWrapper.inputView.rightButton.enabled = YES;
         self.contentWrapper.inputView.rightButton.tintColor = [BeagleUtilities returnBeagleColor:13];
    #endif
@@ -1972,7 +1993,9 @@ static NSString * const CellIdentifier = @"cell";
         [_sendMessage setHidden:YES];
         [_sendMessage setProgress:0.0];
         
-    #if !kPostInterface
+    #if kPostInterface
+        self.inputToolBarView.sendButton.enabled=YES;
+    #else
         self.contentWrapper.inputView.rightButton.enabled = YES;
         self.contentWrapper.inputView.rightButton.tintColor = [BeagleUtilities returnBeagleColor:13];
     #endif
@@ -2090,6 +2113,7 @@ static NSString * const CellIdentifier = @"cell";
             
             // Gray out 'Post' button
 
+            self.inputToolBarView.sendButton.enabled=NO;
             // Show progress indicator
             [_sendMessage setProgress:0.0f];
             [_sendMessage setHidden:NO];
@@ -2126,6 +2150,7 @@ static NSString * const CellIdentifier = @"cell";
     [self textViewDidChange:self.inputToolBarView.textView];
     [self.detailedInterestTableView reloadData];
     [self scrollToBottomAnimated:YES];
+    self.inputToolBarView.sendButton.enabled=YES;
 }
 
 
@@ -2170,7 +2195,6 @@ static NSString * const CellIdentifier = @"cell";
         self.interestActivity.participantsArray=interestArray;
     }
 #if kPostInterface
-    [self.inputToolBarView setHidden:NO];
     [self resizeDetailTableView];
     
 #else
@@ -2196,8 +2220,8 @@ static NSString * const CellIdentifier = @"cell";
 
 - (void)scrollToBottomAnimated:(BOOL)animated
 {
-    
-    
+#if 1
+    if(isKeyboardVisible){
     CGPoint contentOffset = self.detailedInterestTableView.contentOffset;
     
     CGFloat contentHeight = self.detailedInterestTableView.contentSize.height;
@@ -2213,7 +2237,7 @@ static NSString * const CellIdentifier = @"cell";
 
     contentOffset.y = contentOffsetY;
     self.detailedInterestTableView.contentOffset = contentOffset;
-    
+    }
     if(isEditState){
         isEditState=false;
         [self.detailedInterestTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow: 0 inSection:0]
@@ -2233,6 +2257,7 @@ static NSString * const CellIdentifier = @"cell";
                                                       animated:YES];
         
     }
+#endif
 #endif
 }
 
@@ -2289,7 +2314,7 @@ static NSString * const CellIdentifier = @"cell";
         changeInHeight = MIN(changeInHeight, maxHeight - self.previousTextViewContentHeight);
     }
     
-    if(changeInHeight != 0.0f) {
+    //if(changeInHeight != 0.0f) {
         //        if(!isShrinking)
         //            [self.inputToolBarView adjustTextViewHeightBy:changeInHeight];
         
@@ -2320,12 +2345,12 @@ static NSString * const CellIdentifier = @"cell";
                              }
                          }
                          completion:^(BOOL finished) {
-                             [self scrollToBottomAnimated:YES];
+                             //[self scrollToBottomAnimated:YES];
                          }];
         
         
         self.previousTextViewContentHeight = MIN(textViewContentHeight, maxHeight);
-    }
+    //}
     
 //    self.inputToolBarView.sendButton.enabled = ([textView.text trimWhitespace].length > 0);
 }
@@ -2334,14 +2359,42 @@ static NSString * const CellIdentifier = @"cell";
 - (void)handleWillShowKeyboard:(NSNotification *)notification
 {
     isKeyboardVisible=true;
-    [self show];
+    if([self.inputToolBarView.textView hasText]||isKeyboardVisible) {
+        placeholderLabel.hidden = YES;
+    }
+    else{
+        placeholderLabel.hidden = NO;
+    }
+
+//    [self show];
+    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
+    // make your gesture recognizer priority
+    singleTap.numberOfTapsRequired = 1;
+    [self.detailedInterestTableView addGestureRecognizer:singleTap];
+
+        //self.navigationItem.hidesBackButton = YES;
     [self keyboardWillShowHide:notification];
 }
 
 - (void)handleWillHideKeyboard:(NSNotification *)notification
 {
     isKeyboardVisible=false;
-    [self hide];
+    if([self.inputToolBarView.textView hasText]||isKeyboardVisible) {
+        placeholderLabel.hidden = YES;
+    }
+    else{
+        placeholderLabel.hidden = NO;
+    }
+
+//    [self hide];
+    
+    for (UIGestureRecognizer *recognizer in self.detailedInterestTableView.gestureRecognizers) {
+        
+        if([recognizer isKindOfClass:[UITapGestureRecognizer class]]) {
+            [self.detailedInterestTableView removeGestureRecognizer:recognizer];
+        }
+    }
+        //self.navigationItem.hidesBackButton = NO;
     [self keyboardWillShowHide:notification];
 }
 
@@ -2397,10 +2450,11 @@ static NSString * const CellIdentifier = @"cell";
                          
                          self.detailedInterestTableView.contentInset = insets;
                          self.detailedInterestTableView.scrollIndicatorInsets = insets;
+                          [self scrollToBottomAnimated:YES];
                      }
                      completion:^(BOOL finished) {
                          
-                         [self scrollToBottomAnimated:YES];
+                         //[self scrollToBottomAnimated:YES];
                      }];
 }
 

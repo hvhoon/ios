@@ -14,7 +14,6 @@
 @property(nonatomic, strong) NSString *userId;
 @property(nonatomic, strong) NSString *userInfo;
 @property(nonatomic, strong) NSURL *userPhotoWebPageURL;
-
 @end
 
 typedef enum {

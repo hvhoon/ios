@@ -12,7 +12,10 @@
 #import "DetailInterestViewController.h"
 #import "HomeViewController.h"
 #import "InitialSlidingViewController.h"
-@interface FriendsViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,FriendsTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate>{
+#import "FeedbackReporting.h"
+#import <AddressBook/AddressBook.h>
+#define  kInviteViaEmail 1
+@interface FriendsViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,FriendsTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate,UIActionSheetDelegate,FeedbackReportingDelegate>{
     NSIndexPath* inviteIndexPath;
 }
 @property(nonatomic,strong)ServerManager*friendsManager;
@@ -602,6 +605,111 @@
 -(void)inviteFacebookFriendOnBeagle:(NSIndexPath*)indexPath{
     
     inviteIndexPath=indexPath;
+    
+    
+    
+#if kInviteViaEmail
+
+    [self getAuthorizationForAddressBook];
+    
+#else
+    
+    UIActionSheet *actionSheetView = [[UIActionSheet alloc] initWithTitle:@"Select invite option" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:
+                                      @"Invite via Facebook",
+                                      @"Invite via E-mail",
+                                      nil];
+    [actionSheetView showInView:[UIApplication sharedApplication].keyWindow];
+    
+    
+
+#endif
+    
+    
+}
+
+-(void)getAuthorizationForAddressBook{
+        ABAddressBookRef addressBookRef = ABAddressBookCreateWithOptions(NULL, NULL);
+        if (ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusNotDetermined) {
+            ABAddressBookRequestAccessWithCompletion(addressBookRef, ^(bool granted, CFErrorRef error) {
+                if(granted)
+                    [self inviteViaEmail];
+                else{
+                    NSString *message = NSLocalizedString (@"To invite your friends to Beagle we need to take a quick look at your address book. We promise to only use it to invite the friends you pick. When you are ready, please try again!",
+                                                           @"Access Not Granted");
+                    BeagleAlertWithMessage(message);
+
+                }
+            });
+        }else if(ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusAuthorized){
+            [self inviteViaEmail];
+        }else{
+            
+            // user in the settings have turned the option off
+            
+            NSString *message = NSLocalizedString (@"Please go to the Settings > Privacy >Contacts and allow beagle to access your contacts and then try inviting in again.",
+                                                   @"Settings toggle off for contacts");
+            BeagleAlertWithMessage(message);
+            
+        }
+        
+}
+
+- (void)actionSheet:(UIActionSheet *)popup clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+            switch (buttonIndex) {
+                case 0:
+                    [self inviteViaFacebook];
+                    break;
+                case 1:
+                {
+                    [self getAuthorizationForAddressBook];
+                }
+                    break;
+                default:
+                    break;
+            }
+     }
+
+-(void)inviteViaEmail{
+    NSMutableArray *emailArray=[NSMutableArray new];
+        CFErrorRef *error = NULL;
+        ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, error);
+        BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
+        
+        
+        
+        CFArrayRef people = ABAddressBookCopyPeopleWithName(addressBook,
+                                                            (__bridge CFStringRef)player.fullName);
+        
+
+        
+        for(int i = 0; i < CFArrayGetCount(people); i++) {
+            
+            ABRecordRef person = CFArrayGetValueAtIndex(people, i);
+            
+            ABMutableMultiValueRef multi = ABRecordCopyValue(person, kABPersonEmailProperty);
+            if (ABMultiValueGetCount(multi) > 0) {
+                CFStringRef emailRefIndex = ABMultiValueCopyValueAtIndex(multi, 0);
+                [emailArray addObject:(__bridge_transfer NSString *)emailRefIndex];
+            }
+        }
+         
+         if ([[FeedbackReporting sharedInstance] canSendFeedback]) {
+             
+             MFMailComposeViewController* inviteuserController = [[FeedbackReporting sharedInstance] inviteAUserController:emailArray firstName:[[[[[BeagleManager SharedInstance]beaglePlayer]first_name] componentsSeparatedByString:@" "] objectAtIndex:0]];
+             [FeedbackReporting sharedInstance].delegate=self;
+             [self presentViewController:inviteuserController animated:YES completion:Nil];
+         }
+         else{
+             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Please setup your email account" message:nil
+                                                            delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+             
+             [alert show];
+             
+    }
+    
+}
+-(void)inviteViaFacebook{
     FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.friendsTableView cellForRowAtIndexPath:inviteIndexPath];
     UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"222%ld",(long)inviteIndexPath.row]integerValue]];
     UIActivityIndicatorView *spinner=(UIActivityIndicatorView*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)inviteIndexPath.row]integerValue]];
@@ -609,7 +717,7 @@
     [button setHidden:YES];
     [spinner setHidden:NO];
     [spinner startAnimating];
-
+    
     // check if the user has  a valid facebook session
     
     if([(AppDelegate *)[[UIApplication sharedApplication] delegate] checkForFacebookSesssion]){
@@ -626,6 +734,7 @@
         //have to check if this scenarios comes up
     }
     
+
 }
 -(void)userProfileSelected:(NSIndexPath*)indexPath{
     BeagleUserClass *player=[self.beagleFriendsArray objectAtIndex:indexPath.row];
@@ -743,7 +852,7 @@
         }
         
     }
-    else if (serverRequest==kServerPostAPrivateMessageOnFacebook){
+    else if (serverRequest==kServerPostAPrivateMessageOnFacebook||serverRequest==kServerPostAnEmailInvite){
         _inviteManager.delegate = nil;
         [_inviteManager releaseServerManager];
         _inviteManager = nil;
@@ -752,6 +861,7 @@
             id status=[response objectForKey:@"status"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 
+                        if(serverRequest==kServerPostAPrivateMessageOnFacebook){
                 NSString *message = NSLocalizedString (@"Great! We've sent your friend an invite through Facebook.",
                                                        @"Message sent successfully!");
                 
@@ -761,6 +871,19 @@
                                                       cancelButtonTitle:@"OK"
                                                       otherButtonTitles: nil];
                 [alert show];
+                        }
+                else{
+                NSString *message = NSLocalizedString (@"Great! We've sent your friend an invite through email.",
+                                                       @"Message sent successfully!");
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Beagle"
+                                                                message:message
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles: nil];
+                [alert show];
+                }
+                
 
                 BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
                 player.isInvited=TRUE;
@@ -787,6 +910,7 @@
             }
             else if (status != nil && [status class] != [NSNull class] && [status integerValue]==205){
                 // not authorized to send facebook message
+            if(serverRequest==kServerPostAPrivateMessageOnFacebook){
                 
                 NSString *message = NSLocalizedString (@"Sorry we had trouble inviting your friend. We use Facebook to send out the invite so please make sure you've granted us permission to do so and try again in a bit.",
                                                        @"Message Failure");
@@ -797,7 +921,7 @@
                                                       cancelButtonTitle:@"OK"
                                                       otherButtonTitles: nil];
                 [alert show];
-                
+                    }
                 BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
                 player.isInvited=FALSE;
                 FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.friendsTableView cellForRowAtIndexPath:inviteIndexPath];
@@ -829,7 +953,7 @@
         BeagleAlertWithMessage(message);
 
     }
-    else if (serverRequest==kServerPostAPrivateMessageOnFacebook){
+    else if (serverRequest==kServerPostAPrivateMessageOnFacebook||serverRequest==kServerPostAnEmailInvite){
         _inviteManager.delegate = nil;
         [_inviteManager releaseServerManager];
         _inviteManager = nil;
@@ -842,10 +966,11 @@
         [spinner setHidden:YES];
         [spinner stopAnimating];
         [button setHidden:NO];
-        
-        NSString *message = NSLocalizedString (@"Sorry we had trouble inviting your friend. We use Facebook to send out the invite so please make sure you've granted us permission to do so and try again in a bit.",
-                                               @"NSURLConnection initialization method failed.");
+        if(serverRequest==kServerPostAPrivateMessageOnFacebook){
+            NSString *message = NSLocalizedString (@"Sorry we had trouble inviting your friend. We use Facebook to send out the invite so please make sure you've granted us permission to do so and try again in a bit.",
+                                                   @"NSURLConnection initialization method failed.");
         BeagleAlertWithMessage(message);
+        }
     }
     
 }
@@ -861,7 +986,7 @@
         [_friendsManager releaseServerManager];
         _friendsManager = nil;
     }
-    else if (serverRequest==kServerPostAPrivateMessageOnFacebook){
+    else if (serverRequest==kServerPostAPrivateMessageOnFacebook||serverRequest==kServerPostAnEmailInvite){
         _inviteManager.delegate = nil;
         [_inviteManager releaseServerManager];
         _inviteManager = nil;
@@ -895,10 +1020,37 @@
         [req setDidFinishSelector:nil];
     }
     [ASIHTTPRequest.sharedQueue cancelAllOperations];
+    
+     [FeedbackReporting sharedInstance].delegate=nil;
 }
 
 - (IBAction)settingsButtonPressed:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
+}
+#pragma mark - sendEmailInvite Delegate call
+
+-(void)sendEmailInvite{
+    FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.friendsTableView cellForRowAtIndexPath:inviteIndexPath];
+    UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"222%ld",(long)inviteIndexPath.row]integerValue]];
+    UIActivityIndicatorView *spinner=(UIActivityIndicatorView*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)inviteIndexPath.row]integerValue]];
+    
+    [button setHidden:YES];
+    [spinner setHidden:NO];
+    [spinner startAnimating];
+    
+    BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
+    
+    if(_inviteManager!=nil){
+        _inviteManager.delegate = nil;
+        [_inviteManager releaseServerManager];
+        _inviteManager = nil;
+    }
+    
+    _inviteManager=[[ServerManager alloc]init];
+    _inviteManager.delegate=self;
+    [_inviteManager sendingAnEmailInvite:player.fbuid];
+
+
 }
 /*
 #pragma mark - Navigation

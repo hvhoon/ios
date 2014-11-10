@@ -478,11 +478,19 @@
     [components setDay:([components day] - ((dayofweek) - 2))];// for beginning of the week.
     NSDate *beginningOfWeek = [gregorian dateFromComponents:components];
     
+    if(dayofweek==1){
+        beginningOfWeek=[beginningOfWeek dateByAddingTimeInterval:-7*60*60*24];
+    }
+    
     //Set the start of the weekend
     NSDate *startOfWeekend = [beginningOfWeek dateByAddingTimeInterval:60*60*24*5];
     
     //Set the end of the weekend
-    [components setDay:([components day] + 6)]; // Advancing by 6 days
+    if(dayofweek==1){
+        [components setDay:([components day] - 1)];
+    }else{
+        [components setDay:([components day] + 6)];// Advancing by 6 days
+    }
     [components setHour:23];
     [components setMinute:59];
     [components setSecond:59];
@@ -847,5 +855,61 @@
     CFRelease(framesetter);
     
     return frameSize.height;
+}
+
++(void)saveHTMLFileInDocumentDirectory:(NSData*)htmlData{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *filePath = [NSString stringWithFormat:@"%@/%@", documentsDirectory, @"Invite.html"];
+    NSLog(@"filePath=%@", filePath);
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) { // if file is not exist, create it.
+        
+    }
+    NSError *error;
+    [htmlData writeToFile:filePath options:NSDataWritingAtomic error:&error];
+    if ([[NSFileManager defaultManager] isWritableFileAtPath:filePath]) {
+        NSLog(@"Writable");
+    }else {
+        NSLog(@"Not Writable");
+    }
+}
+
++(NSString*)readHTMLFromDocumentDirectory{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    
+    NSArray *fileNamesArray = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:documentsDirectory error:nil];
+    
+    for(NSString *fileName in fileNamesArray)
+    {
+        if([[fileName pathExtension] isEqualToString:@"html"])
+        {
+            NSError *err = nil;
+            NSString *fileNamePath = [documentsDirectory stringByAppendingPathComponent:fileName];
+            NSString *htmlContent = [NSString stringWithContentsOfFile:fileNamePath
+                                                              encoding:NSUTF8StringEncoding
+
+                                                                 error:&err];
+            return htmlContent;
+        }
+    }
+    return nil;
+}
+
++(BOOL)checkIfTheInviteHTMLisAtTheDocuementFolderLocation{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    
+    NSArray *fileNamesArray = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:documentsDirectory error:nil];
+    
+    for(NSString *fileName in fileNamesArray)
+    {
+        if([[fileName pathExtension] isEqualToString:@"html"])
+        {
+            return YES;
+        }
+    }
+    return NO;
 }
 @end

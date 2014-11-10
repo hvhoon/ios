@@ -12,6 +12,7 @@
 #import "AboutUsViewController.h"
 #import <Instabug/Instabug.h>
 #import "InitialSlidingViewController.h"
+#import "LinkViewController.h"
 @interface SettingsViewController ()<ServerManagerDelegate>
 @property(nonatomic,strong)ServerManager*updateFBTickerManager;
 @property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
@@ -158,20 +159,38 @@
             identifier=@"profileScreen";
         }
             break;
-
+            
         case 4:
+        {
+            if ([[FeedbackReporting sharedInstance] canSendFeedback]) {
+                
+                MFMailComposeViewController* inviteuserController = [[FeedbackReporting sharedInstance] inviteAUserController:nil firstName:[[[[[BeagleManager SharedInstance]beaglePlayer]first_name] componentsSeparatedByString:@" "] objectAtIndex:0]];
+                [self presentViewController:inviteuserController animated:YES completion:Nil];
+            }
+            else{
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Please setup your email account" message:nil
+                                                               delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                
+                [alert show];
+                
+            }
+            return;
+        }
+            break;
+
+        case 5:
         {
             [Instabug invokeFeedbackSender];
             return;
 
         }
-        case 5:
+        case 6:
         {
             identifier=@"aboutUs";
         }
             break;
             
-        case 8:
+        case 7:
         {
             identifier=@"loginScreen";
             [(AppDelegate *)[[UIApplication sharedApplication] delegate] closeAllFBSessions];
@@ -194,10 +213,18 @@
             return;
         }
         else if ([identifier isEqualToString:@"aboutUs"]){
+
             
-            AboutUsViewController *viewController=(AboutUsViewController*)newTopViewController;
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+            LinkViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"webLinkScreen"];
+            viewController.linkString=@"http://www.mybeagleapp.com/about";
             [self.navigationController pushViewController:viewController animated:YES];
             return;
+            
+            
+//            AboutUsViewController *viewController=(AboutUsViewController*)newTopViewController;
+//            [self.navigationController pushViewController:viewController animated:YES];
+//            return;
         }
     
     // Sliding animation

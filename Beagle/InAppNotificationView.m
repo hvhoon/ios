@@ -164,6 +164,8 @@ UIWindowLevel windowLevel;
     CGRect viewBounds = [[[window subviews] lastObject] bounds];
     self.frame = CGRectMake(0, 0, viewBounds.size.width, -64);
     [[[window subviews] lastObject] addSubview:self];
+//    [[self keyboardView]addSubview:self];
+    //[window addSubview:self];
     
     [UIView animateWithDuration:0.35 delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
          self.frame = presentationFrame;
@@ -175,6 +177,54 @@ UIWindowLevel windowLevel;
 
 }
 
+- (UIView *)keyboardView
+{
+    UIWindow* tempWindow;
+    
+    //Because we cant get access to the UIKeyboard throught the SDK we will just use UIView.
+    //UIKeyboard is a subclass of UIView anyways
+    UIView* keyboard;
+    
+    NSLog(@"windows %d", [[[UIApplication sharedApplication]windows]count]);
+    
+    //Check each window in our application
+    for(int c = 0; c < [[[UIApplication sharedApplication] windows] count]; c ++)
+    {
+        //Get a reference of the current window
+        tempWindow = [[[UIApplication sharedApplication] windows] objectAtIndex:c];
+        
+        //Get a reference of the current view
+        for(int i = 0; i < [tempWindow.subviews count]; i++)
+        {
+            keyboard = [tempWindow.subviews objectAtIndex:i];
+            NSLog(@"view: %@, on index: %d, class: %@", [keyboard description], i, [[tempWindow.subviews objectAtIndex:i] class]);
+            if([[keyboard description] hasPrefix:@"(lessThen)UIKeyboard"] == YES)
+            {
+                //If we get to this point, then our UIView "keyboard" is referencing our keyboard.
+                return keyboard;
+            }
+        }
+        
+        for(UIView* potentialKeyboard in tempWindow.subviews)
+            // if the real keyboard-view is found, remember it.
+            if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
+                if([[potentialKeyboard description] hasPrefix:@"<UILayoutContainerView"] == YES)
+                    keyboard = potentialKeyboard;
+            }
+            else if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 3.2) {
+                if([[potentialKeyboard description] hasPrefix:@"<UIPeripheralHost"] == YES)
+                    keyboard = potentialKeyboard;
+            }
+            else {
+                if([[potentialKeyboard description] hasPrefix:@"<UIKeyboard"] == YES)
+                    keyboard = potentialKeyboard;
+            }
+    }
+    
+    
+    NSLog(@"view: %@, on index", [keyboard description]);
+    return keyboard;
+}
 - (void)dismissWithAnimation:(BOOL)animated
 {
     CGRect viewBounds = [self.superview bounds];

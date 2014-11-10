@@ -22,6 +22,11 @@
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
     
+    UIActivityIndicatorView*activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    activityIndicator.frame=CGRectMake(0, 0, 20, 20);
+    [self.navigationItem setTitleView:activityIndicator];
+    [activityIndicator startAnimating];
+    
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     [self.navigationController.navigationBar setTintColor:[[BeagleManager SharedInstance] darkDominantColor]];
     
@@ -29,7 +34,7 @@
     
     NSString *outputString = [linkString stringByReplacingOccurrencesOfString:@" " withString:@"+"];
     
-    if ([linkString hasPrefix:@"http://"]||[linkString hasPrefix:@"www"]) {
+    if ([linkString hasPrefix:@"https://"]||[linkString hasPrefix:@"http://"]||[linkString hasPrefix:@"www"]) {
         //Has Prefix
         if([linkString hasPrefix:@"www"]){
             NSString *prefixString = @"http://";
@@ -84,9 +89,11 @@
 
 -(void)webViewDidFinishLoad:(UIWebView *)webView{
     NSLog(@"webViewDidFinishLoad");
+    [self.navigationItem setTitleView:nil];
 }
 -(void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error{
     NSLog(@"didFailLoadWithError");
+        [self.navigationItem setTitleView:nil];
 }
 -(void)webViewDidStartLoad:(UIWebView *)webView{
     NSLog(@"webViewDidStartLoad");

@@ -1160,7 +1160,7 @@
                     BeagleNotificationClass *notifObject=[[BeagleNotificationClass alloc]init];
                     notifObject.activity=self.interestDetail;
                     if(serverRequest==kServerCallCreateActivity){
-                        notifObject.notificationType=ACTIVITY_CREATION_TYPE;
+                        notifObject.notificationType=SELF_ACTIVITY_CREATION_TYPE;
                     }
                     
                     NSMutableDictionary *notificationDictionary=[NSMutableDictionary new];

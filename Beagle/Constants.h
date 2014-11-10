@@ -19,7 +19,7 @@
 #define KFlickrSearchLicense @"4,5,6,7"
 #define KFlickrSearchRadiusInMiles @"20"
 #define kFlickrSearchInvalidateCacheTimeoutDurationInSeconds 900 //15min (60 * 15)
-#define kFlickrSearchQuitTimeoutDurationInSeconds 10
+#define kFlickrSearchQuitTimeoutDurationInSeconds 15
 
 //Async Queue Label
 #define kAsyncQueueLabel "org.tempuri"
@@ -48,6 +48,7 @@
 #define GOING_TYPE 13
 #define ACTIVITY_UPDATE_TYPE 32
 #define SUGGESTED_ACTIVITY_CREATION_TYPE 33
+#define SELF_ACTIVITY_CREATION_TYPE 34
 #define kBeagleBadgeCount @"BeagleBadgeCount"
 #define kUpdatePostsOnInterest @"PostUpdateOnDetailedInterest"
 #define kUpdateNotificationStack @"UpdateNotificationStack"

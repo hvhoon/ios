@@ -9,11 +9,11 @@
 #import <Crashlytics/Crashlytics.h>
 #import <Instabug/Instabug.h>
 #import "HomeViewController.h"
+#import "DetailInterestViewController.h"
+#import "JSON.h"
 @interface AppDelegate ()<ServerManagerDelegate>{
     ServerManager *notificationServerManager;
     NSInteger attempts;
-    
-
 }
 @property(nonatomic,strong)ServerManager *loginServerManager;
 @property(nonatomic,strong)ServerManager *notificationServerManager;
@@ -46,7 +46,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     [Crashlytics startWithAPIKey:@"e8e7ac59367e936ecae821876cc411ec67427e47"];
     NSString *storyboardId = [[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"] ? @"initialNavBeagle" : @"loginNavScreen";
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    UIViewController *initViewController = [storyboard instantiateViewControllerWithIdentifier:storyboardId];
+    UINavigationController*initViewController = [storyboard instantiateViewControllerWithIdentifier:storyboardId];
     
     // Facebook SDK settings
     [FBSettings enablePlatformCompatibility:YES];
@@ -55,21 +55,32 @@ void uncaughtExceptionHandler(NSException *exception) {
     self.window.rootViewController = initViewController;
     [self.window makeKeyAndVisible];
     
-#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
+    if(![BeagleUtilities checkIfTheInviteHTMLisAtTheDocuementFolderLocation]){
+    NSString *inviteHtmlPath = [[NSBundle mainBundle] pathForResource:@"Invite" ofType:@"html"];
+    NSData *htmlData = [NSData dataWithContentsOfFile:inviteHtmlPath];
+    [BeagleUtilities saveHTMLFileInDocumentDirectory:htmlData];
+    }else{
+        // create a block and download the file from Amazon Ec2
+        [self getupdatedInviteHTMLFromTheServer];
+    }
+    
+    if([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0f){
+    
     if ([application respondsToSelector:@selector(registerUserNotificationSettings:)]) {
         // use registerUserNotificationSettings
         [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
         [[UIApplication sharedApplication] registerForRemoteNotifications];
     }
-#else
+    }
+else
+{
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
      (
       UIRemoteNotificationTypeBadge |
       UIRemoteNotificationTypeSound |
       UIRemoteNotificationTypeAlert)];
-    
-#endif
-    
+}
+
     
     // Instabug integration
     [Instabug startWithToken:@"0fe55a803d01c2d223d89b450dcae674" captureSource:IBGCaptureSourceUIKit invocationEvent:IBGInvocationEventShake];
@@ -122,10 +133,64 @@ void uncaughtExceptionHandler(NSException *exception) {
         
     }
   }
-    //[self handlePush:launchOptions];
+    
+    
+    if([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0f){
+//    [self handlePush:launchOptions];
+    
+    
+    NSDictionary *remoteNotificationPayload = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+    if (remoteNotificationPayload && ([[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"])) {
+        
+        if([[[remoteNotificationPayload valueForKey:@"p"] valueForKey:@"nty"]integerValue]!=CANCEL_ACTIVITY_TYPE){
+            [[BeagleManager SharedInstance]getUserObjectInAutoSignInMode];
+            
+            DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
+            viewController.interestServerManager=[[ServerManager alloc]init];
+            viewController.interestServerManager.delegate=viewController;
+            viewController.isRedirected=TRUE;
+            if([[[[launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey] valueForKey:@"p"] valueForKey:@"nty"]integerValue]==CHAT_TYPE)
+                viewController.toLastPost=TRUE;
+            [viewController.interestServerManager getDetailedInterest:[[[[launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey] valueForKey:@"p"] valueForKey:@"aid"]integerValue]];
+            initViewController.navigationItem.backBarButtonItem.title=@"";
+            initViewController.navigationBar.topItem.title=@"";
+
+            [initViewController pushViewController:viewController animated:NO];
+            
+            //            [BeagleUtilities updateBadgeInfoOnTheServer:[[[remoteNotificationPayload valueForKey:@"p"] valueForKey:@"nid"]integerValue]];
+        }
+        
+    }
+ }
+
     return YES;
 }
 
+
+-(void)getupdatedInviteHTMLFromTheServer{
+    NSURL *url=[NSURL URLWithString:[NSString stringWithFormat:@"%@",@"https://s3.amazonaws.com/invitemailers/Invite.html"]];
+    
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL: url];
+    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+    [NSURLConnection sendAsynchronousRequest:request queue:queue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error)
+     {
+         if ([data length] > 0 && error == nil){
+             
+             [self performSelectorOnMainThread:@selector(receivedData:) withObject:data waitUntilDone:NO];
+         }else if ([data length] == 0 && error == nil){
+         }else if (error != nil && error.code == NSURLErrorTimedOut){ //used this NSURLErrorTimedOut from foundation error responses
+         }else if (error != nil){
+             NSLog(@"Error=%@",[error description]);
+         }
+     }];
+}
+
+-(void)receivedData:(NSData*)returnData{
+    
+  [BeagleUtilities saveHTMLFileInDocumentDirectory:returnData];
+    
+    
+}
 #pragma mark - location Manager calls
 
 - (void)startStandardUpdates {
@@ -141,11 +206,12 @@ void uncaughtExceptionHandler(NSException *exception) {
 	locationManager.distanceFilter = kCLLocationAccuracyThreeKilometers;
     
     // IOS 8 Support
-#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
+    if([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0f){
+    
     if([locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
         [locationManager requestWhenInUseAuthorization];
     }
-#endif
+    }
 	[locationManager startUpdatingLocation];
     
 	CLLocation *currentLoc = locationManager.location;
@@ -257,8 +323,9 @@ void uncaughtExceptionHandler(NSException *exception) {
         _notificationServerManager.delegate=self;
 
         [self handleOfflineNotifications:remoteNotificationPayload];
+        
+        }
     }
-}
 
 //Device Token failed
 - (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error{
@@ -328,7 +395,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     
 }
 -(void)handleOfflineNotifications:(NSDictionary*)userInfo{
-    
+#if 1
     // app was just brought from background to foreground
     NSLog(@"userInfo=%@",userInfo);
         if([[[userInfo valueForKey:@"p"] valueForKey:@"nty"]integerValue]==CHAT_TYPE){
@@ -387,7 +454,7 @@ void uncaughtExceptionHandler(NSException *exception) {
         
         // create a service which will return data and update the view badge count automatically
         
-    
+#endif
 }
 
 -(void)handleSilentNotifications:(NSDictionary*)userInfo{

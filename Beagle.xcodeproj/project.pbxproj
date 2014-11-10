@@ -50,6 +50,7 @@
 		18714B381940F1D2008F59DE /* messageSent.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 18714B361940F1D2008F59DE /* messageSent.aiff */; };
 		18714B3B1940F268008F59DE /* PostSoundEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = 18714B3A1940F268008F59DE /* PostSoundEffect.m */; };
 		187808591954DEA8005E682F /* FriendsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 187808581954DEA8005E682F /* FriendsTableViewCell.m */; };
+		1885C5E01A09312300B07D55 /* Invite.html in Resources */ = {isa = PBXBuildFile; fileRef = 1885C5DF1A09312300B07D55 /* Invite.html */; };
 		1889E5EC195A84F70079C3E9 /* InviteTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1889E5EB195A84F60079C3E9 /* InviteTableViewCell.m */; };
 		1891F62E19C1EEAC00C83ECE /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1891F62D19C1EEAC00C83ECE /* libc++.dylib */; };
 		1893D03319D5C7BF00812443 /* LinkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1893D03219D5C7BF00812443 /* LinkViewController.m */; };
@@ -73,10 +74,6 @@
 		18EC22AD18B5A0B400316B6E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EC22AC18B5A0B400316B6E /* main.m */; };
 		18EC22B118B5A0B400316B6E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EC22B018B5A0B400316B6E /* AppDelegate.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		18EC22B318B5A0B400316B6E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18EC22B218B5A0B400316B6E /* Images.xcassets */; };
-		18EC22BB18B5A0B400316B6E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC22A018B5A0B400316B6E /* Foundation.framework */; };
-		18EC22BC18B5A0B400316B6E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC22A418B5A0B400316B6E /* UIKit.framework */; };
-		18EC22C418B5A0B400316B6E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 18EC22C218B5A0B400316B6E /* InfoPlist.strings */; };
-		18EC22C618B5A0B400316B6E /* BeagleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EC22C518B5A0B400316B6E /* BeagleTests.m */; };
 		18EC231118B5A42D00316B6E /* ServerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EC22D618B5A42D00316B6E /* ServerManager.m */; };
 		18EC231218B5A42D00316B6E /* ASIAuthenticationDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EC22D918B5A42D00316B6E /* ASIAuthenticationDialog.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		18EC231318B5A42D00316B6E /* ASIDataCompressor.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EC22DC18B5A42D00316B6E /* ASIDataCompressor.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -147,16 +144,6 @@
 		68EDF872192AC78D008ED9C1 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68EDF871192AC78D008ED9C1 /* AVFoundation.framework */; };
 		68EDF874192AC7A0008ED9C1 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68EDF873192AC7A0008ED9C1 /* CoreTelephony.framework */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		18EC22BD18B5A0B400316B6E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 18EC229518B5A0B400316B6E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 18EC229C18B5A0B400316B6E;
-			remoteInfo = Beagle;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		18007ED418C64D6D00230C23 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
@@ -239,6 +226,7 @@
 		187808571954DEA8005E682F /* FriendsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendsTableViewCell.h; sourceTree = "<group>"; };
 		187808581954DEA8005E682F /* FriendsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendsTableViewCell.m; sourceTree = "<group>"; };
 		187846BC19928D7E0091AA70 /* Beagle-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Beagle-Info.plist"; sourceTree = "<group>"; };
+		1885C5DF1A09312300B07D55 /* Invite.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Invite.html; sourceTree = "<group>"; };
 		1889E5EA195A84F50079C3E9 /* InviteTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteTableViewCell.h; sourceTree = "<group>"; };
 		1889E5EB195A84F60079C3E9 /* InviteTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteTableViewCell.m; sourceTree = "<group>"; };
 		1891F62D19C1EEAC00C83ECE /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
@@ -279,10 +267,6 @@
 		18EC22AF18B5A0B400316B6E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		18EC22B018B5A0B400316B6E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		18EC22B218B5A0B400316B6E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		18EC22B818B5A0B400316B6E /* BeagleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BeagleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		18EC22C118B5A0B400316B6E /* BeagleTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "BeagleTests-Info.plist"; sourceTree = "<group>"; };
-		18EC22C318B5A0B400316B6E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		18EC22C518B5A0B400316B6E /* BeagleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BeagleTests.m; sourceTree = "<group>"; };
 		18EC22D618B5A42D00316B6E /* ServerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerManager.m; sourceTree = "<group>"; };
 		18EC22D818B5A42D00316B6E /* ASIAuthenticationDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASIAuthenticationDialog.h; sourceTree = "<group>"; };
 		18EC22D918B5A42D00316B6E /* ASIAuthenticationDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASIAuthenticationDialog.m; sourceTree = "<group>"; };
@@ -439,15 +423,6 @@
 				18EC22A318B5A0B400316B6E /* CoreGraphics.framework in Frameworks */,
 				18EC22A518B5A0B400316B6E /* UIKit.framework in Frameworks */,
 				18EC22A118B5A0B400316B6E /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		18EC22B518B5A0B400316B6E /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				18EC22BC18B5A0B400316B6E /* UIKit.framework in Frameworks */,
-				18EC22BB18B5A0B400316B6E /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -690,7 +665,6 @@
 				1893D03219D5C7BF00812443 /* LinkViewController.m */,
 			);
 			name = "Web View Link";
-			path = Beagle;
 			sourceTree = "<group>";
 		};
 		1893D41B19C9E7A600128A94 /* Keyboard Message View */ = {
@@ -733,9 +707,7 @@
 		18EC229418B5A0B400316B6E = {
 			isa = PBXGroup;
 			children = (
-				1893D03019D5C78F00812443 /* Web View Link */,
 				18EC22A618B5A0B400316B6E /* Beagle */,
-				18EC22BF18B5A0B400316B6E /* BeagleTests */,
 				18EC229F18B5A0B400316B6E /* Frameworks */,
 				18EC229E18B5A0B400316B6E /* Products */,
 			);
@@ -745,7 +717,6 @@
 			isa = PBXGroup;
 			children = (
 				18EC229D18B5A0B400316B6E /* Beagle.app */,
-				18EC22B818B5A0B400316B6E /* BeagleTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -791,6 +762,7 @@
 			children = (
 				18EC22AF18B5A0B400316B6E /* AppDelegate.h */,
 				18EC22B018B5A0B400316B6E /* AppDelegate.m */,
+				1893D03019D5C78F00812443 /* Web View Link */,
 				18EC234018B5A71000316B6E /* Storyboard */,
 				6891059619632C3000BE23B7 /* About */,
 				182F0B8B19630059001771AD /* Feedback */,
@@ -826,29 +798,12 @@
 			isa = PBXGroup;
 			children = (
 				18714B341940F1D2008F59DE /* Sounds */,
+				1885C5DF1A09312300B07D55 /* Invite.html */,
 				180AF0BF18DC809E00EE87D6 /* User.plist */,
 				18EC22A918B5A0B400316B6E /* InfoPlist.strings */,
 				18EC22AC18B5A0B400316B6E /* main.m */,
 				18EC22AE18B5A0B400316B6E /* Beagle-Prefix.pch */,
 				187846BC19928D7E0091AA70 /* Beagle-Info.plist */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		18EC22BF18B5A0B400316B6E /* BeagleTests */ = {
-			isa = PBXGroup;
-			children = (
-				18EC22C518B5A0B400316B6E /* BeagleTests.m */,
-				18EC22C018B5A0B400316B6E /* Supporting Files */,
-			);
-			path = BeagleTests;
-			sourceTree = "<group>";
-		};
-		18EC22C018B5A0B400316B6E /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				18EC22C118B5A0B400316B6E /* BeagleTests-Info.plist */,
-				18EC22C218B5A0B400316B6E /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1073,24 +1028,6 @@
 			productReference = 18EC229D18B5A0B400316B6E /* Beagle.app */;
 			productType = "com.apple.product-type.application";
 		};
-		18EC22B718B5A0B400316B6E /* BeagleTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 18EC22CC18B5A0B400316B6E /* Build configuration list for PBXNativeTarget "BeagleTests" */;
-			buildPhases = (
-				18EC22B418B5A0B400316B6E /* Sources */,
-				18EC22B518B5A0B400316B6E /* Frameworks */,
-				18EC22B618B5A0B400316B6E /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				18EC22BE18B5A0B400316B6E /* PBXTargetDependency */,
-			);
-			name = BeagleTests;
-			productName = BeagleTests;
-			productReference = 18EC22B818B5A0B400316B6E /* BeagleTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -1111,9 +1048,6 @@
 							};
 						};
 					};
-					18EC22B718B5A0B400316B6E = {
-						TestTargetID = 18EC229C18B5A0B400316B6E;
-					};
 				};
 			};
 			buildConfigurationList = 18EC229818B5A0B400316B6E /* Build configuration list for PBXProject "Beagle" */;
@@ -1130,7 +1064,6 @@
 			projectRoot = "";
 			targets = (
 				18EC229C18B5A0B400316B6E /* Beagle */,
-				18EC22B718B5A0B400316B6E /* BeagleTests */,
 			);
 		};
 /* End PBXProject section */
@@ -1153,16 +1086,9 @@
 				1805CED918C8D25800AC8556 /* TimeFilterView.xib in Resources */,
 				180AF0B318DC7FB200EE87D6 /* BlankHomePageView.xib in Resources */,
 				180F604D1923D1D800B3807F /* LocationBlurView.xib in Resources */,
+				1885C5E01A09312300B07D55 /* Invite.html in Resources */,
 				180AF0C018DC809E00EE87D6 /* User.plist in Resources */,
 				18714B381940F1D2008F59DE /* messageSent.aiff in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		18EC22B618B5A0B400316B6E /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				18EC22C418B5A0B400316B6E /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1285,37 +1211,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		18EC22B418B5A0B400316B6E /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				18EC22C618B5A0B400316B6E /* BeagleTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		18EC22BE18B5A0B400316B6E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 18EC229C18B5A0B400316B6E /* Beagle */;
-			targetProxy = 18EC22BD18B5A0B400316B6E /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		18EC22A918B5A0B400316B6E /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
 				18EC22AA18B5A0B400316B6E /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		18EC22C218B5A0B400316B6E /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				18EC22C318B5A0B400316B6E /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -1339,9 +1241,10 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Harish Hoon (B99DQ79SBX)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Harish Hoon (B99DQ79SBX)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1356,7 +1259,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
@@ -1378,10 +1281,11 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Soclivity, LLC (RLC9X36TPX)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Soclivity, LLC (RLC9X36TPX)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -1389,7 +1293,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1398,16 +1302,13 @@
 		18EC22CA18B5A0B400316B6E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Dev";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_IDENTIFIER_SUFFIX = com.beagle.dev;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Harish Hoon (B99DQ79SBX)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Harish Hoon (B99DQ79SBX)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SRCROOT)",
-					"$(inherited)",
-					"$(PROJECT_DIR)",
-				);
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Beagle/Beagle-Prefix.pch";
 				HEADER_SEARCH_PATHS = "$(inherited)";
@@ -1429,16 +1330,13 @@
 		18EC22CB18B5A0B400316B6E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_IDENTIFIER_SUFFIX = com.app.beagle;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Soclivity, LLC (RLC9X36TPX)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Soclivity, LLC (RLC9X36TPX)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SRCROOT)",
-					"$(inherited)",
-					"$(PROJECT_DIR)",
-				);
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Beagle/Beagle-Prefix.pch";
 				HEADER_SEARCH_PATHS = "$(inherited)";
@@ -1454,46 +1352,6 @@
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
-			};
-			name = Release;
-		};
-		18EC22CD18B5A0B400316B6E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Beagle.app/Beagle";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Beagle/Beagle-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "BeagleTests/BeagleTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = xctest;
-			};
-			name = Debug;
-		};
-		18EC22CE18B5A0B400316B6E /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Beagle.app/Beagle";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Beagle/Beagle-Prefix.pch";
-				INFOPLIST_FILE = "BeagleTests/BeagleTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = xctest;
 			};
 			name = Release;
 		};
@@ -1514,15 +1372,6 @@
 			buildConfigurations = (
 				18EC22CA18B5A0B400316B6E /* Debug */,
 				18EC22CB18B5A0B400316B6E /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		18EC22CC18B5A0B400316B6E /* Build configuration list for PBXNativeTarget "BeagleTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				18EC22CD18B5A0B400316B6E /* Debug */,
-				18EC22CE18B5A0B400316B6E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

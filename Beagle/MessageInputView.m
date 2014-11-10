@@ -70,6 +70,7 @@ static id<MessageInputViewDelegate> __delegate;
     self.textView.backgroundColor=[UIColor whiteColor];
     self.textView.scrollsToTop = NO;
     self.textView.scrollIndicatorInsets = UIEdgeInsetsMake(10.0f, 0.0f, 10.0f, 0.0f);
+
     [self addSubview:self.textView];
 
     
