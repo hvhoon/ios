@@ -83,7 +83,7 @@ static FeedbackReporting *sharedInstance = nil;
         picker.mailComposeDelegate = self;
         [picker.navigationBar setTintColor:[BeagleUtilities returnBeagleColor:13]];
        picker.view.tag=473;
-        NSMutableString *emailBody =[[NSMutableString alloc] initWithString:[NSString stringWithFormat:@"<br /> <br /> <p><b>%@ has invited you to check out Beagle, learn more below.</b></p><br />",firstName]];
+        NSMutableString *emailBody =[[NSMutableString alloc] initWithString:[NSString stringWithFormat:@"<br /><p>%@ has invited you to check out Beagle, learn more below.</p><br />",firstName]];
        [emailBody appendString:[BeagleUtilities readHTMLFromDocumentDirectory]];
 
         [picker setSubject:@"Introducing Beagle!"];
