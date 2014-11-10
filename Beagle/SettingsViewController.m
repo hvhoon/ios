@@ -12,6 +12,7 @@
 #import "AboutUsViewController.h"
 #import <Instabug/Instabug.h>
 #import "InitialSlidingViewController.h"
+#import "LinkViewController.h"
 @interface SettingsViewController ()<ServerManagerDelegate>
 @property(nonatomic,strong)ServerManager*updateFBTickerManager;
 @property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
@@ -212,10 +213,18 @@
             return;
         }
         else if ([identifier isEqualToString:@"aboutUs"]){
+
             
-            AboutUsViewController *viewController=(AboutUsViewController*)newTopViewController;
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+            LinkViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"webLinkScreen"];
+            viewController.linkString=@"http://about.mybeagleapp.com";
             [self.navigationController pushViewController:viewController animated:YES];
             return;
+            
+            
+//            AboutUsViewController *viewController=(AboutUsViewController*)newTopViewController;
+//            [self.navigationController pushViewController:viewController animated:YES];
+//            return;
         }
     
     // Sliding animation
