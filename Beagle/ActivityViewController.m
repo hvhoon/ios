@@ -402,11 +402,21 @@ enum Weeks {
     [components setDay:([components day] - ((dayofweek) - 2))];// for beginning of the week.
     NSDate *beginningOfWeek = [gregorian dateFromComponents:components];
     
+    if(dayofweek==1){
+        beginningOfWeek=[beginningOfWeek dateByAddingTimeInterval:-7*60*60*24];
+    }
+    
     //Set the last day of the Week End Date
     NSCalendar *gregorianEnd = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     NSDateComponents *componentsEnd = [gregorianEnd components:NSWeekdayCalendarUnit | NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit fromDate:today];
     NSInteger Enddayofweek = [[[NSCalendar currentCalendar] components:NSWeekdayCalendarUnit fromDate:today] weekday];// this will give you current day of week
-    [componentsEnd setDay:([componentsEnd day]+(7-Enddayofweek))];// get the last day of the week (before the weekend)
+    
+    if(Enddayofweek==1){
+        [componentsEnd setDay:([componentsEnd day] - 1)];
+    }else{
+        
+        [componentsEnd setDay:([componentsEnd day]+(7-Enddayofweek))];// get the last day of the week (before the weekend)
+    }
     NSDate *EndOfWeek = [gregorianEnd dateFromComponents:componentsEnd]; // set the last day of the week (before the weekend)
     NSCalendar* myCalendar = [NSCalendar currentCalendar];
     components = [myCalendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit
