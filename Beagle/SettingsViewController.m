@@ -217,7 +217,7 @@
             
             UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
             LinkViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"webLinkScreen"];
-            viewController.linkString=@"http://about.mybeagleapp.com";
+            viewController.linkString=@"http://www.mybeagleapp.com/about";
             [self.navigationController pushViewController:viewController animated:YES];
             return;
             
