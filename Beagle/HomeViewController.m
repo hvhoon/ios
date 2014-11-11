@@ -294,6 +294,8 @@
 }
 
 -(void)viewDidDisappear:(BOOL)animated{
+    
+    [super viewDidDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kRemoteNotificationReceivedNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationForInterestPost object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ECSlidingViewTopDidAnchorLeft" object:nil];
@@ -1182,11 +1184,11 @@
     if(indexPath.section==1 && [self.tableData count]>0){
         NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
         [style setAlignment:NSTextAlignmentLeft];
-        
+        style.lineBreakMode=NSLineBreakByWordWrapping;
         NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                                [UIFont fontWithName:@"HelveticaNeue" size:17.0f], NSFontAttributeName,
                                [UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0],NSForegroundColorAttributeName,
-                               style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
+                               style, NSParagraphStyleAttributeName, nil];
         
         BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexPath.row];
         

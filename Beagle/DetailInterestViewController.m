@@ -98,7 +98,7 @@ static NSString * const CellIdentifier = @"cell";
     return self;
 }
 -(void)viewWillAppear:(BOOL)animated{
-    
+    [super viewWillAppear:animated];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBackgroundInNotification:) name:kRemoteNotificationReceivedNotification object:Nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(postInAppNotification:) name:kNotificationForInterestPost object:Nil];
@@ -149,6 +149,8 @@ static NSString * const CellIdentifier = @"cell";
     
 }
 -(void)viewDidAppear:(BOOL)animated{
+    
+    [super viewDidAppear:animated];
 #if !kPostInterface
     [self.contentWrapper _registerForNotifications];
 #endif
@@ -831,11 +833,11 @@ static NSString * const CellIdentifier = @"cell";
         
         NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
         [style setAlignment:NSTextAlignmentLeft];
-    
+        style.lineBreakMode=NSLineBreakByWordWrapping;
         NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                            [UIFont fontWithName:@"HelveticaNeue" size:17.0f], NSFontAttributeName,
                            [UIColor blackColor],NSForegroundColorAttributeName,
-                           style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
+                           style, NSParagraphStyleAttributeName, nil];
     
         NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString : self.interestActivity.activityDesc  attributes : attrs];
         CGFloat height=[BeagleUtilities heightForAttributedStringWithEmojis:attributedString forWidth:[UIScreen mainScreen].bounds.size.width-32];
@@ -854,11 +856,11 @@ static NSString * const CellIdentifier = @"cell";
             if([chatCell.text length]!=0 && [chatCell.text isKindOfClass:[NSString class]]){
             NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
             [style setAlignment:NSTextAlignmentLeft];
-            
+            style.lineBreakMode=NSLineBreakByWordWrapping;
             NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                                    [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0f], NSFontAttributeName,
                                    [UIColor blackColor],NSForegroundColorAttributeName,
-                                   style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
+                                   style, NSParagraphStyleAttributeName, nil];
             
             NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString : chatCell.text
                                                                                    attributes :attrs];
@@ -995,12 +997,12 @@ static NSString * const CellIdentifier = @"cell";
         
         // Adding buffer below the top section with the profile picture
         fromTheTop = fromTheTop+8.0f;
-        
+        style.lineBreakMode=NSLineBreakByWordWrapping;
         // Activity description
         attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                  [UIFont fontWithName:@"HelveticaNeue" size:17.0f], NSFontAttributeName,
                  [UIColor blackColor],NSForegroundColorAttributeName,
-                 style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
+                 style, NSParagraphStyleAttributeName, nil];
         
         CGSize maximumLabelSize = CGSizeMake([UIScreen mainScreen].bounds.size.width-32,999);
         
@@ -1379,10 +1381,11 @@ static NSString * const CellIdentifier = @"cell";
         cellTop = cellTop + 2.0f; // buffer below profile section
         
         // Comment text
+        style.lineBreakMode=NSLineBreakByWordWrapping;
         attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                  [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0f], NSFontAttributeName,
                  [UIColor blackColor],NSForegroundColorAttributeName,
-                 style, NSParagraphStyleAttributeName, NSLineBreakByWordWrapping, nil];
+                 style, NSParagraphStyleAttributeName, nil];
         
         CGSize maximumLabelSize = CGSizeMake([UIScreen mainScreen].bounds.size.width-75,999);
         

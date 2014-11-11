@@ -66,7 +66,7 @@ enum Weeks {
 }
 -(void)viewWillAppear:(BOOL)animated{
     
-    
+    [super viewWillAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (createButtonClicked:) name:kLocationUpdateReceived object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showLocationError) name:kErrorToGetLocation object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBackgroundInNotification:) name:kRemoteNotificationReceivedNotification object:Nil];
@@ -260,6 +260,7 @@ enum Weeks {
 
 -(void)viewDidDisappear:(BOOL)animated{
     
+    [super viewDidDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kRemoteNotificationReceivedNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationForInterestPost object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kLocationUpdateReceived object:nil];

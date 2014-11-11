@@ -81,12 +81,12 @@ static UIFont *secondTextFont = nil;
     
     // Adding buffer below the top section with the profile picture
     fromTheTop = fromTheTop+4+organizerNameSize.height;
-    
+    style.lineBreakMode=NSLineBreakByWordWrapping;
     // Drawing the activity description
     attrs = [NSDictionary dictionaryWithObjectsAndKeys:
              secondTextFont, NSFontAttributeName,
              [BeagleUtilities returnBeagleColor:3],NSForegroundColorAttributeName,
-             style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
+             style, NSParagraphStyleAttributeName, nil];
     
     CGSize maximumLabelSize = CGSizeMake([UIScreen mainScreen].bounds.size.width-32,r.size.height);
     

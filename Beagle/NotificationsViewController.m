@@ -51,7 +51,7 @@
 
 
 -(void)viewDidDisappear:(BOOL)animated{
-    
+    [super viewDidDisappear:animated];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kUpdateNotificationStack object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kRemoteNotificationReceivedNotification object:nil];
@@ -267,11 +267,11 @@
         
         NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
         [style setAlignment:NSTextAlignmentLeft];
-
+        style.lineBreakMode=NSLineBreakByWordWrapping;
         NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                  [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0f], NSFontAttributeName,
                  [BeagleUtilities returnBeagleColor:2],NSForegroundColorAttributeName,
-                 style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
+                 style, NSParagraphStyleAttributeName, nil];
         
         CGSize maximumLabelSize = CGSizeMake([UIScreen mainScreen].bounds.size.width-self.peekLeftAmount-32,999);
         

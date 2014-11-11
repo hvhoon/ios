@@ -65,10 +65,11 @@
         
 		[self addSubview:awesomeLabel];
         
+        style.lineBreakMode=NSLineBreakByWordWrapping;
         attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                  [UIFont fontWithName:@"HelveticaNeue-Light" size:17.0f], NSFontAttributeName,
                  [UIColor whiteColor],NSForegroundColorAttributeName,
-                 style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
+                 style, NSParagraphStyleAttributeName, nil];
         
         CGSize maximumLabelSize = CGSizeMake(288,999);
         NSArray *firstName=[orgn componentsSeparatedByString:@" "];

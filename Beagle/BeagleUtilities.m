@@ -610,16 +610,16 @@
     
     NSDate *currentDate=[NSDate date];
     
-    NSTimeInterval interval = [lastDate timeIntervalSinceDate:currentDate];
-    unsigned long seconds = interval;
-    unsigned long minutes = seconds / 60;
-    seconds %= 60;
-    unsigned long hours = minutes / 60;
-    if(hours)
-        minutes %= 60;
-    unsigned long days=hours/24;
-    if(days)
-        hours %=24;
+//    NSTimeInterval interval = [lastDate timeIntervalSinceDate:currentDate];
+//    unsigned long seconds = interval;
+//    unsigned long minutes = seconds / 60;
+//    seconds %= 60;
+//    unsigned long hours = minutes / 60;
+//    if(hours)
+//        minutes %= 60;
+//    unsigned long days=hours/24;
+//    if(days)
+//        hours %=24;
     
     NSMutableString * result = [NSMutableString new];
     dateFormatter.dateFormat=@"EEE, MMM d, h:mma";

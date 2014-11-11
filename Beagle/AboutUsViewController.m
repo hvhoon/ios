@@ -37,6 +37,7 @@
 }
 
 -(void)viewDidDisappear:(BOOL)animated{
+    [super viewDidDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kRemoteNotificationReceivedNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationForInterestPost object:nil];
 }

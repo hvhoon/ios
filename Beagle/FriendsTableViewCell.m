@@ -80,10 +80,11 @@ static UIFont *secondTextFont = nil;
     fromTheTop = fromTheTop+4+organizerNameSize.height;
   if([self.bgPlayer.location length]!=0){    
     // Drawing the activity description
+    style.lineBreakMode=NSLineBreakByWordWrapping;
     attrs = [NSDictionary dictionaryWithObjectsAndKeys:
              secondTextFont, NSFontAttributeName,
              [BeagleUtilities returnBeagleColor:3],NSForegroundColorAttributeName,
-             style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
+             style, NSParagraphStyleAttributeName, nil];
     
     CGSize maximumLabelSize = CGSizeMake(288,r.size.height);
     
