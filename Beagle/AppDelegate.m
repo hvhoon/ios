@@ -478,12 +478,7 @@ else
     UIImage* image =[[UIImage alloc] initWithData:imageData];
     [notificationDictionary setObject:image forKey:@"profileImage"];
     [notificationDictionary setObject:[NSNumber numberWithInteger:1] forKey:@"notifType"];
-//    [self sendAppNotification:notificationDictionary];
-    
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kBeagleBadgeCount object:self userInfo:nil]];
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:self userInfo:notificationDictionary]];
-
-//    [self performSelectorOnMainThread:@selector(sendAppNotification:) withObject:notificationDictionary waitUntilDone:NO];
+    [self performSelectorOnMainThread:@selector(sendAppNotification:) withObject:notificationDictionary waitUntilDone:NO];
 }
 -(void)sendAppNotification:(NSMutableDictionary*)appNotifDictionary{
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kBeagleBadgeCount object:self userInfo:nil]];
@@ -1036,11 +1031,10 @@ else
                 NSMutableDictionary *inappnotification=[response objectForKey:@"inappnotification"];
                 if (inappnotification != nil && [inappnotification class] != [NSNull class]) {
                     
-                    NSLog(@"badge Value=%ld",(long)[[inappnotification objectForKey:@"badge"]integerValue]);
+                    [[BeagleManager SharedInstance]setBadgeCount:[[inappnotification objectForKey:@"badge"]integerValue]];
                     
-                    
+                    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[inappnotification objectForKey:@"badge"]integerValue]];
 
-                    
                     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[inappnotification objectForKey:@"photo_url"]]];
                     
                     AFHTTPRequestOperation *requestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
@@ -1052,10 +1046,7 @@ else
                         [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kBeagleBadgeCount object:self userInfo:nil]];
                         [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:self userInfo:notificationMutable]];
 
-                        
-
-                        
-                    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                         NSLog(@"Image error: %@", error);
                     }];
                     [requestOperation start];
@@ -1067,10 +1058,6 @@ else
 //                                                        object:inappnotification];
 //                    [queue addOperation:operation];
 //                    
-                    [[BeagleManager SharedInstance]setBadgeCount:[[inappnotification objectForKey:@"badge"]integerValue]];
-                    
-                    
-                    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[[inappnotification objectForKey:@"badge"]integerValue]];
                     
                     
                 }
