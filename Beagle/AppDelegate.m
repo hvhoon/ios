@@ -11,6 +11,7 @@
 #import "HomeViewController.h"
 #import "DetailInterestViewController.h"
 #import "AFNetworkActivityIndicatorManager.h"
+#import "AFHTTPRequestOperation.h"
 @interface AppDelegate ()<ServerManagerDelegate>{
     ServerManager *notificationServerManager;
     NSInteger attempts;
@@ -477,7 +478,12 @@ else
     UIImage* image =[[UIImage alloc] initWithData:imageData];
     [notificationDictionary setObject:image forKey:@"profileImage"];
     [notificationDictionary setObject:[NSNumber numberWithInteger:1] forKey:@"notifType"];
-    [self performSelectorOnMainThread:@selector(sendAppNotification:) withObject:notificationDictionary waitUntilDone:NO];
+//    [self sendAppNotification:notificationDictionary];
+    
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kBeagleBadgeCount object:self userInfo:nil]];
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:self userInfo:notificationDictionary]];
+
+//    [self performSelectorOnMainThread:@selector(sendAppNotification:) withObject:notificationDictionary waitUntilDone:NO];
 }
 -(void)sendAppNotification:(NSMutableDictionary*)appNotifDictionary{
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kBeagleBadgeCount object:self userInfo:nil]];
@@ -1033,13 +1039,34 @@ else
                     NSLog(@"badge Value=%ld",(long)[[inappnotification objectForKey:@"badge"]integerValue]);
                     
                     
-                    NSOperationQueue *queue = [NSOperationQueue new];
-                    NSInvocationOperation *operation = [[NSInvocationOperation alloc]
-                                                        initWithTarget:self
-                                                        selector:@selector(loadProfileImageData:)
-                                                        object:inappnotification];
-                    [queue addOperation:operation];
+
                     
+                    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[inappnotification objectForKey:@"photo_url"]]];
+                    
+                    AFHTTPRequestOperation *requestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+                    requestOperation.responseSerializer = [AFImageResponseSerializer serializer];
+                    [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+                        NSMutableDictionary *notificationMutable=[inappnotification mutableCopy];
+                        [notificationMutable setObject:(UIImage*)responseObject forKey:@"profileImage"];
+                        [notificationMutable setObject:[NSNumber numberWithInteger:1] forKey:@"notifType"];
+                        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kBeagleBadgeCount object:self userInfo:nil]];
+                        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:self userInfo:notificationMutable]];
+
+                        
+
+                        
+                    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                        NSLog(@"Image error: %@", error);
+                    }];
+                    [requestOperation start];
+                    
+//                    NSOperationQueue *queue = [NSOperationQueue new];
+//                    NSInvocationOperation *operation = [[NSInvocationOperation alloc]
+//                                                        initWithTarget:self
+//                                                        selector:@selector(loadProfileImageData:)
+//                                                        object:inappnotification];
+//                    [queue addOperation:operation];
+//                    
                     [[BeagleManager SharedInstance]setBadgeCount:[[inappnotification objectForKey:@"badge"]integerValue]];
                     
                     

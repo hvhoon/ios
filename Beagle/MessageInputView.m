@@ -94,8 +94,6 @@ static id<MessageInputViewDelegate> __delegate;
     NSInteger numLines = MAX([self.textView numberOfLinesOfText],
                        [self.textView.text numberOfLines]);
     
-    NSLog(@"number line == %ld",(long)numLines);
-    
     self.textView.frame = CGRectMake(prevFrame.origin.x,
                                      prevFrame.origin.y,
                                      prevFrame.size.width,

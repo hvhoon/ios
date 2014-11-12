@@ -540,7 +540,7 @@
             [self.delegate serverManagerDidFailWithError:error response:nil forRequest:_serverCallType];
         }
     }];
-    }else if ([requestMethod isEqualToString:@"POST"] && params.allKeys.count > 0){
+    }else if ([requestMethod isEqualToString:@"POST"]){
         [self POST:requestUrl parameters:params success:^(NSURLSessionDataTask *task, id responseObject) {
             if ([self.delegate respondsToSelector:@selector(serverManagerDidFinishWithResponse:forRequest:)]) {
                 [self.delegate serverManagerDidFinishWithResponse:responseObject forRequest:_serverCallType];
@@ -551,7 +551,7 @@
             }
         }];
     }
-    else if ([requestMethod isEqualToString:@"PUT"] && params.allKeys.count > 0){
+    else if ([requestMethod isEqualToString:@"PUT"]){
         [self PUT:requestUrl parameters:params success:^(NSURLSessionDataTask *task, id responseObject) {
             if ([self.delegate respondsToSelector:@selector(serverManagerDidFinishWithResponse:forRequest:)]) {
                 [self.delegate serverManagerDidFinishWithResponse:responseObject forRequest:_serverCallType];
