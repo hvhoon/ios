@@ -19,7 +19,6 @@
 #import "EventInterestFilterBlurView.h"
 #import "FriendsViewController.h"
 #import "ExpressInterestPreview.h"
-#import "JSON.h"
 #import "CreateAnimationBlurView.h"
 #import "LinkViewController.h"
 #define kTimerIntervalInSeconds 10
@@ -867,7 +866,6 @@
     
     if(_homeActivityManager!=nil){
         _homeActivityManager.delegate = nil;
-        [_homeActivityManager releaseServerManager];
         _homeActivityManager = nil;
     }
     
@@ -934,9 +932,11 @@
     // Pull weather information
     
     BeagleManager *BG=[BeagleManager SharedInstance];
-    NSDictionary* weatherDictionary = [[[NSString alloc] initWithData:data
-                                                             encoding:NSUTF8StringEncoding] JSONValue];
     
+    NSError* error;
+    NSDictionary* weatherDictionary = [NSJSONSerialization JSONObjectWithData:data
+                                                         options:kNilOptions
+                                                           error:&error];
     NSString *weather=@"Clear";
     NSString *time=@"d";
     
@@ -1697,7 +1697,6 @@
     
     if(_interestUpdateManager!=nil){
         _interestUpdateManager.delegate = nil;
-        [_interestUpdateManager releaseServerManager];
         _interestUpdateManager = nil;
     }
     
@@ -1849,7 +1848,6 @@
             {
                 if(_interestUpdateManager!=nil){
                     _interestUpdateManager.delegate = nil;
-                    [_interestUpdateManager releaseServerManager];
                     _interestUpdateManager = nil;
                 }
                 
@@ -1902,7 +1900,6 @@
                 
                 if(_interestUpdateManager!=nil){
                     _interestUpdateManager.delegate = nil;
-                    [_interestUpdateManager releaseServerManager];
                     _interestUpdateManager = nil;
                 }
                 
@@ -1929,7 +1926,6 @@
         self.filterActivitiesOnHomeScreen=[[NSMutableDictionary alloc]init];
         
         _homeActivityManager.delegate = nil;
-        [_homeActivityManager releaseServerManager];
         _homeActivityManager = nil;
         
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
@@ -2060,7 +2056,6 @@
     }
     else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
         _interestUpdateManager.delegate = nil;
-        [_interestUpdateManager releaseServerManager];
         _interestUpdateManager = nil;
         
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
@@ -2206,7 +2201,6 @@
     }
     else if (serverRequest==kServerCallSuggestedPostMembership){
         _interestUpdateManager.delegate = nil;
-        [_interestUpdateManager releaseServerManager];
         _interestUpdateManager = nil;
         
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
@@ -2236,7 +2230,6 @@
         
     }else if (serverRequest==kServerCallCreateActivity){
         _interestUpdateManager.delegate = nil;
-        [_interestUpdateManager releaseServerManager];
         _interestUpdateManager = nil;
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
@@ -2301,13 +2294,11 @@
     {
         
         _homeActivityManager.delegate = nil;
-        [_homeActivityManager releaseServerManager];
         _homeActivityManager = nil;
         [self filterByCategoryType:categoryFilterType];
     }
     else if(serverRequest==kServerCallLeaveInterest ||serverRequest==kServerCallParticipateInterest||serverRequest==kServerCallSuggestedPostMembership||serverRequest==kServerCallCreateActivity){
         _interestUpdateManager.delegate = nil;
-        [_interestUpdateManager releaseServerManager];
         _interestUpdateManager = nil;
         
         if(serverRequest==kServerCallCreateActivity||serverRequest==kServerCallSuggestedPostMembership){
@@ -2348,13 +2339,11 @@
     {
         
         _homeActivityManager.delegate = nil;
-        [_homeActivityManager releaseServerManager];
         _homeActivityManager = nil;
         [self filterByCategoryType:categoryFilterType];
     }
     else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest||serverRequest==kServerCallSuggestedPostMembership||serverRequest==kServerCallCreateActivity){
         _interestUpdateManager.delegate = nil;
-        [_interestUpdateManager releaseServerManager];
         _interestUpdateManager = nil;
         if(serverRequest==kServerCallCreateActivity||serverRequest==kServerCallSuggestedPostMembership){
             [self.animationBlurView hide];

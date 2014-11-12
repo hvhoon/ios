@@ -93,7 +93,6 @@
     self.imageDownloadsInProgress=[[NSMutableDictionary alloc]init];
     if(_notificationsManager!=nil){
         _notificationsManager.delegate = nil;
-        [_notificationsManager releaseServerManager];
         _notificationsManager = nil;
     }
     _notificationsManager=[[ServerManager alloc]init];
@@ -468,7 +467,6 @@
     interestIndex=button.tag;
     if(_interestUpdateManager!=nil){
         _interestUpdateManager.delegate = nil;
-        [_interestUpdateManager releaseServerManager];
         _interestUpdateManager = nil;
     }
     
@@ -584,7 +582,6 @@
         [_notificationSpinnerView stopAnimating];
         [_timer invalidate];
         _notificationsManager.delegate = nil;
-        [_notificationsManager releaseServerManager];
         _notificationsManager = nil;
         
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
@@ -654,7 +651,6 @@
     }
     else if(serverRequest==kServerCallParticipateInterest){
         _interestUpdateManager.delegate = nil;
-        [_interestUpdateManager releaseServerManager];
         _interestUpdateManager = nil;
         
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
@@ -689,7 +685,6 @@
     if(serverRequest==kServerCallGetNotifications)
     {
         _notificationsManager.delegate = nil;
-        [_notificationsManager releaseServerManager];
         _notificationsManager = nil;
         [_notificationSpinnerView stopAnimating];
         [_timer invalidate];
@@ -700,7 +695,6 @@
     }
     else if(serverRequest==kServerCallParticipateInterest){
         _interestUpdateManager.delegate = nil;
-        [_interestUpdateManager releaseServerManager];
         _interestUpdateManager = nil;
     }
 
@@ -715,7 +709,6 @@
     if(serverRequest==kServerCallGetNotifications)
     {
         _notificationsManager.delegate = nil;
-        [_notificationsManager releaseServerManager];
         _notificationsManager = nil;
         [_timer invalidate];
         [_notificationSpinnerView stopAnimating];
@@ -726,7 +719,6 @@
     }
     else if(serverRequest==kServerCallParticipateInterest){
         _interestUpdateManager.delegate = nil;
-        [_interestUpdateManager releaseServerManager];
         _interestUpdateManager = nil;
     }
 
@@ -740,13 +732,6 @@
     }
 
     self.imageDownloadsInProgress=nil;
-    for (ASIHTTPRequest *req in [ASIHTTPRequest.sharedQueue operations]) {
-        [req clearDelegatesAndCancel];
-        [req setDelegate:nil];
-        [req setDidFailSelector:nil];
-        [req setDidFinishSelector:nil];
-    }
-    [ASIHTTPRequest.sharedQueue cancelAllOperations];
 }
 
 @end

@@ -182,7 +182,6 @@ static NSString * const CellIdentifier = @"cell";
     
     if(_chatPostManager!=nil){
         _chatPostManager.delegate = nil;
-        [_chatPostManager releaseServerManager];
         _chatPostManager = nil;
     }
     
@@ -365,7 +364,6 @@ static NSString * const CellIdentifier = @"cell";
         
         if(_chatPostManager!=nil){
             _chatPostManager.delegate = nil;
-            [_chatPostManager releaseServerManager];
             _chatPostManager = nil;
         }
         
@@ -712,7 +710,6 @@ static NSString * const CellIdentifier = @"cell";
         
         if(_chatPostManager!=nil){
             _chatPostManager.delegate = nil;
-            [_chatPostManager releaseServerManager];
             _chatPostManager = nil;
         }
         
@@ -744,7 +741,6 @@ static NSString * const CellIdentifier = @"cell";
     if(self.interestActivity.dosRelation!=0){
         if(_interestUpdateManager!=nil){
             _interestUpdateManager.delegate = nil;
-            [_interestUpdateManager releaseServerManager];
             _interestUpdateManager = nil;
         }
         
@@ -1555,7 +1551,6 @@ static NSString * const CellIdentifier = @"cell";
         
         
         _interestServerManager.delegate = nil;
-        [_interestServerManager releaseServerManager];
         _interestServerManager = nil;
         
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
@@ -1673,7 +1668,6 @@ static NSString * const CellIdentifier = @"cell";
     }
     else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
         _interestUpdateManager.delegate = nil;
-        [_interestUpdateManager releaseServerManager];
         _interestUpdateManager = nil;
         scrollViewResize=TRUE;
 
@@ -1804,7 +1798,6 @@ static NSString * const CellIdentifier = @"cell";
     }
     else if (serverRequest==kServerCallPostComment||serverRequest==kServerCallGetBackgroundChats||serverRequest==kServerInAppChatDetail){
         _chatPostManager.delegate = nil;
-        [_chatPostManager releaseServerManager];
         _chatPostManager = nil;
         
         [_sendMessage setProgress:0.75 animated:YES];
@@ -1929,12 +1922,10 @@ static NSString * const CellIdentifier = @"cell";
     if(serverRequest==kServerCallGetDetailedInterest)
     {
         _interestServerManager.delegate = nil;
-        [_interestServerManager releaseServerManager];
         _interestServerManager = nil;
     }
     else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
         _interestUpdateManager.delegate = nil;
-        [_interestUpdateManager releaseServerManager];
         _interestUpdateManager = nil;
         UIButton *interestedButton=(UIButton*)[self.view viewWithTag:345];
         [interestedButton setEnabled:YES];
@@ -1948,7 +1939,6 @@ static NSString * const CellIdentifier = @"cell";
     else if(serverRequest==kServerCallPostComment||serverRequest==kServerCallGetBackgroundChats||serverRequest==kServerInAppChatDetail)
     {
         _chatPostManager.delegate = nil;
-        [_chatPostManager releaseServerManager];
         _chatPostManager = nil;
         [_sendMessage setHidden:YES];
         [_sendMessage setProgress:0.0];
@@ -1971,12 +1961,10 @@ static NSString * const CellIdentifier = @"cell";
     if(serverRequest==kServerCallGetDetailedInterest)
     {
         _interestServerManager.delegate = nil;
-        [_interestServerManager releaseServerManager];
         _interestServerManager = nil;
     }
     else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
         _interestUpdateManager.delegate = nil;
-        [_interestUpdateManager releaseServerManager];
         _interestUpdateManager = nil;
         UIButton *interestedButton=(UIButton*)[self.view viewWithTag:345];
         [interestedButton setEnabled:YES];
@@ -1991,7 +1979,6 @@ static NSString * const CellIdentifier = @"cell";
     else if(serverRequest==kServerCallPostComment||serverRequest==kServerCallGetBackgroundChats||serverRequest==kServerInAppChatDetail)
     {
         _chatPostManager.delegate = nil;
-        [_chatPostManager releaseServerManager];
         _chatPostManager = nil;
         [_sendMessage setHidden:YES];
         [_sendMessage setProgress:0.0];
@@ -2051,7 +2038,6 @@ static NSString * const CellIdentifier = @"cell";
         
                 if(_interestUpdateManager!=nil){
                     _interestUpdateManager.delegate = nil;
-                    [_interestUpdateManager releaseServerManager];
                     _interestUpdateManager = nil;
                 }
                 
@@ -2082,15 +2068,6 @@ static NSString * const CellIdentifier = @"cell";
     }
 
     self.imageDownloadsInProgress=nil;
-    
-    for (ASIHTTPRequest *req in [ASIHTTPRequest.sharedQueue operations]) {
-        [req clearDelegatesAndCancel];
-        [req setDelegate:nil];
-        [req setDidFailSelector:nil];
-        [req setDidFinishSelector:nil];
-    }
-    [ASIHTTPRequest.sharedQueue cancelAllOperations];
-    
     
 #if kPostInterface
         self.detailedInterestTableView = nil;
@@ -2124,7 +2101,6 @@ static NSString * const CellIdentifier = @"cell";
             
             if(_chatPostManager!=nil){
                 _chatPostManager.delegate = nil;
-                [_chatPostManager releaseServerManager];
                 _chatPostManager = nil;
             }
             

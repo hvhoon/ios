@@ -7,10 +7,21 @@
 //
 
 #import "BeagleUtilities.h"
-#import "JSON.h"
+#import "Reachability.h"
 #import <CoreText/CoreText.h>
 
 @implementation BeagleUtilities
+
++(BOOL)hasInternetConnection{
+    
+    NetworkStatus netStatus = [[Reachability reachabilityForInternetConnection]
+                               currentReachabilityStatus];
+    BOOL isInternetActive = YES;
+    if(netStatus == NotReachable){
+        isInternetActive = NO;
+    }
+    return isInternetActive;
+}
 + (int) getRandomIntBetweenLow:(int) low andHigh:(int) high {
 	return ((arc4random() % (high - low + 1)) + low);
 }
@@ -813,9 +824,12 @@
 }
 
 +(void)receivedData:(NSData*)returnData{
-    NSDictionary* resultsd = [[[NSString alloc] initWithData:returnData
-                                                    encoding:NSUTF8StringEncoding] JSONValue];
     
+    NSError* error;
+    NSDictionary* resultsd = [NSJSONSerialization JSONObjectWithData:returnData
+                                                         options:kNilOptions
+                                                           error:&error];
+
     NSLog(@"Badge Updated =%ld",(long)[[resultsd objectForKey:@"badge"]integerValue]);
     
     [[BeagleManager SharedInstance]setBadgeCount:[[resultsd objectForKey:@"badge"]integerValue]];

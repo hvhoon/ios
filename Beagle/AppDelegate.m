@@ -10,7 +10,7 @@
 #import <Instabug/Instabug.h>
 #import "HomeViewController.h"
 #import "DetailInterestViewController.h"
-#import "JSON.h"
+#import "AFNetworkActivityIndicatorManager.h"
 @interface AppDelegate ()<ServerManagerDelegate>{
     ServerManager *notificationServerManager;
     NSInteger attempts;
@@ -162,7 +162,7 @@ else
         
     }
  }
-
+  [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
     return YES;
 }
 
@@ -316,7 +316,6 @@ else
 
         if(_notificationServerManager!=nil){
             _notificationServerManager.delegate = nil;
-            [_notificationServerManager releaseServerManager];
             _notificationServerManager = nil;
         }
         _notificationServerManager=[[ServerManager alloc]init];
@@ -518,7 +517,6 @@ else
         if([userInfo[@"aps"][@"alert"] length]== 0){
             if(_notificationServerManager!=nil){
                 _notificationServerManager.delegate = nil;
-                [_notificationServerManager releaseServerManager];
                 _notificationServerManager = nil;
             }
             _notificationServerManager=[[ServerManager alloc]init];
@@ -551,7 +549,6 @@ else
             
             if(_notificationServerManager!=nil){
                 _notificationServerManager.delegate = nil;
-                [_notificationServerManager releaseServerManager];
                 _notificationServerManager = nil;
             }
             _notificationServerManager=[[ServerManager alloc]init];
@@ -591,7 +588,6 @@ else
         
         if(_notificationServerManager!=nil){
             _notificationServerManager.delegate = nil;
-            [_notificationServerManager releaseServerManager];
             _notificationServerManager = nil;
         }
         _notificationServerManager=[[ServerManager alloc]init];
@@ -624,7 +620,6 @@ else
         
         if(_notificationServerManager!=nil){
             _notificationServerManager.delegate = nil;
-            [_notificationServerManager releaseServerManager];
             _notificationServerManager = nil;
         }
         _notificationServerManager=[[ServerManager alloc]init];
@@ -978,12 +973,14 @@ else
 
 -(void)successfulFacebookLogin:(BeagleUserClass*)data{
     
+    
+    
     if(_loginServerManager!=nil){
         _loginServerManager.delegate = nil;
-        [_loginServerManager releaseServerManager];
         _loginServerManager = nil;
     }
     _loginServerManager=[[ServerManager alloc]init];
+    
     _loginServerManager.delegate=self;
     [_loginServerManager registerPlayerOnBeagle:data];
     
@@ -1020,7 +1017,6 @@ else
     
     if(serverRequest!=kServerCallUserRegisteration){
         _notificationServerManager.delegate = nil;
-        [_notificationServerManager releaseServerManager];
         _notificationServerManager = nil;
     }
     if(serverRequest==kServerCallInAppNotification){
@@ -1168,7 +1164,6 @@ else
     else if(serverRequest==kServerCallUserRegisteration){
         
         _loginServerManager.delegate = nil;
-        [_loginServerManager releaseServerManager];
         _loginServerManager = nil;
         
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
@@ -1216,13 +1211,11 @@ else
 {
     
     _notificationServerManager.delegate = nil;
-    [_notificationServerManager releaseServerManager];
     _notificationServerManager = nil;
     
     if(serverRequest==kServerCallUserRegisteration|| serverRequest==kServerGetSignInInfo)
     {
         _loginServerManager.delegate = nil;
-        [_loginServerManager releaseServerManager];
         _loginServerManager = nil;
         
         NSString *message = NSLocalizedString (@"Well this is embarrassing. Please try again in a bit.",
@@ -1240,14 +1233,12 @@ else
     if(serverRequest==kServerCallUserRegisteration|| serverRequest==kServerGetSignInInfo)
     {
         _loginServerManager.delegate = nil;
-        [_loginServerManager releaseServerManager];
         _loginServerManager = nil;
         [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kFacebookAuthenticationFailed object:self userInfo:nil]];
 
     }else{
         
         _notificationServerManager.delegate = nil;
-        [_notificationServerManager releaseServerManager];
         _notificationServerManager = nil;
         
     }

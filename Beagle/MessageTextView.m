@@ -24,7 +24,7 @@
                                                  name:UITextViewTextDidChangeNotification
                                                object:self];
     
-    _placeHolderTextColor = [UIColor grayColor];
+//    _placeHolderTextColor = [UIColor grayColor];
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     self.scrollIndicatorInsets = UIEdgeInsetsMake(10.0f, 0.0f, 10.0f, 8.0f);
     self.contentInset = UIEdgeInsetsZero;
@@ -61,8 +61,8 @@
 
 - (void)dealloc
 {
-    _placeHolder = nil;
-    _placeHolderTextColor = nil;
+//    _placeHolder = nil;
+//    _placeHolderTextColor = nil;
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UITextViewTextDidChangeNotification
                                                   object:self];
@@ -72,28 +72,28 @@
 
 - (void)setPlaceHolder:(NSString *)placeHolder
 {
-    if([placeHolder isEqualToString:_placeHolder]) {
-        return;
-    }
-    
-    NSUInteger maxChars = [MessageTextView maxCharactersPerLine];
-    if([placeHolder length] > maxChars) {
-        placeHolder = [placeHolder substringToIndex:maxChars - 8];
-        placeHolder = [[placeHolder trimWhitespace] stringByAppendingFormat:@"..."];
-    }
-    
-    _placeHolder = placeHolder;
-    [self setNeedsDisplay];
+//    if([placeHolder isEqualToString:_placeHolder]) {
+//        return;
+//    }
+//    
+//    NSUInteger maxChars = [MessageTextView maxCharactersPerLine];
+//    if([placeHolder length] > maxChars) {
+//        placeHolder = [placeHolder substringToIndex:maxChars - 8];
+//        placeHolder = [[placeHolder trimWhitespace] stringByAppendingFormat:@"..."];
+//    }
+//    
+//    _placeHolder = placeHolder;
+//    [self setNeedsDisplay];
 }
 
 - (void)setPlaceHolderTextColor:(UIColor *)placeHolderTextColor
 {
-    if([placeHolderTextColor isEqual:_placeHolderTextColor]) {
-        return;
-    }
-    
-    _placeHolderTextColor = placeHolderTextColor;
-    [self setNeedsDisplay];
+//    if([placeHolderTextColor isEqual:_placeHolderTextColor]) {
+//        return;
+//    }
+//    
+//    _placeHolderTextColor = placeHolderTextColor;
+//    [self setNeedsDisplay];
 }
 
 #pragma mark - Message text view
@@ -157,19 +157,19 @@
 {
     [super drawRect:rect];
     
-    if([self.text length] == 0 && self.placeHolder) {
-        CGRect placeHolderRect = CGRectMake(10.0f,
-                                            7.0f,
-                                            rect.size.width,
-                                            rect.size.height);
-        
-        [self.placeHolderTextColor set];
-        
-        [self.placeHolder drawInRect:placeHolderRect
-                            withFont:self.font
-                       lineBreakMode:NSLineBreakByTruncatingTail
-                           alignment:self.textAlignment];
-    }
+//    if([self.text length] == 0 && self.placeHolder) {
+//        CGRect placeHolderRect = CGRectMake(10.0f,
+//                                            7.0f,
+//                                            rect.size.width,
+//                                            rect.size.height);
+//        
+//        [self.placeHolderTextColor set];
+//        
+//        [self.placeHolder drawInRect:placeHolderRect
+//                            withFont:self.font
+//                       lineBreakMode:NSLineBreakByTruncatingTail
+//                           alignment:self.textAlignment];
+//    }
 }
 
 #pragma mark - Notifications

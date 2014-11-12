@@ -607,7 +607,6 @@ enum Weeks {
     
     if(self.activityServerManager!=nil){
         self.activityServerManager.delegate = nil;
-        [self.activityServerManager releaseServerManager];
         self.activityServerManager = nil;
     }
     
@@ -702,7 +701,6 @@ enum Weeks {
             {
                 if(_deleteActivityManager!=nil){
                     _deleteActivityManager.delegate = nil;
-                    [_deleteActivityManager releaseServerManager];
                     _deleteActivityManager = nil;
                 }
                 
@@ -1063,17 +1061,6 @@ enum Weeks {
     [alert show];
     
 }
--(void)dealloc{
-    
-    
-    for (ASIHTTPRequest *req in [ASIHTTPRequest.sharedQueue operations]) {
-        [req clearDelegatesAndCancel];
-        [req setDelegate:nil];
-        [req setDidFailSelector:nil];
-        [req setDidFinishSelector:nil];
-    }
-    [ASIHTTPRequest.sharedQueue cancelAllOperations];
-}
 #pragma mark - server calls
 
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
@@ -1083,7 +1070,6 @@ enum Weeks {
     if(serverRequest==kServerCallCreateActivity||serverRequest==kServerCallEditActivity){
         
         self.activityServerManager.delegate = nil;
-        [self.activityServerManager releaseServerManager];
         self.activityServerManager = nil;
         
         
@@ -1133,7 +1119,6 @@ enum Weeks {
     else if (serverRequest==kServerCallDeleteActivity){
         
         _deleteActivityManager.delegate = nil;
-        [_deleteActivityManager releaseServerManager];
         _deleteActivityManager = nil;
         
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
@@ -1182,7 +1167,6 @@ enum Weeks {
     if(serverRequest==kServerCallCreateActivity||serverRequest==kServerCallEditActivity)
     {
         self.activityServerManager.delegate = nil;
-        [self.activityServerManager releaseServerManager];
         self.activityServerManager = nil;
         if(serverRequest==kServerCallCreateActivity){
             [self.animationBlurView hide];
@@ -1192,7 +1176,6 @@ enum Weeks {
     else if (serverRequest==kServerCallDeleteActivity){
         
         _deleteActivityManager.delegate = nil;
-        [_deleteActivityManager releaseServerManager];
         _deleteActivityManager = nil;
     }
     
@@ -1207,7 +1190,6 @@ enum Weeks {
     if(serverRequest==kServerCallCreateActivity||serverRequest==kServerCallEditActivity)
     {
         self.activityServerManager.delegate = nil;
-        [self.activityServerManager releaseServerManager];
         self.activityServerManager = nil;
         if(serverRequest==kServerCallCreateActivity){
             [self.animationBlurView hide];
@@ -1216,7 +1198,6 @@ enum Weeks {
     else if (serverRequest==kServerCallDeleteActivity){
         
         _deleteActivityManager.delegate = nil;
-        [_deleteActivityManager releaseServerManager];
         _deleteActivityManager = nil;
     }
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];

@@ -6,8 +6,7 @@
 //  Copyright (c) 2014 soclivity. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-
+#import "AFHTTPSessionManager.h"
 typedef enum {
     kServerCallUserRegisteration,
     kServerCallCreateActivity,
@@ -51,12 +50,9 @@ typedef enum {
 @end
 
 
-@interface ServerManager : NSObject
+@interface ServerManager : AFHTTPSessionManager
 
 @property (nonatomic,assign) id<ServerManagerDelegate> delegate;
-
--(void)releaseServerManager;
-//*************************** API calls ***************************
 -(void)registerPlayerOnBeagle:(BeagleUserClass*)data;
 -(void)createActivityOnBeagle:(BeagleActivityClass*)data;
 -(void)getActivities;

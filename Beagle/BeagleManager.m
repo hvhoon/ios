@@ -54,7 +54,6 @@
     
     if(_signInServerManager!=nil){
         _signInServerManager.delegate = nil;
-        [_signInServerManager releaseServerManager];
         _signInServerManager = nil;
     }
     _signInServerManager=[[ServerManager alloc]init];
@@ -172,7 +171,6 @@
     if(serverRequest==kServerCallUserRegisteration){
         
         _signInServerManager.delegate = nil;
-        [_signInServerManager releaseServerManager];
         _signInServerManager = nil;
         
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
@@ -236,7 +234,6 @@
     if(serverRequest==kServerCallUserRegisteration)
     {
         _signInServerManager.delegate = nil;
-        [_signInServerManager releaseServerManager];
         _signInServerManager = nil;
     }
     
@@ -248,7 +245,6 @@
     if(serverRequest==kServerCallUserRegisteration)
     {
         _signInServerManager.delegate = nil;
-        [_signInServerManager releaseServerManager];
         _signInServerManager = nil;
     }
     

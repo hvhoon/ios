@@ -72,7 +72,6 @@
     
     if(_loginServerManager!=nil){
         _loginServerManager.delegate = nil;
-        [_loginServerManager releaseServerManager];
         _loginServerManager = nil;
     }
     _loginServerManager=[[ServerManager alloc]init];
@@ -143,7 +142,6 @@
     if(serverRequest==kServerCallUserRegisteration){
         
         _loginServerManager.delegate = nil;
-        [_loginServerManager releaseServerManager];
         _loginServerManager = nil;
 
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
@@ -184,7 +182,6 @@
     }
     else if (serverRequest==kServerGetSignInInfo){
         _loginServerManager.delegate = nil;
-        [_loginServerManager releaseServerManager];
         _loginServerManager = nil;
         
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
@@ -214,7 +211,6 @@
     if(serverRequest==kServerCallUserRegisteration|| serverRequest==kServerGetSignInInfo)
     {
         _loginServerManager.delegate = nil;
-        [_loginServerManager releaseServerManager];
         _loginServerManager = nil;
     }
 
@@ -229,7 +225,6 @@
     if(serverRequest==kServerCallUserRegisteration|| serverRequest==kServerGetSignInInfo)
     {
         _loginServerManager.delegate = nil;
-        [_loginServerManager releaseServerManager];
         _loginServerManager = nil;
     }
 
@@ -239,13 +234,6 @@
 
 -(void)dealloc{
     
-    for (ASIHTTPRequest *req in [ASIHTTPRequest.sharedQueue operations]) {
-        [req clearDelegatesAndCancel];
-        [req setDelegate:nil];
-        [req setDidFailSelector:nil];
-        [req setDidFinishSelector:nil];
-    }
-    [ASIHTTPRequest.sharedQueue cancelAllOperations];
 }
 
 

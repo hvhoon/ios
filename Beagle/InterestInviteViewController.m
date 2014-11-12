@@ -9,7 +9,6 @@
 #import "InterestInviteViewController.h"
 #import "InviteTableViewCell.h"
 #import "IconDownloader.h"
-#import "JSON.h"
 #import "CreateAnimationBlurView.h"
 #import "DetailInterestViewController.h"
 @interface InterestInviteViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,InviteTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate,UISearchBarDelegate,CreateAnimationBlurViewDelegate,InAppNotificationViewDelegate>{
@@ -108,7 +107,6 @@
     
     if(_inviteManager!=nil){
         _inviteManager.delegate = nil;
-        [_inviteManager releaseServerManager];
         _inviteManager = nil;
     }
     
@@ -232,7 +230,6 @@
     
     if(self.inviteManager!=nil){
         self.inviteManager.delegate = nil;
-        [self.inviteManager releaseServerManager];
         self.inviteManager = nil;
     }
     
@@ -246,7 +243,9 @@
         			[dictionary setObject:data.fbuid forKey:@"fbuid"];
         [jsonContentArray addObject:dictionary];
     }
-      interestDetail.requestString =[jsonContentArray JSONRepresentation];
+        NSError* error = nil;
+        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonContentArray options:NSJSONWritingPrettyPrinted error:&error];
+        interestDetail.requestString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
     }
     
     if([[BeagleManager SharedInstance]currentLocation].coordinate.latitude==0.0f && [[BeagleManager SharedInstance] currentLocation].coordinate.longitude==0.0f){
@@ -1010,7 +1009,6 @@
     if(serverRequest==kServerCallgetNearbyAndWorldWideFriends){
         
             _inviteManager.delegate = nil;
-            [_inviteManager releaseServerManager];
             _inviteManager = nil;
         
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
@@ -1131,7 +1129,6 @@
    else if(serverRequest==kServerCallCreateActivity){
         
         self.inviteManager.delegate = nil;
-        [self.inviteManager releaseServerManager];
         self.inviteManager = nil;
         
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
@@ -1191,7 +1188,6 @@
     if(serverRequest==kServerCallgetNearbyAndWorldWideFriends||serverRequest==kServerCallCreateActivity)
     {
         _inviteManager.delegate = nil;
-        [_inviteManager releaseServerManager];
         _inviteManager = nil;
         if(serverRequest==kServerCallCreateActivity){
                 [self.animationBlurView hide];
@@ -1209,7 +1205,6 @@
     if(serverRequest==kServerCallgetNearbyAndWorldWideFriends||serverRequest==kServerCallCreateActivity)
     {
         _inviteManager.delegate = nil;
-        [_inviteManager releaseServerManager];
         _inviteManager = nil;
         if(serverRequest==kServerCallCreateActivity){
             [self.animationBlurView hide];
@@ -1227,13 +1222,6 @@
     }
 
     self.imageDownloadsInProgress=nil;
-    for (ASIHTTPRequest *req in [ASIHTTPRequest.sharedQueue operations]) {
-        [req clearDelegatesAndCancel];
-        [req setDelegate:nil];
-        [req setDidFailSelector:nil];
-        [req setDidFinishSelector:nil];
-    }
-    [ASIHTTPRequest.sharedQueue cancelAllOperations];
 }
 
 - (void)filterContentForSearchText:(NSString*)searchText

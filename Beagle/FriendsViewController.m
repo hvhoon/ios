@@ -90,7 +90,6 @@
 
     if(_friendsManager!=nil){
         _friendsManager.delegate = nil;
-        [_friendsManager releaseServerManager];
         _friendsManager = nil;
     }
     
@@ -578,7 +577,6 @@
     
     if(_inviteManager!=nil){
         _inviteManager.delegate = nil;
-        [_inviteManager releaseServerManager];
         _inviteManager = nil;
     }
     
@@ -757,7 +755,6 @@
     if(serverRequest==kServerCallGetProfileMutualFriends||serverRequest==kServerCallGetDOS1Friends){
         
         _friendsManager.delegate = nil;
-        [_friendsManager releaseServerManager];
         _friendsManager = nil;
         
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
@@ -856,7 +853,6 @@
     }
     else if (serverRequest==kServerPostAPrivateMessageOnFacebook||serverRequest==kServerPostAnEmailInvite){
         _inviteManager.delegate = nil;
-        [_inviteManager releaseServerManager];
         _inviteManager = nil;
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
@@ -948,7 +944,6 @@
     if(serverRequest==kServerCallGetProfileMutualFriends||serverRequest==kServerCallGetDOS1Friends)
     {
         _friendsManager.delegate = nil;
-        [_friendsManager releaseServerManager];
         _friendsManager = nil;
         NSString *message = NSLocalizedString (@"Your friends have vanished, was it something I said? Try again in a bit.",
                                                @"NSURLConnection initialization method failed.");
@@ -957,7 +952,6 @@
     }
     else if (serverRequest==kServerPostAPrivateMessageOnFacebook||serverRequest==kServerPostAnEmailInvite){
         _inviteManager.delegate = nil;
-        [_inviteManager releaseServerManager];
         _inviteManager = nil;
         
         BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
@@ -985,12 +979,10 @@
     if(serverRequest==kServerCallGetProfileMutualFriends||serverRequest==kServerCallGetDOS1Friends)
     {
         _friendsManager.delegate = nil;
-        [_friendsManager releaseServerManager];
         _friendsManager = nil;
     }
     else if (serverRequest==kServerPostAPrivateMessageOnFacebook||serverRequest==kServerPostAnEmailInvite){
         _inviteManager.delegate = nil;
-        [_inviteManager releaseServerManager];
         _inviteManager = nil;
         BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
         player.isInvited=FALSE;
@@ -1015,13 +1007,6 @@
     }
 
     self.imageDownloadsInProgress=nil;
-    for (ASIHTTPRequest *req in [ASIHTTPRequest.sharedQueue operations]) {
-        [req clearDelegatesAndCancel];
-        [req setDelegate:nil];
-        [req setDidFailSelector:nil];
-        [req setDidFinishSelector:nil];
-    }
-    [ASIHTTPRequest.sharedQueue cancelAllOperations];
     
      [FeedbackReporting sharedInstance].delegate=nil;
 }
@@ -1044,7 +1029,6 @@
     
     if(_inviteManager!=nil){
         _inviteManager.delegate = nil;
-        [_inviteManager releaseServerManager];
         _inviteManager = nil;
     }
     

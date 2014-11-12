@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 @class BeagleNotificationClass;
 @interface BeagleUtilities : NSObject
++(BOOL)hasInternetConnection;
 + (int) getRandomIntBetweenLow:(int) low andHigh:(int) high;
 +(UIImage*) compressImage:(UIImage *)image size:(CGSize)size;
 +(UIImage*) autoCrop:(UIImage*)image;

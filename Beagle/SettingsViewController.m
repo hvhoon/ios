@@ -247,7 +247,6 @@
     
     if(_updateFBTickerManager!=nil){
         _updateFBTickerManager.delegate = nil;
-        [_updateFBTickerManager releaseServerManager];
         _updateFBTickerManager = nil;
     }
     
@@ -263,7 +262,6 @@
     if(serverRequest==kServerCallUpdateFbTicker){
         
         _updateFBTickerManager.delegate = nil;
-        [_updateFBTickerManager releaseServerManager];
         _updateFBTickerManager = nil;
         
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
@@ -298,7 +296,6 @@
     if(serverRequest==kServerCallUpdateFbTicker)
     {
             _updateFBTickerManager.delegate = nil;
-            [_updateFBTickerManager releaseServerManager];
             _updateFBTickerManager = nil;
     }
     BeagleManager *BG=[BeagleManager SharedInstance];
@@ -323,7 +320,6 @@
     if(serverRequest==kServerCallUpdateFbTicker)
     {
             _updateFBTickerManager.delegate = nil;
-            [_updateFBTickerManager releaseServerManager];
             _updateFBTickerManager = nil;
     }
     
