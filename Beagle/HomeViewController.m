@@ -31,7 +31,6 @@
 @interface HomeViewController ()<UITableViewDataSource,UITableViewDelegate,HomeTableViewCellDelegate,ServerManagerDelegate,IconDownloaderDelegate,BlankHomePageViewDelegate,EventInterestFilterBlurViewDelegate,InAppNotificationViewDelegate,CreateAnimationBlurViewDelegate>{
     UIView *topNavigationView;
     UIView*bottomNavigationView;
-    ServerManager *homeActivityManager;
     NSMutableDictionary *imageDownloadsInProgress;
     NSInteger count;
     BOOL isPushAuto;
@@ -62,17 +61,13 @@
 @property(nonatomic, weak) IBOutlet UITableView*tableView;
 @property(nonatomic, strong) UITableViewController*tableViewController;
 @property (strong,nonatomic) NSMutableArray *filteredCandyArray;
-@property(strong,nonatomic)ServerManager *homeActivityManager;
-@property(strong,nonatomic)ServerManager *interestUpdateManager;
 @property(strong,nonatomic)UIView *topSection;
 @property(nonatomic,strong)CreateAnimationBlurView *animationBlurView;
 @end
 
 @implementation HomeViewController
-@synthesize homeActivityManager=_homeActivityManager;
 @synthesize imageDownloadsInProgress;
 @synthesize filterActivitiesOnHomeScreen;
-@synthesize interestUpdateManager=_interestUpdateManager;
 @synthesize timer=_timer;
 @synthesize overlayTimer=_overlayTimer;
 @synthesize middleSectionView=_middleSectionView;
@@ -333,10 +328,10 @@
             NSLog(@"DetailInterestViewController redirect");
             UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
             DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
-            viewController.interestServerManager=[[ServerManager alloc]init];
-            viewController.interestServerManager.delegate=viewController;
+            ServerManager *client = [ServerManager sharedServerManagerClient];
+            client.delegate = viewController;
             viewController.isRedirected=TRUE;
-            [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
+            [client getDetailedInterest:notifObject.activity.activityId];
             [self.navigationController pushViewController:viewController animated:YES];
         }
         [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
@@ -696,11 +691,11 @@
         
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
-        viewController.interestServerManager=[[ServerManager alloc]init];
-        viewController.interestServerManager.delegate=viewController;
+        ServerManager *client = [ServerManager sharedServerManagerClient];
+        client.delegate = viewController;
         viewController.isRedirected=TRUE;
         viewController.toLastPost=TRUE;
-        [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
+        [client getDetailedInterest:notifObject.activity.activityId];
         [self.navigationController pushViewController:viewController animated:YES];
         [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
         
@@ -714,12 +709,13 @@
     
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
-    viewController.interestServerManager=[[ServerManager alloc]init];
-    viewController.interestServerManager.delegate=viewController;
+    ServerManager *client = [ServerManager sharedServerManagerClient];
+    client.delegate = viewController;
+
     viewController.isRedirected=TRUE;
     if(notification.notificationType==CHAT_TYPE)
         viewController.toLastPost=TRUE;
-    [viewController.interestServerManager getDetailedInterest:notification.activity.activityId];
+    [client getDetailedInterest:notification.activity.activityId];
     [self.navigationController pushViewController:viewController animated:YES];
     [BeagleUtilities updateBadgeInfoOnTheServer:notification.notificationId];
     
@@ -864,14 +860,10 @@
         }];
     }
     
-    if(_homeActivityManager!=nil){
-        _homeActivityManager.delegate = nil;
-        _homeActivityManager = nil;
-    }
-    
-    _homeActivityManager=[[ServerManager alloc]init];
-    _homeActivityManager.delegate=self;
-    [_homeActivityManager getActivities];
+    ServerManager *client = [ServerManager sharedServerManagerClient];
+    client.delegate = self;
+    [client getActivities];
+
     
 }
 
@@ -1683,9 +1675,10 @@
     
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
-    viewController.interestServerManager=[[ServerManager alloc]init];
-    viewController.interestServerManager.delegate=viewController;
-    [viewController.interestServerManager getDetailedInterest:play.activityId];
+    
+    ServerManager *client = [ServerManager sharedServerManagerClient];
+    client.delegate = viewController;
+    [client getDetailedInterest:play.activityId];
     viewController.interestActivity=play;
     [self.navigationController pushViewController:viewController animated:YES];
 }
@@ -1695,13 +1688,6 @@
     BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:index];
     interestIndex=index;
     
-    if(_interestUpdateManager!=nil){
-        _interestUpdateManager.delegate = nil;
-        _interestUpdateManager = nil;
-    }
-    
-    _interestUpdateManager=[[ServerManager alloc]init];
-    _interestUpdateManager.delegate=self;
     
     if (play.isParticipant) {
         
@@ -1719,7 +1705,10 @@
         HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:1]];
         UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)index]integerValue]];
         [button setEnabled:NO];
-        [_interestUpdateManager participateMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
+        ServerManager *client = [ServerManager sharedServerManagerClient];
+        client.delegate = self;
+
+        [client participateMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
     }
 }
 
@@ -1846,20 +1835,15 @@
         switch (alertView.tag) {
             case kLeaveInterest:
             {
-                if(_interestUpdateManager!=nil){
-                    _interestUpdateManager.delegate = nil;
-                    _interestUpdateManager = nil;
-                }
-                
-                _interestUpdateManager=[[ServerManager alloc]init];
-                _interestUpdateManager.delegate=self;
+                ServerManager *client = [ServerManager sharedServerManagerClient];
+                client.delegate = self;
                 
                 BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:interestIndex];
                 HomeTableViewCell *cell = (HomeTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:interestIndex inSection:1]];
                 UIButton *button=(UIButton*)[cell viewWithTag:[[NSString stringWithFormat:@"333%ld",(long)interestIndex]integerValue]];
                 [button setEnabled:NO];
                 
-                [_interestUpdateManager removeMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
+                [client removeMembership:play.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
             }
                 break;
                 
@@ -1898,15 +1882,9 @@
                 [self.animationBlurView crossDissolveShow];
                 [self.view addSubview:self.animationBlurView];
                 
-                if(_interestUpdateManager!=nil){
-                    _interestUpdateManager.delegate = nil;
-                    _interestUpdateManager = nil;
-                }
-                
-                _interestUpdateManager=[[ServerManager alloc]init];
-                _interestUpdateManager.delegate=self;
-                
-                [_interestUpdateManager updateSuggestedPostMembership:play.activityId];
+                ServerManager *client = [ServerManager sharedServerManagerClient];
+                client.delegate = self;
+                [client updateSuggestedPostMembership:play.activityId];
                 
             }
                 break;
@@ -1924,9 +1902,6 @@
     if(serverRequest==kServerCallGetActivities){
         
         self.filterActivitiesOnHomeScreen=[[NSMutableDictionary alloc]init];
-        
-        _homeActivityManager.delegate = nil;
-        _homeActivityManager = nil;
         
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
@@ -2055,8 +2030,6 @@
         [self showPhotoCreditNameWithAnimation];
     }
     else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
-        _interestUpdateManager.delegate = nil;
-        _interestUpdateManager = nil;
         
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:interestIndex];
@@ -2200,16 +2173,15 @@
         
     }
     else if (serverRequest==kServerCallSuggestedPostMembership){
-        _interestUpdateManager.delegate = nil;
-        _interestUpdateManager = nil;
         
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
             id status=[response objectForKey:@"status"];
             if (status != nil && [status class] != [NSNull class] && [status integerValue]==200){
                 BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:interestIndex];
-                _interestUpdateManager=[[ServerManager alloc]init];
-                _interestUpdateManager.delegate=self;
+                ServerManager *client = [ServerManager sharedServerManagerClient];
+                client.delegate = self;
+
                 NSArray *commaSeperated=[play.locationName componentsSeparatedByString:@","];
                 if([commaSeperated count]==2){
                     play.city=[commaSeperated objectAtIndex:0];
@@ -2222,15 +2194,13 @@
                 }
                 play.visibility=@"private";
                 play.activityType=1;
-                [_interestUpdateManager createActivityOnBeagle:play];
+                [client createActivityOnBeagle:play];
                 
             }
         }
         
         
     }else if (serverRequest==kServerCallCreateActivity){
-        _interestUpdateManager.delegate = nil;
-        _interestUpdateManager = nil;
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
             id status=[response objectForKey:@"status"];
@@ -2293,22 +2263,16 @@
     if(serverRequest==kServerCallGetActivities)
     {
         
-        _homeActivityManager.delegate = nil;
-        _homeActivityManager = nil;
         [self filterByCategoryType:categoryFilterType];
     }
-    else if(serverRequest==kServerCallLeaveInterest ||serverRequest==kServerCallParticipateInterest||serverRequest==kServerCallSuggestedPostMembership||serverRequest==kServerCallCreateActivity){
-        _interestUpdateManager.delegate = nil;
-        _interestUpdateManager = nil;
-        
-        if(serverRequest==kServerCallCreateActivity||serverRequest==kServerCallSuggestedPostMembership){
+    else if(serverRequest==kServerCallCreateActivity||serverRequest==kServerCallSuggestedPostMembership){
             [self.animationBlurView hide];
             [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
             [[UIApplication sharedApplication] setStatusBarHidden:YES];
             
         }
         
-    }
+    
     
     NSString *message = NSLocalizedString (@"That didn't quite go as planned, try again?",
                                            @"NSURLConnection initialization method failed.");
@@ -2338,21 +2302,15 @@
     if(serverRequest==kServerCallGetActivities)
     {
         
-        _homeActivityManager.delegate = nil;
-        _homeActivityManager = nil;
         [self filterByCategoryType:categoryFilterType];
     }
-    else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest||serverRequest==kServerCallSuggestedPostMembership||serverRequest==kServerCallCreateActivity){
-        _interestUpdateManager.delegate = nil;
-        _interestUpdateManager = nil;
-        if(serverRequest==kServerCallCreateActivity||serverRequest==kServerCallSuggestedPostMembership){
+    else if(serverRequest==kServerCallCreateActivity||serverRequest==kServerCallSuggestedPostMembership){
             [self.animationBlurView hide];
             [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
             [[UIApplication sharedApplication] setStatusBarHidden:YES];
             
         }
         
-    }
     
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];

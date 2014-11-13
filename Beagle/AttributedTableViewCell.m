@@ -38,7 +38,7 @@ static inline NSRegularExpression * NameRegularExpression() {
         self.lbltime=[[UILabel alloc] init];
         self.lbltime.textColor=[BeagleUtilities returnBeagleColor:6];
         self.lbltime.font =[UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f];
-        self.lbltime.lineBreakMode = UILineBreakModeWordWrap;
+        self.lbltime.lineBreakMode = NSLineBreakByWordWrapping;
         self.lbltime.numberOfLines = 0;
         self.lbltime.highlightedTextColor = [BeagleUtilities returnBeagleColor:6];
         self.lbltime.tag = 568;
@@ -142,8 +142,7 @@ static inline NSRegularExpression * NameRegularExpression() {
         UIImageView *actionImageView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"New-Notification"]];
         actionImageView.frame=CGRectMake(self.lbltime.frame.size.width+58+5, 12+self.summaryLabel.frame.size.height+6, 9, 9);
         [self.contentView addSubview:actionImageView];
-
-    }
+      }
 }
 
 @end

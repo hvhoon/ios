@@ -201,6 +201,7 @@ static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReach
 
 - (void)dealloc
 {
+    [super dealloc];
 	[self stopNotifier];
 	if (_reachabilityRef != NULL)
 	{

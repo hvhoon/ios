@@ -129,11 +129,11 @@ static UIFont *dateTextFont = nil;
     
     
     // Drawing the activity description
-
+    style.lineBreakMode=NSLineBreakByWordWrapping;
     attrs = [NSDictionary dictionaryWithObjectsAndKeys:
              [UIFont fontWithName:@"HelveticaNeue" size:17.0f], NSFontAttributeName,
              [UIColor blackColor],NSForegroundColorAttributeName,
-             style, NSParagraphStyleAttributeName,NSLineBreakByWordWrapping, nil];
+             style, NSParagraphStyleAttributeName, nil];
     
     
     CGSize maximumLabelSize = CGSizeMake([UIScreen mainScreen].bounds.size.width-32,999);
@@ -148,24 +148,29 @@ static UIFont *dateTextFont = nil;
         NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString :self.bg_activity.activityDesc attributes : attrs];
 
         CGFloat height=[BeagleUtilities heightForAttributedStringWithEmojis:attributedString forWidth:[UIScreen mainScreen].bounds.size.width-32];
-
-        
+        BeagleLabel*textLabel=(BeagleLabel*)[self viewWithTag:[[NSString stringWithFormat:@"223%ld",(long)cellIndex]integerValue]];
+        if(textLabel==nil){
         BeagleLabel *beagleLabel = [[BeagleLabel alloc] initWithFrame:CGRectMake(16, fromTheTop, commentTextRect.size.width,height+kHeightClip) type:1];
         [beagleLabel setText:self.bg_activity.activityDesc];
         [beagleLabel setAttributes:attrs];
         beagleLabel.textAlignment = NSTextAlignmentLeft;
         beagleLabel.numberOfLines = 0;
+        beagleLabel.tag=[[NSString stringWithFormat:@"223%ld",(long)cellIndex]integerValue];
         beagleLabel.lineBreakMode = NSLineBreakByWordWrapping;
-
         [self addSubview:beagleLabel];
-        
         [beagleLabel setDetectionBlock:^(BeagleHotWord hotWord, NSString *string, NSString *protocol, NSRange range) {
-            if (self.delegate && [self.delegate respondsToSelector:@selector(redirectToWebPage:)]&& hotWord==BeagleLink)
-                [self.delegate redirectToWebPage:string];
-
-            
-            
-        }];
+                if (self.delegate && [self.delegate respondsToSelector:@selector(redirectToWebPage:)]&& hotWord==BeagleLink)
+                    [self.delegate redirectToWebPage:string];
+                
+                
+                
+            }];
+        }else{
+            [textLabel setText:self.bg_activity.activityDesc];
+            [self addSubview:textLabel];
+        }
+        
+        
 
 
         fromTheTop = fromTheTop+height+kHeightClip;
@@ -409,9 +414,6 @@ static UIFont *dateTextFont = nil;
     CGRect stripRect = {0, fromTheTop, [UIScreen mainScreen].bounds.size.width, 1};
     CGContextSetRGBFillColor(context, 230.0/255.0, 230.0/255.0, 230.0/255.0, 1.0);
     CGContextFillRect(context, stripRect);
-    
-    fromTheTop += 1;
-
 }
 -(void)interestedBtnPressed:(id)sender{
     UIButton *btn=(UIButton*)sender;

@@ -20,19 +20,29 @@
 @implementation ServerManager
 @synthesize _internetReachability;
 
--(id)init
-{
-    self = [super initWithBaseURL:[NSURL URLWithString:herokuHost]];
++ (ServerManager *)sharedServerManagerClient{
+    static ServerManager *_sharedServerManagerHTTPClient = nil;
+    
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _sharedServerManagerHTTPClient = [[self alloc] initWithBaseURL:[NSURL URLWithString:herokuHost]];
+    });
+    
+    return _sharedServerManagerHTTPClient;
+}
+- (instancetype)initWithBaseURL:(NSURL *)url{
+    self = [super initWithBaseURL:url];
     
     if (self) {
-        
         self.responseSerializer = [AFJSONResponseSerializer serializer];
         self.requestSerializer = [AFJSONRequestSerializer serializer];
         _internetReachability = [Reachability reachabilityForInternetConnection];
-    }
-    return self;
-}
 
+    }
+    
+    return self;
+    
+}
 
 -(void)registerPlayerOnBeagle:(BeagleUserClass*)data{
     _serverCallType=kServerCallUserRegisteration;

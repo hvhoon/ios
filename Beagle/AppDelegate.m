@@ -13,19 +13,14 @@
 #import "AFNetworkActivityIndicatorManager.h"
 #import "AFHTTPRequestOperation.h"
 @interface AppDelegate ()<ServerManagerDelegate>{
-    ServerManager *notificationServerManager;
     NSInteger attempts;
 }
-@property(nonatomic,strong)ServerManager *loginServerManager;
-@property(nonatomic,strong)ServerManager *notificationServerManager;
 @end
 
 @implementation AppDelegate
 @synthesize listViewController;
 @synthesize currentLocation;
 @synthesize _locationManager = locationManager;
-@synthesize loginServerManager=_loginServerManager;
-@synthesize notificationServerManager=_notificationServerManager;
 void uncaughtExceptionHandler(NSException *exception) {
     NSLog(@"CRASH: %@", exception);
     NSLog(@"Stack Trace: %@", [exception callStackSymbols]);
@@ -68,10 +63,8 @@ void uncaughtExceptionHandler(NSException *exception) {
     if([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0f){
     
     if ([application respondsToSelector:@selector(registerUserNotificationSettings:)]) {
-        // use registerUserNotificationSettings
-        [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
-        [[UIApplication sharedApplication] registerForRemoteNotifications];
-    }
+        [self setupInteractiveNotifications];
+      }
     }
 else
 {
@@ -147,12 +140,12 @@ else
             [[BeagleManager SharedInstance]getUserObjectInAutoSignInMode];
             
             DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
-            viewController.interestServerManager=[[ServerManager alloc]init];
-            viewController.interestServerManager.delegate=viewController;
+            ServerManager *client = [ServerManager sharedServerManagerClient];
+            client.delegate = viewController;
             viewController.isRedirected=TRUE;
             if([[[[launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey] valueForKey:@"p"] valueForKey:@"nty"]integerValue]==CHAT_TYPE)
                 viewController.toLastPost=TRUE;
-            [viewController.interestServerManager getDetailedInterest:[[[[launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey] valueForKey:@"p"] valueForKey:@"aid"]integerValue]];
+            [client getDetailedInterest:[[[[launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey] valueForKey:@"p"] valueForKey:@"aid"]integerValue]];
             initViewController.navigationItem.backBarButtonItem.title=@"";
             initViewController.navigationBar.topItem.title=@"";
 
@@ -168,6 +161,69 @@ else
 }
 
 
+- (void)setupInteractiveNotifications {
+    
+    //CREATE THE ACTION
+    
+    //instantiate the action
+    UIMutableUserNotificationAction *interestedAction = [UIMutableUserNotificationAction new];
+    
+    // set an identifier for the action, this is used to differentiate actions from eachother when the notifiaction action handler method is called
+    interestedAction.identifier = @"INTERESTED_IDENTIFIER";
+    
+    // Set the Title.. here we find the unicode value of the "thumbs up" emoji that the will appear inside the button corresponding to this action inside the push notification
+    interestedAction.title = @"I'm Interested";
+    
+    // If this is set to destructive, the background color of the button corresponding to this action will be red, otherwise it will be blue
+    interestedAction.destructive = NO;
+    
+    // UIUserActivationMode is used to tell the system whether it should bring your app into the foregroudn, or leave it in the background, in this case, the app can complete the request to update our backed in the background, so we don't have to open the app
+    interestedAction.activationMode = UIUserNotificationActivationModeBackground;
+    
+    interestedAction.authenticationRequired = NO;
+    
+    
+    UIMutableUserNotificationAction *notInterestedAction = [UIMutableUserNotificationAction new];
+    
+    // set an identifier for the action, this is used to differentiate actions from eachother when the notifiaction action handler method is called
+    notInterestedAction.identifier = @"NOTINTERESTED_IDENTIFIER";
+    
+    // Set the Title.. here we find the unicode value of the "thumbs up" emoji that the will appear inside the button corresponding to this action inside the push notification
+    notInterestedAction.title = @"Not Interested";
+    
+    // If this is set to destructive, the background color of the button corresponding to this action will be red, otherwise it will be blue
+    notInterestedAction.destructive = YES;
+    
+    // UIUserActivationMode is used to tell the system whether it should bring your app into the foregroudn, or leave it in the background, in this case, the app can complete the request to update our backed in the background, so we don't have to open the app
+    notInterestedAction.activationMode = UIUserNotificationActivationModeBackground;
+    
+    notInterestedAction.authenticationRequired = NO;
+    
+    
+    // CREATE THE CATEGORY
+    
+    // instantiate the category
+    UIMutableUserNotificationCategory *inviteActivityCategory = [UIMutableUserNotificationCategory new];
+    
+    // set its identifier. The APS dictionary you send for your push notifications must have a key named 'category' whose object is set to a string that matches this identifier in order for you actions to appear.
+    inviteActivityCategory.identifier = @"NEW_ACTIVITY_CATEGORY";
+    
+    // set the actions that are associated with this type of push notification category
+    // you can use the UIUserNotificationActionContext to determine which actions will show up in different
+    // push notification presentation contexts, for example, on the lock screen, as a banner notification, or as an alert view notification
+    [inviteActivityCategory setActions:@[interestedAction,notInterestedAction]
+                  forContext:UIUserNotificationActionContextDefault];
+    
+    
+    // REGISTER THE CATEGORY
+    NSSet *categorySet = [NSSet setWithObjects:inviteActivityCategory, nil];
+    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge)
+                                                                             categories:categorySet];
+    
+    [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+    [[UIApplication sharedApplication] registerForRemoteNotifications];    
+    
+}
 -(void)getupdatedInviteHTMLFromTheServer{
     NSURL *url=[NSURL URLWithString:[NSString stringWithFormat:@"%@",@"https://s3.amazonaws.com/invitemailers/Invite.html"]];
     
@@ -315,13 +371,6 @@ else
     NSDictionary *remoteNotificationPayload = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
     if (remoteNotificationPayload) {
 
-        if(_notificationServerManager!=nil){
-            _notificationServerManager.delegate = nil;
-            _notificationServerManager = nil;
-        }
-        _notificationServerManager=[[ServerManager alloc]init];
-        _notificationServerManager.delegate=self;
-
         [self handleOfflineNotifications:remoteNotificationPayload];
         
         }
@@ -351,9 +400,13 @@ else
     
         
         // app was already in the foreground
-        
+    
+    ServerManager *client = [ServerManager sharedServerManagerClient];
+     client.delegate = self;
+
+    
         if([[[userInfo valueForKey:@"p"] valueForKey:@"nty"]integerValue]==CHAT_TYPE){
-            [_notificationServerManager requestInAppNotificationForPosts:[[[userInfo valueForKey:@"p"] valueForKey:@"cid"]integerValue] notifType:1];
+            [client requestInAppNotificationForPosts:[[[userInfo valueForKey:@"p"] valueForKey:@"cid"]integerValue] notifType:1];
             
             
             [[BeagleManager SharedInstance]setBadgeCount:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
@@ -379,17 +432,25 @@ else
             [activity setObject:[NSNumber numberWithInteger:[[[userInfo valueForKey:@"p"] valueForKey:@"aid"]integerValue]] forKey:@"id"];
             [cancelDictionary setObject:activity forKey:@"activity"];
             
-            NSOperationQueue *queue = [NSOperationQueue new];
-            NSInvocationOperation *operation = [[NSInvocationOperation alloc]
-                                                initWithTarget:self
-                                                selector:@selector(loadProfileImageData:)
-                                                object:cancelDictionary];
-            [queue addOperation:operation];
             
+            NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[cancelDictionary objectForKey:@"photo_url"]]];
             
-        }
+            AFHTTPRequestOperation *requestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+            requestOperation.responseSerializer = [AFImageResponseSerializer serializer];
+            [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+                NSMutableDictionary *notificationMutable=[cancelDictionary mutableCopy];
+                [notificationMutable setObject:(UIImage*)responseObject forKey:@"profileImage"];
+                [notificationMutable setObject:[NSNumber numberWithInteger:1] forKey:@"notifType"];
+                [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kBeagleBadgeCount object:self userInfo:nil]];
+                [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:self userInfo:notificationMutable]];
+                
+            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                NSLog(@"Image error: %@", error);
+            }];
+            [requestOperation start];
+         }
         else{
-            [_notificationServerManager requestInAppNotification:[[[userInfo valueForKey:@"p"] valueForKey:@"nid"]integerValue] notifType:1];
+            [client requestInAppNotification:[[[userInfo valueForKey:@"p"] valueForKey:@"nid"]integerValue] notifType:1];
             
         }
     
@@ -397,7 +458,6 @@ else
 -(void)handleOfflineNotifications:(NSDictionary*)userInfo{
 #if 1
     // app was just brought from background to foreground
-    NSLog(@"userInfo=%@",userInfo);
         if([[[userInfo valueForKey:@"p"] valueForKey:@"nty"]integerValue]==CHAT_TYPE){
             
 
@@ -458,72 +518,16 @@ else
 }
 
 -(void)handleSilentNotifications:(NSDictionary*)userInfo{
-        NSLog(@"userInfo=%@",userInfo);
+    ServerManager *client = [ServerManager sharedServerManagerClient];
+    client.delegate = self;
+    [client requestInAppNotification:[[[userInfo valueForKey:@"p"] valueForKey:@"nid"]integerValue] notifType:3];
         
-    [_notificationServerManager requestInAppNotification:[[[userInfo valueForKey:@"p"] valueForKey:@"nid"]integerValue] notifType:3];
-        
         
 }
-
-- (void)loadProfileImageDataForSilentPost:(NSMutableDictionary*)notificationDictionary {
-    NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[notificationDictionary objectForKey:@"photo_url"]]];
-    UIImage* image =[[UIImage alloc] initWithData:imageData];
-    [notificationDictionary setObject:image forKey:@"profileImage"];
-    [notificationDictionary setObject:[NSNumber numberWithInteger:3] forKey:@"notifType"];
-    [self performSelectorOnMainThread:@selector(sendSilentNotification:) withObject:notificationDictionary waitUntilDone:NO];
-}
-
-- (void)loadProfileImageData:(NSMutableDictionary*)notificationDictionary {
-    NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[notificationDictionary objectForKey:@"photo_url"]]];
-    UIImage* image =[[UIImage alloc] initWithData:imageData];
-    [notificationDictionary setObject:image forKey:@"profileImage"];
-    [notificationDictionary setObject:[NSNumber numberWithInteger:1] forKey:@"notifType"];
-    [self performSelectorOnMainThread:@selector(sendAppNotification:) withObject:notificationDictionary waitUntilDone:NO];
-}
--(void)sendAppNotification:(NSMutableDictionary*)appNotifDictionary{
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kBeagleBadgeCount object:self userInfo:nil]];
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:self userInfo:appNotifDictionary]];
-    
-
-}
-- (void)loadProfileImageDataForAPost:(NSMutableDictionary*)notificationDictionary {
-    NSData* imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[notificationDictionary objectForKey:@"player_photo_url"]]];
-    UIImage* image =[[UIImage alloc] initWithData:imageData];
-    [notificationDictionary setObject:image forKey:@"profileImage"];
-    [notificationDictionary setObject:[NSNumber numberWithInteger:1] forKey:@"notifType"];
-    [self performSelectorOnMainThread:@selector(sendAppNotificationForPost:) withObject:notificationDictionary waitUntilDone:NO];
-}
--(void)sendAppNotificationForPost:(NSMutableDictionary*)appNotifDictionary{
-    [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
-  [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kNotificationForInterestPost object:self userInfo:appNotifDictionary]];
-    
-    
-}
--(void)sendSilentNotification:(NSMutableDictionary*)appNotifDictionary{
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:self userInfo:appNotifDictionary]];
-}
-
-
 -(void) application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     
     
-    // Pass on
-//    [self application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:nil];
-    
-    {
-        
-        
-        
-        NSLog(@"didReceiveRemoteNotification");
         if([userInfo[@"aps"][@"alert"] length]== 0){
-            if(_notificationServerManager!=nil){
-                _notificationServerManager.delegate = nil;
-                _notificationServerManager = nil;
-            }
-            _notificationServerManager=[[ServerManager alloc]init];
-            _notificationServerManager.delegate=self;
-            
-            
             [self handleSilentNotifications:userInfo];
             
             // Check if in background
@@ -534,27 +538,8 @@ else
                 
             } else if(application.applicationState == UIApplicationStateActive){
                 NSLog(@"UIApplicationStateActive");
-                
-                
-            }else{
-                // User hasn't opened it, this was a silent update
-                NSLog(@"User hasn't opened it, this was a silent update");
-                
-                
-            }
-            
-            //         [self presentNotification];
-            
-            
-        }else{
-            
-            if(_notificationServerManager!=nil){
-                _notificationServerManager.delegate = nil;
-                _notificationServerManager = nil;
-            }
-            _notificationServerManager=[[ServerManager alloc]init];
-            _notificationServerManager.delegate=self;
-            
+             }
+          }else{
             
             if ( application.applicationState == UIApplicationStateActive){
                 [self handleOnlineNotifications:userInfo];
@@ -563,21 +548,13 @@ else
                 [self handleOfflineNotifications:userInfo];
             }
         }
-        
-    }
-    
-}
-#if 0
+ }
+
 -(void) application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     
-    
-    
-    NSLog(@"didReceiveRemoteNotification");
-    if([userInfo[@"aps"][@"alert"] length]== 0){
+      [self application:application didReceiveRemoteNotification:userInfo];
 #if 0
-        
-        
-        if (self.downloadTask) {
+       if (self.downloadTask) {
             return;
         }
         
@@ -586,72 +563,65 @@ else
         self.downloadTask = [[self backgroundURLSession] downloadTaskWithRequest:request];
         [self.downloadTask resume];
 #endif
-        
-        if(_notificationServerManager!=nil){
-            _notificationServerManager.delegate = nil;
-            _notificationServerManager = nil;
-        }
-        _notificationServerManager=[[ServerManager alloc]init];
-        _notificationServerManager.delegate=self;
-        
-        
-        [self handleSilentNotifications:userInfo];
-        
-        // Check if in background
-        if ([UIApplication sharedApplication].applicationState == UIApplicationStateInactive) {
-            NSLog(@"UIApplicationStateInactive");
-            
-            // User opened the push notification
-            
-        } else if(application.applicationState == UIApplicationStateActive){
-            NSLog(@"UIApplicationStateActive");
-            
-            
-        }else{
-            // User hasn't opened it, this was a silent update
-            NSLog(@"User hasn't opened it, this was a silent update");
-            
-            
-        }
-        
-        //         [self presentNotification];
-        
-        
-    }else{
-        
-        if(_notificationServerManager!=nil){
-            _notificationServerManager.delegate = nil;
-            _notificationServerManager = nil;
-        }
-        _notificationServerManager=[[ServerManager alloc]init];
-        _notificationServerManager.delegate=self;
-        
-        
-        if ( application.applicationState == UIApplicationStateActive){
-            [self handleOnlineNotifications:userInfo];
-        }
-        else if( application.applicationState != UIApplicationStateBackground){
-              [self handleOfflineNotifications:userInfo];
-        }
-    }
     completionHandler(UIBackgroundFetchResultNewData);
-
 }
-#endif
 
--(void)presentNotification{
-    UILocalNotification* localNotification = [[UILocalNotification alloc] init];
-    localNotification.alertBody = @"Download Complete!";
-    localNotification.alertAction = @"Background Transfer Download!";
-    
-    //On sound
-    localNotification.soundName = UILocalNotificationDefaultSoundName;
-    
-    //increase the badge number of application plus 1
-    localNotification.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1;
-    
-    [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
-}
+    // In your app delegate, override this method
+- (void)application:(UIApplication *)application handleActionWithIdentifier:(NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo completionHandler:(void (^)())completionHandler{
+        
+        if ([identifier isEqualToString:@"INTERESTED_IDENTIFIER"]){
+            NSString *googleUrl =
+            @"http://www.google.com";
+            
+            NSURLSession *session = [NSURLSession sharedSession];
+            [[session dataTaskWithURL:[NSURL URLWithString:googleUrl]
+                    completionHandler:^(NSData *data,
+                                        NSURLResponse *response,
+                                        NSError *error) {
+                        // handle response
+                        
+                        
+//                        { "aps": { "alert": "You invited!", "category": "NEW_ACTIVITY_CATEGORY" } }
+                    }] resume];
+
+        }
+       else if ([identifier isEqualToString:@"NOTINTERESTED_IDENTIFIER"]){
+        
+           NSString *googleUrl =
+           @"http://www.google.com";
+           NSURLSessionConfiguration *sessionConfig =
+           [NSURLSessionConfiguration defaultSessionConfiguration];
+           sessionConfig.allowsCellularAccess = YES;
+           
+           // 2
+           [sessionConfig setHTTPAdditionalHeaders:
+            @{@"Accept": @"application/json"}];
+           
+           // 3
+           sessionConfig.timeoutIntervalForRequest = 30.0;
+           sessionConfig.timeoutIntervalForResource = 60.0;
+           sessionConfig.HTTPMaximumConnectionsPerHost = 1;
+           
+           NSURLSession *session =
+           [NSURLSession sessionWithConfiguration:sessionConfig
+                                         delegate:self
+                                    delegateQueue:nil];
+           
+           NSURLSessionDownloadTask *getImageTask =
+           [session downloadTaskWithURL:[NSURL URLWithString:googleUrl]
+            
+                      completionHandler:^(NSURL *location,
+                                          NSURLResponse *response,
+                                          NSError *error) {
+                          dispatch_async(dispatch_get_main_queue(), ^{
+                              // do stuff with data
+                          });
+                      }];
+           
+           [getImageTask resume];
+        }
+      completionHandler();
+    }
 
 #pragma mark - application Delegate calls
 
@@ -811,8 +781,6 @@ else
 
 -(void)requestUserForAdditionalPermissions{
     
-    
-
     // These are the permissions we need:
         NSArray *permissionsNeeded = @[@"xmpp_login"];
         
@@ -885,8 +853,7 @@ else
 
 }
 
-- (void) makeRequestForUserData:(NSString*)accessToken
-{
+- (void) makeRequestForUserData:(NSString*)accessToken{
 
     
     [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id list, NSError *error) {
@@ -974,16 +941,10 @@ else
 
 -(void)successfulFacebookLogin:(BeagleUserClass*)data{
     
-    
-    
-    if(_loginServerManager!=nil){
-        _loginServerManager.delegate = nil;
-        _loginServerManager = nil;
-    }
-    _loginServerManager=[[ServerManager alloc]init];
-    
-    _loginServerManager.delegate=self;
-    [_loginServerManager registerPlayerOnBeagle:data];
+    ServerManager *client = [ServerManager sharedServerManagerClient];
+    client.delegate = self;
+    [client registerPlayerOnBeagle:data];
+
     
 }
 
@@ -1016,10 +977,6 @@ else
 
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
     
-    if(serverRequest!=kServerCallUserRegisteration){
-        _notificationServerManager.delegate = nil;
-        _notificationServerManager = nil;
-    }
     if(serverRequest==kServerCallInAppNotification){
         
         
@@ -1051,15 +1008,6 @@ else
                     }];
                     [requestOperation start];
                     
-//                    NSOperationQueue *queue = [NSOperationQueue new];
-//                    NSInvocationOperation *operation = [[NSInvocationOperation alloc]
-//                                                        initWithTarget:self
-//                                                        selector:@selector(loadProfileImageData:)
-//                                                        object:inappnotification];
-//                    [queue addOperation:operation];
-//                    
-                    
-                    
                 }
                 
             }
@@ -1076,18 +1024,22 @@ else
                 
                 NSMutableDictionary *interestPost=[response objectForKey:@"interestPost"];
                 if (interestPost != nil && [interestPost class] != [NSNull class]) {
+
+                NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[interestPost objectForKey:@"player_photo_url"]]];
+                
+                AFHTTPRequestOperation *requestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+                requestOperation.responseSerializer = [AFImageResponseSerializer serializer];
+                [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+                    NSMutableDictionary *notificationMutable=[interestPost mutableCopy];
+                    [notificationMutable setObject:(UIImage*)responseObject forKey:@"profileImage"];
+                    [notificationMutable setObject:[NSNumber numberWithInteger:1] forKey:@"notifType"];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kBeagleBadgeCount object:self userInfo:nil];
+                    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kNotificationForInterestPost object:self userInfo:notificationMutable]];
                     
-                    
-                    NSOperationQueue *queue = [NSOperationQueue new];
-                    NSInvocationOperation *operation = [[NSInvocationOperation alloc]
-                                                        initWithTarget:self
-                                                        selector:@selector(loadProfileImageDataForAPost:)
-                                                        object:interestPost];
-                    [queue addOperation:operation];
-                    
-                    
-                    
-                    
+                } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                    NSLog(@"Image error: %@", error);
+                }];
+                [requestOperation start];
                 }
             }
         }
@@ -1160,13 +1112,21 @@ else
                 NSMutableDictionary *inappnotification=[response objectForKey:@"inappnotification"];
                 if (inappnotification != nil && [inappnotification class] != [NSNull class]) {
                     
-                    NSOperationQueue *queue = [NSOperationQueue new];
-                    NSInvocationOperation *operation = [[NSInvocationOperation alloc]
-                                                        initWithTarget:self
-                                                        selector:@selector(loadProfileImageDataForSilentPost:)
-                                                        object:inappnotification];
-                    [queue addOperation:operation];
+                    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[inappnotification objectForKey:@"photo_url"]]];
                     
+                    AFHTTPRequestOperation *requestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+                    requestOperation.responseSerializer = [AFImageResponseSerializer serializer];
+                    [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+                        NSMutableDictionary *notificationMutable=[inappnotification mutableCopy];
+                        [notificationMutable setObject:(UIImage*)responseObject forKey:@"profileImage"];
+                        [notificationMutable setObject:[NSNumber numberWithInteger:3] forKey:@"notifType"];
+                        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kRemoteNotificationReceivedNotification object:self userInfo:notificationMutable]];
+                        
+                    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                        NSLog(@"Image error: %@", error);
+                    }];
+                    [requestOperation start];
+
                     
                 }
                 
@@ -1177,8 +1137,6 @@ else
     
     else if(serverRequest==kServerCallUserRegisteration){
         
-        _loginServerManager.delegate = nil;
-        _loginServerManager = nil;
         
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
@@ -1224,13 +1182,9 @@ else
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {
     
-    _notificationServerManager.delegate = nil;
-    _notificationServerManager = nil;
     
     if(serverRequest==kServerCallUserRegisteration|| serverRequest==kServerGetSignInInfo)
     {
-        _loginServerManager.delegate = nil;
-        _loginServerManager = nil;
         
         NSString *message = NSLocalizedString (@"Well this is embarrassing. Please try again in a bit.",
                                                @"NSURLConnection initialization method failed.");
@@ -1246,15 +1200,8 @@ else
     
     if(serverRequest==kServerCallUserRegisteration|| serverRequest==kServerGetSignInInfo)
     {
-        _loginServerManager.delegate = nil;
-        _loginServerManager = nil;
         [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kFacebookAuthenticationFailed object:self userInfo:nil]];
 
-    }else{
-        
-        _notificationServerManager.delegate = nil;
-        _notificationServerManager = nil;
-        
     }
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK",nil];

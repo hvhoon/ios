@@ -10,15 +10,12 @@
 #import "BeagleManager.h"
 #import "FacebookLoginSession.h"
 @interface BeagleManager ()<ServerManagerDelegate,FacebookLoginSessionDelegate>{
-    ServerManager *signInServerManager;
     NSMutableData *_data;
 }
-@property(nonatomic,strong)ServerManager *signInServerManager;
 @end
 
 @implementation BeagleManager
 @synthesize beaglePlayer,currentLocation,placemark,weatherCondition,timeOfDay,photoId,activityDeleted,badgeCount,lightDominantColor,mediumDominantColor,darkDominantColor;
-@synthesize signInServerManager=_signInServerManager;
 + (id) SharedInstance {
 	static id sharedManager = nil;
 	
@@ -51,14 +48,9 @@
 #pragma mark Delegate method From FacebookSession
 
 -(void)successfulFacebookLogin:(BeagleUserClass*)data{
-    
-    if(_signInServerManager!=nil){
-        _signInServerManager.delegate = nil;
-        _signInServerManager = nil;
-    }
-    _signInServerManager=[[ServerManager alloc]init];
-    _signInServerManager.delegate=self;
-    [_signInServerManager registerPlayerOnBeagle:data];
+    ServerManager *client = [ServerManager sharedServerManagerClient];
+    client.delegate = self;
+    [client registerPlayerOnBeagle:data];
     
 }
 -(void)facebookAccountNotSetup{
@@ -170,9 +162,6 @@
     
     if(serverRequest==kServerCallUserRegisteration){
         
-        _signInServerManager.delegate = nil;
-        _signInServerManager = nil;
-        
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
             id status=[response objectForKey:@"status"];
@@ -231,22 +220,18 @@
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {
     
-    if(serverRequest==kServerCallUserRegisteration)
-    {
-        _signInServerManager.delegate = nil;
-        _signInServerManager = nil;
-    }
+    NSString *message = NSLocalizedString (@"Well this is embarrassing. Please try again in a bit.",
+                                           @"NSURLConnection initialization method failed.");
+    BeagleAlertWithMessage(message);
+
     
 }
 
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
 {
-    
-    if(serverRequest==kServerCallUserRegisteration)
-    {
-        _signInServerManager.delegate = nil;
-        _signInServerManager = nil;
-    }
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
+    [alert show];
+
     
 }
 @end

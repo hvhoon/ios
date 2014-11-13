@@ -10,7 +10,7 @@
 #import <CoreLocation/CoreLocation.h>
 #import <FacebookSDK/FacebookSDK.h>
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate,CLLocationManagerDelegate>{
+@interface AppDelegate : UIResponder <UIApplicationDelegate,CLLocationManagerDelegate,NSURLSessionDelegate>{
 }
 @property (nonatomic, strong) CLLocation *currentLocation;
 @property (nonatomic, strong) CLLocationManager *_locationManager;

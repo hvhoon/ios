@@ -18,8 +18,6 @@
 @interface FriendsViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,FriendsTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate,UIActionSheetDelegate,FeedbackReportingDelegate>{
     NSIndexPath* inviteIndexPath;
 }
-@property(nonatomic,strong)ServerManager*friendsManager;
-@property(nonatomic,strong)ServerManager*inviteManager;
 @property(nonatomic,strong)NSArray *beagleFriendsArray;
 @property(nonatomic,strong)NSArray *facebookFriendsArray;
 @property(nonatomic,strong)IBOutlet UITableView*friendsTableView;
@@ -31,10 +29,8 @@
 @end
 
 @implementation FriendsViewController
-@synthesize friendsManager=_friendsManager;
 @synthesize friendBeagle;
 @synthesize inviteFriends;
-@synthesize inviteManager=_inviteManager;
 @synthesize imageDownloadsInProgress;
 @synthesize beagleFriendsArray=_beagleFriendsArray;
 @synthesize facebookFriendsArray=_facebookFriendsArray;
@@ -88,17 +84,12 @@
     [self.friendsTableView setBackgroundColor:[BeagleUtilities returnBeagleColor:2]];
     imageDownloadsInProgress=[NSMutableDictionary new];
 
-    if(_friendsManager!=nil){
-        _friendsManager.delegate = nil;
-        _friendsManager = nil;
-    }
-    
-    _friendsManager=[[ServerManager alloc]init];
-    _friendsManager.delegate=self;
+    ServerManager *client = [ServerManager sharedServerManagerClient];
+    client.delegate = self;
     if(inviteFriends)
-        [_friendsManager getDOS1Friends];
+        [client getDOS1Friends];
      else
-       [_friendsManager getMutualFriendsNetwork:self.friendBeagle.beagleUserId];
+       [client getMutualFriendsNetwork:self.friendBeagle.beagleUserId];
     
     // Setup class variables
     [_profileLabel setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -197,11 +188,11 @@
     else if(notifObject.notifType==2 && notifObject.activity.activityId!=0 && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE|| notifObject.notificationType==ACTIVITY_CREATION_TYPE || notifObject.notificationType==JOINED_ACTIVITY_TYPE)){
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
-        viewController.interestServerManager=[[ServerManager alloc]init];
-        viewController.interestServerManager.delegate=viewController;
+        ServerManager *client = [ServerManager sharedServerManagerClient];
+        client.delegate = viewController;
         viewController.isRedirected=TRUE;
         viewController.toLastPost=TRUE;
-        [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
+        [client getDetailedInterest:notifObject.activity.activityId];
         [self.navigationController pushViewController:viewController animated:YES];        
         [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
 
@@ -229,11 +220,12 @@
 
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
-        viewController.interestServerManager=[[ServerManager alloc]init];
-        viewController.interestServerManager.delegate=viewController;
+        ServerManager *client = [ServerManager sharedServerManagerClient];
+        client.delegate = viewController;
+
         viewController.isRedirected=TRUE;
         viewController.toLastPost=TRUE;
-        [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
+        [client getDetailedInterest:notifObject.activity.activityId];
         [self.navigationController pushViewController:viewController animated:YES];
         [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
 
@@ -251,13 +243,12 @@
 -(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
-    viewController.interestServerManager=[[ServerManager alloc]init];
-    viewController.interestServerManager.delegate=viewController;
+    ServerManager *client = [ServerManager sharedServerManagerClient];
+    client.delegate = viewController;
     viewController.isRedirected=TRUE;
     if(notification.notificationType==CHAT_TYPE)
         viewController.toLastPost=TRUE;
-    
-    [viewController.interestServerManager getDetailedInterest:notification.activity.activityId];
+    [client getDetailedInterest:notification.activity.activityId];
     [self.navigationController pushViewController:viewController animated:YES];
     [BeagleUtilities updateBadgeInfoOnTheServer:notification.notificationId];
 
@@ -367,7 +358,6 @@
 
     if([self.beagleFriendsArray count]>0 && [self.facebookFriendsArray count]>0){
         if(cellIndexPath.section==0){
-            count=[self.beagleFriendsArray count];
             return YES;
         }
         else{
@@ -575,14 +565,9 @@
 -(void)facebookAuthComplete:(NSNotification*) note{
     BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
     
-    if(_inviteManager!=nil){
-        _inviteManager.delegate = nil;
-        _inviteManager = nil;
-    }
-    
-    _inviteManager=[[ServerManager alloc]init];
-    _inviteManager.delegate=self;
-    [_inviteManager sendingAPostMessageOnFacebook:player.fbuid];
+    ServerManager *client = [ServerManager sharedServerManagerClient];
+    client.delegate = self;
+    [client sendingAPostMessageOnFacebook:player.fbuid];
 
 }
 -(void)permissionsDenied:(NSNotification*) note{
@@ -628,30 +613,33 @@
 }
 
 -(void)getAuthorizationForAddressBook{
-        ABAddressBookRef addressBookRef = ABAddressBookCreateWithOptions(NULL, NULL);
-        if (ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusNotDetermined) {
-            ABAddressBookRequestAccessWithCompletion(addressBookRef, ^(bool granted, CFErrorRef error) {
-                if(granted)
-                    [self inviteViaEmail];
-                else{
-                    NSString *message = NSLocalizedString (@"To invite your friends to Beagle we need to take a quick look at your address book. We promise to only use it to invite the friends you pick. When you are ready, please try again!",
-                                                           @"Access Not Granted");
-                    BeagleAlertWithMessage(message);
-
-                }
-            });
-        }else if(ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusAuthorized){
-            [self inviteViaEmail];
-        }else{
-            
-            // user in the settings have turned the option off
-            
-            NSString *message = NSLocalizedString (@"Please go to the Settings > Privacy >Contacts and allow beagle to access your contacts and then try inviting in again.",
-                                                   @"Settings toggle off for contacts");
+    
+    if (ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusDenied ||
+            ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusRestricted){
+            NSLog(@"Denied");
+            NSString *message = NSLocalizedString (@"To invite your friends to Beagle we need to take a quick look at your address book. We promise to only use it to invite the friends you pick. When you are ready, please try again!",
+                                                   @"Access Not Granted");
             BeagleAlertWithMessage(message);
+        } else if (ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusAuthorized){
+            NSLog(@"Authorized");
+            [self inviteViaEmail];
+        } else{ //ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusNotDetermined
             
+            NSLog(@"Not determined");
+            ABAddressBookRequestAccessWithCompletion(ABAddressBookCreateWithOptions(NULL, nil), ^(bool granted, CFErrorRef error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (!granted){
+                        
+                        NSString *message = NSLocalizedString (@"To invite your friends to Beagle we need to take a quick look at your address book. We promise to only use it to invite the friends you pick. When you are ready, please try again!",
+                                                               @"Access Not Granted");
+                        BeagleAlertWithMessage(message);
+                        return;
+                    }
+                    
+                    [self inviteViaEmail];
+                });
+            });
         }
-        
 }
 
 - (void)actionSheet:(UIActionSheet *)popup clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -672,8 +660,8 @@
 
 -(void)inviteViaEmail{
     NSMutableArray *emailArray=[NSMutableArray new];
-        CFErrorRef *error = NULL;
-        ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, error);
+       ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, nil);
+    
         BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
         
         
@@ -754,8 +742,6 @@
     
     if(serverRequest==kServerCallGetProfileMutualFriends||serverRequest==kServerCallGetDOS1Friends){
         
-        _friendsManager.delegate = nil;
-        _friendsManager = nil;
         
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
@@ -852,8 +838,6 @@
         
     }
     else if (serverRequest==kServerPostAPrivateMessageOnFacebook||serverRequest==kServerPostAnEmailInvite){
-        _inviteManager.delegate = nil;
-        _inviteManager = nil;
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
             id status=[response objectForKey:@"status"];
@@ -943,16 +927,12 @@
     
     if(serverRequest==kServerCallGetProfileMutualFriends||serverRequest==kServerCallGetDOS1Friends)
     {
-        _friendsManager.delegate = nil;
-        _friendsManager = nil;
         NSString *message = NSLocalizedString (@"Your friends have vanished, was it something I said? Try again in a bit.",
                                                @"NSURLConnection initialization method failed.");
         BeagleAlertWithMessage(message);
 
     }
     else if (serverRequest==kServerPostAPrivateMessageOnFacebook||serverRequest==kServerPostAnEmailInvite){
-        _inviteManager.delegate = nil;
-        _inviteManager = nil;
         
         BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
         player.isInvited=FALSE;
@@ -976,14 +956,7 @@
     // Stop the animation
     [self.loadingAnimation stopAnimating];
     
-    if(serverRequest==kServerCallGetProfileMutualFriends||serverRequest==kServerCallGetDOS1Friends)
-    {
-        _friendsManager.delegate = nil;
-        _friendsManager = nil;
-    }
-    else if (serverRequest==kServerPostAPrivateMessageOnFacebook||serverRequest==kServerPostAnEmailInvite){
-        _inviteManager.delegate = nil;
-        _inviteManager = nil;
+     if (serverRequest==kServerPostAPrivateMessageOnFacebook||serverRequest==kServerPostAnEmailInvite){
         BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
         player.isInvited=FALSE;
         FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.friendsTableView cellForRowAtIndexPath:inviteIndexPath];
@@ -1026,15 +999,9 @@
     [spinner startAnimating];
     
     BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
-    
-    if(_inviteManager!=nil){
-        _inviteManager.delegate = nil;
-        _inviteManager = nil;
-    }
-    
-    _inviteManager=[[ServerManager alloc]init];
-    _inviteManager.delegate=self;
-    [_inviteManager sendingAnEmailInvite:player.fbuid];
+    ServerManager *client = [ServerManager sharedServerManagerClient];
+    client.delegate = self;
+    [client sendingAnEmailInvite:player.fbuid];
 
 
 }

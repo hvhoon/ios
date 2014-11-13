@@ -53,6 +53,9 @@ typedef enum {
 @interface ServerManager : AFHTTPSessionManager
 
 @property (nonatomic,assign) id<ServerManagerDelegate> delegate;
++ (ServerManager *)sharedServerManagerClient;
+- (instancetype)initWithBaseURL:(NSURL *)url;
+
 -(void)registerPlayerOnBeagle:(BeagleUserClass*)data;
 -(void)createActivityOnBeagle:(BeagleActivityClass*)data;
 -(void)getActivities;
