@@ -846,27 +846,6 @@
     
     
 }
-- (void)refresh {
-    
-    NSLog(@"Starting up query");
-    eventsLoadingComplete=false;
-    if(isPushAuto) {
-        
-        [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^(void){
-            [self.tableView setContentOffset:CGPointMake(0, -1.0f) animated:NO];
-            [self.tableView setContentOffset:CGPointMake(0, -_tableViewController.refreshControl.frame.size.height)];
-        } completion:^(BOOL finished) {
-            [_tableViewController.refreshControl beginRefreshing];
-        }];
-    }
-    
-    ServerManager *client = [ServerManager sharedServerManagerClient];
-    client.delegate = self;
-    [client getActivities];
-
-    
-}
-
 -(void)LocationAcquired{
     [self refresh];
     
@@ -885,6 +864,26 @@
     }];
     
 }
+- (void)refresh {
+    
+    NSLog(@"Starting up query");
+    eventsLoadingComplete=false;
+    if(isPushAuto) {
+        
+        [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^(void){
+            [self.tableView setContentOffset:CGPointMake(0, -1.0f) animated:NO];
+            [self.tableView setContentOffset:CGPointMake(0, -_tableViewController.refreshControl.frame.size.height)];
+        } completion:^(BOOL finished) {
+            [_tableViewController.refreshControl beginRefreshing];
+        }];
+    }
+    
+    ServerManager *client = [[ServerManager alloc]init];
+    client.delegate = self;
+    [client getActivities];
+    
+}
+
 -(void)defaultLocalImage{
     
     [self crossDissolvePhotos:[UIImage imageNamed:@"defaultLocation"] withUrl:nil userInfo:nil];
@@ -909,77 +908,74 @@
     urlString = [urlString stringByReplacingOccurrencesOfString:@" " withString:@""];
     
     NSLog(@"Weather request:%@", urlString);
-    
+#if 1
     NSURL *url=[NSURL URLWithString:[urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-    
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL: url];
-    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
-    [NSURLConnection sendAsynchronousRequest:request queue:queue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-        [self performSelectorOnMainThread:@selector(weatherMapReceivedData:) withObject:data waitUntilDone:NO];
+
+    
+    AFHTTPRequestOperation *requestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    requestOperation.responseSerializer = [AFJSONResponseSerializer serializer];
+    [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        NSString *weather=@"Clear";
+        NSString *time=@"d";
+        
+        NSDictionary *current_observation=[responseObject objectForKey:@"weather"];
+        
+        // Parsing out the weather and time of day info.
+        for(id mainWeather in current_observation) {
+            weather=[mainWeather objectForKey:@"main"];
+            time=[mainWeather objectForKey:@"icon"];
+        }
+        
+        // Parsing and playing God :)
+        // Get rid of any clouds!
+        if ([weather rangeOfString:@"Clouds"].location != NSNotFound) {
+            weather = @"Clear";
+        }
+        
+        // Figuring out whether it's day or night.
+        time = [time substringFromIndex: [time length] - 1];
+        time = ([time isEqualToString:@"d"]) ? @"day": @"night";
+        
+        // Assigning the time of day and the weather
+        if (time && weather) {
+            BG.timeOfDay=time;
+            BG.weatherCondition=weather;
+        }
+        
+        
+        NSLog(@"Time of day: %@, Weather Conditions: %@", time, weather);
+#if 1
+        // Pull image from Flickr
+        [[BGFlickrManager sharedManager] randomPhotoRequest:^(FlickrRequestInfo * flickrRequestInfo, NSError * error) {
+            
+            if(!error) {
+                [self crossDissolvePhotos:flickrRequestInfo.photo withUrl:[flickrRequestInfo.userPhotoWebPageURL absoluteString] userInfo:flickrRequestInfo.userInfo];
+            }
+            else {
+                
+                [[BGFlickrManager sharedManager] defaultStockPhoto:^(UIImage * photo) {
+                    [self crossDissolvePhotos:photo withUrl:[flickrRequestInfo.userPhotoWebPageURL absoluteString] userInfo:flickrRequestInfo.userInfo];
+                }];
+                
+            }
+
+            // Add the city name and the filter pane to the top section
+            [self addCityName:[BG.placemark.addressDictionary objectForKey:@"City"]];
+            [self.tableView reloadData];
+            
+        }];
+        
+#endif
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Image error: %@", error);
     }];
+    [requestOperation start];
+#endif
 }
 
--(void)weatherMapReceivedData:(NSData*)data{
-    
-    // Pull weather information
-    
-    BeagleManager *BG=[BeagleManager SharedInstance];
-    
-    NSError* error;
-    NSDictionary* weatherDictionary = [NSJSONSerialization JSONObjectWithData:data
-                                                         options:kNilOptions
-                                                           error:&error];
-    NSString *weather=@"Clear";
-    NSString *time=@"d";
-    
-    NSDictionary *current_observation=[weatherDictionary objectForKey:@"weather"];
-    
-    // Parsing out the weather and time of day info.
-    for(id mainWeather in current_observation) {
-        weather=[mainWeather objectForKey:@"main"];
-        time=[mainWeather objectForKey:@"icon"];
-    }
-    
-    // Parsing and playing God :)
-    // Get rid of any clouds!
-    if ([weather rangeOfString:@"Clouds"].location != NSNotFound) {
-        weather = @"Clear";
-    }
-    
-    // Figuring out whether it's day or night.
-    time = [time substringFromIndex: [time length] - 1];
-    time = ([time isEqualToString:@"d"]) ? @"day": @"night";
-    
-    // Assigning the time of day and the weather
-    if (time && weather) {
-        BG.timeOfDay=time;
-        BG.weatherCondition=weather;
-    }
-    
-    
-    NSLog(@"Time of day: %@, Weather Conditions: %@", time, weather);
-    
-    // Pull image from Flickr
-    [[BGFlickrManager sharedManager] randomPhotoRequest:^(FlickrRequestInfo * flickrRequestInfo, NSError * error) {
-        
-        if(!error) {
-            [self crossDissolvePhotos:flickrRequestInfo.photo withUrl:[flickrRequestInfo.userPhotoWebPageURL absoluteString] userInfo:flickrRequestInfo.userInfo];
-        }
-        else {
-            
-            [[BGFlickrManager sharedManager] defaultStockPhoto:^(UIImage * photo) {
-                [self crossDissolvePhotos:photo withUrl:[flickrRequestInfo.userPhotoWebPageURL absoluteString] userInfo:flickrRequestInfo.userInfo];
-            }];
-            
-        }
-        
-        // Add the city name and the filter pane to the top section
-        [self addCityName:[BG.placemark.addressDictionary objectForKey:@"City"]];
-        [self.tableView reloadData];
-        
-    }];
-    
-}
 
 - (void) crossDissolvePhotos:(UIImage *) photo withUrl:(NSString *)title userInfo:(NSString*)userInfo{
     
@@ -990,9 +986,6 @@
     if([userInfo length]!=0){
         photoCreditUserName=userInfo;
     }
-    
-    
-    
     
     UIColor *dominantColor = [BeagleUtilities getDominantColor:photo];
     BeagleManager *BG=[BeagleManager SharedInstance];

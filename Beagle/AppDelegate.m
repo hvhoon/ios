@@ -225,6 +225,23 @@ else
     
 }
 -(void)getupdatedInviteHTMLFromTheServer{
+#if 0
+    NSURL *url=[NSURL URLWithString:[NSString stringWithFormat:@"%@",@"https://s3.amazonaws.com/invitemailers/Invite.html"]];
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL: url];
+    
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+    
+    NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        if (error) {
+            NSLog(@"Error: %@", error);
+        } else {
+            [BeagleUtilities saveHTMLFileInDocumentDirectory:responseObject];
+        }
+    }];
+    [dataTask resume];
+    
+#else
     NSURL *url=[NSURL URLWithString:[NSString stringWithFormat:@"%@",@"https://s3.amazonaws.com/invitemailers/Invite.html"]];
     
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL: url];
@@ -240,6 +257,7 @@ else
              NSLog(@"Error=%@",[error description]);
          }
      }];
+#endif
 }
 
 -(void)receivedData:(NSData*)returnData{
@@ -527,7 +545,7 @@ else
 -(void) application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     
     
-        if([userInfo[@"aps"][@"alert"] length]== 0){
+        if([userInfo[@"aps"][@"content_available"] integerValue]== 1){
             [self handleSilentNotifications:userInfo];
             
             // Check if in background
@@ -582,6 +600,7 @@ else
                         
                         
 //                        { "aps": { "alert": "You invited!", "category": "NEW_ACTIVITY_CATEGORY" } }
+//                        APPLE_PRODUCTION_GATEWAY_URI
                     }] resume];
 
         }

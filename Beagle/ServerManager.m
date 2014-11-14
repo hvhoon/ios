@@ -43,6 +43,17 @@
     return self;
     
 }
+-(id)init{
+    self = [super initWithBaseURL:[NSURL URLWithString:herokuHost]];
+    
+    if (self) {
+        self.responseSerializer = [AFJSONResponseSerializer serializer];
+        self.requestSerializer = [AFJSONRequestSerializer serializer];
+        _internetReachability = [Reachability reachabilityForInternetConnection];
+        
+    }
+    return self;
+}
 
 -(void)registerPlayerOnBeagle:(BeagleUserClass*)data{
     _serverCallType=kServerCallUserRegisteration;

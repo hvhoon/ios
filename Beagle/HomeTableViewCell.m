@@ -148,14 +148,11 @@ static UIFont *dateTextFont = nil;
         NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString :self.bg_activity.activityDesc attributes : attrs];
 
         CGFloat height=[BeagleUtilities heightForAttributedStringWithEmojis:attributedString forWidth:[UIScreen mainScreen].bounds.size.width-32];
-        BeagleLabel*textLabel=(BeagleLabel*)[self viewWithTag:[[NSString stringWithFormat:@"223%ld",(long)cellIndex]integerValue]];
-        if(textLabel==nil){
         BeagleLabel *beagleLabel = [[BeagleLabel alloc] initWithFrame:CGRectMake(16, fromTheTop, commentTextRect.size.width,height+kHeightClip) type:1];
         [beagleLabel setText:self.bg_activity.activityDesc];
         [beagleLabel setAttributes:attrs];
         beagleLabel.textAlignment = NSTextAlignmentLeft;
         beagleLabel.numberOfLines = 0;
-        beagleLabel.tag=[[NSString stringWithFormat:@"223%ld",(long)cellIndex]integerValue];
         beagleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [self addSubview:beagleLabel];
         [beagleLabel setDetectionBlock:^(BeagleHotWord hotWord, NSString *string, NSString *protocol, NSRange range) {
@@ -165,14 +162,6 @@ static UIFont *dateTextFont = nil;
                 
                 
             }];
-        }else{
-            [textLabel setText:self.bg_activity.activityDesc];
-            [self addSubview:textLabel];
-        }
-        
-        
-
-
         fromTheTop = fromTheTop+height+kHeightClip;
     }
     
