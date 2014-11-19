@@ -743,7 +743,6 @@ enum Weeks {
 -(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
     BOOL flag = NO;
     
-    
     if([text length] == 0)
     {
         if([textView.text length] != 0)
@@ -763,8 +762,10 @@ enum Weeks {
         
         
     }
-    else if([[textView text] length] == 140)
+   else  if(([[textView text] length]+[text length]) >= 140)
     {
+         textView.text=[[NSString stringWithFormat:@"%@%@",textView.text,text] substringToIndex:140];
+        
         return NO;
     }
     if(flag == NO)
