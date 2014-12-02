@@ -43,10 +43,11 @@ static NSString * const CellIdentifier = @"cell";
     UILabel *placeholderLabel;
     BOOL isEditState;
 }
-
+@property(nonatomic,strong)ServerManager*chatPostManager;
 @property(nonatomic,strong)NSMutableDictionary*imageDownloadsInProgress;
 @property (strong, nonatomic) UIImageView *profileImageView;
 @property (strong,nonatomic)BeaglePlayerScrollMenu *scrollMenu;
+@property(nonatomic,strong)ServerManager*interestUpdateManager;
 @property(nonatomic,strong)NSMutableArray *chatPostsArray;
 @property(nonatomic,strong)UITableView *detailedInterestTableView;
 @property (nonatomic, strong) UIProgressView* sendMessage;
@@ -76,10 +77,12 @@ static NSString * const CellIdentifier = @"cell";
 @end
 
 @implementation DetailInterestViewController
-@synthesize interestActivity;
+@synthesize interestActivity,interestServerManager=_interestServerManager;
 @synthesize scrollMenu=_scrollMenu;
 @synthesize imageDownloadsInProgress;
+@synthesize interestUpdateManager=_interestUpdateManager;
 @synthesize profileImageView=_profileImageView;
+@synthesize chatPostManager=_chatPostManager;
 @synthesize chatPostsArray;
 @synthesize isRedirected,toLastPost,inappNotification;
 #if kPostInterface
@@ -176,14 +179,20 @@ static NSString * const CellIdentifier = @"cell";
 }
 -(void)getPostsUpdateInBackground{
     
-    ServerManager *client = [ServerManager sharedServerManagerClient];
-    client.delegate = self;
+    
+        if(_chatPostManager!=nil){
+                _chatPostManager.delegate = nil;
+                _chatPostManager = nil;
+            }
+    
+        _chatPostManager=[[ServerManager alloc]init];
+        _chatPostManager.delegate=self;
 
     if([self.chatPostsArray count]!=0){
-        [client getMoreBackgroundPostsForAnInterest:[self.chatPostsArray lastObject] activId:self.interestActivity.activityId];
+        [_chatPostManager getMoreBackgroundPostsForAnInterest:[self.chatPostsArray lastObject] activId:self.interestActivity.activityId];
         
     }else{
-        [client getNewBackgroundPostsForAnInterest:self.interestActivity.activityId];
+        [_chatPostManager getNewBackgroundPostsForAnInterest:self.interestActivity.activityId];
     }
 
 }
@@ -352,9 +361,14 @@ static NSString * const CellIdentifier = @"cell";
     BeagleNotificationClass *notifObject=[BeagleUtilities getNotificationForInterestPost:note];
     
     if(notifObject.activity.activityId==self.interestActivity.activityId && notifObject.notificationType==CHAT_TYPE){
-        ServerManager *client = [ServerManager sharedServerManagerClient];
-        client.delegate = self;
-        [client getPostDetail:notifObject.postChatId];
+        if(_chatPostManager!=nil){
+                _chatPostManager.delegate = nil;
+                _chatPostManager = nil;
+            }
+
+        _chatPostManager=[[ServerManager alloc]init];
+        _chatPostManager.delegate=self;
+        [_chatPostManager getPostDetail:notifObject.postChatId];
    }
 
  else if(notifObject.notifType==1){
@@ -379,14 +393,14 @@ static NSString * const CellIdentifier = @"cell";
     
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
-    ServerManager *client = [ServerManager sharedServerManagerClient];
-    client.delegate = viewController;
+        viewController.interestServerManager=[[ServerManager alloc]init];
+        viewController.interestServerManager.delegate=viewController;
 
     viewController.isRedirected=TRUE;
     if(notification.notificationType==CHAT_TYPE)
         viewController.toLastPost=TRUE;
 
-    [client getDetailedInterest:notification.activity.activityId];
+    [viewController.interestServerManager  getDetailedInterest:notification.activity.activityId];
     [self.navigationController pushViewController:viewController animated:YES];
     }
     [BeagleUtilities updateBadgeInfoOnTheServer:notification.notificationId];
@@ -694,9 +708,15 @@ static NSString * const CellIdentifier = @"cell";
         [_sendMessage setHidden:NO];
         [_sendMessage setProgress:0.25f animated:YES];
         
-        ServerManager *client = [ServerManager sharedServerManagerClient];
-        client.delegate = self;
-        [client postAComment:self.interestActivity.activityId desc:[self.contentWrapper.inputView.textView text]];
+        if(_chatPostManager!=nil){
+                       _chatPostManager.delegate = nil;
+                        _chatPostManager = nil;
+                    }
+        
+                _chatPostManager=[[ServerManager alloc]init];
+                _chatPostManager.delegate=self;
+        
+        [_chatPostManager postAComment:self.interestActivity.activityId desc:[self.contentWrapper.inputView.textView text]];
         
     }else{
         {
@@ -731,8 +751,14 @@ static NSString * const CellIdentifier = @"cell";
 //            [_interestUpdateManager removeMembership:self.interestActivity.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
         }
         else{
-            ServerManager *client = [ServerManager sharedServerManagerClient];
-            client.delegate = self;
+            
+                   if(_interestUpdateManager!=nil){
+                            _interestUpdateManager.delegate = nil;
+                            _interestUpdateManager = nil;
+                        }
+            
+                    _interestUpdateManager=[[ServerManager alloc]init];
+                    _interestUpdateManager.delegate=self;
 
             [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
             
@@ -743,7 +769,7 @@ static NSString * const CellIdentifier = @"cell";
             
             UIButton *interestedButton=(UIButton*)[self.view viewWithTag:345];
             [interestedButton setEnabled:NO];
-            [client participateMembership:self.interestActivity.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
+            [_interestUpdateManager participateMembership:self.interestActivity.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
         }
         
     }
@@ -1521,7 +1547,8 @@ static NSString * const CellIdentifier = @"cell";
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
     if(serverRequest==kServerCallGetDetailedInterest){
         
-        
+         _interestServerManager.delegate = nil;
+         _interestServerManager = nil;
         
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
@@ -1637,6 +1664,9 @@ static NSString * const CellIdentifier = @"cell";
         
     }
     else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
+        _interestServerManager.delegate = nil;
+        _interestServerManager = nil;
+
         scrollViewResize=TRUE;
 
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
@@ -1766,6 +1796,9 @@ static NSString * const CellIdentifier = @"cell";
     }
     else if (serverRequest==kServerCallPostComment||serverRequest==kServerCallGetBackgroundChats||serverRequest==kServerInAppChatDetail){
         
+        _chatPostManager.delegate = nil;
+        _chatPostManager = nil;
+
         [_sendMessage setProgress:0.75 animated:YES];
         
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
@@ -1885,7 +1918,15 @@ static NSString * const CellIdentifier = @"cell";
 
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {
-    if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
+    
+    if(serverRequest==kServerCallGetDetailedInterest)
+           {
+                    _interestServerManager.delegate = nil;
+                    _interestServerManager = nil;
+            }
+    else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
+        _interestUpdateManager.delegate = nil;
+        _interestUpdateManager = nil;
         UIButton *interestedButton=(UIButton*)[self.view viewWithTag:345];
         [interestedButton setEnabled:YES];
 
@@ -1897,6 +1938,8 @@ static NSString * const CellIdentifier = @"cell";
     }
     else if(serverRequest==kServerCallPostComment||serverRequest==kServerCallGetBackgroundChats||serverRequest==kServerInAppChatDetail)
     {
+        _chatPostManager.delegate = nil;
+        _chatPostManager = nil;
         [_sendMessage setHidden:YES];
         [_sendMessage setProgress:0.0];
     #if kPostInterface
@@ -1915,7 +1958,15 @@ static NSString * const CellIdentifier = @"cell";
 
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
 {
-    if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
+    
+        if(serverRequest==kServerCallGetDetailedInterest)
+            {
+                    _interestServerManager.delegate = nil;
+                    _interestServerManager = nil;
+                }
+        else if(serverRequest==kServerCallLeaveInterest||serverRequest==kServerCallParticipateInterest){
+                _interestUpdateManager.delegate = nil;
+                _interestUpdateManager = nil;
         UIButton *interestedButton=(UIButton*)[self.view viewWithTag:345];
         [interestedButton setEnabled:YES];
 
@@ -1928,6 +1979,9 @@ static NSString * const CellIdentifier = @"cell";
     }
     else if(serverRequest==kServerCallPostComment||serverRequest==kServerCallGetBackgroundChats||serverRequest==kServerInAppChatDetail)
     {
+        _chatPostManager.delegate = nil;
+        _chatPostManager = nil;
+
         [_sendMessage setHidden:YES];
         [_sendMessage setProgress:0.0];
         
@@ -1983,13 +2037,17 @@ static NSString * const CellIdentifier = @"cell";
     
     else if(alertView.tag==kLeaveInterest){
     if (buttonIndex == 0) {
+        if(_interestUpdateManager!=nil){
+                                _interestUpdateManager.delegate = nil;
+                                _interestUpdateManager = nil;
+                            }
         
-        ServerManager *client = [ServerManager sharedServerManagerClient];
-        client.delegate = self;
+                        _interestUpdateManager=[[ServerManager alloc]init];
+                        _interestUpdateManager.delegate=self;
         UIButton *interestedButton=(UIButton*)[self.view viewWithTag:345];
         [interestedButton setEnabled:NO];
 
-        [client removeMembership:self.interestActivity.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
+        [_interestUpdateManager removeMembership:self.interestActivity.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
         }
     else{
         NSLog(@"Clicked Cancel Button");
@@ -2041,9 +2099,16 @@ static NSString * const CellIdentifier = @"cell";
             [_sendMessage setHidden:NO];
             [_sendMessage setProgress:0.25f animated:YES];
             
-            ServerManager *client = [ServerManager sharedServerManagerClient];
-            client.delegate = self;
-            [client postAComment:self.interestActivity.activityId desc:text];
+            
+           if(_chatPostManager!=nil){
+                    _chatPostManager.delegate = nil;
+                    _chatPostManager = nil;
+                }
+
+            _chatPostManager=[[ServerManager alloc]init];
+            _chatPostManager.delegate=self;
+
+            [_chatPostManager postAComment:self.interestActivity.activityId desc:text];
             
         }else{
             {

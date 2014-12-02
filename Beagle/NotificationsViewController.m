@@ -18,12 +18,14 @@
     NSInteger interestIndex;
     NSTimer *timer;
 }
+@property(nonatomic,strong)ServerManager*notificationsManager;
 @property(nonatomic,strong)NSArray *listArray;
 @property(nonatomic,weak)IBOutlet UIActivityIndicatorView*notificationSpinnerView;
 @property(nonatomic,weak)IBOutlet UIImageView*notification_BlankImageView;
 @property(nonatomic,strong)UITableView*notificationTableView;
 @property(nonatomic,strong)NSMutableDictionary *imageDownloadsInProgress;
 @property(nonatomic,weak)IBOutlet UIView*unreadUpdateView;
+@property(nonatomic,strong)ServerManager*interestUpdateManager;
 @property(nonatomic,weak)IBOutlet UILabel*unreadCountLabel;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *topSpacingForBlankImage;
 @property (nonatomic, unsafe_unretained) CGFloat peekLeftAmount;
@@ -32,8 +34,10 @@
 
 @implementation NotificationsViewController
 @synthesize peekLeftAmount;
+@synthesize notificationsManager=_notificationsManager;
 @synthesize listArray=_listArray;
 @synthesize imageDownloadsInProgress;
+@synthesize interestUpdateManager=_interestUpdateManager;
 @synthesize notificationTableView=_notificationTableView;
 @synthesize timer=_timer;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -87,9 +91,13 @@
 
 -(void)getUserNotifications{
     self.imageDownloadsInProgress=[[NSMutableDictionary alloc]init];
-    ServerManager *client = [ServerManager sharedServerManagerClient];
-    client.delegate = self;
-    [client getNotifications];
+       if(_notificationsManager!=nil){
+                _notificationsManager.delegate = nil;
+                _notificationsManager = nil;
+      }
+    _notificationsManager=[[ServerManager alloc]init];
+    _notificationsManager.delegate=self;
+    [_notificationsManager getNotifications];
 
 
 
@@ -459,9 +467,16 @@
     UIButton *button=(UIButton*)sender;
     BeagleNotificationClass *play = (BeagleNotificationClass *)[self.listArray objectAtIndex:button.tag];
     interestIndex=button.tag;
-    ServerManager *client = [ServerManager sharedServerManagerClient];
-    client.delegate = self;
-    [client participateMembership:play.activity.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
+    
+       if(_interestUpdateManager!=nil){
+                _interestUpdateManager.delegate = nil;
+                _interestUpdateManager = nil;
+            }
+    
+        _interestUpdateManager=[[ServerManager alloc]init];
+        _interestUpdateManager.delegate=self;
+
+    [_interestUpdateManager participateMembership:play.activity.activityId playerid:[[[NSUserDefaults standardUserDefaults]valueForKey:@"beagleId"]integerValue]];
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     BeagleNotificationClass *play = (BeagleNotificationClass *)[self.listArray objectAtIndex:indexPath.row];
@@ -473,9 +488,9 @@
         
     if(play.notificationType==CHAT_TYPE)
         viewController.toLastPost=TRUE;
-    ServerManager *client = [ServerManager sharedServerManagerClient];
-    client.delegate = viewController;
-    [client getDetailedInterest:play.activity.activityId];
+        viewController.interestServerManager=[[ServerManager alloc]init];
+        viewController.interestServerManager.delegate=viewController;
+    [viewController.interestServerManager getDetailedInterest:play.activity.activityId];
     [self.navigationController pushViewController:viewController animated:YES];
 
     }
@@ -565,8 +580,13 @@
     
     
     if(serverRequest==kServerCallGetNotifications){
+        
+        
         [_notificationSpinnerView stopAnimating];
         [_timer invalidate];
+        _notificationsManager.delegate = nil;
+        _notificationsManager = nil;
+
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
             id status=[response objectForKey:@"status"];
@@ -634,6 +654,8 @@
     }
     else if(serverRequest==kServerCallParticipateInterest){
         
+        _interestUpdateManager.delegate = nil;
+        _interestUpdateManager = nil;
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
             id status=[response objectForKey:@"status"];
@@ -665,12 +687,18 @@
     
     if(serverRequest==kServerCallGetNotifications)
     {
+        _notificationsManager.delegate = nil;
+        _notificationsManager = nil;
         [_notificationSpinnerView stopAnimating];
         [_timer invalidate];
         _notificationTableView.hidden=YES;
         _notification_BlankImageView.hidden=NO;
         _unreadUpdateView.hidden=YES;
 
+    }
+    else if(serverRequest==kServerCallParticipateInterest){
+               _interestUpdateManager.delegate = nil;
+                _interestUpdateManager = nil;
     }
 
     NSString *message = NSLocalizedString (@"Unfortunately we can't show you how popular you are right now. Please try again.",
@@ -683,6 +711,9 @@
     
     if(serverRequest==kServerCallGetNotifications)
     {
+        _notificationsManager.delegate = nil;
+        _notificationsManager = nil;
+
         [_timer invalidate];
         [_notificationSpinnerView stopAnimating];
         _notificationTableView.hidden=YES;
@@ -691,6 +722,10 @@
 
     }
     
+    else if(serverRequest==kServerCallParticipateInterest){
+        _interestUpdateManager.delegate = nil;
+        _interestUpdateManager = nil;
+    }
 
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
     [alert show];

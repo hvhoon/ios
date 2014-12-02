@@ -15,6 +15,7 @@
     BOOL isSearching;
     NSTimer *timer;
 }
+@property(nonatomic,strong)ServerManager*inviteManager;
 @property(nonatomic,strong)NSMutableArray *nearbyFriendsArray;
 @property(nonatomic,strong)NSMutableArray *worldwideFriendsArray;
 @property(nonatomic,strong)NSMutableArray *searchResults;
@@ -27,6 +28,7 @@
 
 @implementation InterestInviteViewController
 @synthesize imageDownloadsInProgress;
+@synthesize inviteManager=_inviteManager;
 @synthesize nearbyFriendsArray=_nearbyFriendsArray;
 @synthesize worldwideFriendsArray=_worldwideFriendsArray;
 @synthesize inviteTableView=_inviteTableView;
@@ -103,9 +105,15 @@
     imageDownloadsInProgress=[NSMutableDictionary new];
     self.navigationController.navigationBar.topItem.title = @"";
     
-    ServerManager *client = [ServerManager sharedServerManagerClient];
-    client.delegate = self;
-    [client getNearbyAndWorldWideFriends];
+        if(_inviteManager!=nil){
+                _inviteManager.delegate = nil;
+                _inviteManager = nil;
+            }
+    
+        _inviteManager=[[ServerManager alloc]init];
+        _inviteManager.delegate=self;
+        [_inviteManager getNearbyAndWorldWideFriends];
+    
     
         NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
         [style setAlignment:NSTextAlignmentLeft];
@@ -143,11 +151,11 @@
     else if(notifObject.notifType==2 && notifObject.activity.activityId!=0 && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE|| notifObject.notificationType==ACTIVITY_CREATION_TYPE || notifObject.notificationType==JOINED_ACTIVITY_TYPE)){
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
-        ServerManager *client = [ServerManager sharedServerManagerClient];
-        client.delegate = viewController;
+        viewController.interestServerManager=[[ServerManager alloc]init];
+        viewController.interestServerManager.delegate=viewController;
         viewController.isRedirected=TRUE;
         viewController.toLastPost=TRUE;
-        [client getDetailedInterest:notifObject.activity.activityId];
+        [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
         [self.navigationController pushViewController:viewController animated:YES];
         [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
 
@@ -176,11 +184,11 @@
     }else if(notifObject.notifType==2 && notifObject.activity.activityId!=0 && notifObject.notificationType==CHAT_TYPE){
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
-        ServerManager *client = [ServerManager sharedServerManagerClient];
-        client.delegate = viewController;
+        viewController.interestServerManager=[[ServerManager alloc]init];
+        viewController.interestServerManager.delegate=viewController;
         viewController.isRedirected=TRUE;
         viewController.toLastPost=TRUE;
-        [client getDetailedInterest:notifObject.activity.activityId];
+        [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
         [self.navigationController pushViewController:viewController animated:YES];
         [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
 
@@ -199,12 +207,12 @@
 -(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
-    ServerManager *client = [ServerManager sharedServerManagerClient];
-    client.delegate = viewController;
+    viewController.interestServerManager=[[ServerManager alloc]init];
+    viewController.interestServerManager.delegate=viewController;
     viewController.isRedirected=TRUE;
     if(notification.notificationType==CHAT_TYPE)
         viewController.toLastPost=TRUE;
-    [client getDetailedInterest:notification.activity.activityId];
+    [viewController.interestServerManager getDetailedInterest:notification.activity.activityId];
     [self.navigationController pushViewController:viewController animated:YES];
     [BeagleUtilities updateBadgeInfoOnTheServer:notification.notificationId];
 
@@ -252,9 +260,14 @@
     [self.animationBlurView crossDissolveShow];
     UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
     [keyboard addSubview:self.animationBlurView];
-    ServerManager *client = [ServerManager sharedServerManagerClient];
-    client.delegate = self;
-    [client createActivityOnBeagle:interestDetail];
+        if(self.inviteManager!=nil){
+                self.inviteManager.delegate = nil;
+                self.inviteManager = nil;
+            }
+        self.inviteManager=[[ServerManager alloc]init];
+        self.inviteManager.delegate=self;
+
+    [self.inviteManager createActivityOnBeagle:interestDetail];
 
 }
 
@@ -992,7 +1005,8 @@
     
     if(serverRequest==kServerCallgetNearbyAndWorldWideFriends){
         
-        
+        _inviteManager.delegate = nil;
+         _inviteManager = nil;
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
             id status=[response objectForKey:@"status"];
@@ -1110,7 +1124,8 @@
     
    else if(serverRequest==kServerCallCreateActivity){
         
-       
+       self.inviteManager.delegate = nil;
+       self.inviteManager = nil;
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
             id status=[response objectForKey:@"status"];
@@ -1165,10 +1180,15 @@
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {
     
-    
-        if(serverRequest==kServerCallCreateActivity){
+  if(serverRequest==kServerCallgetNearbyAndWorldWideFriends||serverRequest==kServerCallCreateActivity)
+          {
+              _inviteManager.delegate = nil;
+              _inviteManager = nil;
+            if(serverRequest==kServerCallCreateActivity){
                 [self.animationBlurView hide];
+            }
         }
+    
     
     NSString *message = NSLocalizedString (@"Where did all your imaginary friends go? Try again in a bit.",
                                            @"NSURLConnection initialization method failed.");
@@ -1178,10 +1198,14 @@
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
 {
     
-   if(serverRequest==kServerCallCreateActivity){
+    if(serverRequest==kServerCallgetNearbyAndWorldWideFriends||serverRequest==kServerCallCreateActivity)
+    {
+        _inviteManager.delegate = nil;
+        _inviteManager = nil;
+        if(serverRequest==kServerCallCreateActivity){
             [self.animationBlurView hide];
-      }
-
+        }
+    }
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
     [alert show];

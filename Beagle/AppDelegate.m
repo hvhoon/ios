@@ -13,14 +13,19 @@
 #import "AFNetworkActivityIndicatorManager.h"
 #import "AFHTTPRequestOperation.h"
 @interface AppDelegate ()<ServerManagerDelegate>{
+    ServerManager *notificationServerManager;
     NSInteger attempts;
 }
+@property(nonatomic,strong)ServerManager *loginServerManager;
+@property(nonatomic,strong)ServerManager *notificationServerManager;
 @end
 
 @implementation AppDelegate
 @synthesize listViewController;
 @synthesize currentLocation;
 @synthesize _locationManager = locationManager;
+@synthesize loginServerManager=_loginServerManager;
+@synthesize notificationServerManager=_notificationServerManager;
 void uncaughtExceptionHandler(NSException *exception) {
     NSLog(@"CRASH: %@", exception);
     NSLog(@"Stack Trace: %@", [exception callStackSymbols]);
@@ -140,12 +145,12 @@ else
             [[BeagleManager SharedInstance]getUserObjectInAutoSignInMode];
             
             DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
-            ServerManager *client = [ServerManager sharedServerManagerClient];
-            client.delegate = viewController;
+            viewController.interestServerManager=[[ServerManager alloc]init];
+            viewController.interestServerManager.delegate=viewController;
             viewController.isRedirected=TRUE;
             if([[[[launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey] valueForKey:@"p"] valueForKey:@"nty"]integerValue]==CHAT_TYPE)
                 viewController.toLastPost=TRUE;
-            [client getDetailedInterest:[[[[launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey] valueForKey:@"p"] valueForKey:@"aid"]integerValue]];
+            [viewController.interestServerManager getDetailedInterest:[[[[launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey] valueForKey:@"p"] valueForKey:@"aid"]integerValue]];
             initViewController.navigationItem.backBarButtonItem.title=@"";
             initViewController.navigationBar.topItem.title=@"";
 
@@ -419,12 +424,18 @@ else
         
         // app was already in the foreground
     
-    ServerManager *client = [ServerManager sharedServerManagerClient];
-     client.delegate = self;
+            if(_notificationServerManager!=nil){
+                    _notificationServerManager.delegate = nil;
+                    _notificationServerManager = nil;
+                }
+            _notificationServerManager=[[ServerManager alloc]init];
+            _notificationServerManager.delegate=self;
+    
 
     
+    
         if([[[userInfo valueForKey:@"p"] valueForKey:@"nty"]integerValue]==CHAT_TYPE){
-            [client requestInAppNotificationForPosts:[[[userInfo valueForKey:@"p"] valueForKey:@"cid"]integerValue] notifType:1];
+            [_notificationServerManager requestInAppNotificationForPosts:[[[userInfo valueForKey:@"p"] valueForKey:@"cid"]integerValue] notifType:1];
             
             
             [[BeagleManager SharedInstance]setBadgeCount:[[[userInfo valueForKey:@"aps"] valueForKey:@"badge"]integerValue]];
@@ -468,7 +479,7 @@ else
             [requestOperation start];
          }
         else{
-            [client requestInAppNotification:[[[userInfo valueForKey:@"p"] valueForKey:@"nid"]integerValue] notifType:1];
+            [_notificationServerManager requestInAppNotification:[[[userInfo valueForKey:@"p"] valueForKey:@"nid"]integerValue] notifType:1];
             
         }
     
@@ -536,9 +547,14 @@ else
 }
 
 -(void)handleSilentNotifications:(NSDictionary*)userInfo{
-    ServerManager *client = [ServerManager sharedServerManagerClient];
-    client.delegate = self;
-    [client requestInAppNotification:[[[userInfo valueForKey:@"p"] valueForKey:@"nid"]integerValue] notifType:3];
+    
+    if(_notificationServerManager!=nil){
+        _notificationServerManager.delegate = nil;
+        _notificationServerManager = nil;
+    }
+    _notificationServerManager=[[ServerManager alloc]init];
+    _notificationServerManager.delegate=self;
+    [_notificationServerManager requestInAppNotification:[[[userInfo valueForKey:@"p"] valueForKey:@"nid"]integerValue] notifType:3];
         
         
 }
@@ -960,9 +976,14 @@ else
 
 -(void)successfulFacebookLogin:(BeagleUserClass*)data{
     
-    ServerManager *client = [ServerManager sharedServerManagerClient];
-    client.delegate = self;
-    [client registerPlayerOnBeagle:data];
+    if(_loginServerManager!=nil){
+            _loginServerManager.delegate = nil;
+             _loginServerManager = nil;
+            }
+       _loginServerManager=[[ServerManager alloc]init];
+    
+        _loginServerManager.delegate=self;
+        [_loginServerManager registerPlayerOnBeagle:data];
 
     
 }
@@ -996,6 +1017,11 @@ else
 
 - (void)serverManagerDidFinishWithResponse:(NSDictionary*)response forRequest:(ServerCallType)serverRequest{
     
+    
+    if(serverRequest!=kServerCallUserRegisteration){
+                _notificationServerManager.delegate = nil;
+                _notificationServerManager = nil;
+     }
     if(serverRequest==kServerCallInAppNotification){
         
         
@@ -1156,6 +1182,8 @@ else
     
     else if(serverRequest==kServerCallUserRegisteration){
         
+                _loginServerManager.delegate = nil;
+                _loginServerManager = nil;
         
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
@@ -1201,13 +1229,19 @@ else
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {
     
-    
     if(serverRequest==kServerCallUserRegisteration|| serverRequest==kServerGetSignInInfo)
     {
-        
+         _loginServerManager.delegate = nil;
+        _loginServerManager = nil;
         NSString *message = NSLocalizedString (@"Well this is embarrassing. Please try again in a bit.",
                                                @"NSURLConnection initialization method failed.");
         BeagleAlertWithMessage(message);
+
+    }else{
+        
+        
+        _notificationServerManager.delegate = nil;
+        _notificationServerManager = nil;
 
     }
     
@@ -1219,7 +1253,14 @@ else
     
     if(serverRequest==kServerCallUserRegisteration|| serverRequest==kServerGetSignInInfo)
     {
+        _loginServerManager.delegate = nil;
+        _loginServerManager = nil;
+
         [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:kFacebookAuthenticationFailed object:self userInfo:nil]];
+
+    }else{
+        _notificationServerManager.delegate = nil;
+        _notificationServerManager = nil;
 
     }
     

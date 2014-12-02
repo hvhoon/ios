@@ -35,6 +35,8 @@ enum Weeks {
     IBOutlet UIButton *locationFilterButton;
     IBOutlet UIButton *deleteButton;
     IBOutlet UIImageView *backgroundView;
+    ServerManager *activityServerManager;
+    ServerManager *deleteActivityManager;
     NSInteger timeIndex;
     NSInteger visibilityIndex;
     NSTimer *timer;
@@ -45,11 +47,15 @@ enum Weeks {
 @property(nonatomic, strong) EventVisibilityBlurView *blrVisbilityView;
 @property(nonatomic, strong) LocationBlurView *blrLocationView;
 @property(nonatomic,strong)CreateAnimationBlurView *animationBlurView;
+@property(nonatomic,strong)ServerManager *activityServerManager;
+@property(nonatomic,strong)ServerManager *deleteActivityManager;
 @end
 
 @implementation ActivityViewController
 @synthesize bg_activity;
 @synthesize editState;
+@synthesize activityServerManager;
+@synthesize deleteActivityManager=_deleteActivityManager;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -268,8 +274,8 @@ enum Weeks {
     if(notifObject.notifType==2 && notifObject.activity.activityId!=0 && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE|| notifObject.notificationType==ACTIVITY_CREATION_TYPE || notifObject.notificationType==JOINED_ACTIVITY_TYPE)){
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
-        ServerManager *client = [ServerManager sharedServerManagerClient];
-        client.delegate = viewController;
+        viewController.interestServerManager=[[ServerManager alloc]init];
+        viewController.interestServerManager.delegate=viewController;
 
         viewController.isRedirected=TRUE;
         viewController.toLastPost=TRUE;
@@ -277,7 +283,7 @@ enum Weeks {
         
         UINavigationController *activityNavigationController=[[UINavigationController alloc]initWithRootViewController:viewController];
         [self presentViewController:activityNavigationController animated:YES completion:^{
-            [client getDetailedInterest:notifObject.activity.activityId];
+            [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
             
         }];
         [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
@@ -308,8 +314,8 @@ enum Weeks {
     if(notifObject.notifType==2 && notifObject.activity.activityId!=0 && notifObject.notificationType==CHAT_TYPE){
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
-        ServerManager *client = [ServerManager sharedServerManagerClient];
-        client.delegate = viewController;
+        viewController.interestServerManager=[[ServerManager alloc]init];
+        viewController.interestServerManager.delegate=viewController;
 
         viewController.isRedirected=TRUE;
         viewController.toLastPost=TRUE;
@@ -317,7 +323,7 @@ enum Weeks {
         
         UINavigationController *activityNavigationController=[[UINavigationController alloc]initWithRootViewController:viewController];
         [self presentViewController:activityNavigationController animated:YES completion:^{
-            [client getDetailedInterest:notifObject.activity.activityId];
+            [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
             
         }];
         [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
@@ -337,8 +343,9 @@ enum Weeks {
     
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
-    ServerManager *client = [ServerManager sharedServerManagerClient];
-    client.delegate = viewController;
+    viewController.interestServerManager=[[ServerManager alloc]init];
+    viewController.interestServerManager.delegate=viewController;
+
     viewController.isRedirected=TRUE;
     viewController.inappNotification=YES;
     if(notification.notificationType==CHAT_TYPE)
@@ -346,7 +353,7 @@ enum Weeks {
     
     UINavigationController *activityNavigationController=[[UINavigationController alloc]initWithRootViewController:viewController];
     [self presentViewController:activityNavigationController animated:YES completion:^{
-        [client getDetailedInterest:notification.activity.activityId];
+        [viewController.interestServerManager getDetailedInterest:notification.activity.activityId];
         
     }];
     [BeagleUtilities updateBadgeInfoOnTheServer:notification.notificationId];
@@ -614,12 +621,17 @@ enum Weeks {
         [self reverseGeocode];
         return;
     }
-    ServerManager *client = [ServerManager sharedServerManagerClient];
-    client.delegate = self;
+    if(self.activityServerManager!=nil){
+            self.activityServerManager.delegate = nil;
+            self.activityServerManager = nil;
+    }
+    
+        self.activityServerManager=[[ServerManager alloc]init];
+        self.activityServerManager.delegate=self;
 
     
     if(editState) {
-        [client updateActivityOnBeagle:bg_activity];
+        [self.activityServerManager updateActivityOnBeagle:bg_activity];
     }
     else{
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
@@ -628,7 +640,7 @@ enum Weeks {
         UIWindow* keyboard = [[[UIApplication sharedApplication] windows] objectAtIndex:[[[UIApplication sharedApplication]windows]count]-1];
         [keyboard addSubview:self.animationBlurView];
         
-        [client createActivityOnBeagle:bg_activity];
+        [self.activityServerManager createActivityOnBeagle:bg_activity];
     }
     
 }
@@ -690,9 +702,14 @@ enum Weeks {
         switch (alertView.tag) {
             case kDeleteActivity:
             {
-                ServerManager *client = [ServerManager sharedServerManagerClient];
-                client.delegate = self;
-                [client deleteAnInterest:bg_activity.activityId];
+            if(_deleteActivityManager!=nil){
+                    _deleteActivityManager.delegate = nil;
+                    _deleteActivityManager = nil;
+                }
+
+            _deleteActivityManager=[[ServerManager alloc]init];
+            _deleteActivityManager.delegate=self;
+            [_deleteActivityManager deleteAnInterest:bg_activity.activityId];
             }
                 break;
                 
@@ -1056,6 +1073,8 @@ enum Weeks {
     
     if(serverRequest==kServerCallCreateActivity||serverRequest==kServerCallEditActivity){
         
+        self.activityServerManager.delegate = nil;
+        self.activityServerManager = nil;
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
             id status=[response objectForKey:@"status"];
@@ -1101,7 +1120,8 @@ enum Weeks {
     }
     else if (serverRequest==kServerCallDeleteActivity){
         
-        
+        _deleteActivityManager.delegate = nil;
+        _deleteActivityManager = nil;
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
             id status=[response objectForKey:@"status"];
@@ -1146,10 +1166,21 @@ enum Weeks {
 {
     
    
-    if(serverRequest==kServerCallCreateActivity){
-        [self.animationBlurView hide];
-    }
+        if(serverRequest==kServerCallCreateActivity||serverRequest==kServerCallEditActivity)
+           {
+                   self.activityServerManager.delegate = nil;
+                    self.activityServerManager = nil;
+                   if(serverRequest==kServerCallCreateActivity){
+                            [self.animationBlurView hide];
+                        }
+            
+           }
+       else if (serverRequest==kServerCallDeleteActivity){
         
+                _deleteActivityManager.delegate = nil;
+                _deleteActivityManager = nil;
+        }
+
     NSString *message = NSLocalizedString (@"Unable to initiate request.",
                                            @"NSURLConnection initialization method failed.");
     BeagleAlertWithMessage(message);
@@ -1158,10 +1189,19 @@ enum Weeks {
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
 {
     
-    if(serverRequest==kServerCallCreateActivity){
-        [self.animationBlurView hide];
-    }
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
+      if(serverRequest==kServerCallCreateActivity||serverRequest==kServerCallEditActivity)
+            {
+                self.activityServerManager.delegate = nil;
+                self.activityServerManager = nil;
+                    if(serverRequest==kServerCallCreateActivity){
+                            [self.animationBlurView hide];
+                        }
+        }
+      else if (serverRequest==kServerCallDeleteActivity){
+               _deleteActivityManager.delegate = nil;
+               _deleteActivityManager = nil;
+        }
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
     [alert show];
 }
 -(void)hideCreateOverlay{

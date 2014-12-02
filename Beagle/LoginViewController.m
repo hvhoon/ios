@@ -13,13 +13,16 @@
 #define kJoinBeagle 12
 @interface LoginViewController ()<FacebookLoginSessionDelegate,ServerManagerDelegate>{
      NSMutableData *_data;
+    ServerManager *loginServerManager;
 }
 @property (weak, nonatomic) IBOutlet UIButton *loginButton;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *loginActivity;
 @property(nonatomic,strong)FacebookLoginSession *facebookSession;
+@property(nonatomic,strong)ServerManager *loginServerManager;
 @end
 
 @implementation LoginViewController
+@synthesize loginServerManager=_loginServerManager;
 @synthesize facebookSession=_facebookSession;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -67,9 +70,13 @@
 
 -(void)successfulFacebookLogin:(BeagleUserClass*)data{
     
-    ServerManager *client = [ServerManager sharedServerManagerClient];
-    client.delegate = self;
-    [client registerPlayerOnBeagle:data];
+    if(_loginServerManager!=nil){
+        _loginServerManager.delegate = nil;
+        _loginServerManager = nil;
+       }
+    _loginServerManager=[[ServerManager alloc]init];
+    _loginServerManager.delegate=self;
+    [_loginServerManager registerPlayerOnBeagle:data];
     
 }
 -(void)facebookAccountNotSetup{
@@ -134,6 +141,8 @@
     
     if(serverRequest==kServerCallUserRegisteration){
         
+         _loginServerManager.delegate = nil;
+        _loginServerManager = nil;
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
             id status=[response objectForKey:@"status"];
@@ -172,6 +181,8 @@
     }
     else if (serverRequest==kServerGetSignInInfo){
         
+        _loginServerManager.delegate = nil;
+        _loginServerManager = nil;
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             id  registered=[response objectForKey:@"registered"];
             
@@ -195,6 +206,11 @@
 
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {
+    if(serverRequest==kServerCallUserRegisteration|| serverRequest==kServerGetSignInInfo)
+            {
+                    _loginServerManager.delegate = nil;
+                    _loginServerManager = nil;
+            }
 
       NSString *message = NSLocalizedString (@"Well this is embarrassing. Please try again in a bit.",
                                            @"NSURLConnection initialization method failed.");
@@ -204,6 +220,11 @@
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
 {
     
+    if(serverRequest==kServerCallUserRegisteration|| serverRequest==kServerGetSignInInfo)
+    {
+        _loginServerManager.delegate = nil;
+        _loginServerManager = nil;
+    }
 
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:errorAlertTitle message:errorLimitedConnectivityMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok",nil];
     [alert show];

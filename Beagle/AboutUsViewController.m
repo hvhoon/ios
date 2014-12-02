@@ -63,11 +63,11 @@
     else if(notifObject.notifType==2 && notifObject.activity.activityId!=0 && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE|| notifObject.notificationType==ACTIVITY_CREATION_TYPE || notifObject.notificationType==JOINED_ACTIVITY_TYPE)){
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
-        ServerManager *client = [ServerManager sharedServerManagerClient];
-        client.delegate = viewController;
-        [client getDetailedInterest:notifObject.activity.activityId];
+        viewController.interestServerManager=[[ServerManager alloc]init];
+        viewController.interestServerManager.delegate=viewController;
         viewController.isRedirected=TRUE;
         viewController.toLastPost=TRUE;
+        [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
         [self.navigationController pushViewController:viewController animated:YES];
         [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
         
@@ -95,11 +95,11 @@
     }else if(notifObject.notifType==2 && notifObject.activity.activityId!=0 && notifObject.notificationType==CHAT_TYPE){
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
-        ServerManager *client = [ServerManager sharedServerManagerClient];
-        client.delegate = viewController;
-        [client getDetailedInterest:notifObject.activity.activityId];
+        viewController.interestServerManager=[[ServerManager alloc]init];
+        viewController.interestServerManager.delegate=viewController;
         viewController.isRedirected=TRUE;
         viewController.toLastPost=TRUE;
+        [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
         [self.navigationController pushViewController:viewController animated:YES];
         [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
 
@@ -118,14 +118,13 @@
 -(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
-    ServerManager *client = [ServerManager sharedServerManagerClient];
-    client.delegate = viewController;
-    [client getDetailedInterest:notification.activity.activityId];
+    viewController.interestServerManager=[[ServerManager alloc]init];
+    viewController.interestServerManager.delegate=viewController;
 
     viewController.isRedirected=TRUE;
     if(notification.notificationType==CHAT_TYPE)
         viewController.toLastPost=TRUE;
-    
+    [viewController.interestServerManager getDetailedInterest:notification.activity.activityId];
     [self.navigationController pushViewController:viewController animated:YES];
     [BeagleUtilities updateBadgeInfoOnTheServer:notification.notificationId];
 

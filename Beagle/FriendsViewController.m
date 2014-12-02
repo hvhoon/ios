@@ -18,6 +18,8 @@
 @interface FriendsViewController ()<ServerManagerDelegate,UITableViewDataSource,UITableViewDelegate,FriendsTableViewCellDelegate,IconDownloaderDelegate,InAppNotificationViewDelegate,UIActionSheetDelegate,FeedbackReportingDelegate>{
     NSIndexPath* inviteIndexPath;
 }
+@property(nonatomic,strong)ServerManager*friendsManager;
+@property(nonatomic,strong)ServerManager*inviteManager;
 @property(nonatomic,strong)NSArray *beagleFriendsArray;
 @property(nonatomic,strong)NSArray *facebookFriendsArray;
 @property(nonatomic,strong)IBOutlet UITableView*friendsTableView;
@@ -30,6 +32,8 @@
 
 @implementation FriendsViewController
 @synthesize friendBeagle;
+@synthesize friendsManager=_friendsManager;
+@synthesize inviteManager=_inviteManager;
 @synthesize inviteFriends;
 @synthesize imageDownloadsInProgress;
 @synthesize beagleFriendsArray=_beagleFriendsArray;
@@ -84,12 +88,17 @@
     [self.friendsTableView setBackgroundColor:[BeagleUtilities returnBeagleColor:2]];
     imageDownloadsInProgress=[NSMutableDictionary new];
 
-    ServerManager *client = [ServerManager sharedServerManagerClient];
-    client.delegate = self;
+    if(_friendsManager!=nil){
+               _friendsManager.delegate = nil;
+                _friendsManager = nil;
+        }
+    
+        _friendsManager=[[ServerManager alloc]init];
+        _friendsManager.delegate=self;
     if(inviteFriends)
-        [client getDOS1Friends];
+        [_friendsManager getDOS1Friends];
      else
-       [client getMutualFriendsNetwork:self.friendBeagle.beagleUserId];
+       [_friendsManager getMutualFriendsNetwork:self.friendBeagle.beagleUserId];
     
     // Setup class variables
     [_profileLabel setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -188,11 +197,11 @@
     else if(notifObject.notifType==2 && notifObject.activity.activityId!=0 && (notifObject.notificationType==WHAT_CHANGE_TYPE||notifObject.notificationType==DATE_CHANGE_TYPE||notifObject.notificationType==GOING_TYPE||notifObject.notificationType==LEAVED_ACTIVITY_TYPE|| notifObject.notificationType==ACTIVITY_CREATION_TYPE || notifObject.notificationType==JOINED_ACTIVITY_TYPE)){
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
-        ServerManager *client = [ServerManager sharedServerManagerClient];
-        client.delegate = viewController;
+        viewController.interestServerManager=[[ServerManager alloc]init];
+        viewController.interestServerManager.delegate=viewController;
         viewController.isRedirected=TRUE;
         viewController.toLastPost=TRUE;
-        [client getDetailedInterest:notifObject.activity.activityId];
+        [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
         [self.navigationController pushViewController:viewController animated:YES];        
         [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
 
@@ -220,12 +229,12 @@
 
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
-        ServerManager *client = [ServerManager sharedServerManagerClient];
-        client.delegate = viewController;
+        viewController.interestServerManager=[[ServerManager alloc]init];
+        viewController.interestServerManager.delegate=viewController;
 
         viewController.isRedirected=TRUE;
         viewController.toLastPost=TRUE;
-        [client getDetailedInterest:notifObject.activity.activityId];
+        [viewController.interestServerManager getDetailedInterest:notifObject.activity.activityId];
         [self.navigationController pushViewController:viewController animated:YES];
         [BeagleUtilities updateBadgeInfoOnTheServer:notifObject.notificationId];
 
@@ -243,12 +252,12 @@
 -(void)backgroundTapToPush:(BeagleNotificationClass *)notification{
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     DetailInterestViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"interestScreen"];
-    ServerManager *client = [ServerManager sharedServerManagerClient];
-    client.delegate = viewController;
+    viewController.interestServerManager=[[ServerManager alloc]init];
+    viewController.interestServerManager.delegate=viewController;
     viewController.isRedirected=TRUE;
     if(notification.notificationType==CHAT_TYPE)
         viewController.toLastPost=TRUE;
-    [client getDetailedInterest:notification.activity.activityId];
+    [viewController.interestServerManager getDetailedInterest:notification.activity.activityId];
     [self.navigationController pushViewController:viewController animated:YES];
     [BeagleUtilities updateBadgeInfoOnTheServer:notification.notificationId];
 
@@ -565,9 +574,14 @@
 -(void)facebookAuthComplete:(NSNotification*) note{
     BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
     
-    ServerManager *client = [ServerManager sharedServerManagerClient];
-    client.delegate = self;
-    [client sendingAPostMessageOnFacebook:player.fbuid];
+    if(_inviteManager!=nil){
+            _inviteManager.delegate = nil;
+            _inviteManager = nil;
+        }
+    
+    _inviteManager=[[ServerManager alloc]init];
+    _inviteManager.delegate=self;
+    [_inviteManager sendingAPostMessageOnFacebook:player.fbuid];
 
 }
 -(void)permissionsDenied:(NSNotification*) note{
@@ -742,7 +756,8 @@
     
     if(serverRequest==kServerCallGetProfileMutualFriends||serverRequest==kServerCallGetDOS1Friends){
         
-        
+         _friendsManager.delegate = nil;
+        _friendsManager = nil;
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
             id status=[response objectForKey:@"status"];
@@ -838,6 +853,9 @@
         
     }
     else if (serverRequest==kServerPostAPrivateMessageOnFacebook||serverRequest==kServerPostAnEmailInvite){
+        
+        _inviteManager.delegate = nil;
+        _inviteManager = nil;
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
             id status=[response objectForKey:@"status"];
@@ -927,13 +945,16 @@
     
     if(serverRequest==kServerCallGetProfileMutualFriends||serverRequest==kServerCallGetDOS1Friends)
     {
+        _friendsManager.delegate = nil;
+        _friendsManager = nil;
         NSString *message = NSLocalizedString (@"Your friends have vanished, was it something I said? Try again in a bit.",
                                                @"NSURLConnection initialization method failed.");
         BeagleAlertWithMessage(message);
 
     }
     else if (serverRequest==kServerPostAPrivateMessageOnFacebook||serverRequest==kServerPostAnEmailInvite){
-        
+        _inviteManager.delegate = nil;
+         _inviteManager = nil;
         BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
         player.isInvited=FALSE;
         FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.friendsTableView cellForRowAtIndexPath:inviteIndexPath];
@@ -956,7 +977,15 @@
     // Stop the animation
     [self.loadingAnimation stopAnimating];
     
-     if (serverRequest==kServerPostAPrivateMessageOnFacebook||serverRequest==kServerPostAnEmailInvite){
+       if(serverRequest==kServerCallGetProfileMutualFriends||serverRequest==kServerCallGetDOS1Friends)
+            {
+                    _friendsManager.delegate = nil;
+                    _friendsManager = nil;
+            }
+    
+     else  if (serverRequest==kServerPostAPrivateMessageOnFacebook||serverRequest==kServerPostAnEmailInvite){
+         _inviteManager.delegate = nil;
+         _inviteManager = nil;
         BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
         player.isInvited=FALSE;
         FriendsTableViewCell *cell = (FriendsTableViewCell*)[self.friendsTableView cellForRowAtIndexPath:inviteIndexPath];
@@ -999,10 +1028,16 @@
     [spinner startAnimating];
     
     BeagleUserClass *player=[self.facebookFriendsArray objectAtIndex:inviteIndexPath.row];
-    ServerManager *client = [ServerManager sharedServerManagerClient];
-    client.delegate = self;
-    [client sendingAnEmailInvite:player.fbuid];
-
+    
+    if(_inviteManager!=nil){
+                _inviteManager.delegate = nil;
+                _inviteManager = nil;
+     }
+    
+    _inviteManager=[[ServerManager alloc]init];
+    _inviteManager.delegate=self;
+    [_inviteManager sendingAnEmailInvite:player.fbuid];
+    
 
 }
 /*

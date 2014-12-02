@@ -14,6 +14,7 @@
 #import "InitialSlidingViewController.h"
 #import "LinkViewController.h"
 @interface SettingsViewController ()<ServerManagerDelegate>
+@property(nonatomic,strong)ServerManager*updateFBTickerManager;
 @property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
 @property (weak, nonatomic) IBOutlet UILabel *profileNameLabel;
 @property (weak, nonatomic) IBOutlet UISwitch *fbTickerSwitch;
@@ -21,6 +22,7 @@
 @end
 
 @implementation SettingsViewController
+@synthesize updateFBTickerManager=_updateFBTickerManager;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -242,9 +244,16 @@
     BeagleManager *BG=[BeagleManager SharedInstance];
     BeagleUserClass *player=BG.beaglePlayer;
     player.fb_ticker=switchControl.on;
-    ServerManager *client = [ServerManager sharedServerManagerClient];
-    client.delegate = self;
-    [client updateFacebookTickerStatus:player.fb_ticker];
+    
+    
+    if(_updateFBTickerManager!=nil){
+            _updateFBTickerManager.delegate = nil;
+            _updateFBTickerManager = nil;
+        }
+    
+    _updateFBTickerManager=[[ServerManager alloc]init];
+    _updateFBTickerManager.delegate=self;
+    [_updateFBTickerManager updateFacebookTickerStatus:player.fb_ticker];
 
 }
 #pragma mark - server calls
@@ -253,7 +262,8 @@
     
     if(serverRequest==kServerCallUpdateFbTicker){
         
-        
+        _updateFBTickerManager.delegate = nil;
+        _updateFBTickerManager = nil;
         if (response != nil && [response class] != [NSNull class] && ([response count] != 0)) {
             
             id status=[response objectForKey:@"status"];
@@ -282,7 +292,10 @@
 
 - (void)serverManagerDidFailWithError:(NSError *)error response:(NSDictionary *)response forRequest:(ServerCallType)serverRequest
 {
-    
+    if(serverRequest==kServerCallUpdateFbTicker){
+    _updateFBTickerManager.delegate = nil;
+    _updateFBTickerManager = nil;
+    }
     
     BeagleManager *BG=[BeagleManager SharedInstance];
     BeagleUserClass *player=BG.beaglePlayer;
@@ -297,6 +310,12 @@
 
 - (void)serverManagerDidFailDueToInternetConnectivityForRequest:(ServerCallType)serverRequest
 {
+    
+    if(serverRequest==kServerCallUpdateFbTicker){
+        _updateFBTickerManager.delegate = nil;
+        _updateFBTickerManager = nil;
+    }
+
     BeagleManager *BG=[BeagleManager SharedInstance];
     BeagleUserClass *player=BG.beaglePlayer;
     player.fb_ticker=!player.fb_ticker;
