@@ -1361,6 +1361,9 @@
     
     CGRect topFrame = _topSection.frame;
     
+    UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
+    CGRect moveTopFrame = stockImageView.frame;
+    
     // Let the scrolling begin, keep track of where you are
     // If the user scrolls up, increase the opacity of the filter bar
     if (scrollView.contentOffset.y >= 0.0) {
@@ -1370,6 +1373,8 @@
             yOffset = scrollView.contentOffset.y;
         
         deltaAlpha = 0.8 + (0.18 * (yOffset/(roundf([UIScreen mainScreen].bounds.size.width/goldenRatio)-44-64)));
+        moveTopFrame.origin.y = -(yOffset/4);
+        stockImageView.frame = moveTopFrame;
     }
     // If the user scrolls down, descrease the opacity of the filter bar
     else {
