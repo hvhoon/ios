@@ -1373,7 +1373,7 @@
             yOffset = scrollView.contentOffset.y;
         
         deltaAlpha = 0.8 + (0.18 * (yOffset/(roundf([UIScreen mainScreen].bounds.size.width/goldenRatio)-44-64)));
-        moveTopFrame.origin.y = -(yOffset/4);
+        moveTopFrame.origin.y = -(yOffset/3);
         stockImageView.frame = moveTopFrame;
     }
     // If the user scrolls down, descrease the opacity of the filter bar
@@ -1388,8 +1388,13 @@
         // Always keep the height of the top section in sync with how far down the user is pulling
         topFrame.size.height = roundf([UIScreen mainScreen].bounds.size.width/goldenRatio) - (scrollView.contentOffset.y);
         _topSection.frame = topFrame;
+        moveTopFrame.origin.y = 0;
+        stockImageView.frame = moveTopFrame;
         deltaAlpha = 0.8 + (0.2 * (yOffset/-22.0));
     }
+    
+    // For testing purposes only!
+    //NSLog(@"yImageFrame = %f, yOffset = %f", moveTopFrame.origin.y, yOffset);
     
     // Update the filter color appropriately if the screen is not loading for the first time!
     if (!isLoading) {
