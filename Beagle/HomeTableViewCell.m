@@ -72,20 +72,20 @@ static UIFont *dateTextFont = nil;
         organizerName_y=organizerName_y+suggestedBySize.height+10;
     }
     fromTheTop = fromTheTop+10;
-
-    UIImage * originalImage =[UIImage imageNamed:@"picbox.png"];
+#if 1
+//    UIImage * originalImage =[UIImage imageNamed:@"picbox.png"];
     
     // Draw the original image at the origin
-    UIImage *newImage = [BeagleUtilities imageCircularBySize:originalImage sqr:105.0f];
+//    UIImage *newImage = [BeagleUtilities imageCircularBySize:originalImage sqr:105.0f];
     
     
      // top spacing
     
     //Draw the scaled and cropped image
     CGRect thisRect = CGRectMake(16, fromTheTop, 52.5, 52.5);
-    [newImage drawInRect:thisRect];
-
+//    [newImage drawInRect:thisRect];
     profileRect=thisRect;
+#endif
     
     
     // Drawing the time label
