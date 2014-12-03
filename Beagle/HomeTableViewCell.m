@@ -73,7 +73,7 @@ static UIFont *dateTextFont = nil;
     }
     fromTheTop = fromTheTop+10;
 
-    UIImage * originalImage =self.photoImage;
+    UIImage * originalImage =[UIImage imageNamed:@"picbox.png"];
     
     // Draw the original image at the origin
     UIImage *newImage = [BeagleUtilities imageCircularBySize:originalImage sqr:105.0f];

@@ -1248,7 +1248,7 @@
         cell.cellIndex=indexPath.row;
         
         cell.bg_activity = play;
-        
+#if 0
         UIImage*checkImge=nil;
         if(play.ownerid!=0 && play.activityType==1)
             checkImge= [BeagleUtilities loadImage:play.ownerid];
@@ -1272,6 +1272,7 @@
         }else{
             cell.photoImage = play.profilePhotoImage=checkImge;
         }
+#endif
         [cell setNeedsDisplay];
         return cell;
         
