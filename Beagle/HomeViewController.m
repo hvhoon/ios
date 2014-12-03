@@ -1232,7 +1232,7 @@
 }
 
 #define DISABLED_ALPHA 0.5f
-#if 1
+#if 0
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *CellIdentifier = @"MediaTableCell";
     
@@ -1353,7 +1353,7 @@
         UIImageView *_profileImageView=[[UIImageView alloc]initWithFrame:CGRectMake(16, fromTheTop, 52.5, 52.5)];
         [_backgroundView addSubview:_profileImageView];
 
-        
+#if 0
         UIImage*checkImge=nil;
         if(play.ownerid!=0 && play.activityType==1)
             checkImge= [BeagleUtilities loadImage:play.ownerid];
@@ -1379,7 +1379,7 @@
              play.profilePhotoImage=checkImge;
             _profileImageView.image=[BeagleUtilities imageCircularBySize:play.profilePhotoImage sqr:105.0f];
         }
-        
+#endif
         if(play.activityType!=2){
             UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(profileImageTapped:)];
             tapRecognizer.numberOfTapsRequired = 1;
