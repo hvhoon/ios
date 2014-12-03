@@ -1353,7 +1353,7 @@
         UIImageView *_profileImageView=[[UIImageView alloc]initWithFrame:CGRectMake(16, fromTheTop, 52.5, 52.5)];
         [_backgroundView addSubview:_profileImageView];
 
-#if 0
+#if 1
         UIImage*checkImge=nil;
         if(play.ownerid!=0 && play.activityType==1)
             checkImge= [BeagleUtilities loadImage:play.ownerid];
@@ -1368,16 +1368,56 @@
                 }
                 // if a download is deferred or in progress, return a placeholder image
                 
-                _profileImageView.image = [BeagleUtilities imageCircularBySize:[UIImage imageNamed:@"picbox.png"] sqr:105.0f];
+
+                play.profilePhotoImage=[UIImage imageNamed:@"picbox.png"];
+                if(play.profilePhotoImage.size.height != play.profilePhotoImage.size.width)
+                    play.profilePhotoImage = [BeagleUtilities autoCrop:play.profilePhotoImage];
+                
+                
+                if(play.profilePhotoImage.size.height > 105.0f || play.profilePhotoImage.size.width > 105.0f)
+                    play.profilePhotoImage = [BeagleUtilities compressImage:play.profilePhotoImage size:CGSizeMake(105.0f,105.0f)];
+                
+                _profileImageView.image=play.profilePhotoImage;
+                _profileImageView.layer.cornerRadius = play.profilePhotoImage.size.height/2;
+                _profileImageView.layer.masksToBounds = YES;
+
+                
+//                _profileImageView.image = [BeagleUtilities imageCircularBySize:[UIImage imageNamed:@"picbox.png"] sqr:105.0f];
                 
             }
             else
             {
-                _profileImageView.image = [BeagleUtilities imageCircularBySize:play.profilePhotoImage sqr:105.0f];
+                
+
+//                _profileImageView.image = [BeagleUtilities imageCircularBySize:play.profilePhotoImage sqr:105.0f];
+                
+                if(play.profilePhotoImage.size.height != play.profilePhotoImage.size.width)
+                    play.profilePhotoImage = [BeagleUtilities autoCrop:play.profilePhotoImage];
+                
+                
+                if(play.profilePhotoImage.size.height > 105.0f || play.profilePhotoImage.size.width > 105.0f)
+                    play.profilePhotoImage = [BeagleUtilities compressImage:play.profilePhotoImage size:CGSizeMake(105.0f,105.0f)];
+                
+                _profileImageView.image=play.profilePhotoImage;
+                _profileImageView.layer.cornerRadius = play.profilePhotoImage.size.height/2;
+                _profileImageView.layer.masksToBounds = YES;
+
             }
         }else{
              play.profilePhotoImage=checkImge;
-            _profileImageView.image=[BeagleUtilities imageCircularBySize:play.profilePhotoImage sqr:105.0f];
+            
+            if(play.profilePhotoImage.size.height != play.profilePhotoImage.size.width)
+                play.profilePhotoImage = [BeagleUtilities autoCrop:play.profilePhotoImage];
+            
+            
+            if(play.profilePhotoImage.size.height > 105.0f || play.profilePhotoImage.size.width > 105.0f)
+                play.profilePhotoImage = [BeagleUtilities compressImage:play.profilePhotoImage size:CGSizeMake(105.0f,105.0f)];
+
+            _profileImageView.image=play.profilePhotoImage;
+            _profileImageView.layer.cornerRadius = play.profilePhotoImage.size.height/2;
+            _profileImageView.layer.masksToBounds = YES;
+
+//            _profileImageView.image=[BeagleUtilities imageCircularBySize:play.profilePhotoImage sqr:105.0f];
         }
 #endif
         if(play.activityType!=2){
@@ -1844,6 +1884,7 @@
         
         // Display the newly loaded image
         cell.photoImage =play.profilePhotoImage=iconDownloader.appRecord.profilePhotoImage ;
+        
         [BeagleUtilities saveImage:iconDownloader.appRecord.profilePhotoImage withFileName:play.ownerid];
     }
     
