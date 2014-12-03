@@ -21,6 +21,7 @@
 #import "ExpressInterestPreview.h"
 #import "CreateAnimationBlurView.h"
 #import "LinkViewController.h"
+#import "BeagleLabel.h"
 #define kTimerIntervalInSeconds 10
 #define rowHeight 164
 #define kLeaveInterest 23
@@ -1229,6 +1230,9 @@
     
     
 }
+
+#define DISABLED_ALPHA 0.5f
+#if 0
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *CellIdentifier = @"MediaTableCell";
     
@@ -1287,6 +1291,515 @@
     }
     return nil;
 }
+
+#else
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    if([self.tableData count]>0){
+        
+        int fromTheTop = 0;
+        CGFloat organizerName_y=60.0f;
+
+        static NSString *CellIdentifier = @"MediaTableCell";
+        
+        UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        
+        cell.selectionStyle=UITableViewCellSelectionStyleNone;
+        cell.separatorInset = UIEdgeInsetsZero;
+        
+        BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexPath.row];
+        
+        cell.backgroundColor = [UIColor whiteColor];
+        
+        // Setting up the card (background)
+        UIView *_backgroundView=[[UIView alloc]initWithFrame:CGRectMake(0, fromTheTop, [UIScreen mainScreen].bounds.size.width, 400)];
+        _backgroundView.backgroundColor=[UIColor whiteColor];
+
+        
+        NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+        
+        // Drawing the time label
+        [style setAlignment:NSTextAlignmentLeft];
+        NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+                               [UIFont fontWithName:@"HelveticaNeue-Bold" size:11.0f], NSFontAttributeName,
+                               [BeagleUtilities returnBeagleColor:12],NSForegroundColorAttributeName,
+                               style, NSParagraphStyleAttributeName, nil];
+        
+        
+        if(play.activityType==2){
+            
+            CGSize suggestedBySize = [@"SUGGESTED POST" boundingRectWithSize:CGSizeMake(288, 999)
+                                                                     options:NSStringDrawingUsesLineFragmentOrigin
+                                                                  attributes:attrs
+                                                                     context:nil].size;
+
+            UILabel *suggestedPostLabel = [[UILabel alloc] initWithFrame:CGRectMake(16,10,suggestedBySize.width,suggestedBySize.height)];
+            suggestedPostLabel.backgroundColor = [UIColor clearColor];
+            suggestedPostLabel.text = @"SUGGESTED POST";
+            suggestedPostLabel.textColor = [BeagleUtilities returnBeagleColor:12];
+            suggestedPostLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:11.0f];
+            suggestedPostLabel.textAlignment = NSTextAlignmentLeft;
+            [_backgroundView addSubview:suggestedPostLabel];
+
+            fromTheTop += suggestedBySize.height+10;
+            organizerName_y=organizerName_y+suggestedBySize.height+10;
+        }
+
+
+        fromTheTop = fromTheTop+10;
+        
+        
+        // Profile picture
+        UIImageView *_profileImageView=[[UIImageView alloc]initWithFrame:CGRectMake(16, fromTheTop, 52.5, 52.5)];
+        [_backgroundView addSubview:_profileImageView];
+
+        
+        UIImage*checkImge=nil;
+        if(play.ownerid!=0 && play.activityType==1)
+            checkImge= [BeagleUtilities loadImage:play.ownerid];
+        
+        if(checkImge==nil){
+            
+            if (!play.profilePhotoImage)
+            {
+                if (tableView.dragging == NO && tableView.decelerating == NO)
+                {
+                    [self startIconDownload:play forIndexPath:indexPath];
+                }
+                // if a download is deferred or in progress, return a placeholder image
+                
+                _profileImageView.image = [BeagleUtilities imageCircularBySize:[UIImage imageNamed:@"picbox.png"] sqr:105.0f];
+                
+            }
+            else
+            {
+                _profileImageView.image = [BeagleUtilities imageCircularBySize:play.profilePhotoImage sqr:105.0f];
+            }
+        }else{
+             play.profilePhotoImage=checkImge;
+            _profileImageView.image=[BeagleUtilities imageCircularBySize:play.profilePhotoImage sqr:105.0f];
+        }
+        
+        if(play.activityType!=2){
+            UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(profileImageTapped:)];
+            tapRecognizer.numberOfTapsRequired = 1;
+            _profileImageView.tag=indexPath.row;
+            [_profileImageView addGestureRecognizer:tapRecognizer];
+            [_profileImageView setUserInteractionEnabled:YES];
+        }
+
+        
+        [style setAlignment:NSTextAlignmentRight];
+        attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+                 [UIFont fontWithName:@"HelveticaNeue" size:14.0f], NSFontAttributeName,
+                 [[BeagleManager SharedInstance] darkDominantColor],NSForegroundColorAttributeName,
+                 style, NSParagraphStyleAttributeName, nil];
+        
+        // time label
+        CGSize dateTextSize = [[BeagleUtilities activityTime:play.startActivityDate endate:play.endActivityDate] boundingRectWithSize:CGSizeMake(300, 999)
+                                                                                                                                            options:NSStringDrawingUsesLineFragmentOrigin
+                                                                                                                                         attributes:attrs
+                                                                                                                                            context:nil].size;
+        
+        
+        UILabel *dateTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width-16)-dateTextSize.width,
+                                                                           fromTheTop,
+                                                                           dateTextSize.width,dateTextSize.height)];
+        dateTextLabel.backgroundColor = [UIColor clearColor];
+        dateTextLabel.text = [BeagleUtilities activityTime:play.startActivityDate endate:play.endActivityDate];
+        dateTextLabel.textColor = [[BeagleManager SharedInstance] darkDominantColor];
+        dateTextLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:14.0f];
+        dateTextLabel.textAlignment = NSTextAlignmentRight;
+        [_backgroundView addSubview:dateTextLabel];
+        
+        
+        
+        // Drawing the organizer name
+        [style setAlignment:NSTextAlignmentLeft];
+        attrs=[NSDictionary dictionaryWithObjectsAndKeys:
+               [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f], NSFontAttributeName,
+               [BeagleUtilities returnBeagleColor:4],NSForegroundColorAttributeName,
+               style, NSParagraphStyleAttributeName, nil];
+        
+        CGSize organizerNameSize=[play.organizerName boundingRectWithSize:CGSizeMake(300, 999)
+                                                                         options:NSStringDrawingUsesLineFragmentOrigin
+                                                                      attributes:attrs
+                                                                         context:nil].size;
+        
+        UILabel *organizerNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(75,organizerName_y-organizerNameSize.height, organizerNameSize.width, organizerNameSize.height)];
+        organizerNameLabel.backgroundColor = [UIColor clearColor];
+        organizerNameLabel.text = play.organizerName;
+        organizerNameLabel.textColor = [BeagleUtilities returnBeagleColor:4];
+        organizerNameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
+        organizerNameLabel.textAlignment = NSTextAlignmentLeft;
+        [_backgroundView addSubview:organizerNameLabel];
+        
+        if(play.activityType!=2){
+            UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(profileImageTapped:)];
+            tapRecognizer.numberOfTapsRequired = 1;
+            organizerNameLabel.tag=indexPath.row;
+            [organizerNameLabel addGestureRecognizer:tapRecognizer];
+            [organizerNameLabel setUserInteractionEnabled:YES];
+        }
+
+        
+        // Adding the height of the profile picture
+        fromTheTop += 52.5;
+        
+        // Adding buffer below the top section with the profile picture
+        fromTheTop = fromTheTop+8;
+        
+        // Drawing the activity description
+        style.lineBreakMode=NSLineBreakByWordWrapping;
+        attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+                 [UIFont fontWithName:@"HelveticaNeue" size:17.0f], NSFontAttributeName,
+                 [UIColor blackColor],NSForegroundColorAttributeName,
+                 style, NSParagraphStyleAttributeName, nil];
+        
+        
+        CGSize maximumLabelSize = CGSizeMake([UIScreen mainScreen].bounds.size.width-32,999);
+        
+        CGRect commentTextRect = [play.activityDesc boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
+                                                                          attributes:attrs
+                                                                             context:nil];
+        
+        if([play.activityDesc length]!=0){
+            
+            NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString :play.activityDesc attributes : attrs];
+            
+            CGFloat height=[BeagleUtilities heightForAttributedStringWithEmojis:attributedString forWidth:[UIScreen mainScreen].bounds.size.width-32];
+            BeagleLabel *beagleLabel = [[BeagleLabel alloc] initWithFrame:CGRectMake(16, fromTheTop, commentTextRect.size.width,height+kHeightClip) type:1];
+            [beagleLabel setText:play.activityDesc];
+            [beagleLabel setAttributes:attrs];
+            beagleLabel.textAlignment = NSTextAlignmentLeft;
+            beagleLabel.numberOfLines = 0;
+            beagleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+            [_backgroundView addSubview:beagleLabel];
+            [beagleLabel setDetectionBlock:^(BeagleHotWord hotWord, NSString *string, NSString *protocol, NSRange range) {
+                if  (hotWord==BeagleLink)
+                      [self redirectToWebPage:string];
+                }];
+            fromTheTop = fromTheTop+height+kHeightClip;
+        }
+        
+        // Drawing the location
+        [style setAlignment:NSTextAlignmentLeft];
+        attrs =[NSDictionary dictionaryWithObjectsAndKeys:
+                [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f], NSFontAttributeName,
+                [BeagleUtilities returnBeagleColor:4],NSForegroundColorAttributeName,
+                style, NSParagraphStyleAttributeName, nil];
+        
+        CGSize locationTextSize = [play.locationName boundingRectWithSize:CGSizeMake(288, 999)
+                                                                              options:NSStringDrawingUsesLineFragmentOrigin
+                                                                           attributes:attrs
+                                                                              context:nil].size;
+        
+        
+        fromTheTop = fromTheTop+8; // Adding buffer between the description and location
+        
+        UILabel *locationLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, fromTheTop,
+                                                                           locationTextSize.width, locationTextSize.height)];
+        locationLabel.backgroundColor = [UIColor clearColor];
+        locationLabel.text = play.locationName;
+        locationLabel.textColor = [BeagleUtilities returnBeagleColor:4];
+        locationLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
+        locationLabel.textAlignment = NSTextAlignmentLeft;
+        [_backgroundView addSubview:locationLabel];
+
+        fromTheTop = fromTheTop+locationTextSize.height;
+        fromTheTop = fromTheTop+16; // Adding space after location
+        
+
+        // Suggested post
+        if(play.activityType==2){
+            UIColor *outlineButtonColor = [[BeagleManager SharedInstance] darkDominantColor];
+            UIButton *suggestedButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            suggestedButton.frame=CGRectMake(16, fromTheTop,
+                                             165,33);
+            suggestedButton.tag=[[NSString stringWithFormat:@"444%ld",(long)indexPath.row]integerValue];
+            [suggestedButton.titleLabel setUserInteractionEnabled: NO];
+            [_backgroundView addSubview:suggestedButton];
+            
+            
+            [[suggestedButton titleLabel]setFont:[UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0f]];
+            [suggestedButton.titleLabel setTextAlignment:NSTextAlignmentCenter];
+            [suggestedButton setTitle:@"ASK FRIENDS NEARBY" forState:UIControlStateNormal];
+            
+            // Normal state
+            [suggestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button-Unfilled"] withColor:outlineButtonColor] forState:UIControlStateNormal];
+            [suggestedButton setTitleColor:outlineButtonColor forState:UIControlStateNormal];
+            // Pressed state
+            [suggestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button-Unfilled"] withColor:[outlineButtonColor colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+            [suggestedButton setTitleColor:[outlineButtonColor colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
+            
+            [suggestedButton addTarget:self action:@selector(suggestedBtnPressed:) forControlEvents:UIControlEventTouchUpInside];
+            [suggestedButton setEnabled:YES];
+            
+        }
+        else{
+            
+            // Drawing number of interested text
+            [style setAlignment:NSTextAlignmentLeft];
+            attrs=[NSDictionary dictionaryWithObjectsAndKeys:
+                   [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f], NSFontAttributeName,
+                   [BeagleUtilities returnBeagleColor:4],NSForegroundColorAttributeName,
+                   style, NSParagraphStyleAttributeName, nil];
+            
+            // If your friends are interested
+            if(play.participantsCount>0){
+                
+                int countFromTheLeft = 0;
+                countFromTheLeft += 16;
+                
+                CGSize participantsCountTextSize = [[NSString stringWithFormat:@"%ld Interested",(long)play.participantsCount]  boundingRectWithSize:CGSizeMake(288, 999) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
+                
+                // Adding the Star image
+                UIImageView *starImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Star-Wireframe"]];
+                starImageView.frame = CGRectMake(countFromTheLeft, fromTheTop, 17, 16);
+                [_backgroundView addSubview:starImageView];
+                countFromTheLeft += 17+5;
+
+                
+                // Adding the # Interested
+                
+                
+                NSString* interestedText = [NSString stringWithFormat:@"%ld Interested", (long)play.participantsCount];
+                UILabel* participantsText = [[UILabel alloc] initWithFrame:CGRectMake(countFromTheLeft, fromTheTop, participantsCountTextSize.width, participantsCountTextSize.height)];
+                participantsText.attributedText = [[NSAttributedString alloc] initWithString:interestedText attributes:attrs];
+                [_backgroundView addSubview:participantsText];
+
+                countFromTheLeft += participantsCountTextSize.width+16;
+                
+                // If of the people interested you have friends interested
+                if(play.dos1count>0) {
+                    
+                    NSString* relationship = nil;
+                    
+                    if(play.dos1count > 1)
+                        relationship = @"Friends";
+                    else
+                        relationship = @"Friend";
+                    
+                    // Adding the Friend Image
+                    UIImageView *dosImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"DOS2-Wireframe"]];
+                    dosImageView.frame = CGRectMake(countFromTheLeft, fromTheTop, 28, 16);
+                    [_backgroundView addSubview:dosImageView];
+
+                    countFromTheLeft += 28+5;
+                    
+                    // Adding the # of Friends
+                    CGSize friendCountTextSize = [[NSString stringWithFormat:@"%ld %@",(long)play.dos1count, relationship]  boundingRectWithSize:CGSizeMake(288, 999) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
+                    
+                    UILabel* friendsText = [[UILabel alloc] initWithFrame:CGRectMake(countFromTheLeft, fromTheTop, friendCountTextSize.width, friendCountTextSize.height)];
+                    friendsText.attributedText = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld %@",(long)play.dos1count, relationship] attributes:attrs];
+                    [_backgroundView addSubview:friendsText];
+
+                    countFromTheLeft +=friendCountTextSize.width+16;
+                }
+                
+                // Adding comment count
+                if(play.postCount>0) {
+                    
+                    // Adding the Comment icon
+                    UIImageView *commentImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Comment-Wireframe"]];
+                    commentImageView.frame = CGRectMake(countFromTheLeft, fromTheTop, 20, 18);
+                    [_backgroundView addSubview:commentImageView];
+
+                    countFromTheLeft +=20+5;
+                    
+                    // Addinf the Comment # text
+                    [style setAlignment:NSTextAlignmentLeft];
+                    attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+                             [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f], NSFontAttributeName,
+                             [BeagleUtilities returnBeagleColor:4],NSForegroundColorAttributeName,
+                             style, NSParagraphStyleAttributeName, nil];
+                    
+                    CGSize postCountTextSize = [[NSString stringWithFormat:@"%ld",(long)play.postCount]  boundingRectWithSize:CGSizeMake(288, 999) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
+                    
+                    UILabel* postText = [[UILabel alloc] initWithFrame:CGRectMake(countFromTheLeft, fromTheTop, postCountTextSize.width, postCountTextSize.height)];
+                    postText.attributedText = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld",(long)play.postCount] attributes:attrs];
+                    [_backgroundView addSubview:postText];
+                  }
+                
+                // Adding spacing after the Count section
+                fromTheTop += participantsCountTextSize.height+20;
+            }
+            //  the Button
+            UIButton *interestedButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            interestedButton.frame=CGRectMake(16, fromTheTop, 151, 34);
+            interestedButton.tag=[[NSString stringWithFormat:@"333%ld",(long)indexPath.row]integerValue];
+            UIColor *buttonColor = [[BeagleManager SharedInstance] mediumDominantColor];
+            UIColor *outlineButtonColor = [[BeagleManager SharedInstance] darkDominantColor];
+            [interestedButton.titleLabel setUserInteractionEnabled: NO];
+            [_backgroundView addSubview:interestedButton];
+            
+            if(play.activityType==1){
+                [interestedButton addTarget:self action:@selector(interestedBtnPressed:) forControlEvents:UIControlEventTouchUpInside];
+                [interestedButton setEnabled:YES];
+            }
+            else{
+                [interestedButton setEnabled:NO];
+            }
+            
+            // If it's the organizer
+            if (play.dosRelation==0) {
+                
+                // Setup text
+                [[interestedButton titleLabel]setFont:[UIFont fontWithName:@"HelveticaNeue" size:15.0f]];
+                [interestedButton.titleLabel setTextAlignment:NSTextAlignmentCenter];
+                [interestedButton setTitle:@"Created by you" forState:UIControlStateNormal];
+                
+                // Normal state
+                [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button"] withColor:buttonColor] forState:UIControlStateNormal];
+                [interestedButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+                
+                // Pressed state
+                [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button"] withColor:[buttonColor colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+                [interestedButton setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
+                
+                // Setting up alignments
+                [interestedButton setImageEdgeInsets:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f)];
+                [interestedButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f)];
+            }
+            // You are not the organizer and have already expressed interest
+            else if(play.dosRelation > 0 && play.isParticipant)
+            {
+                // Setup text
+                [[interestedButton titleLabel]setFont:[UIFont fontWithName:@"HelveticaNeue" size:15.0f]];
+                [interestedButton.titleLabel setTextAlignment:NSTextAlignmentCenter];
+                [interestedButton setTitle:@"I'm Interested" forState:UIControlStateNormal];
+                
+                // Normal state
+                [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button"] withColor:buttonColor] forState:UIControlStateNormal];
+                [interestedButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+                [interestedButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Star"] withColor:[UIColor whiteColor]] forState:UIControlStateNormal];
+                
+                // Pressed state
+                [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button"] withColor:[buttonColor colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+                [interestedButton setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
+                [interestedButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Star"] withColor:[[UIColor whiteColor] colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+                
+                // Setting up alignments
+                [interestedButton setImageEdgeInsets:UIEdgeInsetsMake(0.0f, -12.0f, 0.0f, 0.0f)];
+                [interestedButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f)];
+            }
+            // You are not the organizer and have not expressed interest
+            else {
+                
+                // Setup text
+                [[interestedButton titleLabel]setFont:[UIFont fontWithName:@"HelveticaNeue" size:15.0f]];
+                [interestedButton.titleLabel setTextAlignment:NSTextAlignmentCenter];
+                [interestedButton setTitle:@"I'm Interested" forState:UIControlStateNormal];
+                
+                // Normal state
+                [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button-Unfilled"] withColor:outlineButtonColor] forState:UIControlStateNormal];
+                [interestedButton setTitleColor:outlineButtonColor forState:UIControlStateNormal];
+                [interestedButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Star-Unfilled"] withColor:outlineButtonColor] forState:UIControlStateNormal];
+                
+                // Pressed state
+                [interestedButton setBackgroundImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Button-Unfilled"] withColor:[outlineButtonColor colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+                [interestedButton setTitleColor:[outlineButtonColor colorWithAlphaComponent:DISABLED_ALPHA] forState:UIControlStateHighlighted];
+                [interestedButton setImage:[BeagleUtilities colorImage:[UIImage imageNamed:@"Star-Unfilled"] withColor:[outlineButtonColor colorWithAlphaComponent:DISABLED_ALPHA]] forState:UIControlStateHighlighted];
+                
+                // Setting up alignments
+                [interestedButton setImageEdgeInsets:UIEdgeInsetsMake(0.0f, -12.0f, 0.0f, 0.0f)];
+                [interestedButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f)];
+            }
+        }
+
+        
+        // Adding the public and invite only icons when necessary!
+        // Text attributes
+        [style setAlignment:NSTextAlignmentRight];
+        attrs=[NSDictionary dictionaryWithObjectsAndKeys:
+               [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f], NSFontAttributeName,
+               [BeagleUtilities returnBeagleColor:6],NSForegroundColorAttributeName,
+               style, NSParagraphStyleAttributeName, nil];
+        
+        // Indicate if the activity is Invite only
+        if([play.visibility isEqualToString:@"custom"]) {
+            
+            // Adding the lock image
+            UIImageView *inviteOnlyIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Invite-only-icon"]];
+            inviteOnlyIcon.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-12-16, fromTheTop+10, 12, 15);
+            [_backgroundView addSubview:inviteOnlyIcon];
+
+            
+            // Adding the # of Friends
+            
+            NSString* inviteText = @"Invite Only";
+            CGSize inviteOnlyTextSize = [inviteText boundingRectWithSize:CGSizeMake(288, 999) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
+            
+            UILabel* inviteOnlyText = [[UILabel alloc] initWithFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width-(35+inviteOnlyTextSize.width)), fromTheTop+10, inviteOnlyTextSize.width, inviteOnlyTextSize.height)];
+            inviteOnlyText.attributedText = [[NSAttributedString alloc] initWithString:inviteText attributes:attrs];
+            [_backgroundView addSubview:inviteOnlyText];
+
+         }
+        else if([play.visibility isEqualToString:@"public"] && play.activityType != 2) {
+            
+            // Adding the globe icon
+            UIImageView *publicIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Public"]];
+            publicIcon.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-15-16, fromTheTop+10, 15, 15);
+            [_backgroundView addSubview:publicIcon];
+
+            
+            // Adding the public text
+            NSString* publicText = @"Public";
+            CGSize publicTextSize = [publicText boundingRectWithSize:CGSizeMake(288, 999) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
+            
+            UILabel* publicTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width-(37+publicTextSize.width)), fromTheTop+9, publicTextSize.width, publicTextSize.height)];
+            publicTextLabel.attributedText = [[NSAttributedString alloc] initWithString:publicText attributes:attrs];
+            [_backgroundView addSubview:publicTextLabel];
+       }
+        else {
+            // Do not add any icon!
+        }
+        
+        // Space left after the button
+        fromTheTop += 33+20;
+        
+        _backgroundView.frame=CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, fromTheTop);
+        [cell.contentView addSubview:_backgroundView];
+        
+        //  the card seperator
+        CGRect stripRect = {0, fromTheTop, [UIScreen mainScreen].bounds.size.width, 1};
+
+        UIView*cardSeperatorView=[[UIView alloc]initWithFrame:stripRect];
+        cardSeperatorView.backgroundColor=[UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1.0];
+        
+        [cell.contentView addSubview:cardSeperatorView];
+
+        [cell setNeedsDisplay];
+        return cell;
+        
+    }else{
+        
+      static NSString *CellIdentifier = @"BlankTableviewCell";
+        UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        cell.selectionStyle=UITableViewCellEditingStyleNone;
+        NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"BlankHomePageView" owner:self options:nil];
+        BlankHomePageView *blankHomePageView=[nib objectAtIndex:0];
+        
+        blankHomePageView.frame=CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height-roundf([UIScreen mainScreen].bounds.size.width/goldenRatio));
+        blankHomePageView.delegate=self;
+        blankHomePageView.userInteractionEnabled=YES;
+        blankHomePageView.tag=1245;
+        [cell.contentView addSubview:blankHomePageView];
+        return cell;
+        
+    }
+    return nil;
+}
+#endif
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:indexPath.row];
+    if(play.activityType!=2){
+        [self detailedInterestScreenRedirect:indexPath.row];
+    }
+
+}
+
 - (void)startIconDownload:(BeagleActivityClass*)appRecord forIndexPath:(NSIndexPath *)indexPath{
     IconDownloader *iconDownloader = [imageDownloadsInProgress objectForKey:indexPath];
     if (iconDownloader == nil)
@@ -1336,6 +1849,30 @@
     [self.tableView reloadData];
 }
 
+-(void)profileImageTapped:(UITapGestureRecognizer*)sender{
+    
+    UIView *view = sender.view;
+    NSLog(@"%d", view.tag);
+    BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:view.tag];
+    if(play.dosRelation!=0){
+       [self profileScreenRedirect:view.tag];
+    }else{
+        [self detailedInterestScreenRedirect:view.tag];
+    }
+}
+-(void)suggestedBtnPressed:(id)sender{
+    UIButton *btn=(UIButton*)sender;
+    [self askNearbyFriendsToPartOfSuggestedPost:btn.tag%444];
+}
+
+-(void)interestedBtnPressed:(id)sender{
+    UIButton *btn=(UIButton*)sender;
+    BeagleActivityClass *play = (BeagleActivityClass *)[self.tableData objectAtIndex:btn.tag%333];
+    if(play.dosRelation!=0){
+         [self updateInterestedStatus:btn.tag%333];
+    }
+    
+}
 
 #pragma mark -
 #pragma mark Deferred image loading (UIScrollViewDelegate)
@@ -1361,6 +1898,9 @@
     
     CGRect topFrame = _topSection.frame;
     
+    UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
+    CGRect moveTopFrame = stockImageView.frame;
+    
     // Let the scrolling begin, keep track of where you are
     // If the user scrolls up, increase the opacity of the filter bar
     if (scrollView.contentOffset.y >= 0.0) {
@@ -1370,6 +1910,8 @@
             yOffset = scrollView.contentOffset.y;
         
         deltaAlpha = 0.8 + (0.18 * (yOffset/(roundf([UIScreen mainScreen].bounds.size.width/goldenRatio)-44-64)));
+        moveTopFrame.origin.y = -(yOffset/3);
+        stockImageView.frame = moveTopFrame;
     }
     // If the user scrolls down, descrease the opacity of the filter bar
     else {
@@ -1383,8 +1925,13 @@
         // Always keep the height of the top section in sync with how far down the user is pulling
         topFrame.size.height = roundf([UIScreen mainScreen].bounds.size.width/goldenRatio) - (scrollView.contentOffset.y);
         _topSection.frame = topFrame;
+        moveTopFrame.origin.y = 0;
+        stockImageView.frame = moveTopFrame;
         deltaAlpha = 0.8 + (0.2 * (yOffset/-22.0));
     }
+    
+    // For testing purposes only!
+    //NSLog(@"yImageFrame = %f, yOffset = %f", moveTopFrame.origin.y, yOffset);
     
     // Update the filter color appropriately if the screen is not loading for the first time!
     if (!isLoading) {

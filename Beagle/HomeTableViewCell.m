@@ -425,13 +425,7 @@ static UIFont *dateTextFont = nil;
     CGPoint startPoint =[touch locationInView:self.contentView];
     
     if(self.bg_activity.activityType==1){
-    if(CGRectContainsPoint(interestedRect,startPoint)){
-        if(self.bg_activity.dosRelation!=0){
-            if (self.delegate && [self.delegate respondsToSelector:@selector(updateInterestedStatus:)])
-            [delegate updateInterestedStatus:cellIndex];
-        }
-    }
-    else if(CGRectContainsPoint(profileRect,startPoint) || CGRectContainsPoint(nameRect,startPoint)){
+     if(CGRectContainsPoint(profileRect,startPoint) || CGRectContainsPoint(nameRect,startPoint)){
         if(self.bg_activity.dosRelation!=0){
         if (self.delegate && [self.delegate respondsToSelector:@selector(profileScreenRedirect:)])
             [self.delegate profileScreenRedirect:cellIndex];

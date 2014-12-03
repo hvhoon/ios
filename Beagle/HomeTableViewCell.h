@@ -21,7 +21,6 @@
 @interface HomeTableViewCell : ABTableViewCell{
    BeagleActivityClass *bg_activity;
    UIImage *photoImage;
-   CGRect interestedRect;
    CGRect profileRect;
    CGRect nameRect;
 }
