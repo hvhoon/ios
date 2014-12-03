@@ -154,7 +154,7 @@ static UIFont *dateTextFont = nil;
         beagleLabel.textAlignment = NSTextAlignmentLeft;
         beagleLabel.numberOfLines = 0;
         beagleLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        [self addSubview:beagleLabel];
+       // [self addSubview:beagleLabel];
         [beagleLabel setDetectionBlock:^(BeagleHotWord hotWord, NSString *string, NSString *protocol, NSRange range) {
                 if (self.delegate && [self.delegate respondsToSelector:@selector(redirectToWebPage:)]&& hotWord==BeagleLink)
                     [self.delegate redirectToWebPage:string];
@@ -194,7 +194,7 @@ static UIFont *dateTextFont = nil;
                                          165,33);
     suggestedButton.tag=[[NSString stringWithFormat:@"444%ld",(long)cellIndex]integerValue];
        [suggestedButton.titleLabel setUserInteractionEnabled: NO];
-       [self addSubview:suggestedButton];
+       //[self addSubview:suggestedButton];
         
         
         [[suggestedButton titleLabel]setFont:[UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0f]];
@@ -287,7 +287,7 @@ static UIFont *dateTextFont = nil;
     UIColor *buttonColor = [[BeagleManager SharedInstance] mediumDominantColor];
     UIColor *outlineButtonColor = [[BeagleManager SharedInstance] darkDominantColor];
     [interestedButton.titleLabel setUserInteractionEnabled: NO];
-    [self addSubview:interestedButton];
+    //[self addSubview:interestedButton];
     
         if(self.bg_activity.activityType==1){
             [interestedButton addTarget:self action:@selector(interestedBtnPressed:) forControlEvents:UIControlEventTouchUpInside];

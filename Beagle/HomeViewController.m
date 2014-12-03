@@ -1232,7 +1232,7 @@
 }
 
 #define DISABLED_ALPHA 0.5f
-#if 0
+#if 1
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *CellIdentifier = @"MediaTableCell";
     
