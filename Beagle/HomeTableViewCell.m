@@ -142,7 +142,7 @@ static UIFont *dateTextFont = nil;
                                                                attributes:attrs
                                                                   context:nil];
     
-    if([self.bg_activity.activityDesc length]!=0){
+    if([self.bg_activity.activityDesc length]==0){
 //        [self.bg_activity.activityDesc drawInRect:CGRectMake(16, fromTheTop, commentTextRect.size.width,commentTextRect.size.height) withAttributes:attrs];
         
         NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString :self.bg_activity.activityDesc attributes : attrs];
@@ -185,7 +185,7 @@ static UIFont *dateTextFont = nil;
                                           locationTextSize.width, locationTextSize.height) withAttributes:attrs];
     fromTheTop = fromTheTop+locationTextSize.height;
     fromTheTop = fromTheTop+16; // Adding space after location
-    
+#if 0
     // Suggested post
     if(self.bg_activity.activityType==2){
     UIColor *outlineButtonColor = [[BeagleManager SharedInstance] darkDominantColor];
@@ -362,7 +362,7 @@ static UIFont *dateTextFont = nil;
         [interestedButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f)];
         }
     }
-    
+#endif
     // Adding the public and invite only icons when necessary!
     // Text attributes
     [style setAlignment:NSTextAlignmentRight];
