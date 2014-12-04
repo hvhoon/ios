@@ -1232,7 +1232,7 @@
 }
 
 #define DISABLED_ALPHA 0.5f
-#if 0
+#if 1
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *CellIdentifier = @"MediaTableCell";
     
@@ -1248,7 +1248,7 @@
         cell.cellIndex=indexPath.row;
         
         cell.bg_activity = play;
-#if 0
+#if 1
         UIImage*checkImge=nil;
         if(play.ownerid!=0 && play.activityType==1)
             checkImge= [BeagleUtilities loadImage:play.ownerid];

@@ -187,7 +187,7 @@ else
     
     interestedAction.authenticationRequired = NO;
     
-    
+/*
     UIMutableUserNotificationAction *notInterestedAction = [UIMutableUserNotificationAction new];
     
     // set an identifier for the action, this is used to differentiate actions from eachother when the notifiaction action handler method is called
@@ -203,7 +203,7 @@ else
     notInterestedAction.activationMode = UIUserNotificationActivationModeBackground;
     
     notInterestedAction.authenticationRequired = NO;
-    
+*/
     
     // CREATE THE CATEGORY
     
@@ -216,7 +216,7 @@ else
     // set the actions that are associated with this type of push notification category
     // you can use the UIUserNotificationActionContext to determine which actions will show up in different
     // push notification presentation contexts, for example, on the lock screen, as a banner notification, or as an alert view notification
-    [inviteActivityCategory setActions:@[interestedAction,notInterestedAction]
+    [inviteActivityCategory setActions:@[interestedAction]
                   forContext:UIUserNotificationActionContextDefault];
     
     
@@ -604,21 +604,41 @@ else
 - (void)application:(UIApplication *)application handleActionWithIdentifier:(NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo completionHandler:(void (^)())completionHandler{
         
         if ([identifier isEqualToString:@"INTERESTED_IDENTIFIER"]){
-            NSString *googleUrl =
-            @"http://www.google.com";
+            NSError *error;
             
-            NSURLSession *session = [NSURLSession sharedSession];
-            [[session dataTaskWithURL:[NSURL URLWithString:googleUrl]
-                    completionHandler:^(NSData *data,
-                                        NSURLResponse *response,
-                                        NSError *error) {
-                        // handle response
-                        
-                        
-//                        { "aps": { "alert": "You invited!", "category": "NEW_ACTIVITY_CATEGORY" } }
-//                        APPLE_PRODUCTION_GATEWAY_URI
-                    }] resume];
-
+            NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+            NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration delegate:self delegateQueue:nil];
+            NSString *urlString=[NSString stringWithFormat:@"%@joinactivity.json",herokuHost];
+            NSURL *url = [NSURL URLWithString:urlString];
+            NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
+                                                                   cachePolicy:NSURLRequestUseProtocolCachePolicy
+                                                               timeoutInterval:60.0];
+            
+            [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+            [request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
+            
+            [request setHTTPMethod:@"PUT"];
+            NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys: [[userInfo valueForKey:@"p"] valueForKey:@"pid"], @"pid",
+                                     [[userInfo valueForKey:@"p"] valueForKey:@"aid"], @"id",@"true", @"pstatus",
+                                     nil];
+            NSData *postData = [NSJSONSerialization dataWithJSONObject:params options:0 error:&error];
+            [request setHTTPBody:postData];
+            
+            
+            NSURLSessionDataTask *postDataTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                
+                //response
+                
+            }];
+            
+            [postDataTask resume];
+            
+            
+            
+            //                        { "aps": { "alert": "You invited!", "category": "NEW_ACTIVITY_CATEGORY" } }
+            //                        APPLE_PRODUCTION_GATEWAY_URI
+            
+            
         }
        else if ([identifier isEqualToString:@"NOTINTERESTED_IDENTIFIER"]){
         

@@ -72,20 +72,28 @@ static UIFont *dateTextFont = nil;
         organizerName_y=organizerName_y+suggestedBySize.height+10;
     }
     fromTheTop = fromTheTop+10;
-#if 1
-//    UIImage * originalImage =[UIImage imageNamed:@"picbox.png"];
+    UIImageView *_profileImageView=[[UIImageView alloc]initWithFrame:CGRectMake(16, fromTheTop, 52.5, 52.5)];
+    [self addSubview:_profileImageView];
     
-    // Draw the original image at the origin
+    
+//    if(self.photoImage.size.height != self.photoImage.size.width)
+//        self.photoImage = [BeagleUtilities autoCrop:self.photoImage];
+//    
+//    if(self.photoImage.size.height > 105.0f || self.photoImage.size.width > 105.0f)
+//        self.photoImage = [BeagleUtilities compressImage:self.photoImage size:CGSizeMake(105.0f,105.0f)];
+
+    _profileImageView.image=self.photoImage;
+    _profileImageView.layer.cornerRadius = _profileImageView.frame.size.width / 2;
+    _profileImageView.clipsToBounds = YES;
+
+    profileRect = CGRectMake(16, fromTheTop, 52.5, 52.5);
+
 //    UIImage *newImage = [BeagleUtilities imageCircularBySize:originalImage sqr:105.0f];
-    
-    
-     // top spacing
-    
-    //Draw the scaled and cropped image
-    CGRect thisRect = CGRectMake(16, fromTheTop, 52.5, 52.5);
-//    [newImage drawInRect:thisRect];
-    profileRect=thisRect;
-#endif
+//    [newImage profileRect];
+//    _profileImageView.layer.shouldRasterize = YES;
+//    [_profileImageView.layer setCornerRadius:26.25];
+//    [_profileImageView.layer setMasksToBounds:YES];
+
     
     
     // Drawing the time label
@@ -122,7 +130,7 @@ static UIFont *dateTextFont = nil;
     [bg_activity.organizerName drawInRect:nameRect withAttributes:attrs];
     
     // Adding the height of the profile picture
-    fromTheTop = fromTheTop+thisRect.size.height;
+    fromTheTop = fromTheTop+profileRect.size.height;
     
     // Adding buffer below the top section with the profile picture
     fromTheTop = fromTheTop+8;
