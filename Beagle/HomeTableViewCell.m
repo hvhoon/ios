@@ -76,14 +76,14 @@ static UIFont *dateTextFont = nil;
     [self addSubview:_profileImageView];
     
     
-//    if(self.photoImage.size.height != self.photoImage.size.width)
-//        self.photoImage = [BeagleUtilities autoCrop:self.photoImage];
-//    
+    if(self.photoImage.size.height != self.photoImage.size.width)
+        self.photoImage = [BeagleUtilities autoCrop:self.photoImage];
+//
 //    if(self.photoImage.size.height > 105.0f || self.photoImage.size.width > 105.0f)
 //        self.photoImage = [BeagleUtilities compressImage:self.photoImage size:CGSizeMake(105.0f,105.0f)];
 
     _profileImageView.image=self.photoImage;
-    _profileImageView.layer.cornerRadius = _profileImageView.frame.size.width / 2;
+    _profileImageView.layer.cornerRadius = 26.25;
     _profileImageView.clipsToBounds = YES;
 
     profileRect = CGRectMake(16, fromTheTop, 52.5, 52.5);
