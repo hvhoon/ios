@@ -927,7 +927,7 @@
     requestOperation.responseSerializer = [AFJSONResponseSerializer serializer];
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         
-        NSString *weather=@"Clear";
+        NSString *weather=@"";
         NSString *time=@"d";
         
         NSDictionary *current_observation=[responseObject objectForKey:@"weather"];
@@ -941,7 +941,7 @@
         // Parsing and playing God :)
         // Get rid of any clouds!
         if ([weather rangeOfString:@"Clouds"].location != NSNotFound) {
-            weather = @"Clear";
+            weather = @"";
         }
         
         // Figuring out whether it's day or night.
