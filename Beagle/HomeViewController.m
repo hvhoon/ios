@@ -1952,7 +1952,7 @@
             yOffset = scrollView.contentOffset.y;
         
         deltaAlpha = 0.8 + (0.18 * (yOffset/(roundf([UIScreen mainScreen].bounds.size.width/goldenRatio)-44-64)));
-        moveTopFrame.origin.y = -(yOffset/3);
+        moveTopFrame.origin.y = -(yOffset/4);
         stockImageView.frame = moveTopFrame;
     }
     // If the user scrolls down, descrease the opacity of the filter bar
