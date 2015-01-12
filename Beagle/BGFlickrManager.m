@@ -195,7 +195,7 @@ static BGFlickrManager *sharedManager = nil;
     self.attempts++;
     NSDictionary *photoDict = [self.photos objectAtIndex:index];
     
-    NSURL *photoURL = [self.flickrContext photoSourceURLFromDictionary:photoDict size:OFFlickrMedium800Size];
+    NSURL *photoURL = [self.flickrContext photoSourceURLFromDictionary:photoDict size:OFFlickrLargeSize];
     
 
         // Process if we got photos back
@@ -211,11 +211,11 @@ static BGFlickrManager *sharedManager = nil;
             self.flickrRequestInfo.photo=[UIImage imageWithCGImage:[self.flickrRequestInfo.photo CGImage] scale:2.0 orientation:UIImageOrientationUp];
             
             // You've got the image of the right dimensions
-            if (self.flickrRequestInfo.photo.size.width == 400 && self.flickrRequestInfo.photo.size.height >= 250 && self.flickrRequestInfo.photo.size.width > self.flickrRequestInfo.photo.size.height) {
-                float height=self.flickrRequestInfo.photo.size.height-250.0;
+            if (self.flickrRequestInfo.photo.size.width == 512 && self.flickrRequestInfo.photo.size.height >= 320 && self.flickrRequestInfo.photo.size.width > self.flickrRequestInfo.photo.size.height) {
+                float height=self.flickrRequestInfo.photo.size.height-320.0;
                 if(height>0) {
                     self.found = true;
-                    UIImage *locationImage=[BeagleUtilities imageByCropping:self.flickrRequestInfo.photo toRect:CGRectMake(0, height/2, 400, 250) withOrientation:UIImageOrientationDownMirrored];
+                    UIImage *locationImage=[BeagleUtilities imageByCropping:self.flickrRequestInfo.photo toRect:CGRectMake(0, height/2, 512, 320) withOrientation:UIImageOrientationDownMirrored];
                     self.flickrRequestInfo.photo=locationImage;
                     self.flickrRequestInfo.userPhotoWebPageURL = [self.flickrContext photoWebPageURLFromDictionary:photoDict];
                     
