@@ -88,6 +88,7 @@ else
     
     [Instabug setWillShowTutorialAlert:NO];
     [Instabug setWillShowStartAlert:NO];
+    [Instabug setIsTrackingCrashes:NO];
     
     [Instabug setButtonsFontColor:[UIColor colorWithRed:(255/255.0) green:(255/255.0) blue:(255/255.0) alpha:1.0]];
     [Instabug setButtonsColor:[UIColor colorWithRed:(255/255.0) green:(115/255.0) blue:(0/255.0) alpha:1.0]];
@@ -95,7 +96,6 @@ else
     [Instabug setHeaderColor:[UIColor colorWithRed:(255/255.0) green:(149/255.0) blue:(0/255.0) alpha:1.0]];
     [Instabug setTextFontColor:[UIColor colorWithRed:(82/255.0) green:(83/255.0) blue:(83/255.0) alpha:1.0]];
     [Instabug setTextBackgroundColor:[UIColor colorWithRed:(249/255.0) green:(249/255.0) blue:(249/255.0) alpha:1.0]];
-    
     
     if([[NSUserDefaults standardUserDefaults]valueForKey:@"HourlyUpdate"]==nil){
         [[NSUserDefaults standardUserDefaults]setValue:[NSDate date] forKey:@"HourlyUpdate"];
@@ -117,7 +117,7 @@ else
     // Whenever a person opens the app, check for a cached session
     
     if([[NSUserDefaults standardUserDefaults]boolForKey:@"FacebookLogin"]){
-    
+        
     if (FBSession.activeSession.state == FBSessionStateCreatedTokenLoaded) {
         
         // If there's one, just open the session silently, without showing the user the login UI
@@ -132,7 +132,6 @@ else
         
     }
   }
-    
     
     if([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0f){
 //    [self handlePush:launchOptions];
