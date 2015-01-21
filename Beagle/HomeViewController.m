@@ -22,6 +22,7 @@
 #import "CreateAnimationBlurView.h"
 #import "LinkViewController.h"
 #import "BeagleLabel.h"
+#import <Instabug/Instabug.h>
 #define kTimerIntervalInSeconds 10
 #define rowHeight 164
 #define kLeaveInterest 23
@@ -177,6 +178,12 @@
         [[NSUserDefaults standardUserDefaults]synchronize];
         
     }
+    
+    // Setup user credentials
+    NSString *UserData = [NSString stringWithFormat:@"%@ %@ %i", [[BeagleManager SharedInstance] beaglePlayer].first_name, [[BeagleManager SharedInstance] beaglePlayer].last_name, [[BeagleManager SharedInstance] beaglePlayer].beagleUserId];
+    
+    [Instabug setUserData:UserData];
+    [Instabug setDefaultEmail:[[BeagleManager SharedInstance] beaglePlayer].email];
     
     if (![self.slidingViewController.underLeftViewController isKindOfClass:[SettingsViewController class]]) {
         self.slidingViewController.underLeftViewController  = [self.storyboard instantiateViewControllerWithIdentifier:@"settingsScreen"];
