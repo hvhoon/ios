@@ -180,7 +180,7 @@
     }
     
     // Setup user credentials
-    NSString *UserData = [NSString stringWithFormat:@"Name:%@ %@, Beagle ID: %i", [[BeagleManager SharedInstance] beaglePlayer].first_name, [[BeagleManager SharedInstance] beaglePlayer].last_name, [[BeagleManager SharedInstance] beaglePlayer].beagleUserId];
+    NSString *UserData = [NSString stringWithFormat:@"Name: %@ %@, Beagle ID: %i", [[BeagleManager SharedInstance] beaglePlayer].first_name, [[BeagleManager SharedInstance] beaglePlayer].last_name, [[BeagleManager SharedInstance] beaglePlayer].beagleUserId];
     
     [Instabug setUserData:UserData];
     [Instabug setDefaultEmail:[[BeagleManager SharedInstance] beaglePlayer].email];
