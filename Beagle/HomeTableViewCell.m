@@ -34,7 +34,6 @@ static UIFont *dateTextFont = nil;
 - (void)drawContentView:(CGRect)r{
     
     CGContextRef context = UIGraphicsGetCurrentContext();
-    
     UIColor *background;
     UIColor *backgroundColor;
     background = [UIColor whiteColor];
@@ -56,7 +55,6 @@ static UIFont *dateTextFont = nil;
                            [UIFont fontWithName:@"HelveticaNeue-Bold" size:11.0f], NSFontAttributeName,
                            [BeagleUtilities returnBeagleColor:12],NSForegroundColorAttributeName,
                            style, NSParagraphStyleAttributeName, nil];
-
     
     if(self.bg_activity.activityType==2){
         
@@ -72,29 +70,23 @@ static UIFont *dateTextFont = nil;
         organizerName_y=organizerName_y+suggestedBySize.height+10;
     }
     fromTheTop = fromTheTop+10;
-    UIImageView *_profileImageView=[[UIImageView alloc]initWithFrame:CGRectMake(16, fromTheTop, 52.5, 52.5)];
-    [self addSubview:_profileImageView];
     
+    
+    UIImageView *_profileImageView=[[UIImageView alloc]initWithFrame:CGRectMake(16, fromTheTop, 54, 54)];
     
     if(self.photoImage.size.height != self.photoImage.size.width)
         self.photoImage = [BeagleUtilities autoCrop:self.photoImage];
-//
-//    if(self.photoImage.size.height > 105.0f || self.photoImage.size.width > 105.0f)
-//        self.photoImage = [BeagleUtilities compressImage:self.photoImage size:CGSizeMake(105.0f,105.0f)];
 
     _profileImageView.image=self.photoImage;
-    _profileImageView.layer.cornerRadius = 26.25;
+    _profileImageView.layer.cornerRadius = 27;
     _profileImageView.clipsToBounds = YES;
+    
+    _profileImageView.layer.shouldRasterize = YES;
+    _profileImageView.layer.rasterizationScale = [UIScreen mainScreen].scale;
+    
+    [self addSubview:_profileImageView];
 
     profileRect = CGRectMake(16, fromTheTop, 52.5, 52.5);
-
-//    UIImage *newImage = [BeagleUtilities imageCircularBySize:originalImage sqr:105.0f];
-//    [newImage profileRect];
-//    _profileImageView.layer.shouldRasterize = YES;
-//    [_profileImageView.layer setCornerRadius:26.25];
-//    [_profileImageView.layer setMasksToBounds:YES];
-
-    
     
     // Drawing the time label
     [style setAlignment:NSTextAlignmentRight];
@@ -113,7 +105,6 @@ static UIFont *dateTextFont = nil;
                                           fromTheTop,
                                           dateTextSize.width,dateTextSize.height) withAttributes:attrs];
 
-    
     // Drawing the organizer name
     [style setAlignment:NSTextAlignmentLeft];
      attrs=[NSDictionary dictionaryWithObjectsAndKeys:
@@ -134,8 +125,7 @@ static UIFont *dateTextFont = nil;
     
     // Adding buffer below the top section with the profile picture
     fromTheTop = fromTheTop+8;
-    
-    
+
     // Drawing the activity description
     style.lineBreakMode=NSLineBreakByWordWrapping;
     attrs = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -162,6 +152,10 @@ static UIFont *dateTextFont = nil;
         beagleLabel.textAlignment = NSTextAlignmentLeft;
         beagleLabel.numberOfLines = 0;
         beagleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        
+        beagleLabel.layer.shouldRasterize = YES;
+        beagleLabel.layer.rasterizationScale = [UIScreen mainScreen].scale;
+        
         [self addSubview:beagleLabel];
         [beagleLabel setDetectionBlock:^(BeagleHotWord hotWord, NSString *string, NSString *protocol, NSRange range) {
                 if (self.delegate && [self.delegate respondsToSelector:@selector(redirectToWebPage:)]&& hotWord==BeagleLink)
@@ -172,9 +166,7 @@ static UIFont *dateTextFont = nil;
             }];
         fromTheTop = fromTheTop+height+kHeightClip;
     }
-    
-    
-    
+
     // Drawing the location
     [style setAlignment:NSTextAlignmentLeft];
     attrs =[NSDictionary dictionaryWithObjectsAndKeys:
@@ -193,16 +185,17 @@ static UIFont *dateTextFont = nil;
                                           locationTextSize.width, locationTextSize.height) withAttributes:attrs];
     fromTheTop = fromTheTop+locationTextSize.height;
     fromTheTop = fromTheTop+16; // Adding space after location
+    
     // Suggested post
     if(self.bg_activity.activityType==2){
-    UIColor *outlineButtonColor = [[BeagleManager SharedInstance] darkDominantColor];
-    UIButton *suggestedButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        UIColor *outlineButtonColor = [[BeagleManager SharedInstance] darkDominantColor];
+        UIButton *suggestedButton = [UIButton buttonWithType:UIButtonTypeCustom];
         suggestedButton.frame=CGRectMake(16, fromTheTop,
                                          165,33);
-    suggestedButton.tag=[[NSString stringWithFormat:@"444%ld",(long)cellIndex]integerValue];
+        suggestedButton.tag=[[NSString stringWithFormat:@"444%ld",(long)cellIndex]integerValue];
        [suggestedButton.titleLabel setUserInteractionEnabled: NO];
-       [self addSubview:suggestedButton];
         
+        [self addSubview:suggestedButton];
         
         [[suggestedButton titleLabel]setFont:[UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0f]];
         [suggestedButton.titleLabel setTextAlignment:NSTextAlignmentCenter];
@@ -218,7 +211,7 @@ static UIFont *dateTextFont = nil;
         [suggestedButton addTarget:self action:@selector(suggestedBtnPressed:) forControlEvents:UIControlEventTouchUpInside];
         [suggestedButton setEnabled:YES];
 
-}
+    }
     else{
 
     // Drawing number of interested text
@@ -289,12 +282,17 @@ static UIFont *dateTextFont = nil;
     }
     // Draw the Button
     UIButton *interestedButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        
     interestedButton.frame=CGRectMake(16, fromTheTop, 151, 34);
     interestedButton.tag=[[NSString stringWithFormat:@"333%ld",(long)cellIndex]integerValue];
     UIColor *buttonColor = [[BeagleManager SharedInstance] mediumDominantColor];
     UIColor *outlineButtonColor = [[BeagleManager SharedInstance] darkDominantColor];
     [interestedButton.titleLabel setUserInteractionEnabled: NO];
-    [self addSubview:interestedButton];
+        
+        interestedButton.layer.shouldRasterize = YES;
+        interestedButton.layer.rasterizationScale = [UIScreen mainScreen].scale;
+        
+        [self addSubview:interestedButton];
     
         if(self.bg_activity.activityType==1){
             [interestedButton addTarget:self action:@selector(interestedBtnPressed:) forControlEvents:UIControlEventTouchUpInside];

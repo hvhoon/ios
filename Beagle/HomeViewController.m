@@ -210,6 +210,7 @@
     
     UIImageView *topGradient=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"gradient"]];
     topGradient.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 64);
+    topGradient.tag=3457;
     [_topSection addSubview:topGradient];
     
     
@@ -1011,7 +1012,7 @@
     BG.darkDominantColor=[BeagleUtilities returnShadeOfColor:dominantColor withShade:0.4];
     [[NSUserDefaults standardUserDefaults] setValue:[NSDate date] forKey:@"HourlyUpdate"];
     
-    _filterView.backgroundColor = [BG.mediumDominantColor colorWithAlphaComponent:0.8];
+    _filterView.backgroundColor = [BG.mediumDominantColor colorWithAlphaComponent:0.7];
     _topSection.backgroundColor = BG.mediumDominantColor;
     isLoading=FALSE;
     
@@ -1255,6 +1256,7 @@
         cell.cellIndex=indexPath.row;
         
         cell.bg_activity = play;
+        
 #if 1
         UIImage*checkImge=nil;
         if(play.ownerid!=0 && play.activityType==1)
@@ -1280,7 +1282,8 @@
             cell.photoImage = play.profilePhotoImage=checkImge;
         }
 #endif
-        [cell setNeedsDisplay];
+        
+        //[cell setNeedsDisplay];
         return cell;
         
     }else{
@@ -1948,6 +1951,7 @@
     CGRect topFrame = _topSection.frame;
     
     UIImageView *stockImageView=(UIImageView*)[self.view viewWithTag:3456];
+    
     CGRect moveTopFrame = stockImageView.frame;
     
     // Let the scrolling begin, keep track of where you are
@@ -1958,7 +1962,7 @@
         else
             yOffset = scrollView.contentOffset.y;
         
-        deltaAlpha = 0.8 + (0.18 * (yOffset/(roundf([UIScreen mainScreen].bounds.size.width/goldenRatio)-44-64)));
+        deltaAlpha = 0.7 + (0.3 * (yOffset/(roundf([UIScreen mainScreen].bounds.size.width/goldenRatio)-44-64)));
         moveTopFrame.origin.y = -(yOffset/4);
         stockImageView.frame = moveTopFrame;
     }
@@ -1976,7 +1980,7 @@
         _topSection.frame = topFrame;
         moveTopFrame.origin.y = 0;
         stockImageView.frame = moveTopFrame;
-        deltaAlpha = 0.8 + (0.2 * (yOffset/-22.0));
+        deltaAlpha = 0.7 + (0.2 * (yOffset/-22.0));
     }
     
     // For testing purposes only!
@@ -1985,7 +1989,7 @@
     // Update the filter color appropriately if the screen is not loading for the first time!
     if (!isLoading) {
         _filterView.backgroundColor = [[[BeagleManager SharedInstance] mediumDominantColor] colorWithAlphaComponent:deltaAlpha];
-        [_filterView setNeedsDisplay];
+        //[_filterView setNeedsDisplay];
     }
     
 }
